@@ -26,7 +26,7 @@ Seven sequential steps, each with a verification gate. Steps 1–2 establish the
 
 ## Step 1 — Monorepo skeleton
 
-Scaffold pnpm + Turborepo for six packages. Pin Node 22, pnpm 9.
+Scaffold pnpm + Turborepo for six packages. Pin Node 24 (active LTS) and pnpm 11.
 
 **Files to create:**
 - `pnpm-workspace.yaml` — packages: `packages/*`, `apps/*`
@@ -65,7 +65,7 @@ Set up Style Dictionary v4 inside `packages/tokens`. Author the minimum viable D
   - `figma.tokens.json` (DTCG-shaped, for Tokens Studio)
 - `packages/tokens/dist/` — gitignored output
 
-**References used:** `tokens-studio/sd-tailwindv4` repo as a *recipe* (copy the `createTailwindV4Plugin` pattern, don't depend on it). Per [auxiliary-ds-2026-build-plan-research.md](.claude/docs/auxiliary-ds-2026-build-plan-research.md), pin Style Dictionary at latest 4.x; 2025.10 spec is partially supported in v4 (full support lands in v5), so author against the common subset (color/dimension/font-family/font-weight/duration/shadow).
+**References used:** `tokens-studio/sd-tailwindv4` repo as a *recipe* (copy the `createTailwindV4Plugin` pattern, don't depend on it). Use Style Dictionary **v5** (latest stable as of 2026-05-27, ^5.4.0) — v5 has full DTCG 2025.10 support, so the v4-era subset restriction noted in [auxiliary-ds-2026-build-plan-research.md](.claude/docs/auxiliary-ds-2026-build-plan-research.md) no longer applies.
 
 **Verification gate (do not proceed without it):**
 - `pnpm --filter @auxiliary/tokens build` produces all four dist files.

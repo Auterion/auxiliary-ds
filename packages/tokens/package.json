@@ -6,11 +6,16 @@
   "type": "module",
   "main": "./dist/tokens.js",
   "types": "./dist/tokens.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "echo \"@auxiliary/tokens build — Step 2 will wire Style Dictionary\" && exit 0",
+    "build": "node build.mjs",
     "lint": "echo \"@auxiliary/tokens lint — no sources yet\" && exit 0",
     "typecheck": "echo \"@auxiliary/tokens typecheck — no sources yet\" && exit 0",
     "test": "echo \"@auxiliary/tokens test — no sources yet\" && exit 0"
+  },
+  "devDependencies": {
+    "style-dictionary": "^5.4.1"
   }
 }
