@@ -12,10 +12,9 @@
  *      tabular-nums + ss02 for mission-ID disambiguation)
  */
 
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:opsz,wght@14..32,100..900&display=swap");
 @import "tailwindcss";
 @import "@auxiliary/tokens/dist/tailwind-v4.css";
-
-@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:opsz,wght@14..32,100..900&display=swap");
 
 /* -------------------------------------------------------------------------- *
  * Base layer — global defaults
