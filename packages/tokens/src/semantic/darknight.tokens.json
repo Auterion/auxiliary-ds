@@ -1,38 +1,38 @@
 {
   "darknight": {
     "bg": {
-      "canvas":   { "$type": "color", "$value": "{color.primitive.black}" },
-      "surface":  { "$type": "color", "$value": "oklch(0.05 0 0)" },
-      "elevated": { "$type": "color", "$value": "oklch(0.08 0 0)" },
-      "muted":    { "$type": "color", "$value": "oklch(0.03 0 0)" },
-      "hover":    { "$type": "color", "$value": "oklch(0.10 0.02 30)" }
+      "canvas":   { "$type": "color", "$value": "rgb(0, 0, 0)" },
+      "surface":  { "$type": "color", "$value": "rgb(0, 0, 0)" },
+      "elevated": { "$type": "color", "$value": "rgb(39, 27, 16)" },
+      "muted":    { "$type": "color", "$value": "rgb(9, 20, 15)" },
+      "hover":    { "$type": "color", "$value": "rgb(39, 27, 16)" }
     },
     "text": {
-      "primary":   { "$type": "color", "$value": "oklch(0.65 0.15 30)" },
-      "secondary": { "$type": "color", "$value": "oklch(0.55 0.12 30)" },
-      "muted":     { "$type": "color", "$value": "oklch(0.40 0.08 30)" },
-      "inverse":   { "$type": "color", "$value": "{color.primitive.black}" }
+      "primary":   { "$type": "color", "$value": "rgb(234, 167, 94)" },
+      "secondary": { "$type": "color", "$value": "rgb(199, 136, 66)" },
+      "muted":     { "$type": "color", "$value": "rgb(156, 106, 52)" },
+      "inverse":   { "$type": "color", "$value": "rgb(0, 0, 0)" }
     },
     "accent": {
-      "default":    { "$type": "color", "$value": "oklch(0.70 0.18 30)" },
-      "foreground": { "$type": "color", "$value": "{color.primitive.black}" },
-      "hover":      { "$type": "color", "$value": "oklch(0.75 0.20 30)" }
+      "default":    { "$type": "color", "$value": "rgb(234, 167, 94)" },
+      "foreground": { "$type": "color", "$value": "rgb(0, 0, 0)" },
+      "hover":      { "$type": "color", "$value": "rgb(255, 211, 167)" }
     },
     "border": {
-      "default": { "$type": "color", "$value": "oklch(0.20 0.06 30)" },
-      "strong":  { "$type": "color", "$value": "oklch(0.40 0.10 30)" },
-      "focus":   { "$type": "color", "$value": "oklch(0.70 0.18 30)" }
+      "default": { "$type": "color", "$value": "rgb(39, 27, 16)" },
+      "strong":  { "$type": "color", "$value": "rgb(72, 52, 31)" },
+      "focus":   { "$type": "color", "$value": "rgb(95, 67, 38)" }
     },
     "input": {
-      "bg":     { "$type": "color", "$value": "oklch(0.05 0 0)" },
-      "border": { "$type": "color", "$value": "oklch(0.20 0.06 30)" }
+      "bg":     { "$type": "color", "$value": "rgb(0, 0, 0)" },
+      "border": { "$type": "color", "$value": "rgb(72, 52, 31)" }
     },
     "status": {
-      "alarm":    { "bg": { "$type": "color", "$value": "oklch(0.20 0.08 25)" },  "fg": { "$type": "color", "$value": "oklch(0.65 0.18 25)" },  "border": { "$type": "color", "$value": "oklch(0.45 0.15 25)" } },
-      "warning":  { "bg": { "$type": "color", "$value": "oklch(0.20 0.08 50)" },  "fg": { "$type": "color", "$value": "oklch(0.65 0.16 50)" },  "border": { "$type": "color", "$value": "oklch(0.45 0.14 50)" } },
-      "caution":  { "bg": { "$type": "color", "$value": "oklch(0.20 0.08 70)" },  "fg": { "$type": "color", "$value": "oklch(0.65 0.16 70)" },  "border": { "$type": "color", "$value": "oklch(0.45 0.14 70)" } },
-      "advisory": { "bg": { "$type": "color", "$value": "oklch(0.15 0.04 245)" }, "fg": { "$type": "color", "$value": "oklch(0.50 0.10 245)" }, "border": { "$type": "color", "$value": "oklch(0.35 0.08 245)" } },
-      "nominal":  { "bg": { "$type": "color", "$value": "oklch(0.18 0.06 150)" }, "fg": { "$type": "color", "$value": "oklch(0.55 0.10 150)" }, "border": { "$type": "color", "$value": "oklch(0.40 0.09 150)" } }
+      "alarm":    { "bg": { "$type": "color", "$value": "rgb(233, 15, 32)" },  "fg": { "$type": "color", "$value": "rgb(0, 0, 0)" },          "border": { "$type": "color", "$value": "rgb(233, 15, 32)" } },
+      "warning":  { "bg": { "$type": "color", "$value": "rgb(186, 90, 0)" },   "fg": { "$type": "color", "$value": "rgb(0, 0, 0)" },          "border": { "$type": "color", "$value": "rgb(186, 90, 0)" } },
+      "caution":  { "bg": { "$type": "color", "$value": "rgb(137, 115, 0)" },  "fg": { "$type": "color", "$value": "rgb(0, 0, 0)" },          "border": { "$type": "color", "$value": "rgb(137, 115, 0)" } },
+      "advisory": { "bg": { "$type": "color", "$value": "rgb(66, 92, 130)" },  "fg": { "$type": "color", "$value": "rgb(255, 211, 167)" },    "border": { "$type": "color", "$value": "rgb(66, 92, 130)" } },
+      "nominal":  { "bg": { "$type": "color", "$value": "rgb(0, 136, 0)" },    "fg": { "$type": "color", "$value": "rgb(0, 0, 0)" },          "border": { "$type": "color", "$value": "rgb(0, 136, 0)" } }
     }
   }
 }
