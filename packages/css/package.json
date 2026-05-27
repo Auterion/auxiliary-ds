@@ -1,0 +1,14 @@
+{
+  "name": "@auxiliary/css",
+  "version": "0.0.0",
+  "description": "Auxiliary's Tailwind v4 preset and framework-agnostic styling recipes.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "files": ["dist", "theme.css", "preset.css", "recipes"],
+  "scripts": {
+    "build": "echo \"@auxiliary/css build — Step 4 will wire Tailwind preset + recipes\" && exit 0",
+    "lint": "echo \"@auxiliary/css lint — no sources yet\" && exit 0",
+    "typecheck": "echo \"@auxiliary/css typecheck — no sources yet\" && exit 0",
+    "test": "echo \"@auxiliary/css test — no sources yet\" && exit 0"
+  }
+}

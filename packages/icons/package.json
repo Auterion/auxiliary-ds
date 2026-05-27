@@ -1,0 +1,16 @@
+{
+  "name": "@auxiliary/icons",
+  "version": "0.0.0",
+  "description": "Auxiliary's icon contract — Font Awesome Pro Sharp + Auterion custom kit, wrapped behind a typed <Icon> component.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "echo \"@auxiliary/icons build — Step 5 will wire the <Icon> contract\" && exit 0",
+    "lint": "echo \"@auxiliary/icons lint — no sources yet\" && exit 0",
+    "typecheck": "echo \"@auxiliary/icons typecheck — no sources yet\" && exit 0",
+    "test": "echo \"@auxiliary/icons test — no sources yet\" && exit 0"
+  }
+}

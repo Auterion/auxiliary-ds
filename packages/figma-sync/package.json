@@ -1,0 +1,14 @@
+{
+  "name": "@auxiliary/figma-sync",
+  "version": "0.0.0",
+  "description": "One-way push of Auxiliary tokens into Figma Variables.",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "echo \"@auxiliary/figma-sync build — Step 7 will wire the Tokens Studio flow\" && exit 0",
+    "lint": "echo \"@auxiliary/figma-sync lint — no sources yet\" && exit 0",
+    "typecheck": "echo \"@auxiliary/figma-sync typecheck — no sources yet\" && exit 0",
+    "test": "echo \"@auxiliary/figma-sync test — no sources yet\" && exit 0"
+  }
+}

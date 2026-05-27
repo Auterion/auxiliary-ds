@@ -1,0 +1,16 @@
+{
+  "name": "@auxiliary/vue",
+  "version": "0.0.0",
+  "description": "Vue 3 components for Auxiliary, built on Reka UI and styled via @auxiliary/css.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "echo \"@auxiliary/vue build — Step 5 will land the first primitives\" && exit 0",
+    "lint": "echo \"@auxiliary/vue lint — no sources yet\" && exit 0",
+    "typecheck": "echo \"@auxiliary/vue typecheck — no sources yet\" && exit 0",
+    "test": "echo \"@auxiliary/vue test — no sources yet\" && exit 0"
+  }
+}
