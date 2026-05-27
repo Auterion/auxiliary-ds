@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
-import { Button, Input, Label } from '@auxiliary/vue';
+import {
+  Button,
+  Input,
+  Label,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from '@auxiliary/vue';
 
 const THEMES = ['system', 'light', 'dark', 'sunlight', 'darknight'] as const;
 type Theme = (typeof THEMES)[number];
@@ -169,6 +179,36 @@ const altitude = ref('');
             <span class="text-muted ml-3">ALT </span><span>408 m</span>
           </p>
         </div>
+      </section>
+
+      <!-- Dialog -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Dialog</h2>
+        <p class="mb-5 text-sm text-muted">
+          First headless-backed primitive. <code class="font-mono">@auxiliary/vue</code>
+          wraps Reka UI's Dialog with our styling. Focus trap, Escape to close,
+          click-outside, ARIA dialog semantics, and portal teleport — all from Reka.
+        </p>
+        <Dialog>
+          <DialogTrigger as-child>
+            <Button intent="secondary">Confirm abort</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogTitle>Abort mission?</DialogTitle>
+            <DialogDescription>
+              This will terminate the active flight plan and return the vehicle to home.
+              The aircraft will not resume the mission automatically.
+            </DialogDescription>
+            <div class="flex justify-end gap-2 pt-2">
+              <DialogClose as-child>
+                <Button intent="ghost" size="sm">Cancel</Button>
+              </DialogClose>
+              <DialogClose as-child>
+                <Button intent="danger" size="sm">Abort</Button>
+              </DialogClose>
+            </div>
+          </DialogContent>
+        </Dialog>
       </section>
 
       <!-- Surface specimens -->

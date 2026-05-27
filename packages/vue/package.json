@@ -4,7 +4,9 @@
   "description": "Vue 3 primitives for Auxiliary, styled via @auxiliary/css recipes and utilities.",
   "license": "UNLICENSED",
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -19,7 +21,8 @@
   },
   "dependencies": {
     "@auxiliary/css": "workspace:*",
-    "@auxiliary/tokens": "workspace:*"
+    "@auxiliary/tokens": "workspace:*",
+    "reka-ui": "^2.9.8"
   },
   "peerDependencies": {
     "vue": "^3.5.0"
