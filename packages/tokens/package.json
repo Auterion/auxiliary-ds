@@ -1,0 +1,16 @@
+{
+  "name": "@auxiliary/tokens",
+  "version": "0.0.0",
+  "description": "Auxiliary design tokens — DTCG-spec JSON, the source of truth for every other package.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./dist/tokens.js",
+  "types": "./dist/tokens.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "echo \"@auxiliary/tokens build — Step 2 will wire Style Dictionary\" && exit 0",
+    "lint": "echo \"@auxiliary/tokens lint — no sources yet\" && exit 0",
+    "typecheck": "echo \"@auxiliary/tokens typecheck — no sources yet\" && exit 0",
+    "test": "echo \"@auxiliary/tokens test — no sources yet\" && exit 0"
+  }
+}

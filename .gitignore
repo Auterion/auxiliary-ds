@@ -23,3 +23,13 @@ pnpm-debug.log*
 # VitePress
 .vitepress/cache/
 .vitepress/dist/
+
+# Vite playground (Step 4 scratch — not committed)
+playground/
+
+# Tokens build output
+packages/tokens/dist/
+
+# Playwright
+test-results/
+playwright-report/

@@ -42,7 +42,7 @@ APIs and tokens will change without notice until the first tagged release. No ba
 
 ## Environment & commands
 
-Requires **Node 22+** and **pnpm 9+**.
+Requires **Node 22+** and **pnpm 10+**.
 
 From README (will work once the workspace is scaffolded):
 

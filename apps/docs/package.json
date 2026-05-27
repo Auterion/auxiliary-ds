@@ -1,0 +1,15 @@
+{
+  "name": "@auxiliary/docs",
+  "version": "0.0.0",
+  "description": "Auxiliary documentation site (VitePress).",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "echo \"@auxiliary/docs build — Step 6 will wire VitePress\" && exit 0",
+    "dev": "echo \"@auxiliary/docs dev — Step 6 will wire VitePress at :5173\" && exit 0",
+    "lint": "echo \"@auxiliary/docs lint — no sources yet\" && exit 0",
+    "typecheck": "echo \"@auxiliary/docs typecheck — no sources yet\" && exit 0",
+    "test": "echo \"@auxiliary/docs test — no sources yet\" && exit 0"
+  }
+}

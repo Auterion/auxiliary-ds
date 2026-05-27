@@ -32,7 +32,7 @@ This is a pnpm + Turborepo monorepo.
 
 ## Getting started
 
-Requires Node 22+ and pnpm 9+.
+Requires Node 22+ and pnpm 10+.
 
 \`\`\`bash
 pnpm install
