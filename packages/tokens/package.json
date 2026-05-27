@@ -4,11 +4,16 @@
   "description": "Auxiliary design tokens — DTCG-spec JSON, the source of truth for every other package.",
   "license": "UNLICENSED",
   "type": "module",
-  "main": "./dist/tokens.js",
-  "types": "./dist/tokens.d.ts",
+  "main": "./dist/tokens.ts",
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": "./dist/tokens.ts",
+    "./dist/tailwind-v4.css": "./dist/tailwind-v4.css",
+    "./dist/tokens.css": "./dist/tokens.css",
+    "./dist/figma.tokens.json": "./dist/figma.tokens.json"
+  },
   "scripts": {
     "build": "node build.mjs",
     "lint": "echo \"@auxiliary/tokens lint — no sources yet\" && exit 0",

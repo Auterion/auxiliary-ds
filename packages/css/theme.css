@@ -1,0 +1,105 @@
+/**
+ * @auxiliary/css — main entry.
+ * Consumers: `import '@auxiliary/css/theme.css'` once at app entry.
+ *
+ * Brings:
+ *   1. Tailwind v4 core
+ *   2. Auxiliary tokens (@theme block + theme override selectors)
+ *   3. Custom @utility declarations exposing semantic utilities
+ *      (bg-canvas, text-primary, bg-alarm, etc.) — no shadcn-style
+ *      bg-background tautology
+ *   4. Base typography (Inter Variable + Geist Mono via Google Fonts,
+ *      tabular-nums + ss02 for mission-ID disambiguation)
+ */
+
+@import "tailwindcss";
+@import "@auxiliary/tokens/dist/tailwind-v4.css";
+
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:opsz,wght@14..32,100..900&display=swap");
+
+/* -------------------------------------------------------------------------- *
+ * Base layer — global defaults
+ * -------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    font-optical-sizing: auto;
+    font-feature-settings: "cv01", "cv10", "ss02", "ss03", "calt", "liga";
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+  }
+
+  /* `tabular` helper for mission IDs, coordinates, telemetry readouts */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .font-display {
+    font-family: var(--font-sans);
+    font-size: var(--text-display);
+    line-height: var(--leading-tight);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* -------------------------------------------------------------------------- *
+ * Semantic utilities — auxiliary's clean utility surface.
+ * Pairs with structured semantic tokens (Step 3b).
+ * -------------------------------------------------------------------------- */
+
+/* Backgrounds */
+@utility bg-canvas    { background-color: var(--bg-canvas); }
+@utility bg-surface   { background-color: var(--bg-surface); }
+@utility bg-elevated  { background-color: var(--bg-elevated); }
+@utility bg-muted     { background-color: var(--bg-muted); }
+@utility bg-hover     { background-color: var(--bg-hover); }
+
+/* Text */
+@utility text-primary   { color: var(--text-primary); }
+@utility text-secondary { color: var(--text-secondary); }
+@utility text-muted     { color: var(--text-muted); }
+@utility text-inverse   { color: var(--text-inverse); }
+
+/* Accent (action color) */
+@utility bg-accent       { background-color: var(--accent-default); }
+@utility bg-accent-hover { background-color: var(--accent-hover); }
+@utility text-accent-fg  { color: var(--accent-foreground); }
+
+/* Borders */
+@utility border-default { border-color: var(--border-default); }
+@utility border-strong  { border-color: var(--border-strong); }
+@utility border-focus   { border-color: var(--border-focus); }
+@utility ring-focus     { --tw-ring-color: var(--border-focus); }
+
+/* Inputs */
+@utility bg-input     { background-color: var(--input-bg); }
+@utility border-input { border-color: var(--input-border); }
+
+/* Status — 5 levels × {bg, text, border} */
+@utility bg-alarm     { background-color: var(--status-alarm-bg); }
+@utility text-alarm   { color: var(--status-alarm-fg); }
+@utility border-alarm { border-color: var(--status-alarm-border); }
+
+@utility bg-warning     { background-color: var(--status-warning-bg); }
+@utility text-warning   { color: var(--status-warning-fg); }
+@utility border-warning { border-color: var(--status-warning-border); }
+
+@utility bg-caution     { background-color: var(--status-caution-bg); }
+@utility text-caution   { color: var(--status-caution-fg); }
+@utility border-caution { border-color: var(--status-caution-border); }
+
+@utility bg-advisory     { background-color: var(--status-advisory-bg); }
+@utility text-advisory   { color: var(--status-advisory-fg); }
+@utility border-advisory { border-color: var(--status-advisory-border); }
+
+@utility bg-nominal     { background-color: var(--status-nominal-bg); }
+@utility text-nominal   { color: var(--status-nominal-fg); }
+@utility border-nominal { border-color: var(--status-nominal-border); }
