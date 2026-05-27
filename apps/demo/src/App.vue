@@ -10,6 +10,13 @@ import {
   DialogTitle,
   DialogDescription,
   DialogClose,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
 } from '@auxiliary/vue';
 
 const THEMES = ['system', 'light', 'dark', 'sunlight', 'darknight'] as const;
@@ -44,6 +51,7 @@ const altitude = ref('');
 </script>
 
 <template>
+  <TooltipProvider>
   <main class="min-h-dvh bg-canvas text-primary">
     <header
       class="sticky top-0 z-10 flex items-center justify-between border-b border-default bg-canvas/80 px-8 py-4 backdrop-blur"
@@ -211,6 +219,48 @@ const altitude = ref('');
         </Dialog>
       </section>
 
+      <!-- Floating UI: Tooltip + Popover -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Floating UI</h2>
+        <p class="mb-5 text-sm text-muted">
+          Tooltip for hints, Popover for richer floating content. Both anchored to
+          their trigger, both backed by Reka UI for keyboard a11y and collision
+          detection.
+        </p>
+        <div class="flex flex-wrap items-center gap-6">
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button intent="secondary" size="sm">Hover for tooltip</Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Mission integrity — all sensors green
+            </TooltipContent>
+          </Tooltip>
+
+          <Popover>
+            <PopoverTrigger as-child>
+              <Button intent="secondary" size="sm">Open popover</Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div class="space-y-2">
+                <div class="font-medium text-primary">Quick settings</div>
+                <p class="text-muted">
+                  Popovers hold richer content than tooltips — forms, menus, filters.
+                  Press Escape or click outside to dismiss.
+                </p>
+                <p class="font-mono tabular text-xs text-muted">
+                  Try Tab to focus the buttons inside.
+                </p>
+                <div class="flex gap-2 pt-1">
+                  <Button intent="ghost" size="sm">Reset</Button>
+                  <Button intent="primary" size="sm">Apply</Button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </section>
+
       <!-- Surface specimens -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Surfaces</h2>
@@ -238,4 +288,5 @@ const altitude = ref('');
       Auxiliary · zinc-on-zinc, 4 themes, 5-level status · pre-1.0
     </footer>
   </main>
+  </TooltipProvider>
 </template>
