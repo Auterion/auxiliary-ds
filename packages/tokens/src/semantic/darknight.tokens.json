@@ -1,0 +1,38 @@
+{
+  "darknight": {
+    "bg": {
+      "canvas":   { "$type": "color", "$value": "{color.primitive.black}" },
+      "surface":  { "$type": "color", "$value": "oklch(0.05 0 0)" },
+      "elevated": { "$type": "color", "$value": "oklch(0.08 0 0)" },
+      "muted":    { "$type": "color", "$value": "oklch(0.03 0 0)" },
+      "hover":    { "$type": "color", "$value": "oklch(0.10 0.02 30)" }
+    },
+    "text": {
+      "primary":   { "$type": "color", "$value": "oklch(0.65 0.15 30)" },
+      "secondary": { "$type": "color", "$value": "oklch(0.55 0.12 30)" },
+      "muted":     { "$type": "color", "$value": "oklch(0.40 0.08 30)" },
+      "inverse":   { "$type": "color", "$value": "{color.primitive.black}" }
+    },
+    "accent": {
+      "default":    { "$type": "color", "$value": "oklch(0.70 0.18 30)" },
+      "foreground": { "$type": "color", "$value": "{color.primitive.black}" },
+      "hover":      { "$type": "color", "$value": "oklch(0.75 0.20 30)" }
+    },
+    "border": {
+      "default": { "$type": "color", "$value": "oklch(0.20 0.06 30)" },
+      "strong":  { "$type": "color", "$value": "oklch(0.40 0.10 30)" },
+      "focus":   { "$type": "color", "$value": "oklch(0.70 0.18 30)" }
+    },
+    "input": {
+      "bg":     { "$type": "color", "$value": "oklch(0.05 0 0)" },
+      "border": { "$type": "color", "$value": "oklch(0.20 0.06 30)" }
+    },
+    "status": {
+      "alarm":    { "bg": { "$type": "color", "$value": "oklch(0.20 0.08 25)" },  "fg": { "$type": "color", "$value": "oklch(0.65 0.18 25)" },  "border": { "$type": "color", "$value": "oklch(0.45 0.15 25)" } },
+      "warning":  { "bg": { "$type": "color", "$value": "oklch(0.20 0.08 50)" },  "fg": { "$type": "color", "$value": "oklch(0.65 0.16 50)" },  "border": { "$type": "color", "$value": "oklch(0.45 0.14 50)" } },
+      "caution":  { "bg": { "$type": "color", "$value": "oklch(0.20 0.08 70)" },  "fg": { "$type": "color", "$value": "oklch(0.65 0.16 70)" },  "border": { "$type": "color", "$value": "oklch(0.45 0.14 70)" } },
+      "advisory": { "bg": { "$type": "color", "$value": "oklch(0.15 0.04 245)" }, "fg": { "$type": "color", "$value": "oklch(0.50 0.10 245)" }, "border": { "$type": "color", "$value": "oklch(0.35 0.08 245)" } },
+      "nominal":  { "bg": { "$type": "color", "$value": "oklch(0.18 0.06 150)" }, "fg": { "$type": "color", "$value": "oklch(0.55 0.10 150)" }, "border": { "$type": "color", "$value": "oklch(0.40 0.09 150)" } }
+    }
+  }
+}
