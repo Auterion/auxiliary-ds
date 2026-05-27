@@ -1,16 +1,33 @@
 {
   "name": "@auxiliary/vue",
   "version": "0.0.0",
-  "description": "Vue 3 components for Auxiliary, built on Reka UI and styled via @auxiliary/css.",
+  "description": "Vue 3 primitives for Auxiliary, styled via @auxiliary/css recipes and utilities.",
   "license": "UNLICENSED",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/auxiliary-vue.js"
+    }
+  },
   "scripts": {
-    "build": "echo \"@auxiliary/vue build — Step 5 will land the first primitives\" && exit 0",
-    "lint": "echo \"@auxiliary/vue lint — no sources yet\" && exit 0",
-    "typecheck": "echo \"@auxiliary/vue typecheck — no sources yet\" && exit 0",
-    "test": "echo \"@auxiliary/vue test — no sources yet\" && exit 0"
+    "build": "vite build && vue-tsc -p tsconfig.build.json",
+    "lint": "echo \"@auxiliary/vue lint — TODO\" && exit 0",
+    "typecheck": "vue-tsc -p tsconfig.build.json --noEmit",
+    "test": "echo \"@auxiliary/vue test — TODO\" && exit 0"
+  },
+  "dependencies": {
+    "@auxiliary/css": "workspace:*",
+    "@auxiliary/tokens": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.0",
+    "vite": "^6.0.0",
+    "vue": "^3.5.0",
+    "vue-tsc": "^2.2.0"
   }
 }

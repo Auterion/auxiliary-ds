@@ -16,6 +16,7 @@
   "dependencies": {
     "@auxiliary/css": "workspace:*",
     "@auxiliary/tokens": "workspace:*",
+    "@auxiliary/vue": "workspace:*",
     "vue": "^3.5.0"
   },
   "devDependencies": {

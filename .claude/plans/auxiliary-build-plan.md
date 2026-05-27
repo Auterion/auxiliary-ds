@@ -114,28 +114,31 @@ The architecture supports any of these — the question is what to populate now 
 
 ## Step 5 — First three Vue primitives
 
-Bring shadcn-vue source in as scaffolding (copy-and-own, **not** a dependency).
-
-**Process:**
-1. In a throwaway scratch app: `pnpm dlx shadcn-vue@latest init` then `pnpm dlx shadcn-vue@latest add button input label`.
-2. Copy the resulting `.vue` files into `packages/vue/src/primitives/`.
-3. Replace `class-variance-authority` calls with `tailwind-variants` recipes imported from `@auxiliary/css/recipes/*`.
-4. Replace shadcn's CSS variables (`bg-primary`, etc.) with Auxiliary semantic-token utility classes (`bg-accent-default`, `text-text-primary`).
-5. Re-export from `packages/vue/src/index.ts`.
+Write thin Vue wrappers over native elements using our recipes. Reka UI stays in the dependency list for primitives that genuinely need headless behavior (Dialog, Popover, Select — Step 5b+); Button/Input/Label don't, so we skip the shadcn-vue scaffolding step and write them directly.
 
 **Files:**
-- `packages/vue/src/primitives/Button.vue`
-- `packages/vue/src/primitives/Input.vue`
-- `packages/vue/src/primitives/Label.vue`
-- `packages/vue/src/index.ts` — barrel
-- `packages/vue/package.json` — peer: `vue@^3`, `reka-ui`; depends on `@auxiliary/css`, `@auxiliary/tokens`
+- `packages/vue/src/primitives/Button.vue` — `<button>` consuming the `button` recipe from `@auxiliary/css/recipes`. Props: `intent`, `size`, `loading`, `disabled`, `type`. Forwards `$attrs` so consumers can add `@click`, `aria-*`, etc.
+- `packages/vue/src/primitives/Input.vue` — `<input>` with our `bg-input` / `border-input` utilities, focus ring via `ring-focus`. Props: `modelValue` (v-model), `type`, `disabled`, `placeholder`, `id`.
+- `packages/vue/src/primitives/Label.vue` — `<label>` with `text-secondary` + `text-sm`. Props: `for`.
+- `packages/vue/src/index.ts` — barrel export.
+- `packages/vue/package.json` — peer: `vue@^3`; depends on `@auxiliary/css`, `@auxiliary/tokens`. **`reka-ui` enters dependencies in Step 5b** when the first behavior-requiring primitive (Dialog) lands.
 
-**Discipline (from [auxiliary-ds-2026-build-plan-research.md](.claude/docs/auxiliary-ds-2026-build-plan-research.md) section C):**
-- Components consume tokens **only** through CSS variables emitted by `@theme`. No `tokens.ts` import inside components.
-- Reka UI handles ARIA, focus, keyboard. Auxiliary owns the styling and prop API.
-- Pre-1.0 status — no compat shims, no deprecation layers (per [CLAUDE.md](CLAUDE.md)).
+**Discipline:**
+- Components consume tokens **only** through CSS utilities; no `tokens.ts` import in component code.
+- Pre-1.0 — no compat shims, no deprecation layers (per [CLAUDE.md](CLAUDE.md)).
+- Estimated size: Button ~15 lines, Input ~10 lines, Label ~8 lines. If a primitive grows past ~30 lines we're either composing too much or missing a needed headless library — pause and reassess.
 
-**Verification:** Button renders all variants in the docs site; keyboard focus shows the focus ring; disabled state is unclickable; the rendered DOM has zero inline styles (everything via classes against `@theme` vars).
+**Demo update (same PR):** swap the raw `<button class={button({...})}>` in `apps/demo` for `<Button intent="..." size="...">`; add an `<Input>` + `<Label>` example to demonstrate form composition.
+
+**Verification:** Button renders all variants in the demo; keyboard focus shows the focus ring; disabled state is unclickable; Input is controllable via v-model; Label `for` association moves focus to the input on click; rendered DOM has zero inline styles.
+
+---
+
+## Step 5b — First headless-backed primitive
+
+When Step 5 ships, the next composite primitive (Dialog) earns the Reka UI dependency. That's the point where copying behavior code from shadcn-vue would be reinventing focus traps, ARIA dialog semantics, scroll lock, and portal teleport — Reka does it correctly out of the box.
+
+Scope: bring in `reka-ui`, wrap `<DialogRoot>`/`<DialogTrigger>`/`<DialogContent>` with our styling, add to demo.
 
 ---
 

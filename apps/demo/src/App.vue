@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
-import { button } from '@auxiliary/css/recipes';
+import { Button, Input, Label } from '@auxiliary/vue';
 
 const THEMES = ['system', 'light', 'dark', 'sunlight', 'darknight'] as const;
 type Theme = (typeof THEMES)[number];
@@ -27,6 +27,10 @@ const BUTTON_SIZES = ['sm', 'md', 'lg'] as const;
 
 // Sample mission ID showing ss02 / cv01 disambiguation
 const MISSION_ID = 'MSN-IO1l0-2026-05-27';
+
+// Form state for the composition example
+const callsign = ref('');
+const altitude = ref('');
 </script>
 
 <template>
@@ -91,8 +95,8 @@ const MISSION_ID = 'MSN-IO1l0-2026-05-27';
       <section>
         <h2 class="mb-1 text-lg font-medium">Buttons</h2>
         <p class="mb-5 text-sm text-muted">
-          <code class="font-mono">tailwind-variants</code> recipe from
-          <code class="font-mono">@auxiliary/css/recipes/button</code>. Intent × size.
+          <code class="font-mono">&lt;Button&gt;</code> from
+          <code class="font-mono">@auxiliary/vue</code>. Intent × size.
         </p>
         <div class="space-y-4">
           <div
@@ -101,15 +105,48 @@ const MISSION_ID = 'MSN-IO1l0-2026-05-27';
             class="flex flex-wrap items-center gap-3"
           >
             <span class="w-12 text-xs uppercase text-muted">{{ size }}</span>
-            <button
+            <Button
               v-for="intent in BUTTON_INTENTS"
               :key="intent"
-              :class="button({ intent, size })"
+              :intent="intent"
+              :size="size"
             >
               {{ intent }}
-            </button>
+            </Button>
           </div>
         </div>
+      </section>
+
+      <!-- Form composition -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Form composition</h2>
+        <p class="mb-5 text-sm text-muted">
+          <code class="font-mono">&lt;Label&gt;</code> +
+          <code class="font-mono">&lt;Input&gt;</code> +
+          <code class="font-mono">&lt;Button&gt;</code>. Click the label and focus jumps
+          to the input.
+        </p>
+        <form
+          class="flex max-w-md flex-col gap-3 rounded-md border border-default bg-surface p-5"
+          @submit.prevent
+        >
+          <div class="flex flex-col gap-1.5">
+            <Label for="callsign">Callsign</Label>
+            <Input id="callsign" v-model="callsign" placeholder="MSN-..." />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <Label for="altitude">Altitude (m)</Label>
+            <Input id="altitude" v-model="altitude" type="number" placeholder="408" />
+          </div>
+          <div class="flex justify-end gap-2 pt-1">
+            <Button type="button" intent="ghost" size="sm">Cancel</Button>
+            <Button type="submit" intent="primary" size="sm">Launch</Button>
+          </div>
+          <p v-if="callsign || altitude" class="font-mono tabular text-xs text-muted">
+            v-model echo — callsign: <span class="text-secondary">{{ callsign || '(empty)' }}</span>,
+            altitude: <span class="text-secondary">{{ altitude || '(empty)' }}</span>
+          </p>
+        </form>
       </section>
 
       <!-- Typography -->
