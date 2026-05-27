@@ -17,6 +17,17 @@ import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
 } from '@auxiliary/vue';
 
 const THEMES = ['system', 'light', 'dark', 'sunlight', 'darknight'] as const;
@@ -48,6 +59,7 @@ const MISSION_ID = 'MSN-IO1l0-2026-05-27';
 // Form state for the composition example
 const callsign = ref('');
 const altitude = ref('');
+const vehicleMode = ref('auto');
 </script>
 
 <template>
@@ -258,6 +270,52 @@ const altitude = ref('');
               </div>
             </PopoverContent>
           </Popover>
+        </div>
+      </section>
+
+      <!-- Menus: DropdownMenu + Select -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Menus</h2>
+        <p class="mb-5 text-sm text-muted">
+          <code class="font-mono">&lt;DropdownMenu&gt;</code> for action menus,
+          <code class="font-mono">&lt;Select&gt;</code> for value selection. Both
+          keyboard-navigable (↑/↓, Home/End, type-ahead), both backed by Reka UI.
+        </p>
+        <div class="flex flex-wrap items-end gap-6">
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <Button intent="secondary" size="sm">Mission actions ▾</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Flight plan</DropdownMenuLabel>
+              <DropdownMenuItem>New mission</DropdownMenuItem>
+              <DropdownMenuItem>Import waypoints</DropdownMenuItem>
+              <DropdownMenuItem>Export telemetry</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Vehicle</DropdownMenuLabel>
+              <DropdownMenuItem>Calibrate sensors</DropdownMenuItem>
+              <DropdownMenuItem disabled>Firmware update (in flight)</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <div class="flex flex-col gap-1.5">
+            <Label for="vehicle-mode">Vehicle mode</Label>
+            <Select v-model="vehicleMode">
+              <SelectTrigger id="vehicle-mode" class="w-48">
+                <SelectValue placeholder="Select mode" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="manual">Manual</SelectItem>
+                <SelectItem value="auto">Auto</SelectItem>
+                <SelectItem value="loiter">Loiter</SelectItem>
+                <SelectItem value="rtl">Return to launch</SelectItem>
+                <SelectItem value="land">Land</SelectItem>
+              </SelectContent>
+            </Select>
+            <p class="font-mono tabular text-xs text-muted">
+              v-model: <span class="text-secondary">{{ vehicleMode }}</span>
+            </p>
+          </div>
         </div>
       </section>
 

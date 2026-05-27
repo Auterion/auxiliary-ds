@@ -17,3 +17,17 @@ export { default as TooltipProvider } from './primitives/Tooltip/TooltipProvider
 export { default as Tooltip } from './primitives/Tooltip/Tooltip.vue';
 export { default as TooltipTrigger } from './primitives/Tooltip/TooltipTrigger.vue';
 export { default as TooltipContent } from './primitives/Tooltip/TooltipContent.vue';
+
+export { default as DropdownMenu } from './primitives/DropdownMenu/DropdownMenu.vue';
+export { default as DropdownMenuTrigger } from './primitives/DropdownMenu/DropdownMenuTrigger.vue';
+export { default as DropdownMenuContent } from './primitives/DropdownMenu/DropdownMenuContent.vue';
+export { default as DropdownMenuItem } from './primitives/DropdownMenu/DropdownMenuItem.vue';
+export { default as DropdownMenuLabel } from './primitives/DropdownMenu/DropdownMenuLabel.vue';
+export { default as DropdownMenuSeparator } from './primitives/DropdownMenu/DropdownMenuSeparator.vue';
+
+export { default as Select } from './primitives/Select/Select.vue';
+export { default as SelectTrigger } from './primitives/Select/SelectTrigger.vue';
+export { default as SelectValue } from './primitives/Select/SelectValue.vue';
+export { default as SelectContent } from './primitives/Select/SelectContent.vue';
+export { default as SelectItem } from './primitives/Select/SelectItem.vue';
+export { default as SelectSeparator } from './primitives/Select/SelectSeparator.vue';
