@@ -1,0 +1,12 @@
+{
+  "color": {
+    "primitive": {
+      "gray": {
+        "900": {
+          "$type": "color",
+          "$value": "#0b0d10"
+        }
+      }
+    }
+  }
+}
