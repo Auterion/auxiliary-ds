@@ -1,0 +1,38 @@
+{
+  "light": {
+    "bg": {
+      "canvas":   { "$type": "color", "$value": "{color.primitive.white}" },
+      "surface":  { "$type": "color", "$value": "{color.primitive.white}" },
+      "elevated": { "$type": "color", "$value": "{color.primitive.white}" },
+      "muted":    { "$type": "color", "$value": "{color.primitive.zinc.100}" },
+      "hover":    { "$type": "color", "$value": "{color.primitive.zinc.100}" }
+    },
+    "text": {
+      "primary":   { "$type": "color", "$value": "{color.primitive.zinc.950}" },
+      "secondary": { "$type": "color", "$value": "{color.primitive.zinc.900}" },
+      "muted":     { "$type": "color", "$value": "{color.primitive.zinc.500}" },
+      "inverse":   { "$type": "color", "$value": "{color.primitive.zinc.50}" }
+    },
+    "accent": {
+      "default":    { "$type": "color", "$value": "{color.primitive.zinc.900}" },
+      "foreground": { "$type": "color", "$value": "{color.primitive.zinc.50}" },
+      "hover":      { "$type": "color", "$value": "{color.primitive.zinc.800}" }
+    },
+    "border": {
+      "default": { "$type": "color", "$value": "{color.primitive.zinc.200}" },
+      "strong":  { "$type": "color", "$value": "{color.primitive.zinc.300}" },
+      "focus":   { "$type": "color", "$value": "{color.primitive.zinc.400}" }
+    },
+    "input": {
+      "bg":     { "$type": "color", "$value": "{color.primitive.white}" },
+      "border": { "$type": "color", "$value": "{color.primitive.zinc.200}" }
+    },
+    "status": {
+      "alarm":    { "bg": { "$type": "color", "$value": "{color.primitive.red.300}" },    "fg": { "$type": "color", "$value": "{color.primitive.red.700}" },    "border": { "$type": "color", "$value": "{color.primitive.red.500}" } },
+      "warning":  { "bg": { "$type": "color", "$value": "{color.primitive.orange.300}" }, "fg": { "$type": "color", "$value": "{color.primitive.orange.700}" }, "border": { "$type": "color", "$value": "{color.primitive.orange.500}" } },
+      "caution":  { "bg": { "$type": "color", "$value": "{color.primitive.yellow.300}" }, "fg": { "$type": "color", "$value": "{color.primitive.yellow.700}" }, "border": { "$type": "color", "$value": "{color.primitive.yellow.500}" } },
+      "advisory": { "bg": { "$type": "color", "$value": "{color.primitive.blue.300}" },   "fg": { "$type": "color", "$value": "{color.primitive.blue.700}" },   "border": { "$type": "color", "$value": "{color.primitive.blue.500}" } },
+      "nominal":  { "bg": { "$type": "color", "$value": "{color.primitive.green.300}" },  "fg": { "$type": "color", "$value": "{color.primitive.green.700}" },  "border": { "$type": "color", "$value": "{color.primitive.green.500}" } }
+    }
+  }
+}
