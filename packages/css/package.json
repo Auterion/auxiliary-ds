@@ -1,14 +1,33 @@
 {
   "name": "@auxiliary/css",
   "version": "0.0.0",
-  "description": "Auxiliary's Tailwind v4 preset and framework-agnostic styling recipes.",
+  "description": "Auxiliary's Tailwind v4 styling layer: theme entry, utility surface, and framework-agnostic recipes.",
   "license": "UNLICENSED",
   "type": "module",
-  "files": ["dist", "theme.css", "preset.css", "recipes"],
+  "files": ["dist", "theme.css", "recipes"],
+  "exports": {
+    "./theme.css": "./theme.css",
+    "./recipes": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./recipes/*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
   "scripts": {
-    "build": "echo \"@auxiliary/css build — Step 4 will wire Tailwind preset + recipes\" && exit 0",
+    "build": "tsc -p tsconfig.build.json",
     "lint": "echo \"@auxiliary/css lint — no sources yet\" && exit 0",
-    "typecheck": "echo \"@auxiliary/css typecheck — no sources yet\" && exit 0",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "test": "echo \"@auxiliary/css test — no sources yet\" && exit 0"
+  },
+  "dependencies": {
+    "@auxiliary/tokens": "workspace:*",
+    "tailwind-variants": "^3.2.0",
+    "tailwind-merge": "^3.6.0"
+  },
+  "peerDependencies": {
+    "tailwindcss": "^4.0.0"
   }
 }
