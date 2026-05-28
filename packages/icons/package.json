@@ -30,9 +30,9 @@
     "vue-tsc": "^2.2.0"
   },
   "optionalDependencies": {
-    "@fortawesome/sharp-light-svg-icons": "^6.7.0",
-    "@fortawesome/sharp-regular-svg-icons": "^6.7.0",
-    "@fortawesome/sharp-solid-svg-icons": "^6.7.0",
+    "@fortawesome/sharp-light-svg-icons": "^6.7.2",
+    "@fortawesome/sharp-regular-svg-icons": "^6.7.2",
+    "@fortawesome/sharp-solid-svg-icons": "^6.7.2",
     "@fortawesome/sharp-thin-svg-icons": "^6.7.0"
   }
 }
