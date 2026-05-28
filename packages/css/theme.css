@@ -16,6 +16,17 @@
 @import "tailwindcss";
 @import "@auxiliary/tokens/dist/tailwind-v4.css";
 
+/* Tell Tailwind v4 to scan @auxiliary/vue's component sources for utility
+ * classes. Without this, classes used INSIDE components (bg-alarm,
+ * text-alarm, bg-accent-hover, etc.) are never generated as CSS rules
+ * because Tailwind only scans the consuming app's own files by default.
+ *
+ * The relative path resolves from this file's location (packages/css/) to
+ * packages/vue/src/. Vite/Tailwind v4 evaluates @source relative to the
+ * CSS file that contains it. */
+@source "../vue/src/**/*.{vue,ts}";
+@source "./recipes/**/*.ts";
+
 /* -------------------------------------------------------------------------- *
  * Base layer — global defaults
  * -------------------------------------------------------------------------- */
