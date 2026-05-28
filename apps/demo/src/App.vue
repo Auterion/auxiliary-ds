@@ -28,6 +28,17 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+  ToastProvider,
+  ToastViewport,
+  Toast,
+  ToastTitle,
+  ToastDescription,
+  ToastAction,
+  ToastClose,
 } from '@auxiliary/vue';
 
 const THEMES = ['system', 'light', 'dark', 'sunlight', 'darknight'] as const;
@@ -60,10 +71,22 @@ const MISSION_ID = 'MSN-IO1l0-2026-05-27';
 const callsign = ref('');
 const altitude = ref('');
 const vehicleMode = ref('auto');
+
+// Toast state
+const toastOpen = ref(false);
+const toastVariant = ref<'info' | 'success' | 'alarm'>('info');
+
+function showToast(variant: 'info' | 'success' | 'alarm') {
+  toastVariant.value = variant;
+  toastOpen.value = false;
+  // re-open on next tick so repeat clicks restart the timer
+  setTimeout(() => (toastOpen.value = true), 50);
+}
 </script>
 
 <template>
   <TooltipProvider>
+  <ToastProvider :duration="4000">
   <main class="min-h-dvh bg-canvas text-primary">
     <header
       class="sticky top-0 z-10 flex items-center justify-between border-b border-default bg-canvas/80 px-8 py-4 backdrop-blur"
@@ -319,6 +342,67 @@ const vehicleMode = ref('auto');
         </div>
       </section>
 
+      <!-- Tabs -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Tabs</h2>
+        <p class="mb-5 text-sm text-muted">
+          <code class="font-mono">&lt;Tabs&gt;</code> for panel switching. Keyboard:
+          ←/→ navigates triggers, Home/End jumps to first/last. Active tab uses our
+          <code class="font-mono">bg-accent</code>.
+        </p>
+        <Tabs default-value="telemetry" class="max-w-2xl">
+          <TabsList>
+            <TabsTrigger value="telemetry">Telemetry</TabsTrigger>
+            <TabsTrigger value="waypoints">Waypoints</TabsTrigger>
+            <TabsTrigger value="logs">Logs</TabsTrigger>
+          </TabsList>
+          <TabsContent value="telemetry">
+            <div class="rounded-md border border-default bg-surface p-5">
+              <p class="text-sm text-muted">Live sensor readings.</p>
+              <p class="mt-2 font-mono tabular text-sm">
+                <span class="text-muted">BAT </span><span>74%</span>
+                <span class="text-muted ml-3">SPD </span><span>12.4 m/s</span>
+                <span class="text-muted ml-3">HDG </span><span>247°</span>
+              </p>
+            </div>
+          </TabsContent>
+          <TabsContent value="waypoints">
+            <div class="rounded-md border border-default bg-surface p-5">
+              <p class="text-sm text-muted">5 waypoints queued.</p>
+              <p class="mt-2 font-mono tabular text-sm text-secondary">
+                WP-01 → WP-02 → WP-03 → WP-04 → WP-05 (HOME)
+              </p>
+            </div>
+          </TabsContent>
+          <TabsContent value="logs">
+            <div class="rounded-md border border-default bg-surface p-5">
+              <p class="text-sm text-muted">Last 3 events.</p>
+              <p class="mt-2 font-mono tabular text-xs text-secondary">
+                12:04:18 INFO  link established<br />
+                12:04:22 INFO  GPS lock acquired (12 sats)<br />
+                12:04:30 INFO  mission armed
+              </p>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </section>
+
+      <!-- Toast -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Toast</h2>
+        <p class="mb-5 text-sm text-muted">
+          Transient notifications. Auto-dismisses after 4s, swipe right to dismiss
+          early, paused on hover. ARIA live-region announces to screen readers.
+          Single global <code class="font-mono">&lt;ToastViewport&gt;</code> renders
+          fixed bottom-right.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <Button intent="ghost" size="sm" @click="showToast('info')">Show info</Button>
+          <Button intent="secondary" size="sm" @click="showToast('success')">Show success</Button>
+          <Button intent="danger" size="sm" @click="showToast('alarm')">Show alarm</Button>
+        </div>
+      </section>
+
       <!-- Surface specimens -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Surfaces</h2>
@@ -346,5 +430,25 @@ const vehicleMode = ref('auto');
       Auxiliary · zinc-on-zinc, 4 themes, 5-level status · pre-1.0
     </footer>
   </main>
+  <Toast v-model:open="toastOpen">
+    <div>
+      <ToastTitle>{{ toastVariant === 'alarm' ? 'Link lost' : toastVariant === 'success' ? 'Mission saved' : 'Telemetry updated' }}</ToastTitle>
+      <ToastDescription>
+        {{ toastVariant === 'alarm'
+          ? 'No telemetry packets received for &gt;3s. Check radio link.'
+          : toastVariant === 'success'
+          ? 'Waypoints stored to local mission cache.'
+          : '3 new sensor readings within the last 10s.' }}
+      </ToastDescription>
+    </div>
+    <div class="flex flex-col gap-1">
+      <ToastAction alt-text="View details" as-child>
+        <Button intent="ghost" size="sm">View</Button>
+      </ToastAction>
+      <ToastClose>Close</ToastClose>
+    </div>
+  </Toast>
+  <ToastViewport />
+  </ToastProvider>
   </TooltipProvider>
 </template>

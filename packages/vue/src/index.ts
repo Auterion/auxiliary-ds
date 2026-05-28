@@ -31,3 +31,16 @@ export { default as SelectValue } from './primitives/Select/SelectValue.vue';
 export { default as SelectContent } from './primitives/Select/SelectContent.vue';
 export { default as SelectItem } from './primitives/Select/SelectItem.vue';
 export { default as SelectSeparator } from './primitives/Select/SelectSeparator.vue';
+
+export { default as Tabs } from './primitives/Tabs/Tabs.vue';
+export { default as TabsList } from './primitives/Tabs/TabsList.vue';
+export { default as TabsTrigger } from './primitives/Tabs/TabsTrigger.vue';
+export { default as TabsContent } from './primitives/Tabs/TabsContent.vue';
+
+export { default as ToastProvider } from './primitives/Toast/ToastProvider.vue';
+export { default as ToastViewport } from './primitives/Toast/ToastViewport.vue';
+export { default as Toast } from './primitives/Toast/Toast.vue';
+export { default as ToastTitle } from './primitives/Toast/ToastTitle.vue';
+export { default as ToastDescription } from './primitives/Toast/ToastDescription.vue';
+export { default as ToastAction } from './primitives/Toast/ToastAction.vue';
+export { default as ToastClose } from './primitives/Toast/ToastClose.vue';
