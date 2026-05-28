@@ -1,10 +1,28 @@
 import StyleDictionary from 'style-dictionary';
+import { formatHex, parse as parseColor } from 'culori';
 
 const THEMES = ['light', 'dark', 'sunlight', 'darknight'];
 const isTheme = (t) => THEMES.includes(t.path[0]);
 
 const kebabSegment = (s) => String(s).replace(/_/g, '-');
 const cssName = (path) => path.map(kebabSegment).join('-');
+
+/**
+ * Convert OKLCH/OKLab/LAB/LCH colors to sRGB hex for the figma.tokens.json
+ * artifact. The DTCG Design Token Manager Figma plugin can't parse modern
+ * color-space functions and silently falls back to white. The browser-bound
+ * artifacts (tailwind-v4.css / tokens.css / tokens.ts) keep the OKLCH literals
+ * so we don't lose perceptual accuracy in code.
+ */
+const toFigmaColor = (raw) => {
+  if (typeof raw !== 'string') return raw;
+  if (/^(oklch|oklab|lab|lch)\s*\(/i.test(raw)) {
+    const parsed = parseColor(raw);
+    const hex = parsed ? formatHex(parsed) : null;
+    return hex ?? raw;
+  }
+  return raw;
+};
 
 const renderVars = (tokens, stripPrefix, indent = '  ') =>
   tokens
@@ -104,7 +122,7 @@ StyleDictionary.registerFormat({
       }
       node[t.path[t.path.length - 1]] = {
         $type: t.$type,
-        $value: t.$value,
+        $value: t.$type === 'color' ? toFigmaColor(t.$value) : t.$value,
       };
     }
     return JSON.stringify(tree, null, 2) + '\n';
