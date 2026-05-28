@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "node build.mjs",
-    "lint": "echo \"@auxiliary/tokens lint — no sources yet\" && exit 0",
+    "lint": "eslint . --max-warnings 0",
     "typecheck": "echo \"@auxiliary/tokens typecheck — no sources yet\" && exit 0",
     "test": "echo \"@auxiliary/tokens test — no sources yet\" && exit 0"
   },

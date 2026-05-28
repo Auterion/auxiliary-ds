@@ -4,7 +4,11 @@
   "description": "Auxiliary's Tailwind v4 styling layer: theme entry, utility surface, and framework-agnostic recipes.",
   "license": "UNLICENSED",
   "type": "module",
-  "files": ["dist", "theme.css", "recipes"],
+  "files": [
+    "dist",
+    "theme.css",
+    "recipes"
+  ],
   "exports": {
     "./theme.css": "./theme.css",
     "./recipes": {
@@ -18,7 +22,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "lint": "echo \"@auxiliary/css lint — no sources yet\" && exit 0",
+    "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "test": "echo \"@auxiliary/css test — no sources yet\" && exit 0"
   },

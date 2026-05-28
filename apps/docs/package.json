@@ -9,7 +9,7 @@
     "dev": "vitepress dev --port 5173",
     "build": "vitepress build",
     "preview": "vitepress preview --port 5173",
-    "lint": "echo \"@auxiliary/docs lint — TODO\" && exit 0",
+    "lint": "eslint . --max-warnings 0",
     "typecheck": "vue-tsc --noEmit",
     "test": "echo \"@auxiliary/docs test — TODO\" && exit 0"
   },
