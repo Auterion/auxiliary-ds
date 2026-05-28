@@ -45,8 +45,50 @@ Verified working as of Step 7. Free Figma plugin; no GitHub auth required.
 ### What does NOT round-trip
 
 - ❌ **Themes as Figma Modes.** Light / Dark / Sunlight / Darknight arrive as four parallel top-level groups, not as Modes on a single set of variables. Figma's Modes feature requires the **Variables REST API**, which is **Figma Enterprise only**. Defer until Auterion goes Enterprise.
-- ❌ **Easing curves (`cubicBezier`)** and **shadows** are *intentionally excluded* from the figma artifact (controlled by `FIGMA_SKIP_TYPES` in `packages/tokens/build.mjs`). Figma Variables don't have these types — designers apply easing via Smart Animate timing and shadows via the Effect panel, neither of which binds to variables. Filtering them out keeps the import clean (no plugin warnings). They remain in the CSS/TS artifacts where code actually consumes them.
+- ❌ **Easing curves (`cubicBezier`)** and **shadows** are *intentionally excluded* from the figma artifact (controlled by `FIGMA_SKIP_TYPES` in `packages/tokens/build.mjs`). Figma Variables don't have these types — even the Enterprise REST API doesn't model them as variables. See [Shadows + easings in Figma](#shadows--easings-in-figma) below for the manual mapping designers maintain.
 - ❌ **Plugin-managed history.** The plugin does not pull from GitHub; re-importing replaces values. Keep the import as a manual step until we automate via REST.
+
+---
+
+## Shadows + easings in Figma
+
+Because these can't be Variables, designers maintain them as **Figma Effect Styles** (shadows) and apply easings manually in Smart Animate. Update these styles whenever the code values change — `packages/tokens/src/primitive/shadow.tokens.json` and `motion.tokens.json` are authoritative.
+
+### Shadows → Effect Styles
+
+Create three Effect Styles in the Foundations file, named to match the token paths:
+
+| Style name | Type | Color | X | Y | Blur | Spread | Notes |
+|---|---|---|---|---|---|---|---|
+| `shadow/sm` | Drop shadow | `#000` 8% | 0 | 1 | 2 | 0 | single layer |
+| `shadow/md` (layer 1) | Drop shadow | `#000` 10% | 0 | 4 | 8 | −2 | composite |
+| `shadow/md` (layer 2) | Drop shadow | `#000` 6% | 0 | 2 | 4 | −2 | same style |
+| `shadow/lg` (layer 1) | Drop shadow | `#000` 12% | 0 | 12 | 24 | −6 | composite |
+| `shadow/lg` (layer 2) | Drop shadow | `#000` 8% | 0 | 4 | 8 | −4 | same style |
+
+`md` and `lg` are composite (two stacked shadows on the same Effect Style — Figma supports this natively via the "+" button in the Effect panel).
+
+### Easings → Smart Animate custom bezier
+
+When prototyping interactions, in the Easing dropdown choose **Custom bezier** and enter:
+
+| Token | Bezier | Use case |
+|---|---|---|
+| `ease/out` | `0.16, 1, 0.3, 1` | UI entering view (default for most transitions) |
+| `ease/in-out` | `0.65, 0, 0.35, 1` | UI moving between two states |
+| `duration/fast` | 120 ms | small UI nudges |
+| `duration/base` | 200 ms | most transitions |
+| `duration/slow` | 320 ms | layout-level transitions, page changes |
+
+### When code changes
+
+If a value in `shadow.tokens.json` or `motion.tokens.json` changes:
+
+1. CI is not aware of these (they're excluded from the figma artifact)
+2. A designer manually updates the corresponding Effect Style or transition timing
+3. Republish the Foundations library
+
+This is operationally fine at the current scale (5 shadow values, 3 easings). When/if Figma adds variable types for these, we'll re-enable them in `FIGMA_SKIP_TYPES`.
 
 ### Round-trip verification (sanity check)
 
