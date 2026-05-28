@@ -48,6 +48,17 @@ import {
   RadioGroupItem,
   Slider,
   Textarea,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+  Separator,
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
 } from '@auxiliary/vue';
 
 const THEMES = ['system', 'light', 'dark', 'sunlight', 'darknight'] as const;
@@ -555,6 +566,77 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
           <Button intent="ghost" size="sm" @click="showToast('info')">Show info</Button>
           <Button intent="secondary" size="sm" @click="showToast('success')">Show success</Button>
           <Button intent="danger" size="sm" @click="showToast('alarm')">Show alarm</Button>
+        </div>
+      </section>
+
+      <!-- Structure: Card + Separator + Accordion -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Structure</h2>
+        <p class="mb-5 text-sm text-muted">
+          <code class="font-mono">&lt;Card&gt;</code>, <code class="font-mono">&lt;Separator&gt;</code>,
+          and <code class="font-mono">&lt;Accordion&gt;</code> — content scaffolding that
+          composes with everything else.
+        </p>
+        <div class="grid gap-5 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Vehicle MX-01</CardTitle>
+              <CardDescription>Quadcopter · firmware v4.2.1</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div class="flex flex-wrap items-center gap-2 text-sm">
+                <StatusBadge level="nominal" size="sm" dot>Connected</StatusBadge>
+                <Separator orientation="vertical" class="h-4" />
+                <span class="text-secondary">Battery</span>
+                <TelemetryValue :value="74" unit="%" :precision="0" size="sm" />
+                <Separator orientation="vertical" class="h-4" />
+                <span class="text-secondary">Signal</span>
+                <TelemetryValue :value="-87" unit="dBm" :precision="0" size="sm" level="caution" />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button intent="ghost" size="sm">Details</Button>
+              <Button intent="primary" size="sm" class="ml-auto">Launch</Button>
+            </CardFooter>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Pre-flight checks</CardTitle>
+              <CardDescription>Confirm before takeoff. Expand each for details.</CardDescription>
+            </CardHeader>
+            <CardContent class="px-1">
+              <Accordion type="single" collapsible default-value="airspace">
+                <AccordionItem value="airspace">
+                  <AccordionTrigger>Airspace authorization</AccordionTrigger>
+                  <AccordionContent>
+                    Class G uncontrolled airspace below 120m AGL. No NOTAMs active for
+                    this area. Cleared for VLOS operations.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="weather">
+                  <AccordionTrigger>Weather window</AccordionTrigger>
+                  <AccordionContent>
+                    Wind: 6.2 m/s gusting to 9.8 m/s — within operational limits.
+                    Visibility: &gt;10 km. No precipitation expected for 90 minutes.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="vehicle">
+                  <AccordionTrigger>Vehicle systems</AccordionTrigger>
+                  <AccordionContent>
+                    Battery: 74% (estimated 21 min flight). GPS lock: 12 satellites,
+                    HDOP 0.7. IMU and barometer calibrated &lt;24h ago.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="payload" disabled>
+                  <AccordionTrigger>Payload (none attached)</AccordionTrigger>
+                  <AccordionContent>
+                    Not applicable for this mission.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
