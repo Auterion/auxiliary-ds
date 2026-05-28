@@ -59,6 +59,15 @@ export { default as AccordionItem } from './primitives/Accordion/AccordionItem.v
 export { default as AccordionTrigger } from './primitives/Accordion/AccordionTrigger.vue';
 export { default as AccordionContent } from './primitives/Accordion/AccordionContent.vue';
 
+export { default as Avatar } from './primitives/Avatar/Avatar.vue';
+export { default as AvatarImage } from './primitives/Avatar/AvatarImage.vue';
+export { default as AvatarFallback } from './primitives/Avatar/AvatarFallback.vue';
+
+export { default as Badge } from './primitives/Badge.vue';
+export { default as Progress } from './primitives/Progress.vue';
+export { default as Spinner } from './primitives/Spinner.vue';
+export { default as Skeleton } from './primitives/Skeleton.vue';
+
 export { default as Checkbox } from './primitives/Checkbox.vue';
 export { default as Switch } from './primitives/Switch.vue';
 export { default as RadioGroup } from './primitives/RadioGroup/RadioGroup.vue';
