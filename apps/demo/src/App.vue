@@ -42,6 +42,12 @@ import {
   StatusBadge,
   TelemetryValue,
   AlertBanner,
+  Checkbox,
+  Switch,
+  RadioGroup,
+  RadioGroupItem,
+  Slider,
+  Textarea,
 } from '@auxiliary/vue';
 
 const THEMES = ['system', 'light', 'dark', 'sunlight', 'darknight'] as const;
@@ -74,6 +80,13 @@ const MISSION_ID = 'MSN-IO1l0-2026-05-27';
 const callsign = ref('');
 const altitude = ref('');
 const vehicleMode = ref('auto');
+
+// Form input demo state
+const armed = ref(false);
+const geofenceEnabled = ref(true);
+const flightMode = ref('auto');
+const maxAltitude = ref([120]);
+const failsafeNote = ref('');
 
 // Toast state
 const toastOpen = ref(false);
@@ -271,6 +284,77 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             altitude: <span class="text-secondary">{{ altitude || '(empty)' }}</span>
           </p>
         </form>
+      </section>
+
+      <!-- Form inputs (checkbox / switch / radio / slider / textarea) -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Form inputs</h2>
+        <p class="mb-5 text-sm text-muted">
+          <code class="font-mono">&lt;Checkbox&gt;</code>,
+          <code class="font-mono">&lt;Switch&gt;</code>,
+          <code class="font-mono">&lt;RadioGroup&gt;</code>,
+          <code class="font-mono">&lt;Slider&gt;</code>,
+          <code class="font-mono">&lt;Textarea&gt;</code>. The selection + range
+          surface for forms beyond text inputs.
+        </p>
+        <div class="grid max-w-2xl gap-5 rounded-md border border-default bg-surface p-5">
+          <div class="flex items-center gap-3">
+            <Checkbox id="armed" v-model="armed" />
+            <Label for="armed">Arm vehicle on launch</Label>
+            <span class="ml-auto font-mono tabular text-xs text-muted">
+              {{ armed ? 'true' : 'false' }}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <Switch id="geofence" v-model="geofenceEnabled" />
+            <Label for="geofence">Geofence active</Label>
+            <span class="ml-auto font-mono tabular text-xs text-muted">
+              {{ geofenceEnabled ? 'enabled' : 'disabled' }}
+            </span>
+          </div>
+
+          <div>
+            <Label class="mb-2 block">Flight mode</Label>
+            <RadioGroup v-model="flightMode" orientation="horizontal">
+              <label class="flex items-center gap-2 text-sm">
+                <RadioGroupItem value="auto" id="rm-auto" />
+                <span>Auto</span>
+              </label>
+              <label class="flex items-center gap-2 text-sm">
+                <RadioGroupItem value="manual" id="rm-manual" />
+                <span>Manual</span>
+              </label>
+              <label class="flex items-center gap-2 text-sm">
+                <RadioGroupItem value="loiter" id="rm-loiter" />
+                <span>Loiter</span>
+              </label>
+            </RadioGroup>
+            <p class="mt-1 font-mono tabular text-xs text-muted">
+              v-model: <span class="text-secondary">{{ flightMode }}</span>
+            </p>
+          </div>
+
+          <div>
+            <Label for="max-alt" class="mb-2 block">
+              Max altitude
+              <span class="font-mono tabular text-xs text-muted ml-2">
+                {{ maxAltitude[0] }} m
+              </span>
+            </Label>
+            <Slider id="max-alt" v-model="maxAltitude" :min="10" :max="400" :step="10" />
+          </div>
+
+          <div>
+            <Label for="failsafe" class="mb-2 block">Failsafe note (operator)</Label>
+            <Textarea
+              id="failsafe"
+              v-model="failsafeNote"
+              placeholder="Free-text instructions on link-loss behavior..."
+              :rows="3"
+            />
+          </div>
+        </div>
       </section>
 
       <!-- Typography -->

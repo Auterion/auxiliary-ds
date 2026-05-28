@@ -45,6 +45,13 @@ export { default as ToastDescription } from './primitives/Toast/ToastDescription
 export { default as ToastAction } from './primitives/Toast/ToastAction.vue';
 export { default as ToastClose } from './primitives/Toast/ToastClose.vue';
 
+export { default as Checkbox } from './primitives/Checkbox.vue';
+export { default as Switch } from './primitives/Switch.vue';
+export { default as RadioGroup } from './primitives/RadioGroup/RadioGroup.vue';
+export { default as RadioGroupItem } from './primitives/RadioGroup/RadioGroupItem.vue';
+export { default as Slider } from './primitives/Slider.vue';
+export { default as Textarea } from './primitives/Textarea.vue';
+
 // Operational primitives — Auterion-specific (mission control, telemetry, alerts)
 export { default as StatusBadge, type StatusLevel } from './primitives/StatusBadge.vue';
 export { default as TelemetryValue } from './primitives/TelemetryValue.vue';
