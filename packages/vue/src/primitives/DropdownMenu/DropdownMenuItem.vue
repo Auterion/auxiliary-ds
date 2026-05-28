@@ -13,7 +13,7 @@ defineEmits<{
 <template>
   <DropdownMenuItem
     :disabled="disabled"
-    class="flex h-8 cursor-pointer select-none items-center rounded-sm px-2 text-sm outline-none data-[highlighted]:bg-hover data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed"
+    class="flex h-8 cursor-pointer select-none items-center rounded-sm px-2 text-sm outline-none data-[highlighted]:bg-accent data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed"
     @select="$emit('select', $event)"
   >
     <slot />

@@ -11,7 +11,7 @@ defineProps<{
   <TabsContent
     :value="value"
     :force-mount="forceMount"
-    class="mt-4 outline-none focus-visible:ring-2 ring-focus"
+    class="mt-4 outline-none focus-visible:ring-2 ring-ring"
   >
     <slot />
   </TabsContent>

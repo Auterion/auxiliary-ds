@@ -31,11 +31,11 @@ const classes = computed(() => {
           nominal:  'border border-nominal text-nominal',
         }
       : {
-          alarm:    'bg-alarm text-alarm border border-alarm',
-          warning:  'bg-warning text-warning border border-warning',
-          caution:  'bg-caution text-caution border border-caution',
-          advisory: 'bg-advisory text-advisory border border-advisory',
-          nominal:  'bg-nominal text-nominal border border-nominal',
+          alarm:    'bg-alarm text-alarm-foreground border border-alarm',
+          warning:  'bg-warning text-warning-foreground border border-warning',
+          caution:  'bg-caution text-caution-foreground border border-caution',
+          advisory: 'bg-advisory text-advisory-foreground border border-advisory',
+          nominal:  'bg-nominal text-nominal-foreground border border-nominal',
         };
 
   return [base, sizing, color[props.level]].join(' ');

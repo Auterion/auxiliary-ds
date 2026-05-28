@@ -11,7 +11,7 @@ defineProps<{
   <AccordionItem
     :value="value"
     :disabled="disabled"
-    class="border-b border-default last:border-b-0"
+    class="border-b border-border last:border-b-0"
   >
     <slot />
   </AccordionItem>

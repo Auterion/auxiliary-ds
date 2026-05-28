@@ -16,10 +16,10 @@ const classes = computed(() => {
   const base = 'inline-flex items-center gap-1 rounded font-medium';
   const sizing = props.size === 'sm' ? 'h-5 px-1.5 text-[10px]' : 'h-6 px-2 text-xs';
   const variant = {
-    default:   'bg-muted text-primary border border-default',
-    secondary: 'bg-surface text-secondary border border-default',
-    outline:   'border border-default text-secondary',
-    accent:    'bg-accent text-accent-fg',
+    default:   'bg-muted text-foreground border border-border',
+    secondary: 'bg-card text-muted-foreground border border-border',
+    outline:   'border border-border text-muted-foreground',
+    accent:    'bg-primary text-primary-foreground',
   }[props.variant];
   return [base, sizing, variant].join(' ');
 });

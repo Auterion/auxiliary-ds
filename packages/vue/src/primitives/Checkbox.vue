@@ -1,36 +1,25 @@
 <script setup lang="ts">
-import { CheckboxIndicator, CheckboxRoot } from 'reka-ui';
+import {
+  CheckboxIndicator,
+  CheckboxRoot,
+  useForwardPropsEmits,
+  type CheckboxRootEmits,
+  type CheckboxRootProps,
+} from 'reka-ui';
 
-defineProps<{
-  modelValue?: boolean | 'indeterminate';
-  defaultValue?: boolean | 'indeterminate';
-  disabled?: boolean;
-  required?: boolean;
-  name?: string;
-  value?: string;
-  id?: string;
-}>();
-
-defineEmits<{
-  (e: 'update:modelValue', checked: boolean | 'indeterminate'): void;
-}>();
+const props = defineProps<CheckboxRootProps>();
+const emits = defineEmits<CheckboxRootEmits>();
+const forwarded = useForwardPropsEmits(props, emits);
 </script>
 
 <template>
   <CheckboxRoot
-    :id="id"
-    :model-value="modelValue"
-    :default-value="defaultValue"
-    :disabled="disabled"
-    :required="required"
-    :name="name"
-    :value="value"
-    class="flex h-4 w-4 shrink-0 items-center justify-center rounded border border-input bg-input outline-none data-[state=checked]:bg-accent data-[state=checked]:border-accent data-[state=indeterminate]:bg-accent data-[state=indeterminate]:border-accent focus-visible:ring-2 ring-focus disabled:opacity-50 disabled:cursor-not-allowed"
-    @update:model-value="$emit('update:modelValue', $event)"
+    v-bind="forwarded"
+    class="flex h-4 w-4 shrink-0 items-center justify-center rounded border border-input bg-background outline-none data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:border-primary focus-visible:ring-2 ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
   >
-    <CheckboxIndicator class="text-accent-fg">
+    <CheckboxIndicator class="text-primary-foreground">
       <svg
-        v-if="modelValue === 'indeterminate'"
+        v-if="props.modelValue === 'indeterminate'"
         width="10"
         height="10"
         viewBox="0 0 24 24"

@@ -20,8 +20,8 @@ withDefaults(
     class="bg-transparent"
     :class="
       orientation === 'horizontal'
-        ? 'border-t border-default h-px w-full'
-        : 'border-l border-default w-px h-full'
+        ? 'border-t border-border h-px w-full'
+        : 'border-l border-border w-px h-full'
     "
   />
 </template>

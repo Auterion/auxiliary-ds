@@ -11,7 +11,7 @@ defineProps<{
   <TabsTrigger
     :value="value"
     :disabled="disabled"
-    class="inline-flex h-7 items-center justify-center rounded px-3 text-sm text-secondary outline-none transition-colors hover:text-primary focus-visible:ring-2 ring-focus data-[state=active]:bg-accent data-[state=active]:text-accent-fg disabled:opacity-50 disabled:cursor-not-allowed"
+    class="inline-flex h-7 items-center justify-center rounded px-3 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 ring-ring data-[state=active]:bg-primary data-[state=active]:text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
   >
     <slot />
   </TabsTrigger>

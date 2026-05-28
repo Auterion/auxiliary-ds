@@ -5,9 +5,11 @@
  * Brings:
  *   1. Tailwind v4 core
  *   2. Auxiliary tokens (@theme block + theme override selectors)
- *   3. Custom @utility declarations exposing semantic utilities
- *      (bg-canvas, text-primary, bg-alarm, etc.) — no shadcn-style
- *      bg-background tautology
+ *   3. @theme inline bridge mapping semantic tokens (--background,
+ *      --foreground, --primary, …) into Tailwind's --color-* namespace,
+ *      so utilities like bg-background, text-foreground, bg-primary,
+ *      ring-ring, bg-alarm etc. auto-generate. Same vocabulary as
+ *      shadcn-ui / shadcn-vue — Auxiliary tokens drop in directly.
  *   4. Base typography (Inter Variable + Geist Mono via Google Fonts,
  *      tabular-nums + ss02 for mission-ID disambiguation)
  */
@@ -17,15 +19,66 @@
 @import "@auxiliary/tokens/dist/tailwind-v4.css";
 
 /* Tell Tailwind v4 to scan @auxiliary/vue's component sources for utility
- * classes. Without this, classes used INSIDE components (bg-alarm,
- * text-alarm, bg-accent-hover, etc.) are never generated as CSS rules
- * because Tailwind only scans the consuming app's own files by default.
+ * classes. Without this, classes used INSIDE components are never generated
+ * as CSS rules because Tailwind only scans the consuming app's own files
+ * by default.
  *
  * The relative path resolves from this file's location (packages/css/) to
  * packages/vue/src/. Vite/Tailwind v4 evaluates @source relative to the
  * CSS file that contains it. */
 @source "../vue/src/**/*.{vue,ts}";
 @source "./recipes/**/*.ts";
+
+/* -------------------------------------------------------------------------- *
+ * Tailwind v4 color-namespace bridge
+ *
+ * The Auxiliary tokens are emitted at --background / --foreground / etc. to
+ * match shadcn-vue's documented var names exactly. Tailwind v4 generates
+ * its bg-/text-/border-/ring- utilities from vars in the --color-* namespace.
+ * Aliasing here lets Tailwind discover them. `@theme inline` means Tailwind
+ * substitutes the var() at utility-generation time, so consumer overrides
+ * of the bare --background var still propagate.
+ * -------------------------------------------------------------------------- */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Auterion operational extensions — MIL-STD-1472H 5-level alarm hierarchy.
+   * Generic shadcn components can still use bg-destructive; Auxiliary
+   * components use the level-specific tokens. */
+  --color-alarm: var(--alarm);
+  --color-alarm-foreground: var(--alarm-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-caution: var(--caution);
+  --color-caution-foreground: var(--caution-foreground);
+  --color-advisory: var(--advisory);
+  --color-advisory-foreground: var(--advisory-foreground);
+  --color-nominal: var(--nominal);
+  --color-nominal-foreground: var(--nominal-foreground);
+}
 
 /* -------------------------------------------------------------------------- *
  * Base layer — global defaults
@@ -40,8 +93,17 @@
     font-family: var(--font-sans);
     font-optical-sizing: auto;
     font-feature-settings: "cv01", "cv10", "ss02", "ss03", "calt", "liga";
-    background-color: var(--bg-canvas);
-    color: var(--text-primary);
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  /* shadcn convention: default every element's border-color to the semantic
+   * --border token, so plain `border` / `border-t` / `border-l` etc. just
+   * work without having to add `border-border` everywhere. */
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
   }
 
   /* `tabular` helper for mission IDs, coordinates, telemetry readouts */
@@ -59,57 +121,3 @@
     font-family: var(--font-mono);
   }
 }
-
-/* -------------------------------------------------------------------------- *
- * Semantic utilities — auxiliary's clean utility surface.
- * Pairs with structured semantic tokens (Step 3b).
- * -------------------------------------------------------------------------- */
-
-/* Backgrounds */
-@utility bg-canvas    { background-color: var(--bg-canvas); }
-@utility bg-surface   { background-color: var(--bg-surface); }
-@utility bg-elevated  { background-color: var(--bg-elevated); }
-@utility bg-muted     { background-color: var(--bg-muted); }
-@utility bg-hover     { background-color: var(--bg-hover); }
-
-/* Text */
-@utility text-primary   { color: var(--text-primary); }
-@utility text-secondary { color: var(--text-secondary); }
-@utility text-muted     { color: var(--text-muted); }
-@utility text-inverse   { color: var(--text-inverse); }
-
-/* Accent (action color) */
-@utility bg-accent       { background-color: var(--accent-default); }
-@utility bg-accent-hover { background-color: var(--accent-hover); }
-@utility text-accent-fg  { color: var(--accent-foreground); }
-
-/* Borders */
-@utility border-default { border-color: var(--border-default); }
-@utility border-strong  { border-color: var(--border-strong); }
-@utility border-focus   { border-color: var(--border-focus); }
-@utility ring-focus     { --tw-ring-color: var(--border-focus); }
-
-/* Inputs */
-@utility bg-input     { background-color: var(--input-bg); }
-@utility border-input { border-color: var(--input-border); }
-
-/* Status — 5 levels × {bg, text, border} */
-@utility bg-alarm     { background-color: var(--status-alarm-bg); }
-@utility text-alarm   { color: var(--status-alarm-fg); }
-@utility border-alarm { border-color: var(--status-alarm-border); }
-
-@utility bg-warning     { background-color: var(--status-warning-bg); }
-@utility text-warning   { color: var(--status-warning-fg); }
-@utility border-warning { border-color: var(--status-warning-border); }
-
-@utility bg-caution     { background-color: var(--status-caution-bg); }
-@utility text-caution   { color: var(--status-caution-fg); }
-@utility border-caution { border-color: var(--status-caution-border); }
-
-@utility bg-advisory     { background-color: var(--status-advisory-bg); }
-@utility text-advisory   { color: var(--status-advisory-fg); }
-@utility border-advisory { border-color: var(--status-advisory-border); }
-
-@utility bg-nominal     { background-color: var(--status-nominal-bg); }
-@utility text-nominal   { color: var(--status-nominal-fg); }
-@utility border-nominal { border-color: var(--status-nominal-border); }

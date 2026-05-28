@@ -1,26 +1,18 @@
 <script setup lang="ts">
-import { TabsRoot } from 'reka-ui';
+import {
+  TabsRoot,
+  useForwardPropsEmits,
+  type TabsRootEmits,
+  type TabsRootProps,
+} from 'reka-ui';
 
-defineProps<{
-  modelValue?: string;
-  defaultValue?: string;
-  orientation?: 'horizontal' | 'vertical';
-  activationMode?: 'automatic' | 'manual';
-}>();
-
-defineEmits<{
-  (e: 'update:modelValue', value: string): void;
-}>();
+const props = defineProps<TabsRootProps>();
+const emits = defineEmits<TabsRootEmits>();
+const forwarded = useForwardPropsEmits(props, emits);
 </script>
 
 <template>
-  <TabsRoot
-    :model-value="modelValue"
-    :default-value="defaultValue"
-    :orientation="orientation"
-    :activation-mode="activationMode"
-    @update:model-value="$emit('update:modelValue', $event)"
-  >
+  <TabsRoot v-bind="forwarded">
     <slot />
   </TabsRoot>
 </template>

@@ -11,7 +11,7 @@ defineProps<{
   <SelectItem
     :value="value"
     :disabled="disabled"
-    class="relative flex h-8 cursor-pointer select-none items-center rounded-sm pl-7 pr-2 text-sm outline-none data-[highlighted]:bg-hover data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed"
+    class="relative flex h-8 cursor-pointer select-none items-center rounded-sm pl-7 pr-2 text-sm outline-none data-[highlighted]:bg-accent data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed"
   >
     <SelectItemIndicator class="absolute left-2 flex items-center justify-center">
       <svg

@@ -4,7 +4,7 @@ import { SelectIcon, SelectTrigger } from 'reka-ui';
 
 <template>
   <SelectTrigger
-    class="inline-flex h-9 w-full items-center justify-between gap-2 rounded-md border border-input bg-input px-3 text-sm text-primary outline-none focus-visible:ring-2 ring-focus disabled:opacity-50 disabled:cursor-not-allowed data-[placeholder]:text-muted"
+    class="inline-flex h-9 w-full items-center justify-between gap-2 rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:ring-2 ring-ring disabled:opacity-50 disabled:cursor-not-allowed data-[placeholder]:text-muted-foreground"
   >
     <slot />
     <SelectIcon>
@@ -17,7 +17,7 @@ import { SelectIcon, SelectTrigger } from 'reka-ui';
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="text-muted"
+        class="text-muted-foreground"
         aria-hidden="true"
       >
         <polyline points="6 9 12 15 18 9" />

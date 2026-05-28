@@ -3,7 +3,7 @@ import { DropdownMenuLabel } from 'reka-ui';
 </script>
 
 <template>
-  <DropdownMenuLabel class="px-2 py-1.5 text-xs uppercase tracking-wide text-muted">
+  <DropdownMenuLabel class="px-2 py-1.5 text-xs uppercase tracking-wide text-muted-foreground">
     <slot />
   </DropdownMenuLabel>
 </template>

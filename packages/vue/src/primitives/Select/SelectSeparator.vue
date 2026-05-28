@@ -3,5 +3,5 @@ import { SelectSeparator } from 'reka-ui';
 </script>
 
 <template>
-  <SelectSeparator class="my-1 border-t border-default" />
+  <SelectSeparator class="my-1 border-t border-border" />
 </template>

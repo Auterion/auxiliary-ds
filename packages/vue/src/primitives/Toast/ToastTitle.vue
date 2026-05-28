@@ -3,7 +3,7 @@ import { ToastTitle } from 'reka-ui';
 </script>
 
 <template>
-  <ToastTitle class="font-medium text-primary">
+  <ToastTitle class="font-medium text-foreground">
     <slot />
   </ToastTitle>
 </template>

@@ -5,7 +5,7 @@ import { AccordionHeader, AccordionTrigger } from 'reka-ui';
 <template>
   <AccordionHeader class="flex">
     <AccordionTrigger
-      class="flex flex-1 items-center justify-between py-3 text-sm font-medium text-primary hover:bg-hover transition-colors focus-visible:outline-none focus-visible:ring-2 ring-focus px-1 [&[data-state=open]>svg]:rotate-180"
+      class="flex flex-1 items-center justify-between py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 ring-ring px-1 [&[data-state=open]>svg]:rotate-180"
     >
       <slot />
       <svg
@@ -17,7 +17,7 @@ import { AccordionHeader, AccordionTrigger } from 'reka-ui';
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="ml-2 shrink-0 text-muted transition-transform duration-200"
+        class="ml-2 shrink-0 text-muted-foreground transition-transform duration-200"
         aria-hidden="true"
       >
         <polyline points="6 9 12 15 18 9" />

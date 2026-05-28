@@ -1,38 +1,13 @@
 import StyleDictionary from 'style-dictionary';
-import { formatHex, parse as parseColor } from 'culori';
+import { converter, formatHex, parse as parseColor } from 'culori';
 
 const THEMES = ['light', 'dark', 'sunlight', 'darknight'];
+
+const toSrgb = converter('rgb');
 const isTheme = (t) => THEMES.includes(t.path[0]);
 
 const kebabSegment = (s) => String(s).replace(/_/g, '-');
 const cssName = (path) => path.map(kebabSegment).join('-');
-
-/**
- * Convert OKLCH/OKLab/LAB/LCH colors to sRGB hex for the figma.tokens.json
- * artifact. The DTCG Design Token Manager Figma plugin can't parse modern
- * color-space functions and silently falls back to white. The browser-bound
- * artifacts (tailwind-v4.css / tokens.css / tokens.ts) keep the OKLCH literals
- * so we don't lose perceptual accuracy in code.
- */
-const toFigmaColor = (raw) => {
-  if (typeof raw !== 'string') return raw;
-  if (/^(oklch|oklab|lab|lch)\s*\(/i.test(raw)) {
-    const parsed = parseColor(raw);
-    const hex = parsed ? formatHex(parsed) : null;
-    return hex ?? raw;
-  }
-  return raw;
-};
-
-/**
- * Token types that aren't usable as Figma Variables. Figma's variable types
- * are number / color / string / boolean — no cubic-bezier, no composite
- * shadows. Designers apply easing and shadow via Figma's Effect panel, not
- * via Variables. Filtering these out of the figma artifact keeps the import
- * clean (no plugin warnings). They remain in the CSS/TS artifacts where
- * they're actually consumed.
- */
-const FIGMA_SKIP_TYPES = new Set(['cubicBezier', 'shadow']);
 
 const renderVars = (tokens, stripPrefix, indent = '  ') =>
   tokens
@@ -120,201 +95,149 @@ StyleDictionary.registerFormat({
 });
 
 /**
- * Convert hex/named color → Figma's {r,g,b,a} 0-1 float shape.
+ * Convert authoring-friendly token values into strict W3C DTCG shapes.
+ * Our source files use CSS-like strings ("16px", "200ms", "cubic-bezier(...)"
+ * "0 1px 2px rgb(...)") because they're readable and Style Dictionary's CSS
+ * pipeline emits them straight through. The DTCG export needs the structured
+ * forms validators and downstream tools (Paper, Magic Path, Pencil, etc.)
+ * expect. Aliases (`{path}` strings) and color strings stay untouched.
  */
-const toFigmaRgba = (raw) => {
-  const hex = toFigmaColor(raw);
-  const parsed = parseColor(hex);
-  if (!parsed) return { r: 0, g: 0, b: 0, a: 1 };
-  return {
-    r: parsed.r ?? 0,
-    g: parsed.g ?? 0,
-    b: parsed.b ?? 0,
-    a: parsed.alpha ?? 1,
+const DIM_RE = /^(-?\d*\.?\d+)([a-zA-Z%]+)?$/;
+const CB_RE = /^cubic-bezier\(\s*([\d.\-]+)\s*,\s*([\d.\-]+)\s*,\s*([\d.\-]+)\s*,\s*([\d.\-]+)\s*\)$/;
+// Strict-DTCG color $value object form (spec §8.1) in sRGB color space.
+// Source values may be in any CSS color function (oklch, rgb, hex, hsl, …);
+// culori normalises them to sRGB and we emit `{colorSpace, components, alpha,
+// hex}`. We deliberately collapse to sRGB rather than carry the source space
+// because most validators and design tools only round-trip sRGB cleanly; the
+// perceptually-uniform OKLCH literals are still authoritative in tokens.css /
+// tailwind-v4.css where browsers render them natively.
+const toDtcgColor = (raw) => {
+  if (typeof raw !== 'string') return null;
+  const parsed = parseColor(raw);
+  if (!parsed) return null;
+  const rgb = toSrgb(parsed);
+  if (!rgb) return null;
+  // Clamp to gamut (oklch can encode out-of-gamut sRGB values), then round
+  // to 6 decimals — keeps the file readable without losing perceptual fidelity.
+  const round = (n) => Math.round(Math.max(0, Math.min(1, n)) * 1e6) / 1e6;
+  const r = round(rgb.r ?? 0);
+  const g = round(rgb.g ?? 0);
+  const b = round(rgb.b ?? 0);
+  const alpha = rgb.alpha ?? 1;
+  const out = {
+    colorSpace: 'srgb',
+    components: [r, g, b],
+    hex: formatHex({ mode: 'rgb', r, g, b }),
   };
+  if (alpha !== 1) out.alpha = round(alpha);
+  return out;
 };
 
-/**
- * DTCG token type → Figma `resolvedType`.
- */
-const figmaResolvedType = (dtcgType) => {
-  if (dtcgType === 'color') return 'COLOR';
-  return 'FLOAT'; // dimension, number, fontWeight, duration → all numeric
-};
+const toDtcgValue = (token) => {
+  const raw = token.original?.$value ?? token.$value;
+  // Aliases pass through verbatim — they're spec-compliant strings.
+  if (typeof raw === 'string' && raw.startsWith('{') && raw.endsWith('}')) return raw;
 
-/**
- * Convert a DTCG value to Figma's variable value shape (NOT alias-aware —
- * caller handles aliases).
- */
-const toFigmaValue = (token) => {
-  if (token.$type === 'color') return toFigmaRgba(token.$value);
-  if (typeof token.$value === 'string') {
-    // strip "px", "ms", etc. and return a float
-    const n = parseFloat(token.$value);
-    return Number.isFinite(n) ? n : 0;
+  switch (token.$type) {
+    case 'color': {
+      const dtcg = toDtcgColor(raw);
+      return dtcg ?? raw;
+    }
+    case 'dimension':
+    case 'duration': {
+      if (typeof raw === 'number') {
+        return { value: raw, unit: token.$type === 'duration' ? 'ms' : 'px' };
+      }
+      const m = String(raw).match(DIM_RE);
+      if (m) return { value: parseFloat(m[1]), unit: m[2] ?? (token.$type === 'duration' ? 'ms' : 'px') };
+      return raw;
+    }
+    case 'cubicBezier': {
+      const m = String(raw).match(CB_RE);
+      if (m) return [parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4])];
+      if (Array.isArray(raw) && raw.length === 4) return raw.map(Number);
+      return raw;
+    }
+    case 'shadow': {
+      // Source authors shadows as CSS strings: "0 1px 2px 0 rgb(0 0 0 / 0.08)"
+      // or composite "0 4px 8px -2px rgb(..), 0 2px 4px -2px rgb(..)".
+      // DTCG wants { color, offsetX, offsetY, blur, spread } per layer.
+      const layers = String(raw)
+        .split(/,(?![^()]*\))/)
+        .map((s) => s.trim())
+        .map((layer) => {
+          const m = layer.match(/^(-?\d+(?:\.\d+)?)(px|rem|em)?\s+(-?\d+(?:\.\d+)?)(px|rem|em)?\s+(-?\d+(?:\.\d+)?)(px|rem|em)?(?:\s+(-?\d+(?:\.\d+)?)(px|rem|em)?)?\s+(.+)$/);
+          if (!m) return null;
+          const dim = (v, u) => ({ value: parseFloat(v), unit: u ?? 'px' });
+          return {
+            color: toDtcgColor(m[9]) ?? m[9],
+            offsetX: dim(m[1], m[2]),
+            offsetY: dim(m[3], m[4]),
+            blur: dim(m[5], m[6]),
+            spread: m[7] != null ? dim(m[7], m[8]) : { value: 0, unit: 'px' },
+          };
+        });
+      if (layers.every(Boolean)) return layers.length === 1 ? layers[0] : layers;
+      return raw;
+    }
+    case 'fontFamily':
+    case 'fontWeight':
+    case 'number':
+    default:
+      return raw;
   }
-  if (typeof token.$value === 'number') return token.$value;
-  return 0;
 };
 
 /**
- * Figma-name path: slash-separated, kebab-cased segments.
- * `['color', 'primitive', 'zinc', '900']` → `color/primitive/zinc/900`
- * `['spacing', '0_5']` → `spacing/0-5`
- */
-const figmaName = (path) => path.map(kebabSegment).join('/');
-
-/**
- * Synthetic ID generator — stable per token path so re-runs produce the
- * same JSON. The DTCG Design Token Manager plugin maps these to its own
- * Figma IDs at import time; IDs in the JSON only need to be unique within
- * the JSON (used for VARIABLE_ALIAS references).
- */
-const idForVariable = (collectionShort, path) =>
-  `var_${collectionShort}_${path.map(kebabSegment).join('_')}`;
-
-/**
- * Token types Figma Variables don't natively support — `STRING` works for
- * font family / tracking but adds noise; we keep them out of the figma
- * artifact for now and let designers consume them through Effect Styles /
- * inline values.
- */
-const FIGMA_INCLUDE_TYPES = new Set([
-  'color',
-  'dimension',
-  'number',
-  'fontWeight',
-  'duration',
-]);
-
-/**
- * Emit the full Figma-native variable export the DTCG Design Token Manager
- * plugin uses both as its export format AND its single-file import format.
- * Produces two collections (Primitives, Themes) with proper Modes and
- * cross-collection variable aliases — exactly the end-state designers want.
+ * Strict DTCG single-file export. Consolidates every source token into one
+ * nested JSON matching the W3C Design Tokens Community Group spec. Aliases
+ * stay as `{path.to.token}` strings. Color values become structured objects
+ * with colorSpace + components. Composite types (shadow, cubicBezier) emit
+ * their spec'd object/array shapes. Dimension/duration emit { value, unit }.
+ *
+ * Consumed by any DTCG-aware design tool (Paper, Magic Path, Pencil, …) and
+ * validates against the W3C DTCG spec.
  */
 StyleDictionary.registerFormat({
-  name: 'json/figma-plugin-export',
+  name: 'json/dtcg',
   format: async ({ dictionary }) => {
-    const all = dictionary.allTokens.filter(
-      (t) => !FIGMA_SKIP_TYPES.has(t.$type) && FIGMA_INCLUDE_TYPES.has(t.$type),
-    );
-
-    const PRIMITIVES_COLL_ID = 'collection_primitives';
-    const THEMES_COLL_ID = 'collection_themes';
-    const PRIMITIVES_MODE_ID = 'mode_primitives_default';
-    const THEME_MODE_IDS = Object.fromEntries(
-      THEMES.map((t) => [t, `mode_${t}`]),
-    );
-
-    const titleCase = (s) => s[0].toUpperCase() + s.slice(1);
-
-    const collections = [
-      {
-        id: PRIMITIVES_COLL_ID,
-        name: 'Primitives',
-        modes: [{ modeId: PRIMITIVES_MODE_ID, name: 'Mode 1' }],
-        defaultModeId: PRIMITIVES_MODE_ID,
-      },
-      {
-        id: THEMES_COLL_ID,
-        name: 'Themes',
-        modes: THEMES.map((t) => ({
-          modeId: THEME_MODE_IDS[t],
-          name: titleCase(t),
-        })),
-        defaultModeId: THEME_MODE_IDS.light,
-      },
-    ];
-
-    // Primitive variables — one per non-theme token, single mode value.
-    const primitiveTokens = all.filter((t) => !isTheme(t));
-    const primitiveVars = primitiveTokens.map((t) => ({
-      id: idForVariable('prim', t.path),
-      name: figmaName(t.path),
-      description: '',
-      resolvedType: figmaResolvedType(t.$type),
-      scopes: ['ALL_SCOPES'],
-      variableCollectionId: PRIMITIVES_COLL_ID,
-      valuesByMode: {
-        [PRIMITIVES_MODE_ID]: toFigmaValue(t),
-      },
-    }));
-
-    // Map each primitive's source path (e.g. `color.primitive.zinc.900`)
-    // to its variable id, so we can resolve DTCG aliases → VARIABLE_ALIAS.
-    const primIdByDottedPath = new Map();
-    for (const t of primitiveTokens) {
-      primIdByDottedPath.set(t.path.join('.'), idForVariable('prim', t.path));
-    }
-
-    // Semantic variables — group theme tokens by their post-prefix path
-    // (`light.bg.canvas` and `dark.bg.canvas` → `bg/canvas`).
-    const semanticGroups = new Map();
-    for (const t of all) {
-      if (!isTheme(t)) continue;
-      const [theme, ...rest] = t.path;
-      const semKey = rest.join('.');
-      if (!semanticGroups.has(semKey)) {
-        semanticGroups.set(semKey, { path: rest, byTheme: {} });
+    const tree = {};
+    for (const t of dictionary.allTokens) {
+      let node = tree;
+      for (let i = 0; i < t.path.length - 1; i++) {
+        const key = t.path[i];
+        node[key] ??= {};
+        node = node[key];
       }
-      semanticGroups.get(semKey).byTheme[theme] = t;
+      node[t.path[t.path.length - 1]] = { $type: t.$type, $value: toDtcgValue(t) };
     }
-
-    const semanticVars = [];
-    for (const [, group] of semanticGroups) {
-      const sampleToken =
-        group.byTheme.light ?? Object.values(group.byTheme)[0];
-      const valuesByMode = {};
-      for (const theme of THEMES) {
-        const t = group.byTheme[theme];
-        if (!t) continue;
-        const modeId = THEME_MODE_IDS[theme];
-
-        // If the source value is a DTCG alias like {color.primitive.zinc.900},
-        // emit a VARIABLE_ALIAS pointing at the primitive variable. Otherwise
-        // emit a direct value.
-        const orig = t.original?.$value;
-        if (
-          typeof orig === 'string' &&
-          orig.startsWith('{') &&
-          orig.endsWith('}')
-        ) {
-          const refPath = orig.slice(1, -1);
-          const targetId = primIdByDottedPath.get(refPath);
-          if (targetId) {
-            valuesByMode[modeId] = { type: 'VARIABLE_ALIAS', id: targetId };
-            continue;
-          }
-        }
-        valuesByMode[modeId] = toFigmaValue(t);
-      }
-
-      semanticVars.push({
-        id: idForVariable('theme', group.path),
-        name: figmaName(group.path),
-        description: '',
-        resolvedType: figmaResolvedType(sampleToken.$type),
-        scopes: ['ALL_SCOPES'],
-        variableCollectionId: THEMES_COLL_ID,
-        valuesByMode,
-      });
-    }
-
-    return (
-      JSON.stringify(
-        {
-          variables: [...primitiveVars, ...semanticVars],
-          collections,
-          exportedAt: new Date().toISOString(),
-          pluginVersion: 'auxiliary-1.0.0',
-        },
-        null,
-        2,
-      ) + '\n'
-    );
+    return JSON.stringify(tree, null, 2) + '\n';
   },
 });
+
+/**
+ * Build-time invariant: every semantic theme token must be a `{path}` alias
+ * to a primitive. Catches accidental "literal RGB" cells like the bespoke
+ * OpenBridge night palette we deleted. Throws with a clear list of offenders.
+ */
+const assertPrimitivePurity = (dictionary) => {
+  const offenders = [];
+  for (const t of dictionary.allTokens) {
+    if (!isTheme(t)) continue;
+    const orig = t.original?.$value;
+    const isAlias = typeof orig === 'string' && orig.startsWith('{') && orig.endsWith('}');
+    if (!isAlias) {
+      offenders.push(`  ${t.path.join('.')} = ${JSON.stringify(orig)}`);
+    }
+  }
+  if (offenders.length > 0) {
+    throw new Error(
+      `Primitive-purity check failed — ${offenders.length} theme token(s) ` +
+        `use literal values instead of {color.primitive.*} aliases:\n` +
+        offenders.join('\n'),
+    );
+  }
+};
 
 const sd = new StyleDictionary({
   source: ['src/**/*.tokens.json'],
@@ -334,18 +257,17 @@ const sd = new StyleDictionary({
       buildPath: 'dist/',
       files: [{ destination: 'tokens.ts', format: 'typescript/tokens-const' }],
     },
-    figma: {
+    dtcg: {
       transformGroup: 'js',
       buildPath: 'dist/',
-      files: [
-        {
-          destination: 'figma.tokens.json',
-          format: 'json/figma-plugin-export',
-        },
-      ],
+      files: [{ destination: 'tokens.json', format: 'json/dtcg' }],
     },
   },
 });
+
+// Run the purity assertion against a hydrated dictionary, then build.
+const dict = await sd.getPlatformTokens('dtcg');
+assertPrimitivePurity(dict);
 
 await sd.cleanAllPlatforms();
 await sd.buildAllPlatforms();

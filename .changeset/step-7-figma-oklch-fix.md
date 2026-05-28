@@ -56,5 +56,4 @@ Both types are not usable as Figma Variables — designers apply easing via Smar
 - What gets through correctly (hex colors, dimensions, numbers, resolved references)
 - What does NOT (themes as Figma Modes — needs Enterprise REST API)
 - Round-trip verification flow
-- Alternative: Tokens Studio (documented as the escape hatch, not the recommended path — bi-directional sync is a footgun for our code-is-source-of-truth model)
 - Future: Variables REST API + GitHub Action when Auterion goes Enterprise

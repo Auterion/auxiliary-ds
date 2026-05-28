@@ -24,7 +24,7 @@ const indicatorClass = computed(() => {
       nominal:  'bg-nominal',
     }[props.level];
   }
-  return 'bg-accent';
+  return 'bg-primary';
 });
 
 const translate = computed(() => {
@@ -38,7 +38,7 @@ const translate = computed(() => {
   <ProgressRoot
     :model-value="value"
     :max="max"
-    class="relative h-2 w-full overflow-hidden rounded-full bg-input"
+    class="relative h-2 w-full overflow-hidden rounded-full bg-background"
   >
     <ProgressIndicator
       class="h-full w-full transition-transform duration-300"
