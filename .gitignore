@@ -33,3 +33,6 @@ packages/tokens/dist/
 # Playwright
 test-results/
 playwright-report/
+
+# Vitest coverage
+**/coverage/

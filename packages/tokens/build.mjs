@@ -103,7 +103,7 @@ StyleDictionary.registerFormat({
  * expect. Aliases (`{path}` strings) and color strings stay untouched.
  */
 const DIM_RE = /^(-?\d*\.?\d+)([a-zA-Z%]+)?$/;
-const CB_RE = /^cubic-bezier\(\s*([\d.\-]+)\s*,\s*([\d.\-]+)\s*,\s*([\d.\-]+)\s*,\s*([\d.\-]+)\s*\)$/;
+const CB_RE = /^cubic-bezier\(\s*([\d.-]+)\s*,\s*([\d.-]+)\s*,\s*([\d.-]+)\s*,\s*([\d.-]+)\s*\)$/;
 // Strict-DTCG color $value object form (spec §8.1) in sRGB color space.
 // Source values may be in any CSS color function (oklch, rgb, hex, hsl, …);
 // culori normalises them to sRGB and we emit `{colorSpace, components, alpha,

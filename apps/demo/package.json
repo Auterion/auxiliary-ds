@@ -9,7 +9,7 @@
     "dev": "vite --port 5174",
     "build": "vite build",
     "preview": "vite preview --port 5174",
-    "lint": "echo \"@auxiliary/demo lint — TODO\" && exit 0",
+    "lint": "eslint . --max-warnings 0",
     "typecheck": "vue-tsc --noEmit",
     "test": "echo \"@auxiliary/demo test — TODO\" && exit 0"
   },

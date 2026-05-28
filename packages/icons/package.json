@@ -16,7 +16,7 @@
   "scripts": {
     "build": "vite build && vue-tsc -p tsconfig.build.json",
     "sync": "node scripts/sync.mjs",
-    "lint": "echo \"@auxiliary/icons lint — TODO\" && exit 0",
+    "lint": "eslint . --max-warnings 0",
     "typecheck": "vue-tsc -p tsconfig.build.json --noEmit",
     "test": "echo \"@auxiliary/icons test — TODO\" && exit 0"
   },

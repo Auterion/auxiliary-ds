@@ -60,7 +60,6 @@ import {
   AccordionTrigger,
   AccordionContent,
   Avatar,
-  AvatarImage,
   AvatarFallback,
   Badge,
   Progress,
@@ -138,13 +137,13 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             v-for="t in THEMES"
             :key="t"
             type="button"
-            @click="theme = t"
             class="rounded px-3 py-1 text-sm capitalize transition-colors"
             :class="
               theme === t
                 ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:bg-accent'
             "
+            @click="theme = t"
           >
             {{ t }}
           </button>
@@ -164,7 +163,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
         <div class="space-y-3 rounded-md border border-border bg-card p-5">
           <div class="flex flex-wrap items-center gap-2">
             <span class="w-16 text-xs uppercase text-muted-foreground">Solid</span>
-            <StatusBadge v-for="s in STATUSES" :key="`s-${s}`" :level="s" dot>{{ s }}</StatusBadge>
+            <StatusBadge v-for="s in STATUSES" :key="`s-${s}`" :level="s" dot>{{ STATUS_LABELS[s] }}</StatusBadge>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <span class="w-16 text-xs uppercase text-muted-foreground">Outline</span>
@@ -173,7 +172,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
               :key="`o-${s}`"
               :level="s"
               variant="outline"
-            >{{ s }}</StatusBadge>
+            >{{ STATUS_LABELS[s] }}</StatusBadge>
           </div>
           <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-border mt-3">
             <span class="w-16 text-xs uppercase text-muted-foreground">In situ</span>
@@ -337,15 +336,15 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             <Label class="mb-2 block">Flight mode</Label>
             <RadioGroup v-model="flightMode" orientation="horizontal">
               <label class="flex items-center gap-2 text-sm">
-                <RadioGroupItem value="auto" id="rm-auto" />
+                <RadioGroupItem id="rm-auto" value="auto" />
                 <span>Auto</span>
               </label>
               <label class="flex items-center gap-2 text-sm">
-                <RadioGroupItem value="manual" id="rm-manual" />
+                <RadioGroupItem id="rm-manual" value="manual" />
                 <span>Manual</span>
               </label>
               <label class="flex items-center gap-2 text-sm">
-                <RadioGroupItem value="loiter" id="rm-loiter" />
+                <RadioGroupItem id="rm-loiter" value="loiter" />
                 <span>Loiter</span>
               </label>
             </RadioGroup>
