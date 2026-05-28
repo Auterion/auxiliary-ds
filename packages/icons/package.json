@@ -1,16 +1,38 @@
 {
   "name": "@auxiliary/icons",
   "version": "0.0.0",
-  "description": "Auxiliary's icon contract — Font Awesome Pro Sharp + Auterion custom kit, wrapped behind a typed <Icon> component.",
+  "description": "Typed <Icon> Vue component over a curated set of Font Awesome Pro Sharp glyphs + an Auterion operational kit. Registry is generated and committed — consumers do not need FA Pro access to use the package.",
   "license": "UNLICENSED",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/auxiliary-icons.js"
+    }
+  },
   "scripts": {
-    "build": "echo \"@auxiliary/icons build — Step 5 will wire the <Icon> contract\" && exit 0",
-    "lint": "echo \"@auxiliary/icons lint — no sources yet\" && exit 0",
-    "typecheck": "echo \"@auxiliary/icons typecheck — no sources yet\" && exit 0",
-    "test": "echo \"@auxiliary/icons test — no sources yet\" && exit 0"
+    "build": "vite build && vue-tsc -p tsconfig.build.json",
+    "sync": "node scripts/sync.mjs",
+    "lint": "echo \"@auxiliary/icons lint — TODO\" && exit 0",
+    "typecheck": "vue-tsc -p tsconfig.build.json --noEmit",
+    "test": "echo \"@auxiliary/icons test — TODO\" && exit 0"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.0",
+    "vite": "^6.0.0",
+    "vue": "^3.5.0",
+    "vue-tsc": "^2.2.0"
+  },
+  "optionalDependencies": {
+    "@fortawesome/sharp-light-svg-icons": "^6.7.2",
+    "@fortawesome/sharp-regular-svg-icons": "^6.7.2",
+    "@fortawesome/sharp-solid-svg-icons": "^6.7.2",
+    "@fortawesome/sharp-thin-svg-icons": "^6.7.0"
   }
 }
