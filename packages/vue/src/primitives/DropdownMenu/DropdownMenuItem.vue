@@ -1,19 +1,26 @@
 <script setup lang="ts">
+import { computed, type HTMLAttributes } from 'vue';
 import { DropdownMenuItem } from 'reka-ui';
+import { cn } from '@auxiliary/css/utils';
+import { dropdownMenu } from '@auxiliary/css/recipes';
 
-defineProps<{
+const props = defineProps<{
   disabled?: boolean;
+  class?: HTMLAttributes['class'];
 }>();
 
 defineEmits<{
   (e: 'select', event: Event): void;
 }>();
+
+const styles = dropdownMenu();
+const rootClass = computed(() => cn(styles.item(), props.class));
 </script>
 
 <template>
   <DropdownMenuItem
     :disabled="disabled"
-    class="flex h-8 cursor-pointer select-none items-center rounded-sm px-2 text-sm outline-none data-[highlighted]:bg-accent data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed"
+    :class="rootClass"
     @select="$emit('select', $event)"
   >
     <slot />

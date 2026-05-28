@@ -88,7 +88,7 @@ const STATUS_LABELS: Record<(typeof STATUSES)[number], string> = {
   nominal: 'All systems go',
 };
 
-const BUTTON_INTENTS = ['primary', 'secondary', 'ghost', 'danger'] as const;
+const BUTTON_VARIANTS = ['primary', 'secondary', 'ghost', 'danger'] as const;
 const BUTTON_SIZES = ['sm', 'md', 'lg'] as const;
 
 // Sample mission ID showing ss02 / cv01 disambiguation
@@ -251,7 +251,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
         <h2 class="mb-1 text-lg font-medium">Buttons</h2>
         <p class="mb-5 text-sm text-muted-foreground">
           <code class="font-mono">&lt;Button&gt;</code> from
-          <code class="font-mono">@auxiliary/vue</code>. Intent × size.
+          <code class="font-mono">@auxiliary/vue</code>. Variant × size.
         </p>
         <div class="space-y-4">
           <div
@@ -261,12 +261,12 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
           >
             <span class="w-12 text-xs uppercase text-muted-foreground">{{ size }}</span>
             <Button
-              v-for="intent in BUTTON_INTENTS"
-              :key="intent"
-              :intent="intent"
+              v-for="variant in BUTTON_VARIANTS"
+              :key="variant"
+              :variant="variant"
               :size="size"
             >
-              {{ intent }}
+              {{ variant }}
             </Button>
           </div>
         </div>
@@ -294,8 +294,8 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             <Input id="altitude" v-model="altitude" type="number" placeholder="408" />
           </div>
           <div class="flex justify-end gap-2 pt-1">
-            <Button type="button" intent="ghost" size="sm">Cancel</Button>
-            <Button type="submit" intent="primary" size="sm">Launch</Button>
+            <Button type="button" variant="ghost" size="sm">Cancel</Button>
+            <Button type="submit" variant="primary" size="sm">Launch</Button>
           </div>
           <p v-if="callsign || altitude" class="font-mono tabular text-xs text-muted-foreground">
             v-model echo — callsign: <span class="text-muted-foreground">{{ callsign || '(empty)' }}</span>,
@@ -407,7 +407,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
         </p>
         <Dialog>
           <DialogTrigger as-child>
-            <Button intent="secondary">Confirm abort</Button>
+            <Button variant="secondary">Confirm abort</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogTitle>Abort mission?</DialogTitle>
@@ -417,10 +417,10 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             </DialogDescription>
             <div class="flex justify-end gap-2 pt-2">
               <DialogClose as-child>
-                <Button intent="ghost" size="sm">Cancel</Button>
+                <Button variant="ghost" size="sm">Cancel</Button>
               </DialogClose>
               <DialogClose as-child>
-                <Button intent="danger" size="sm">Abort</Button>
+                <Button variant="danger" size="sm">Abort</Button>
               </DialogClose>
             </div>
           </DialogContent>
@@ -438,7 +438,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
         <div class="flex flex-wrap items-center gap-6">
           <Tooltip>
             <TooltipTrigger as-child>
-              <Button intent="secondary" size="sm">Hover for tooltip</Button>
+              <Button variant="secondary" size="sm">Hover for tooltip</Button>
             </TooltipTrigger>
             <TooltipContent>
               Mission integrity — all sensors green
@@ -447,7 +447,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
 
           <Popover>
             <PopoverTrigger as-child>
-              <Button intent="secondary" size="sm">Open popover</Button>
+              <Button variant="secondary" size="sm">Open popover</Button>
             </PopoverTrigger>
             <PopoverContent>
               <div class="space-y-2">
@@ -460,8 +460,8 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
                   Try Tab to focus the buttons inside.
                 </p>
                 <div class="flex gap-2 pt-1">
-                  <Button intent="ghost" size="sm">Reset</Button>
-                  <Button intent="primary" size="sm">Apply</Button>
+                  <Button variant="ghost" size="sm">Reset</Button>
+                  <Button variant="primary" size="sm">Apply</Button>
                 </div>
               </div>
             </PopoverContent>
@@ -480,7 +480,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
         <div class="flex flex-wrap items-end gap-6">
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
-              <Button intent="secondary" size="sm">Mission actions ▾</Button>
+              <Button variant="secondary" size="sm">Mission actions ▾</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>Flight plan</DropdownMenuLabel>
@@ -570,9 +570,9 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
           fixed bottom-right.
         </p>
         <div class="flex flex-wrap gap-3">
-          <Button intent="ghost" size="sm" @click="showToast('info')">Show info</Button>
-          <Button intent="secondary" size="sm" @click="showToast('success')">Show success</Button>
-          <Button intent="danger" size="sm" @click="showToast('alarm')">Show alarm</Button>
+          <Button variant="ghost" size="sm" @click="showToast('info')">Show info</Button>
+          <Button variant="secondary" size="sm" @click="showToast('success')">Show success</Button>
+          <Button variant="danger" size="sm" @click="showToast('alarm')">Show alarm</Button>
         </div>
       </section>
 
@@ -602,8 +602,8 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
               </div>
             </CardContent>
             <CardFooter>
-              <Button intent="ghost" size="sm">Details</Button>
-              <Button intent="primary" size="sm" class="ml-auto">Launch</Button>
+              <Button variant="ghost" size="sm">Details</Button>
+              <Button variant="primary" size="sm" class="ml-auto">Launch</Button>
             </CardFooter>
           </Card>
 
@@ -831,7 +831,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
     </div>
     <div class="flex flex-col gap-1">
       <ToastAction alt-text="View details" as-child>
-        <Button intent="ghost" size="sm">View</Button>
+        <Button variant="ghost" size="sm">View</Button>
       </ToastAction>
       <ToastClose>Close</ToastClose>
     </div>

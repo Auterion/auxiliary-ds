@@ -1,16 +1,23 @@
 <script setup lang="ts">
+import { computed, type HTMLAttributes } from 'vue';
 import { ToastClose } from 'reka-ui';
+import { cn } from '@auxiliary/css/utils';
+import { toast } from '@auxiliary/css/recipes';
 
-defineProps<{
+const props = defineProps<{
   asChild?: boolean;
+  class?: HTMLAttributes['class'];
 }>();
+
+const styles = toast();
+const rootClass = computed(() => cn(styles.close(), props.class));
 </script>
 
 <template>
   <ToastClose
     :as-child="asChild"
     aria-label="Close"
-    class="rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 ring-ring"
+    :class="rootClass"
   >
     <slot>
       <svg

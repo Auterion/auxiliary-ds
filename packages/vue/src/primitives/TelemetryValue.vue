@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, type HTMLAttributes } from 'vue';
+import { telemetryValue, type Size } from '@auxiliary/css/recipes';
+import { cn } from '@auxiliary/css/utils';
 
 const props = withDefaults(
   defineProps<{
@@ -14,9 +16,10 @@ const props = withDefaults(
     /** Trend arrow next to the value. */
     trend?: 'up' | 'down' | 'stable' | null;
     /** Visual size. */
-    size?: 'sm' | 'md' | 'lg';
+    size?: Size;
     /** Status level — colors the value when set (e.g. red for alarm threshold). */
     level?: 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal' | null;
+    class?: HTMLAttributes['class'];
   }>(),
   {
     precision: 1,
@@ -26,26 +29,17 @@ const props = withDefaults(
   },
 );
 
+const styles = computed(() =>
+  telemetryValue({ size: props.size, level: props.level ?? undefined }),
+);
+
+const rootClass = computed(() => cn(styles.value.root(), props.class));
+
 const formattedValue = computed(() => {
   if (typeof props.value === 'number') {
     return props.value.toFixed(props.precision);
   }
   return props.value;
-});
-
-const valueClass = computed(() => {
-  const sizing =
-    props.size === 'lg' ? 'text-2xl' : props.size === 'sm' ? 'text-sm' : 'text-lg';
-  const color = props.level
-    ? {
-        alarm:    'text-alarm',
-        warning:  'text-warning',
-        caution:  'text-caution',
-        advisory: 'text-advisory',
-        nominal:  'text-nominal',
-      }[props.level]
-    : 'text-foreground';
-  return [sizing, color, 'font-mono tabular font-medium leading-tight'].join(' ');
 });
 
 const trendArrow = computed(() => {
@@ -57,14 +51,14 @@ const trendArrow = computed(() => {
 </script>
 
 <template>
-  <div class="inline-flex flex-col">
-    <span v-if="label" class="text-xs uppercase tracking-wide text-muted-foreground">{{ label }}</span>
-    <div class="inline-flex items-baseline gap-1.5">
-      <span :class="valueClass">{{ formattedValue }}</span>
-      <span v-if="unit" class="font-mono text-xs text-muted-foreground">{{ unit }}</span>
+  <div :class="rootClass">
+    <span v-if="label" :class="styles.label()">{{ label }}</span>
+    <div :class="styles.valueRow()">
+      <span :class="styles.value()">{{ formattedValue }}</span>
+      <span v-if="unit" :class="styles.unit()">{{ unit }}</span>
       <span
         v-if="trendArrow"
-        class="font-mono text-xs text-muted-foreground"
+        :class="styles.trend()"
         :aria-label="`trend ${trend}`"
       >{{ trendArrow }}</span>
     </div>

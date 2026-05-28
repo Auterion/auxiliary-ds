@@ -1,18 +1,21 @@
 <script setup lang="ts">
+import { computed, type HTMLAttributes } from 'vue';
 import { TabsTrigger } from 'reka-ui';
+import { cn } from '@auxiliary/css/utils';
+import { tabs } from '@auxiliary/css/recipes';
 
-defineProps<{
+const props = defineProps<{
   value: string;
   disabled?: boolean;
+  class?: HTMLAttributes['class'];
 }>();
+
+const styles = tabs();
+const rootClass = computed(() => cn(styles.trigger(), props.class));
 </script>
 
 <template>
-  <TabsTrigger
-    :value="value"
-    :disabled="disabled"
-    class="inline-flex h-7 items-center justify-center rounded px-3 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 ring-ring data-[state=active]:bg-primary data-[state=active]:text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
-  >
+  <TabsTrigger :value="value" :disabled="disabled" :class="rootClass">
     <slot />
   </TabsTrigger>
 </template>

@@ -7,17 +7,22 @@
   "files": [
     "dist",
     "theme.css",
-    "recipes"
+    "recipes",
+    "utils"
   ],
   "exports": {
     "./theme.css": "./theme.css",
     "./recipes": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./dist/recipes/index.d.ts",
+      "import": "./dist/recipes/index.js"
     },
     "./recipes/*": {
-      "types": "./dist/*.d.ts",
-      "import": "./dist/*.js"
+      "types": "./dist/recipes/*.d.ts",
+      "import": "./dist/recipes/*.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js"
     }
   },
   "scripts": {

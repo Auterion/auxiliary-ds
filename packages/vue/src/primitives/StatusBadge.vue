@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, type HTMLAttributes } from 'vue';
+import { statusBadge } from '@auxiliary/css/recipes';
+import { cn } from '@auxiliary/css/utils';
 
 export type StatusLevel = 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal';
 
@@ -9,6 +11,7 @@ const props = withDefaults(
     variant?: 'solid' | 'outline';
     size?: 'sm' | 'md';
     dot?: boolean;
+    class?: HTMLAttributes['class'];
   }>(),
   {
     variant: 'solid',
@@ -17,55 +20,18 @@ const props = withDefaults(
   },
 );
 
-const classes = computed(() => {
-  const base = 'inline-flex items-center gap-1.5 rounded-full font-medium uppercase tracking-wide';
-  const sizing = props.size === 'sm' ? 'h-5 px-2 text-[10px]' : 'h-6 px-2.5 text-xs';
+const styles = computed(() =>
+  statusBadge({ level: props.level, variant: props.variant, size: props.size }),
+);
 
-  const color =
-    props.variant === 'outline'
-      ? {
-          alarm:    'border border-alarm text-alarm',
-          warning:  'border border-warning text-warning',
-          caution:  'border border-caution text-caution',
-          advisory: 'border border-advisory text-advisory',
-          nominal:  'border border-nominal text-nominal',
-        }
-      : {
-          alarm:    'bg-alarm text-alarm-foreground border border-alarm',
-          warning:  'bg-warning text-warning-foreground border border-warning',
-          caution:  'bg-caution text-caution-foreground border border-caution',
-          advisory: 'bg-advisory text-advisory-foreground border border-advisory',
-          nominal:  'bg-nominal text-nominal-foreground border border-nominal',
-        };
-
-  return [base, sizing, color[props.level]].join(' ');
-});
-
-const dotClass = computed(() => {
-  if (props.variant === 'solid') {
-    return {
-      alarm:    'bg-alarm-foreground',
-      warning:  'bg-warning-foreground',
-      caution:  'bg-caution-foreground',
-      advisory: 'bg-advisory-foreground',
-      nominal:  'bg-nominal-foreground',
-    }[props.level];
-  }
-  return {
-    alarm:    'bg-alarm',
-    warning:  'bg-warning',
-    caution:  'bg-caution',
-    advisory: 'bg-advisory',
-    nominal:  'bg-nominal',
-  }[props.level];
-});
+const classes = computed(() => cn(styles.value.base(), props.class));
+const dotClass = computed(() => styles.value.dot());
 </script>
 
 <template>
   <span :class="classes">
     <span
       v-if="dot"
-      class="h-2 w-2 rounded-full"
       :class="dotClass"
       aria-hidden="true"
     />

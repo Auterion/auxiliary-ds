@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, type HTMLAttributes } from 'vue';
+import { badge, type BadgeVariants } from '@auxiliary/css/recipes';
+import { cn } from '@auxiliary/css/utils';
 
 const props = withDefaults(
   defineProps<{
-    variant?: 'default' | 'secondary' | 'outline' | 'accent';
-    size?: 'sm' | 'md';
+    variant?: BadgeVariants['variant'];
+    size?: BadgeVariants['size'];
+    class?: HTMLAttributes['class'];
   }>(),
   {
     variant: 'default',
@@ -12,17 +15,9 @@ const props = withDefaults(
   },
 );
 
-const classes = computed(() => {
-  const base = 'inline-flex items-center gap-1 rounded font-medium';
-  const sizing = props.size === 'sm' ? 'h-5 px-1.5 text-[10px]' : 'h-6 px-2 text-xs';
-  const variant = {
-    default:   'bg-muted text-foreground border border-border',
-    secondary: 'bg-card text-muted-foreground border border-border',
-    outline:   'border border-border text-muted-foreground',
-    accent:    'bg-primary text-primary-foreground',
-  }[props.variant];
-  return [base, sizing, variant].join(' ');
-});
+const classes = computed(() =>
+  cn(badge({ variant: props.variant, size: props.size }), props.class),
+);
 </script>
 
 <template>

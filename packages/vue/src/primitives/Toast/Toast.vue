@@ -1,11 +1,15 @@
 <script setup lang="ts">
+import { computed, type HTMLAttributes } from 'vue';
 import { ToastRoot } from 'reka-ui';
+import { cn } from '@auxiliary/css/utils';
+import { toast } from '@auxiliary/css/recipes';
 
-defineProps<{
+const props = defineProps<{
   open?: boolean;
   defaultOpen?: boolean;
   duration?: number;
   type?: 'foreground' | 'background';
+  class?: HTMLAttributes['class'];
 }>();
 
 defineEmits<{
@@ -18,6 +22,9 @@ defineEmits<{
   (e: 'swipeCancel', event: CustomEvent): void;
   (e: 'swipeEnd', event: CustomEvent): void;
 }>();
+
+const styles = toast();
+const rootClass = computed(() => cn(styles.root(), props.class));
 </script>
 
 <template>
@@ -26,7 +33,7 @@ defineEmits<{
     :default-open="defaultOpen"
     :duration="duration"
     :type="type"
-    class="grid grid-cols-[1fr_auto] items-start gap-3 rounded-md border border-border bg-popover p-4 text-sm text-foreground shadow-md outline-none focus-visible:ring-2 ring-ring"
+    :class="rootClass"
     @update:open="$emit('update:open', $event)"
     @escape-key-down="$emit('escapeKeyDown', $event)"
     @pause="$emit('pause')"
