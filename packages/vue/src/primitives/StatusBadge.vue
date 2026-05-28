@@ -18,8 +18,8 @@ const props = withDefaults(
 );
 
 const classes = computed(() => {
-  const base = 'inline-flex items-center gap-1.5 rounded font-medium uppercase tracking-wide';
-  const sizing = props.size === 'sm' ? 'h-5 px-1.5 text-[10px]' : 'h-6 px-2 text-xs';
+  const base = 'inline-flex items-center gap-1.5 rounded-full font-medium uppercase tracking-wide';
+  const sizing = props.size === 'sm' ? 'h-5 px-2 text-[10px]' : 'h-6 px-2.5 text-xs';
 
   const color =
     props.variant === 'outline'
@@ -42,6 +42,15 @@ const classes = computed(() => {
 });
 
 const dotClass = computed(() => {
+  if (props.variant === 'solid') {
+    return {
+      alarm:    'bg-alarm-foreground',
+      warning:  'bg-warning-foreground',
+      caution:  'bg-caution-foreground',
+      advisory: 'bg-advisory-foreground',
+      nominal:  'bg-nominal-foreground',
+    }[props.level];
+  }
   return {
     alarm:    'bg-alarm',
     warning:  'bg-warning',
@@ -56,7 +65,7 @@ const dotClass = computed(() => {
   <span :class="classes">
     <span
       v-if="dot"
-      class="h-1.5 w-1.5 rounded-full"
+      class="h-2 w-2 rounded-full"
       :class="dotClass"
       aria-hidden="true"
     />
