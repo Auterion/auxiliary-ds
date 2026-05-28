@@ -12,6 +12,11 @@ export default defineConfig({
   // Pre-1.0 hint in the page chrome
   lastUpdated: true,
 
+  // Our ThemeSwitcher owns the 4-theme model end-to-end (light / dark /
+  // sunlight / darknight). VitePress's built-in light/dark toggle would
+  // double up the navbar and fight our data-theme attribute. Disable it.
+  appearance: false,
+
   themeConfig: {
     siteTitle: 'Auxiliary',
 
