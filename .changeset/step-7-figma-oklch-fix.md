@@ -23,6 +23,15 @@ After the fix:
 - `figma.tokens.json`: zero OKLCH strings (sample values: `#ef363c` red 500, `#f7791a` orange 500, `#f6b900` yellow 500, etc.)
 - `tailwind-v4.css` + `tokens.css`: 188 OKLCH literals each, untouched
 
+### Also: skip `cubicBezier` + `shadow` types in the figma artifact
+
+Two more plugin warnings surfaced after the OKLCH fix:
+
+- `ease/out` and `ease/in-out` → "Mismatched variable resolved type" (Figma Variables don't have a cubicBezier type)
+- `shadow/{sm,md,lg}` → "Invalid shadow format" (Figma Variables don't model composite multi-layer shadows)
+
+Both types are not usable as Figma Variables — designers apply easing via Smart Animate and shadows via the Effect panel, neither binds to variables. Added a `FIGMA_SKIP_TYPES` set (`['cubicBezier', 'shadow']`) that excludes these from the `json/dtcg` format only. They remain in `tailwind-v4.css` / `tokens.css` / `tokens.ts` where code actually consumes them.
+
 ### The doc
 
 `packages/figma-sync/README.md` replaces the stub with the verified workflow:

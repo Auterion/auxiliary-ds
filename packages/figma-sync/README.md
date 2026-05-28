@@ -45,7 +45,7 @@ Verified working as of Step 7. Free Figma plugin; no GitHub auth required.
 ### What does NOT round-trip
 
 - ❌ **Themes as Figma Modes.** Light / Dark / Sunlight / Darknight arrive as four parallel top-level groups, not as Modes on a single set of variables. Figma's Modes feature requires the **Variables REST API**, which is **Figma Enterprise only**. Defer until Auterion goes Enterprise.
-- ❌ **Composite types** (shadows are emitted as raw strings; Figma Variables don't natively model multi-stop shadows).
+- ❌ **Easing curves (`cubicBezier`)** and **shadows** are *intentionally excluded* from the figma artifact (controlled by `FIGMA_SKIP_TYPES` in `packages/tokens/build.mjs`). Figma Variables don't have these types — designers apply easing via Smart Animate timing and shadows via the Effect panel, neither of which binds to variables. Filtering them out keeps the import clean (no plugin warnings). They remain in the CSS/TS artifacts where code actually consumes them.
 - ❌ **Plugin-managed history.** The plugin does not pull from GitHub; re-importing replaces values. Keep the import as a manual step until we automate via REST.
 
 ### Round-trip verification (sanity check)

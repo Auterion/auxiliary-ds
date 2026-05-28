@@ -24,6 +24,16 @@ const toFigmaColor = (raw) => {
   return raw;
 };
 
+/**
+ * Token types that aren't usable as Figma Variables. Figma's variable types
+ * are number / color / string / boolean — no cubic-bezier, no composite
+ * shadows. Designers apply easing and shadow via Figma's Effect panel, not
+ * via Variables. Filtering these out of the figma artifact keeps the import
+ * clean (no plugin warnings). They remain in the CSS/TS artifacts where
+ * they're actually consumed.
+ */
+const FIGMA_SKIP_TYPES = new Set(['cubicBezier', 'shadow']);
+
 const renderVars = (tokens, stripPrefix, indent = '  ') =>
   tokens
     .map((t) => {
@@ -114,6 +124,7 @@ StyleDictionary.registerFormat({
   format: async ({ dictionary }) => {
     const tree = {};
     for (const t of dictionary.allTokens) {
+      if (FIGMA_SKIP_TYPES.has(t.$type)) continue;
       let node = tree;
       for (let i = 0; i < t.path.length - 1; i++) {
         const key = t.path[i];
