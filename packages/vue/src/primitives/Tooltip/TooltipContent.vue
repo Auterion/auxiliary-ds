@@ -21,7 +21,7 @@ withDefaults(
       :side="side"
       :align="align"
       :side-offset="sideOffset"
-      class="z-50 max-w-xs rounded-md bg-accent px-2 py-1 text-xs text-accent-fg shadow-md"
+      class="z-50 max-w-xs rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground shadow-md"
     >
       <slot />
     </TooltipContent>

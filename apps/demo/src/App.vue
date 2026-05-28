@@ -121,18 +121,18 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
 <template>
   <TooltipProvider>
   <ToastProvider :duration="4000">
-  <main class="min-h-dvh bg-canvas text-primary">
+  <main class="min-h-dvh bg-background text-foreground">
     <header
-      class="sticky top-0 z-10 flex items-center justify-between border-b border-default bg-canvas/80 px-8 py-4 backdrop-blur"
+      class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/80 px-8 py-4 backdrop-blur"
     >
       <div>
         <h1 class="font-display text-2xl">Auxiliary</h1>
-        <p class="text-sm text-muted">System showcase · pre-1.0</p>
+        <p class="text-sm text-muted-foreground">System showcase · pre-1.0</p>
       </div>
 
       <div class="flex items-center gap-2">
-        <span class="text-xs text-muted uppercase tracking-wide">Theme</span>
-        <div class="flex gap-1 rounded-md border border-default bg-surface p-1">
+        <span class="text-xs text-muted-foreground uppercase tracking-wide">Theme</span>
+        <div class="flex gap-1 rounded-md border border-border bg-card p-1">
           <button
             v-for="t in THEMES"
             :key="t"
@@ -141,8 +141,8 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             class="rounded px-3 py-1 text-sm capitalize transition-colors"
             :class="
               theme === t
-                ? 'bg-accent text-accent-fg'
-                : 'text-secondary hover:bg-hover'
+                ? 'bg-primary text-primary-foreground'
+                : 'text-muted-foreground hover:bg-accent'
             "
           >
             {{ t }}
@@ -155,18 +155,18 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Status -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Status hierarchy</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           <code class="font-mono">&lt;StatusBadge&gt;</code> — five levels, populated
           per theme. Solid for active state; outline for muted contexts. The vocabulary
           nobody else in the Vue ecosystem ships.
         </p>
-        <div class="space-y-3 rounded-md border border-default bg-surface p-5">
+        <div class="space-y-3 rounded-md border border-border bg-card p-5">
           <div class="flex flex-wrap items-center gap-2">
-            <span class="w-16 text-xs uppercase text-muted">Solid</span>
+            <span class="w-16 text-xs uppercase text-muted-foreground">Solid</span>
             <StatusBadge v-for="s in STATUSES" :key="`s-${s}`" :level="s" dot>{{ s }}</StatusBadge>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <span class="w-16 text-xs uppercase text-muted">Outline</span>
+            <span class="w-16 text-xs uppercase text-muted-foreground">Outline</span>
             <StatusBadge
               v-for="s in STATUSES"
               :key="`o-${s}`"
@@ -174,13 +174,13 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
               variant="outline"
             >{{ s }}</StatusBadge>
           </div>
-          <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-default mt-3">
-            <span class="w-16 text-xs uppercase text-muted">In situ</span>
-            <span class="text-sm text-secondary">Link status:</span>
+          <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-border mt-3">
+            <span class="w-16 text-xs uppercase text-muted-foreground">In situ</span>
+            <span class="text-sm text-muted-foreground">Link status:</span>
             <StatusBadge level="alarm" size="sm" dot>Lost</StatusBadge>
-            <span class="text-sm text-secondary ml-3">Battery:</span>
+            <span class="text-sm text-muted-foreground ml-3">Battery:</span>
             <StatusBadge level="warning" size="sm" dot>Low</StatusBadge>
-            <span class="text-sm text-secondary ml-3">GPS:</span>
+            <span class="text-sm text-muted-foreground ml-3">GPS:</span>
             <StatusBadge level="nominal" size="sm" dot>12 sats</StatusBadge>
           </div>
         </div>
@@ -189,12 +189,12 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Telemetry -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Telemetry</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           <code class="font-mono">&lt;TelemetryValue&gt;</code> — mono tabular readouts
           with optional unit, label, precision, and trend arrow. Colors by status when
           a value crosses a threshold.
         </p>
-        <div class="grid grid-cols-2 gap-x-6 gap-y-4 rounded-md border border-default bg-surface p-5 sm:grid-cols-4">
+        <div class="grid grid-cols-2 gap-x-6 gap-y-4 rounded-md border border-border bg-card p-5 sm:grid-cols-4">
           <TelemetryValue label="Altitude" :value="408.2" unit="m" trend="up" />
           <TelemetryValue label="Ground speed" :value="12.4" unit="m/s" trend="stable" />
           <TelemetryValue label="Heading" :value="247" unit="°" :precision="0" />
@@ -209,7 +209,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Alerts -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Alert banners</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           <code class="font-mono">&lt;AlertBanner&gt;</code> — persistent, severity-coded
           banners. Use for in-flight conditions that need visible acknowledgement, not
           dismiss-after-N-seconds toasts.
@@ -249,7 +249,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Buttons -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Buttons</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           <code class="font-mono">&lt;Button&gt;</code> from
           <code class="font-mono">@auxiliary/vue</code>. Intent × size.
         </p>
@@ -259,7 +259,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             :key="size"
             class="flex flex-wrap items-center gap-3"
           >
-            <span class="w-12 text-xs uppercase text-muted">{{ size }}</span>
+            <span class="w-12 text-xs uppercase text-muted-foreground">{{ size }}</span>
             <Button
               v-for="intent in BUTTON_INTENTS"
               :key="intent"
@@ -275,14 +275,14 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Form composition -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Form composition</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           <code class="font-mono">&lt;Label&gt;</code> +
           <code class="font-mono">&lt;Input&gt;</code> +
           <code class="font-mono">&lt;Button&gt;</code>. Click the label and focus jumps
           to the input.
         </p>
         <form
-          class="flex max-w-md flex-col gap-3 rounded-md border border-default bg-surface p-5"
+          class="flex max-w-md flex-col gap-3 rounded-md border border-border bg-card p-5"
           @submit.prevent
         >
           <div class="flex flex-col gap-1.5">
@@ -297,9 +297,9 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             <Button type="button" intent="ghost" size="sm">Cancel</Button>
             <Button type="submit" intent="primary" size="sm">Launch</Button>
           </div>
-          <p v-if="callsign || altitude" class="font-mono tabular text-xs text-muted">
-            v-model echo — callsign: <span class="text-secondary">{{ callsign || '(empty)' }}</span>,
-            altitude: <span class="text-secondary">{{ altitude || '(empty)' }}</span>
+          <p v-if="callsign || altitude" class="font-mono tabular text-xs text-muted-foreground">
+            v-model echo — callsign: <span class="text-muted-foreground">{{ callsign || '(empty)' }}</span>,
+            altitude: <span class="text-muted-foreground">{{ altitude || '(empty)' }}</span>
           </p>
         </form>
       </section>
@@ -307,7 +307,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Form inputs (checkbox / switch / radio / slider / textarea) -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Form inputs</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           <code class="font-mono">&lt;Checkbox&gt;</code>,
           <code class="font-mono">&lt;Switch&gt;</code>,
           <code class="font-mono">&lt;RadioGroup&gt;</code>,
@@ -315,11 +315,11 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
           <code class="font-mono">&lt;Textarea&gt;</code>. The selection + range
           surface for forms beyond text inputs.
         </p>
-        <div class="grid max-w-2xl gap-5 rounded-md border border-default bg-surface p-5">
+        <div class="grid max-w-2xl gap-5 rounded-md border border-border bg-card p-5">
           <div class="flex items-center gap-3">
             <Checkbox id="armed" v-model="armed" />
             <Label for="armed">Arm vehicle on launch</Label>
-            <span class="ml-auto font-mono tabular text-xs text-muted">
+            <span class="ml-auto font-mono tabular text-xs text-muted-foreground">
               {{ armed ? 'true' : 'false' }}
             </span>
           </div>
@@ -327,7 +327,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
           <div class="flex items-center gap-3">
             <Switch id="geofence" v-model="geofenceEnabled" />
             <Label for="geofence">Geofence active</Label>
-            <span class="ml-auto font-mono tabular text-xs text-muted">
+            <span class="ml-auto font-mono tabular text-xs text-muted-foreground">
               {{ geofenceEnabled ? 'enabled' : 'disabled' }}
             </span>
           </div>
@@ -348,15 +348,15 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
                 <span>Loiter</span>
               </label>
             </RadioGroup>
-            <p class="mt-1 font-mono tabular text-xs text-muted">
-              v-model: <span class="text-secondary">{{ flightMode }}</span>
+            <p class="mt-1 font-mono tabular text-xs text-muted-foreground">
+              v-model: <span class="text-muted-foreground">{{ flightMode }}</span>
             </p>
           </div>
 
           <div>
             <Label for="max-alt" class="mb-2 block">
               Max altitude
-              <span class="font-mono tabular text-xs text-muted ml-2">
+              <span class="font-mono tabular text-xs text-muted-foreground ml-2">
                 {{ maxAltitude[0] }} m
               </span>
             </Label>
@@ -378,21 +378,21 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Typography -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Typography</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           Inter Variable with <code class="font-mono">ss02</code> +
           <code class="font-mono">cv01</code> for I/l/1 + O/0 disambiguation. Geist Mono
           + tabular for identifiers, coordinates, telemetry.
         </p>
-        <div class="space-y-3 rounded-md border border-default bg-surface p-5">
+        <div class="space-y-3 rounded-md border border-border bg-card p-5">
           <div class="font-display">Mission Control</div>
-          <p class="text-base text-secondary">
+          <p class="text-base text-muted-foreground">
             The quick brown fox jumps over the lazy dog — 0123456789
           </p>
-          <p class="font-mono tabular text-sm text-muted">{{ MISSION_ID }}</p>
+          <p class="font-mono tabular text-sm text-muted-foreground">{{ MISSION_ID }}</p>
           <p class="font-mono tabular text-sm">
-            <span class="text-muted">LAT </span><span>47.3769° N</span>
-            <span class="text-muted ml-3">LON </span><span>8.5417° E</span>
-            <span class="text-muted ml-3">ALT </span><span>408 m</span>
+            <span class="text-muted-foreground">LAT </span><span>47.3769° N</span>
+            <span class="text-muted-foreground ml-3">LON </span><span>8.5417° E</span>
+            <span class="text-muted-foreground ml-3">ALT </span><span>408 m</span>
           </p>
         </div>
       </section>
@@ -400,7 +400,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Dialog -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Dialog</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           First headless-backed primitive. <code class="font-mono">@auxiliary/vue</code>
           wraps Reka UI's Dialog with our styling. Focus trap, Escape to close,
           click-outside, ARIA dialog semantics, and portal teleport — all from Reka.
@@ -430,7 +430,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Floating UI: Tooltip + Popover -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Floating UI</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           Tooltip for hints, Popover for richer floating content. Both anchored to
           their trigger, both backed by Reka UI for keyboard a11y and collision
           detection.
@@ -451,12 +451,12 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             </PopoverTrigger>
             <PopoverContent>
               <div class="space-y-2">
-                <div class="font-medium text-primary">Quick settings</div>
-                <p class="text-muted">
+                <div class="font-medium text-foreground">Quick settings</div>
+                <p class="text-muted-foreground">
                   Popovers hold richer content than tooltips — forms, menus, filters.
                   Press Escape or click outside to dismiss.
                 </p>
-                <p class="font-mono tabular text-xs text-muted">
+                <p class="font-mono tabular text-xs text-muted-foreground">
                   Try Tab to focus the buttons inside.
                 </p>
                 <div class="flex gap-2 pt-1">
@@ -472,7 +472,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Menus: DropdownMenu + Select -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Menus</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           <code class="font-mono">&lt;DropdownMenu&gt;</code> for action menus,
           <code class="font-mono">&lt;Select&gt;</code> for value selection. Both
           keyboard-navigable (↑/↓, Home/End, type-ahead), both backed by Reka UI.
@@ -508,8 +508,8 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
                 <SelectItem value="land">Land</SelectItem>
               </SelectContent>
             </Select>
-            <p class="font-mono tabular text-xs text-muted">
-              v-model: <span class="text-secondary">{{ vehicleMode }}</span>
+            <p class="font-mono tabular text-xs text-muted-foreground">
+              v-model: <span class="text-muted-foreground">{{ vehicleMode }}</span>
             </p>
           </div>
         </div>
@@ -518,10 +518,10 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Tabs -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Tabs</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           <code class="font-mono">&lt;Tabs&gt;</code> for panel switching. Keyboard:
           ←/→ navigates triggers, Home/End jumps to first/last. Active tab uses our
-          <code class="font-mono">bg-accent</code>.
+          <code class="font-mono">bg-primary</code>.
         </p>
         <Tabs default-value="telemetry" class="max-w-2xl">
           <TabsList>
@@ -530,27 +530,27 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             <TabsTrigger value="logs">Logs</TabsTrigger>
           </TabsList>
           <TabsContent value="telemetry">
-            <div class="rounded-md border border-default bg-surface p-5">
-              <p class="text-sm text-muted">Live sensor readings.</p>
+            <div class="rounded-md border border-border bg-card p-5">
+              <p class="text-sm text-muted-foreground">Live sensor readings.</p>
               <p class="mt-2 font-mono tabular text-sm">
-                <span class="text-muted">BAT </span><span>74%</span>
-                <span class="text-muted ml-3">SPD </span><span>12.4 m/s</span>
-                <span class="text-muted ml-3">HDG </span><span>247°</span>
+                <span class="text-muted-foreground">BAT </span><span>74%</span>
+                <span class="text-muted-foreground ml-3">SPD </span><span>12.4 m/s</span>
+                <span class="text-muted-foreground ml-3">HDG </span><span>247°</span>
               </p>
             </div>
           </TabsContent>
           <TabsContent value="waypoints">
-            <div class="rounded-md border border-default bg-surface p-5">
-              <p class="text-sm text-muted">5 waypoints queued.</p>
-              <p class="mt-2 font-mono tabular text-sm text-secondary">
+            <div class="rounded-md border border-border bg-card p-5">
+              <p class="text-sm text-muted-foreground">5 waypoints queued.</p>
+              <p class="mt-2 font-mono tabular text-sm text-muted-foreground">
                 WP-01 → WP-02 → WP-03 → WP-04 → WP-05 (HOME)
               </p>
             </div>
           </TabsContent>
           <TabsContent value="logs">
-            <div class="rounded-md border border-default bg-surface p-5">
-              <p class="text-sm text-muted">Last 3 events.</p>
-              <p class="mt-2 font-mono tabular text-xs text-secondary">
+            <div class="rounded-md border border-border bg-card p-5">
+              <p class="text-sm text-muted-foreground">Last 3 events.</p>
+              <p class="mt-2 font-mono tabular text-xs text-muted-foreground">
                 12:04:18 INFO  link established<br />
                 12:04:22 INFO  GPS lock acquired (12 sats)<br />
                 12:04:30 INFO  mission armed
@@ -563,7 +563,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Toast -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Toast</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           Transient notifications. Auto-dismisses after 4s, swipe right to dismiss
           early, paused on hover. ARIA live-region announces to screen readers.
           Single global <code class="font-mono">&lt;ToastViewport&gt;</code> renders
@@ -579,7 +579,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Structure: Card + Separator + Accordion -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Structure</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           <code class="font-mono">&lt;Card&gt;</code>, <code class="font-mono">&lt;Separator&gt;</code>,
           and <code class="font-mono">&lt;Accordion&gt;</code> — content scaffolding that
           composes with everything else.
@@ -594,10 +594,10 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
               <div class="flex flex-wrap items-center gap-2 text-sm">
                 <StatusBadge level="nominal" size="sm" dot>Connected</StatusBadge>
                 <Separator orientation="vertical" class="h-4" />
-                <span class="text-secondary">Battery</span>
+                <span class="text-muted-foreground">Battery</span>
                 <TelemetryValue :value="74" unit="%" :precision="0" size="sm" />
                 <Separator orientation="vertical" class="h-4" />
-                <span class="text-secondary">Signal</span>
+                <span class="text-muted-foreground">Signal</span>
                 <TelemetryValue :value="-87" unit="dBm" :precision="0" size="sm" level="caution" />
               </div>
             </CardContent>
@@ -650,7 +650,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Visuals: Avatar / Badge / Progress / Spinner / Skeleton -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Visuals</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           <code class="font-mono">&lt;Avatar&gt;</code>,
           <code class="font-mono">&lt;Badge&gt;</code>,
           <code class="font-mono">&lt;Progress&gt;</code>,
@@ -658,10 +658,10 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
           <code class="font-mono">&lt;Skeleton&gt;</code> — small visual surface
           pieces that complete the universal-basics set.
         </p>
-        <div class="grid gap-5 rounded-md border border-default bg-surface p-5 lg:grid-cols-2">
+        <div class="grid gap-5 rounded-md border border-border bg-card p-5 lg:grid-cols-2">
           <div class="space-y-4">
             <div>
-              <div class="mb-2 text-xs uppercase text-muted">Avatars (initials fallback)</div>
+              <div class="mb-2 text-xs uppercase text-muted-foreground">Avatars (initials fallback)</div>
               <div class="flex items-center gap-3">
                 <Avatar size="sm"><AvatarFallback>YD</AvatarFallback></Avatar>
                 <Avatar size="md"><AvatarFallback>AM</AvatarFallback></Avatar>
@@ -670,7 +670,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             </div>
 
             <div>
-              <div class="mb-2 text-xs uppercase text-muted">Badges (generic — distinct from StatusBadge)</div>
+              <div class="mb-2 text-xs uppercase text-muted-foreground">Badges (generic — distinct from StatusBadge)</div>
               <div class="flex flex-wrap items-center gap-2">
                 <Badge variant="default">default</Badge>
                 <Badge variant="secondary">secondary</Badge>
@@ -682,41 +682,41 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             </div>
 
             <div>
-              <div class="mb-2 text-xs uppercase text-muted">Spinner</div>
-              <div class="flex items-center gap-4 text-secondary">
+              <div class="mb-2 text-xs uppercase text-muted-foreground">Spinner</div>
+              <div class="flex items-center gap-4 text-muted-foreground">
                 <Spinner size="sm" />
                 <Spinner size="md" />
                 <Spinner size="lg" />
-                <span class="text-sm text-muted">inherits color via currentColor</span>
+                <span class="text-sm text-muted-foreground">inherits color via currentColor</span>
               </div>
             </div>
           </div>
 
           <div class="space-y-4">
             <div>
-              <div class="mb-2 text-xs uppercase text-muted">Progress (battery 74% — warning if &lt;30%)</div>
+              <div class="mb-2 text-xs uppercase text-muted-foreground">Progress (battery 74% — warning if &lt;30%)</div>
               <div class="space-y-3">
                 <div class="flex items-center gap-3">
-                  <span class="font-mono tabular text-xs text-muted w-12">74%</span>
+                  <span class="font-mono tabular text-xs text-muted-foreground w-12">74%</span>
                   <Progress :value="74" level="nominal" />
                 </div>
                 <div class="flex items-center gap-3">
-                  <span class="font-mono tabular text-xs text-muted w-12">42%</span>
+                  <span class="font-mono tabular text-xs text-muted-foreground w-12">42%</span>
                   <Progress :value="42" level="caution" />
                 </div>
                 <div class="flex items-center gap-3">
-                  <span class="font-mono tabular text-xs text-muted w-12">18%</span>
+                  <span class="font-mono tabular text-xs text-muted-foreground w-12">18%</span>
                   <Progress :value="18" level="warning" />
                 </div>
                 <div class="flex items-center gap-3">
-                  <span class="font-mono tabular text-xs text-muted w-12">5%</span>
+                  <span class="font-mono tabular text-xs text-muted-foreground w-12">5%</span>
                   <Progress :value="5" level="alarm" />
                 </div>
               </div>
             </div>
 
             <div>
-              <div class="mb-2 text-xs uppercase text-muted">Skeleton (loading placeholders)</div>
+              <div class="mb-2 text-xs uppercase text-muted-foreground">Skeleton (loading placeholders)</div>
               <div class="space-y-2">
                 <Skeleton class="h-3 w-32" />
                 <Skeleton class="h-3 w-48" />
@@ -730,27 +730,27 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <!-- Surface specimens -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Surfaces</h2>
-        <p class="mb-5 text-sm text-muted">
+        <p class="mb-5 text-sm text-muted-foreground">
           Background hierarchy: canvas → surface → elevated. Borders, accent, focus.
         </p>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div class="rounded-md bg-canvas border border-default p-5">
-            <div class="text-xs uppercase text-muted">bg-canvas</div>
+          <div class="rounded-md bg-background border border-border p-5">
+            <div class="text-xs uppercase text-muted-foreground">bg-background</div>
             <div class="mt-2 text-sm">Page background</div>
           </div>
-          <div class="rounded-md bg-surface border border-default p-5">
-            <div class="text-xs uppercase text-muted">bg-surface</div>
+          <div class="rounded-md bg-card border border-border p-5">
+            <div class="text-xs uppercase text-muted-foreground">bg-card</div>
             <div class="mt-2 text-sm">Card / panel</div>
           </div>
-          <div class="rounded-md bg-elevated border border-strong p-5 shadow-md">
-            <div class="text-xs uppercase text-muted">bg-elevated</div>
+          <div class="rounded-md bg-popover border border-border p-5 shadow-md">
+            <div class="text-xs uppercase text-muted-foreground">bg-popover</div>
             <div class="mt-2 text-sm">Popover / dropdown</div>
           </div>
         </div>
       </section>
     </div>
 
-    <footer class="border-t border-default px-8 py-6 text-xs text-muted">
+    <footer class="border-t border-border px-8 py-6 text-xs text-muted-foreground">
       Auxiliary · zinc-on-zinc, 4 themes, 5-level status · pre-1.0
     </footer>
   </main>

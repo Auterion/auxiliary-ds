@@ -21,7 +21,7 @@ withDefaults(
       :side="side"
       :align="align"
       :side-offset="sideOffset"
-      class="z-50 min-w-[10rem] rounded-md border border-default bg-elevated p-1 text-sm text-primary shadow-md outline-none"
+      class="z-50 min-w-[10rem] rounded-md border border-border bg-popover p-1 text-sm text-foreground shadow-md outline-none"
     >
       <slot />
     </DropdownMenuContent>

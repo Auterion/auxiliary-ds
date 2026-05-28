@@ -10,7 +10,7 @@ defineProps<{
   <ToastClose
     :as-child="asChild"
     aria-label="Close"
-    class="rounded-sm text-muted hover:text-primary focus-visible:outline-none focus-visible:ring-2 ring-focus"
+    class="rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 ring-ring"
   >
     <slot>
       <svg

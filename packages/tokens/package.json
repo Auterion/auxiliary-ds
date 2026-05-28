@@ -12,7 +12,7 @@
     ".": "./dist/tokens.ts",
     "./dist/tailwind-v4.css": "./dist/tailwind-v4.css",
     "./dist/tokens.css": "./dist/tokens.css",
-    "./dist/figma.tokens.json": "./dist/figma.tokens.json"
+    "./dist/tokens.json": "./dist/tokens.json"
   },
   "scripts": {
     "build": "node build.mjs",
@@ -21,6 +21,7 @@
     "test": "echo \"@auxiliary/tokens test — no sources yet\" && exit 0"
   },
   "devDependencies": {
+    "culori": "^4.0.2",
     "style-dictionary": "^5.4.1"
   }
 }

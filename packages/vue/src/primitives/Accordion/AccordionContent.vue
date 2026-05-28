@@ -4,7 +4,7 @@ import { AccordionContent } from 'reka-ui';
 
 <template>
   <AccordionContent
-    class="overflow-hidden text-sm text-secondary data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+    class="overflow-hidden text-sm text-muted-foreground data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
   >
     <div class="pb-3 px-1">
       <slot />

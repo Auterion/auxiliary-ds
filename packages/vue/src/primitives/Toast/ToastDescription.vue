@@ -3,7 +3,7 @@ import { ToastDescription } from 'reka-ui';
 </script>
 
 <template>
-  <ToastDescription class="mt-1 text-xs text-muted">
+  <ToastDescription class="mt-1 text-xs text-muted-foreground">
     <slot />
   </ToastDescription>
 </template>

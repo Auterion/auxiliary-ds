@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <label :for="$props.for" class="text-sm font-medium text-secondary">
+  <label :for="$props.for" class="text-sm font-medium text-muted-foreground">
     <slot />
   </label>
 </template>

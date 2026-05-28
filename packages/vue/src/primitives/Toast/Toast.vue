@@ -26,7 +26,7 @@ defineEmits<{
     :default-open="defaultOpen"
     :duration="duration"
     :type="type"
-    class="grid grid-cols-[1fr_auto] items-start gap-3 rounded-md border border-default bg-elevated p-4 text-sm text-primary shadow-md outline-none focus-visible:ring-2 ring-focus"
+    class="grid grid-cols-[1fr_auto] items-start gap-3 rounded-md border border-border bg-popover p-4 text-sm text-foreground shadow-md outline-none focus-visible:ring-2 ring-ring"
     @update:open="$emit('update:open', $event)"
     @escape-key-down="$emit('escapeKeyDown', $event)"
     @pause="$emit('pause')"

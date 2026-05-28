@@ -22,7 +22,7 @@ const sizing = computed(
 <template>
   <AvatarRoot
     :class="[
-      'inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-muted text-secondary',
+      'inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-muted text-muted-foreground',
       sizing,
     ]"
   >

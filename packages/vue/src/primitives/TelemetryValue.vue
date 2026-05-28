@@ -44,7 +44,7 @@ const valueClass = computed(() => {
         advisory: 'text-advisory',
         nominal:  'text-nominal',
       }[props.level]
-    : 'text-primary';
+    : 'text-foreground';
   return [sizing, color, 'font-mono tabular font-medium leading-tight'].join(' ');
 });
 
@@ -58,13 +58,13 @@ const trendArrow = computed(() => {
 
 <template>
   <div class="inline-flex flex-col">
-    <span v-if="label" class="text-xs uppercase tracking-wide text-muted">{{ label }}</span>
+    <span v-if="label" class="text-xs uppercase tracking-wide text-muted-foreground">{{ label }}</span>
     <div class="inline-flex items-baseline gap-1.5">
       <span :class="valueClass">{{ formattedValue }}</span>
-      <span v-if="unit" class="font-mono text-xs text-muted">{{ unit }}</span>
+      <span v-if="unit" class="font-mono text-xs text-muted-foreground">{{ unit }}</span>
       <span
         v-if="trendArrow"
-        class="font-mono text-xs text-muted"
+        class="font-mono text-xs text-muted-foreground"
         :aria-label="`trend ${trend}`"
       >{{ trendArrow }}</span>
     </div>

@@ -1,24 +1,18 @@
 <script setup lang="ts">
-import { PopoverRoot } from 'reka-ui';
+import {
+  PopoverRoot,
+  useForwardPropsEmits,
+  type PopoverRootEmits,
+  type PopoverRootProps,
+} from 'reka-ui';
 
-defineProps<{
-  open?: boolean;
-  defaultOpen?: boolean;
-  modal?: boolean;
-}>();
-
-defineEmits<{
-  (e: 'update:open', open: boolean): void;
-}>();
+const props = defineProps<PopoverRootProps>();
+const emits = defineEmits<PopoverRootEmits>();
+const forwarded = useForwardPropsEmits(props, emits);
 </script>
 
 <template>
-  <PopoverRoot
-    :open="open"
-    :default-open="defaultOpen"
-    :modal="modal"
-    @update:open="$emit('update:open', $event)"
-  >
+  <PopoverRoot v-bind="forwarded">
     <slot />
   </PopoverRoot>
 </template>

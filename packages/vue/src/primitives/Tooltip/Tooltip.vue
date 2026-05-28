@@ -1,24 +1,18 @@
 <script setup lang="ts">
-import { TooltipRoot } from 'reka-ui';
+import {
+  TooltipRoot,
+  useForwardPropsEmits,
+  type TooltipRootEmits,
+  type TooltipRootProps,
+} from 'reka-ui';
 
-defineProps<{
-  open?: boolean;
-  defaultOpen?: boolean;
-  delayDuration?: number;
-}>();
-
-defineEmits<{
-  (e: 'update:open', open: boolean): void;
-}>();
+const props = defineProps<TooltipRootProps>();
+const emits = defineEmits<TooltipRootEmits>();
+const forwarded = useForwardPropsEmits(props, emits);
 </script>
 
 <template>
-  <TooltipRoot
-    :open="open"
-    :default-open="defaultOpen"
-    :delay-duration="delayDuration"
-    @update:open="$emit('update:open', $event)"
-  >
+  <TooltipRoot v-bind="forwarded">
     <slot />
   </TooltipRoot>
 </template>

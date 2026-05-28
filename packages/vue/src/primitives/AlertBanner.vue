@@ -24,11 +24,11 @@ defineEmits<{
 const bannerClass = computed(() => {
   const base = 'flex items-start gap-3 rounded-md border px-4 py-3';
   const color = {
-    alarm:    'bg-alarm text-alarm border-alarm',
-    warning:  'bg-warning text-warning border-warning',
-    caution:  'bg-caution text-caution border-caution',
-    advisory: 'bg-advisory text-advisory border-advisory',
-    nominal:  'bg-nominal text-nominal border-nominal',
+    alarm:    'bg-alarm text-alarm-foreground border-alarm',
+    warning:  'bg-warning text-warning-foreground border-warning',
+    caution:  'bg-caution text-caution-foreground border-caution',
+    advisory: 'bg-advisory text-advisory-foreground border-advisory',
+    nominal:  'bg-nominal text-nominal-foreground border-nominal',
   }[props.level];
   return [base, color].join(' ');
 });
@@ -75,7 +75,7 @@ const icon = computed(() => {
     <button
       v-if="actionLabel"
       type="button"
-      class="shrink-0 rounded px-2 py-1 text-xs font-medium underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 ring-focus"
+      class="shrink-0 rounded px-2 py-1 text-xs font-medium underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 ring-ring"
       @click="$emit('action')"
     >
       {{ actionLabel }}
@@ -85,7 +85,7 @@ const icon = computed(() => {
       v-if="dismissible"
       type="button"
       aria-label="Dismiss"
-      class="shrink-0 rounded p-1 opacity-70 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 ring-focus"
+      class="shrink-0 rounded p-1 opacity-70 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 ring-ring"
       @click="$emit('dismiss')"
     >
       <svg
