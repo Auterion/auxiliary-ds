@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { SelectContent, SelectPortal, SelectViewport } from 'reka-ui';
 
+// The element Reka gives role="listbox" is the SelectContent root. An ARIA listbox needs an
+// accessible name, so we forward fallthrough attrs (notably aria-label / aria-labelledby) onto
+// it rather than letting them land on the renderless portal.
+defineOptions({ inheritAttrs: false });
+
 withDefaults(
   defineProps<{
     position?: 'item-aligned' | 'popper';
@@ -18,6 +23,7 @@ withDefaults(
 <template>
   <SelectPortal>
     <SelectContent
+      v-bind="$attrs"
       :position="position"
       :side="side"
       :side-offset="sideOffset"
