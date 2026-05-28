@@ -1,0 +1,69 @@
+/*
+ * Bridge VitePress's CSS variables to Auxiliary's. We keep VitePress's default
+ * theme structure for chrome (header, sidebar, nav) but recolor it with our
+ * tokens so the docs site visually matches the design system it documents.
+ *
+ * @auxiliary/css/theme.css is imported from theme/index.ts, which exposes
+ * `--background`, `--foreground`, `--primary`, `--card`, `--border`, etc. on
+ * :root and toggles them per [data-theme].
+ */
+
+:root {
+  /* Brand */
+  --vp-c-brand-1: var(--primary);
+  --vp-c-brand-2: var(--primary);
+  --vp-c-brand-3: var(--primary);
+  --vp-c-brand-soft: color-mix(in oklch, var(--primary) 20%, transparent);
+
+  /* Surfaces */
+  --vp-c-bg: var(--background);
+  --vp-c-bg-alt: var(--card);
+  --vp-c-bg-elv: var(--popover);
+  --vp-c-bg-soft: var(--muted);
+
+  /* Text */
+  --vp-c-text-1: var(--foreground);
+  --vp-c-text-2: var(--muted-foreground);
+  --vp-c-text-3: var(--muted-foreground);
+
+  /* Borders + dividers */
+  --vp-c-border: var(--border);
+  --vp-c-divider: var(--border);
+  --vp-c-gutter: var(--border);
+
+  /* Fonts — match the system */
+  --vp-font-family-base: var(--font-sans, 'Inter Variable', system-ui, sans-serif);
+  --vp-font-family-mono: var(--font-mono, 'Geist Mono', ui-monospace, monospace);
+}
+
+/* Code blocks pick up the design system surfaces too */
+:root {
+  --vp-code-block-bg: var(--card);
+  --vp-code-block-color: var(--foreground);
+  --vp-code-line-highlight-color: var(--accent);
+}
+
+/* VitePress's dark-mode toggle uses .dark; we already have data-theme for
+   our 4-theme system, so map .dark → data-theme='dark' as a baseline. The
+   <ThemeSwitcher> component overrides this when an explicit theme is picked. */
+html.dark:not([data-theme]) {
+  background: var(--background);
+}
+
+/* Component renders inside .md prose should breathe a bit */
+.vp-doc .auxiliary-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+/* Make sure the prose container doesn't strip our Tailwind utilities */
+.vp-doc :where(div, span, button, input, label) {
+  /* defer to component classes */
+}
