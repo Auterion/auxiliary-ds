@@ -2,9 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "recipes",
+    "rootDir": ".",
     "declaration": true,
     "declarationMap": true
   },
-  "include": ["recipes/**/*.ts"]
+  "include": ["recipes/**/*.ts", "utils/**/*.ts"]
 }

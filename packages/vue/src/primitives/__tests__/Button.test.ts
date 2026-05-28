@@ -4,25 +4,25 @@ import { axe } from '../../test-utils/a11y';
 import Button from '../Button.vue';
 
 describe('Button', () => {
-  it('renders a button element with default intent/size/type and slot content', () => {
+  it('renders a button element with default variant/size/type and slot content', () => {
     const wrapper = mount(Button, { slots: { default: 'Click me' } });
     expect(wrapper.element.tagName).toBe('BUTTON');
     expect(wrapper.attributes('type')).toBe('button');
     expect(wrapper.text()).toContain('Click me');
-    // default intent=primary, size=md
+    // default variant=primary, size=md
     expect(wrapper.classes()).toContain('bg-primary');
     expect(wrapper.classes()).toContain('h-9');
   });
 
-  it('maps each intent prop to its recipe classes', () => {
+  it('maps each variant prop to its recipe classes', () => {
     const cases: Array<[string, string]> = [
       ['primary', 'bg-primary'],
       ['secondary', 'bg-secondary'],
       ['ghost', 'text-foreground'],
       ['danger', 'bg-destructive'],
     ];
-    for (const [intent, cls] of cases) {
-      const wrapper = mount(Button, { props: { intent: intent as never }, slots: { default: intent } });
+    for (const [variant, cls] of cases) {
+      const wrapper = mount(Button, { props: { variant: variant as never }, slots: { default: variant } });
       expect(wrapper.classes()).toContain(cls);
     }
   });
@@ -60,7 +60,7 @@ describe('Button', () => {
   });
 
   it('has no axe violations', async () => {
-    const wrapper = mount(Button, { props: { intent: 'primary' }, slots: { default: 'Accessible button' } });
+    const wrapper = mount(Button, { props: { variant: 'primary' }, slots: { default: 'Accessible button' } });
     const results = await axe(wrapper.element);
     expect(results).toHaveNoViolations();
   });

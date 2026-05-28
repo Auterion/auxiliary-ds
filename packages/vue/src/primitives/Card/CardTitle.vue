@@ -1,5 +1,16 @@
+<script setup lang="ts">
+import { computed, type HTMLAttributes } from 'vue';
+import { card } from '@auxiliary/css/recipes';
+import { cn } from '@auxiliary/css/utils';
+
+const props = defineProps<{ class?: HTMLAttributes['class'] }>();
+
+const styles = card();
+const rootClass = computed(() => cn(styles.title(), props.class));
+</script>
+
 <template>
-  <h3 class="text-base font-medium leading-tight">
+  <h3 :class="rootClass">
     <slot />
   </h3>
 </template>

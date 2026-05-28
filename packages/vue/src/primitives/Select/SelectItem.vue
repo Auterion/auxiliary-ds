@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { SelectItem, SelectItemIndicator, SelectItemText } from 'reka-ui';
+import { computed, type HTMLAttributes } from 'vue';
+import { cn } from '@auxiliary/css/utils';
+import { select } from '@auxiliary/css/recipes';
 
-defineProps<{
+const props = defineProps<{
   value: string;
   disabled?: boolean;
+  class?: HTMLAttributes['class'];
 }>();
+
+const styles = select();
+const rootClass = computed(() => cn(styles.item(), props.class));
 </script>
 
 <template>
-  <SelectItem
-    :value="value"
-    :disabled="disabled"
-    class="relative flex h-8 cursor-pointer select-none items-center rounded-sm pl-7 pr-2 text-sm outline-none data-[highlighted]:bg-accent data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed"
-  >
-    <SelectItemIndicator class="absolute left-2 flex items-center justify-center">
+  <SelectItem :value="value" :disabled="disabled" :class="rootClass">
+    <SelectItemIndicator :class="styles.itemIndicator()">
       <svg
         width="12"
         height="12"

@@ -6,18 +6,26 @@ import {
   type CheckboxRootEmits,
   type CheckboxRootProps,
 } from 'reka-ui';
+import { computed, type HTMLAttributes } from 'vue';
+import { checkbox } from '@auxiliary/css/recipes';
+import { cn } from '@auxiliary/css/utils';
 
-const props = defineProps<CheckboxRootProps>();
+const props = defineProps<CheckboxRootProps & { class?: HTMLAttributes['class'] }>();
 const emits = defineEmits<CheckboxRootEmits>();
-const forwarded = useForwardPropsEmits(props, emits);
+
+const delegated = computed(() => {
+  const { class: _class, ...rest } = props;
+  return rest;
+});
+const forwarded = useForwardPropsEmits(delegated, emits);
+
+const styles = checkbox();
+const rootClass = computed(() => cn(styles.root(), props.class));
 </script>
 
 <template>
-  <CheckboxRoot
-    v-bind="forwarded"
-    class="flex h-4 w-4 shrink-0 items-center justify-center rounded border border-input bg-background outline-none data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:border-primary focus-visible:ring-2 ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-    <CheckboxIndicator class="text-primary-foreground">
+  <CheckboxRoot v-bind="forwarded" :class="rootClass">
+    <CheckboxIndicator :class="styles.indicator()">
       <svg
         v-if="props.modelValue === 'indeterminate'"
         width="10"

@@ -12,7 +12,14 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['vue', 'reka-ui', '@auxiliary/css', '@auxiliary/css/recipes', '@auxiliary/tokens'],
+      external: [
+        'vue',
+        'reka-ui',
+        '@auxiliary/css',
+        '@auxiliary/css/recipes',
+        '@auxiliary/css/utils',
+        '@auxiliary/tokens',
+      ],
       output: {
         globals: { vue: 'Vue' },
       },

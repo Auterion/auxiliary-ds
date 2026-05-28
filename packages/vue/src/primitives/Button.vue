@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, type HTMLAttributes } from 'vue';
 import { button, type ButtonVariants } from '@auxiliary/css/recipes';
+import { cn } from '@auxiliary/css/utils';
 
 const props = withDefaults(
   defineProps<{
-    intent?: ButtonVariants['intent'];
+    variant?: ButtonVariants['variant'];
     size?: ButtonVariants['size'];
     loading?: boolean;
     disabled?: boolean;
     type?: 'button' | 'submit' | 'reset';
+    class?: HTMLAttributes['class'];
   }>(),
   {
-    intent: 'primary',
+    variant: 'primary',
     size: 'md',
     loading: false,
     disabled: false,
@@ -20,7 +22,7 @@ const props = withDefaults(
 );
 
 const classes = computed(() =>
-  button({ intent: props.intent, size: props.size, loading: props.loading }),
+  cn(button({ variant: props.variant, size: props.size, loading: props.loading }), props.class),
 );
 </script>
 

@@ -8,21 +8,30 @@ import {
   type SliderRootEmits,
   type SliderRootProps,
 } from 'reka-ui';
-import { computed, useAttrs } from 'vue';
+import { computed, useAttrs, type HTMLAttributes } from 'vue';
+import { cn } from '@auxiliary/css/utils';
+import { slider } from '@auxiliary/css/recipes';
 
 // An accessible name must land on the role="slider" thumb, not on SliderRoot — Reka renders
 // the root as a role-less <span>, where aria-label/aria-labelledby is a prohibited attribute.
 // So we take control of attribute placement and route naming attrs to the thumb(s).
 defineOptions({ inheritAttrs: false });
 
-const props = withDefaults(defineProps<SliderRootProps>(), {
+const props = withDefaults(defineProps<SliderRootProps & { class?: HTMLAttributes['class'] }>(), {
   min: 0,
   max: 100,
   step: 1,
   orientation: 'horizontal',
 });
 const emits = defineEmits<SliderRootEmits>();
-const forwarded = useForwardPropsEmits(props, emits);
+const delegated = computed(() => {
+  const { class: _class, ...rest } = props;
+  return rest;
+});
+const forwarded = useForwardPropsEmits(delegated, emits);
+
+const styles = slider();
+const rootClass = computed(() => cn(styles.root(), props.class));
 
 const attrs = useAttrs();
 const thumbAria = computed(() => ({
@@ -37,18 +46,10 @@ const thumbs = computed(() => props.modelValue ?? props.defaultValue ?? [0]);
 </script>
 
 <template>
-  <SliderRoot
-    v-bind="{ ...forwarded, ...rootAttrs }"
-    class="relative flex w-full touch-none select-none items-center"
-  >
-    <SliderTrack class="relative h-1.5 w-full grow overflow-hidden rounded-full bg-background">
-      <SliderRange class="absolute h-full bg-primary" />
+  <SliderRoot v-bind="{ ...forwarded, ...rootAttrs }" :class="rootClass">
+    <SliderTrack :class="styles.track()">
+      <SliderRange :class="styles.range()" />
     </SliderTrack>
-    <SliderThumb
-      v-for="(_, i) in thumbs"
-      :key="i"
-      v-bind="thumbAria"
-      class="block h-4 w-4 rounded-full border border-primary bg-background shadow-sm outline-none focus-visible:ring-2 ring-ring disabled:opacity-50"
-    />
+    <SliderThumb v-for="(_, i) in thumbs" :key="i" v-bind="thumbAria" :class="styles.thumb()" />
   </SliderRoot>
 </template>

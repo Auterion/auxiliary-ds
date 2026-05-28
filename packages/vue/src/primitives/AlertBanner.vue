@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, type HTMLAttributes } from 'vue';
+import { alertBanner } from '@auxiliary/css/recipes';
+import { cn } from '@auxiliary/css/utils';
 
 export type AlertLevel = 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal';
 
@@ -10,6 +12,7 @@ const props = withDefaults(
     description?: string;
     dismissible?: boolean;
     actionLabel?: string;
+    class?: HTMLAttributes['class'];
   }>(),
   {
     dismissible: false,
@@ -21,17 +24,7 @@ defineEmits<{
   (e: 'action'): void;
 }>();
 
-const bannerClass = computed(() => {
-  const base = 'flex items-start gap-3 rounded-md border px-4 py-3';
-  const color = {
-    alarm:    'bg-alarm text-alarm-foreground border-alarm',
-    warning:  'bg-warning text-warning-foreground border-warning',
-    caution:  'bg-caution text-caution-foreground border-caution',
-    advisory: 'bg-advisory text-advisory-foreground border-advisory',
-    nominal:  'bg-nominal text-nominal-foreground border-nominal',
-  }[props.level];
-  return [base, color].join(' ');
-});
+const bannerClass = computed(() => cn(alertBanner({ level: props.level }), props.class));
 
 const icon = computed(() => {
   // Maritime-style status glyphs: alarm/warning/caution use triangle exclamation,

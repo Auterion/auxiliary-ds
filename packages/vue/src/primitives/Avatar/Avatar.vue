@@ -1,31 +1,22 @@
 <script setup lang="ts">
 import { AvatarRoot } from 'reka-ui';
-import { computed } from 'vue';
+import { computed, type HTMLAttributes } from 'vue';
+import { avatar, type Size } from '@auxiliary/css/recipes';
+import { cn } from '@auxiliary/css/utils';
 
 const props = withDefaults(
   defineProps<{
-    size?: 'sm' | 'md' | 'lg';
+    size?: Size;
+    class?: HTMLAttributes['class'];
   }>(),
   { size: 'md' },
 );
 
-const sizing = computed(
-  () =>
-    ({
-      sm: 'h-6 w-6 text-xs',
-      md: 'h-8 w-8 text-sm',
-      lg: 'h-10 w-10 text-base',
-    })[props.size],
-);
+const classes = computed(() => cn(avatar({ size: props.size }), props.class));
 </script>
 
 <template>
-  <AvatarRoot
-    :class="[
-      'inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-muted text-muted-foreground',
-      sizing,
-    ]"
-  >
+  <AvatarRoot :class="classes">
     <slot />
   </AvatarRoot>
 </template>

@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { computed, type HTMLAttributes } from 'vue';
 import { ToastViewport } from 'reka-ui';
+import { cn } from '@auxiliary/css/utils';
+import { toast } from '@auxiliary/css/recipes';
+
+const props = defineProps<{ class?: HTMLAttributes['class'] }>();
+
+const styles = toast();
+const rootClass = computed(() => cn(styles.viewport(), props.class));
 </script>
 
 <template>
-  <ToastViewport
-    class="fixed bottom-0 right-0 z-[100] flex max-h-screen w-full flex-col gap-2 p-6 sm:max-w-[420px] outline-none"
-  />
+  <ToastViewport :class="rootClass" />
 </template>

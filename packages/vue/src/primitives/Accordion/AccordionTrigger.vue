@@ -1,12 +1,17 @@
 <script setup lang="ts">
+import { computed, type HTMLAttributes } from 'vue';
 import { AccordionHeader, AccordionTrigger } from 'reka-ui';
+import { cn } from '@auxiliary/css/utils';
+import { accordion } from '@auxiliary/css/recipes';
+
+const props = defineProps<{ class?: HTMLAttributes['class'] }>();
+const styles = accordion();
+const rootClass = computed(() => cn(styles.header(), props.class));
 </script>
 
 <template>
-  <AccordionHeader class="flex">
-    <AccordionTrigger
-      class="flex flex-1 items-center justify-between py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 ring-ring px-1 [&[data-state=open]>svg]:rotate-180"
-    >
+  <AccordionHeader :class="rootClass">
+    <AccordionTrigger :class="styles.trigger()">
       <slot />
       <svg
         width="14"
@@ -17,7 +22,7 @@ import { AccordionHeader, AccordionTrigger } from 'reka-ui';
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="ml-2 shrink-0 text-muted-foreground transition-transform duration-200"
+        :class="styles.chevron()"
         aria-hidden="true"
       >
         <polyline points="6 9 12 15 18 9" />

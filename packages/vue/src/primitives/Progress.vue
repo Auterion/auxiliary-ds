@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ProgressIndicator, ProgressRoot } from 'reka-ui';
-import { computed } from 'vue';
+import { computed, type HTMLAttributes } from 'vue';
+import { progress } from '@auxiliary/css/recipes';
+import { cn } from '@auxiliary/css/utils';
 
 const props = withDefaults(
   defineProps<{
     value?: number | null;
     max?: number;
     level?: 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal' | null;
+    class?: HTMLAttributes['class'];
   }>(),
   {
     max: 100,
@@ -14,18 +17,9 @@ const props = withDefaults(
   },
 );
 
-const indicatorClass = computed(() => {
-  if (props.level) {
-    return {
-      alarm:    'bg-alarm',
-      warning:  'bg-warning',
-      caution:  'bg-caution',
-      advisory: 'bg-advisory',
-      nominal:  'bg-nominal',
-    }[props.level];
-  }
-  return 'bg-primary';
-});
+const styles = computed(() => progress({ level: props.level ?? undefined }));
+const rootClass = computed(() => cn(styles.value.root(), props.class));
+const indicatorClass = computed(() => styles.value.indicator());
 
 const translate = computed(() => {
   if (props.value == null) return '-100%';
@@ -35,13 +29,8 @@ const translate = computed(() => {
 </script>
 
 <template>
-  <ProgressRoot
-    :model-value="value"
-    :max="max"
-    class="relative h-2 w-full overflow-hidden rounded-full bg-background"
-  >
+  <ProgressRoot :model-value="value" :max="max" :class="rootClass">
     <ProgressIndicator
-      class="h-full w-full transition-transform duration-300"
       :class="indicatorClass"
       :style="{ transform: `translateX(${translate})` }"
     />

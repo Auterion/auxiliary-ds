@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { TooltipContent, TooltipPortal } from 'reka-ui';
+import { computed, type HTMLAttributes } from 'vue';
+import { cn } from '@auxiliary/css/utils';
+import { tooltip } from '@auxiliary/css/recipes';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     side?: 'top' | 'right' | 'bottom' | 'left';
     align?: 'start' | 'center' | 'end';
     sideOffset?: number;
+    class?: HTMLAttributes['class'];
   }>(),
   {
     side: 'top',
@@ -13,6 +17,8 @@ withDefaults(
     sideOffset: 4,
   },
 );
+
+const rootClass = computed(() => cn(tooltip(), props.class));
 </script>
 
 <template>
@@ -21,7 +27,7 @@ withDefaults(
       :side="side"
       :align="align"
       :side-offset="sideOffset"
-      class="z-50 max-w-xs rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground shadow-md"
+      :class="rootClass"
     >
       <slot />
     </TooltipContent>

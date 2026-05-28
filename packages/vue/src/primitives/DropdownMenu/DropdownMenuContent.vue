@@ -1,11 +1,15 @@
 <script setup lang="ts">
+import { computed, type HTMLAttributes } from 'vue';
 import { DropdownMenuContent, DropdownMenuPortal } from 'reka-ui';
+import { cn } from '@auxiliary/css/utils';
+import { dropdownMenu } from '@auxiliary/css/recipes';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     side?: 'top' | 'right' | 'bottom' | 'left';
     align?: 'start' | 'center' | 'end';
     sideOffset?: number;
+    class?: HTMLAttributes['class'];
   }>(),
   {
     side: 'bottom',
@@ -13,6 +17,9 @@ withDefaults(
     sideOffset: 4,
   },
 );
+
+const styles = dropdownMenu();
+const rootClass = computed(() => cn(styles.content(), props.class));
 </script>
 
 <template>
@@ -21,7 +28,7 @@ withDefaults(
       :side="side"
       :align="align"
       :side-offset="sideOffset"
-      class="z-50 min-w-[10rem] rounded-md border border-border bg-popover p-1 text-sm text-foreground shadow-md outline-none"
+      :class="rootClass"
     >
       <slot />
     </DropdownMenuContent>

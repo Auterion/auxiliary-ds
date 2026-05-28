@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, type HTMLAttributes } from 'vue';
+import { spinner, type Size } from '@auxiliary/css/recipes';
+import { cn } from '@auxiliary/css/utils';
 
 const props = withDefaults(
   defineProps<{
-    size?: 'sm' | 'md' | 'lg';
+    size?: Size;
     label?: string;
+    class?: HTMLAttributes['class'];
   }>(),
   {
     size: 'md',
@@ -12,15 +15,14 @@ const props = withDefaults(
   },
 );
 
-const sizing = computed(
-  () => ({ sm: 'h-3 w-3', md: 'h-4 w-4', lg: 'h-6 w-6' })[props.size],
-);
+const styles = computed(() => spinner({ size: props.size }));
+const rootClass = computed(() => cn(styles.value.root(), props.class));
 </script>
 
 <template>
-  <span class="inline-flex items-center" :role="'status'" :aria-label="label">
+  <span :class="rootClass" role="status" :aria-label="label">
     <svg
-      :class="['animate-spin text-current', sizing]"
+      :class="styles.icon()"
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden="true"

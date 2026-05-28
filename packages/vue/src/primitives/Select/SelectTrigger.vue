@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { SelectIcon, SelectTrigger } from 'reka-ui';
+import { computed, type HTMLAttributes } from 'vue';
+import { cn } from '@auxiliary/css/utils';
+import { select } from '@auxiliary/css/recipes';
+
+const props = defineProps<{ class?: HTMLAttributes['class'] }>();
+
+const styles = select();
+const rootClass = computed(() => cn(styles.trigger(), props.class));
 </script>
 
 <template>
-  <SelectTrigger
-    class="inline-flex h-9 w-full items-center justify-between gap-2 rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:ring-2 ring-ring disabled:opacity-50 disabled:cursor-not-allowed data-[placeholder]:text-muted-foreground"
-  >
+  <SelectTrigger :class="rootClass">
     <slot />
     <SelectIcon>
       <svg
@@ -17,7 +23,7 @@ import { SelectIcon, SelectTrigger } from 'reka-ui';
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="text-muted-foreground"
+        :class="styles.triggerIcon()"
         aria-hidden="true"
       >
         <polyline points="6 9 12 15 18 9" />

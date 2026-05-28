@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { PopoverContent, PopoverPortal } from 'reka-ui';
+import { computed, type HTMLAttributes } from 'vue';
+import { cn } from '@auxiliary/css/utils';
+import { popover } from '@auxiliary/css/recipes';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     side?: 'top' | 'right' | 'bottom' | 'left';
     align?: 'start' | 'center' | 'end';
     sideOffset?: number;
     alignOffset?: number;
+    class?: HTMLAttributes['class'];
   }>(),
   {
     side: 'bottom',
@@ -15,6 +19,9 @@ withDefaults(
     alignOffset: 0,
   },
 );
+
+const styles = popover();
+const rootClass = computed(() => cn(styles.content(), props.class));
 </script>
 
 <template>
@@ -24,7 +31,7 @@ withDefaults(
       :align="align"
       :side-offset="sideOffset"
       :align-offset="alignOffset"
-      class="z-50 w-72 rounded-md border border-border bg-popover p-4 text-sm text-foreground shadow-md outline-none focus-visible:ring-2 ring-ring"
+      :class="rootClass"
     >
       <slot />
     </PopoverContent>

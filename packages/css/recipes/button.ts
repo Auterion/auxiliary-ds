@@ -9,7 +9,7 @@ export const button = tv({
     'disabled:opacity-50 disabled:pointer-events-none',
   ].join(' '),
   variants: {
-    intent: {
+    variant: {
       primary:   'bg-primary text-primary-foreground hover:bg-primary/90',
       secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
       ghost:     'text-foreground hover:bg-accent hover:text-accent-foreground',
@@ -25,7 +25,7 @@ export const button = tv({
     },
   },
   defaultVariants: {
-    intent: 'primary',
+    variant: 'primary',
     size: 'md',
   },
 });

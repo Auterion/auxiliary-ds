@@ -1,15 +1,22 @@
 <script setup lang="ts">
-defineProps<{
+import { computed, type HTMLAttributes } from 'vue';
+import { cn } from '@auxiliary/css/utils';
+import { input } from '@auxiliary/css/recipes';
+
+const props = defineProps<{
   modelValue?: string | number;
   type?: string;
   placeholder?: string;
   disabled?: boolean;
   id?: string;
+  class?: HTMLAttributes['class'];
 }>();
 
 defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
+
+const rootClass = computed(() => cn(input(), props.class));
 </script>
 
 <template>
@@ -19,7 +26,7 @@ defineEmits<{
     :value="modelValue"
     :placeholder="placeholder"
     :disabled="disabled"
-    class="h-9 w-full rounded-md bg-background border border-input px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+    :class="rootClass"
     @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
   />
 </template>
