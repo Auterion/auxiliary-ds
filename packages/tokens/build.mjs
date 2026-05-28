@@ -120,52 +120,199 @@ StyleDictionary.registerFormat({
 });
 
 /**
- * Per-mode DTCG emitter for the DTCG Design Token Manager Figma plugin
- * (Styleframe convention). Each emitted file declares one Figma mode via
- * `$extensions.com.figma.modeName` and contains only the tokens that belong
- * to that mode. Paths are flattened (semantic tokens drop the theme prefix
- * so `light.bg.canvas` and `dark.bg.canvas` share the path `bg.canvas` and
- * the plugin merges them into a single variable with two modes).
- *
- * `options.scope`:
- *   - "primitives" — include only non-theme tokens (the color primitives,
- *     spacing, radius, etc.). Filename mode is the literal "Primitives".
- *   - one of THEMES (light/dark/sunlight/darknight) — include only that
- *     theme's semantic tokens, prefix stripped from paths.
+ * Convert hex/named color → Figma's {r,g,b,a} 0-1 float shape.
+ */
+const toFigmaRgba = (raw) => {
+  const hex = toFigmaColor(raw);
+  const parsed = parseColor(hex);
+  if (!parsed) return { r: 0, g: 0, b: 0, a: 1 };
+  return {
+    r: parsed.r ?? 0,
+    g: parsed.g ?? 0,
+    b: parsed.b ?? 0,
+    a: parsed.alpha ?? 1,
+  };
+};
+
+/**
+ * DTCG token type → Figma `resolvedType`.
+ */
+const figmaResolvedType = (dtcgType) => {
+  if (dtcgType === 'color') return 'COLOR';
+  return 'FLOAT'; // dimension, number, fontWeight, duration → all numeric
+};
+
+/**
+ * Convert a DTCG value to Figma's variable value shape (NOT alias-aware —
+ * caller handles aliases).
+ */
+const toFigmaValue = (token) => {
+  if (token.$type === 'color') return toFigmaRgba(token.$value);
+  if (typeof token.$value === 'string') {
+    // strip "px", "ms", etc. and return a float
+    const n = parseFloat(token.$value);
+    return Number.isFinite(n) ? n : 0;
+  }
+  if (typeof token.$value === 'number') return token.$value;
+  return 0;
+};
+
+/**
+ * Figma-name path: slash-separated, kebab-cased segments.
+ * `['color', 'primitive', 'zinc', '900']` → `color/primitive/zinc/900`
+ * `['spacing', '0_5']` → `spacing/0-5`
+ */
+const figmaName = (path) => path.map(kebabSegment).join('/');
+
+/**
+ * Synthetic ID generator — stable per token path so re-runs produce the
+ * same JSON. The DTCG Design Token Manager plugin maps these to its own
+ * Figma IDs at import time; IDs in the JSON only need to be unique within
+ * the JSON (used for VARIABLE_ALIAS references).
+ */
+const idForVariable = (collectionShort, path) =>
+  `var_${collectionShort}_${path.map(kebabSegment).join('_')}`;
+
+/**
+ * Token types Figma Variables don't natively support — `STRING` works for
+ * font family / tracking but adds noise; we keep them out of the figma
+ * artifact for now and let designers consume them through Effect Styles /
+ * inline values.
+ */
+const FIGMA_INCLUDE_TYPES = new Set([
+  'color',
+  'dimension',
+  'number',
+  'fontWeight',
+  'duration',
+]);
+
+/**
+ * Emit the full Figma-native variable export the DTCG Design Token Manager
+ * plugin uses both as its export format AND its single-file import format.
+ * Produces two collections (Primitives, Themes) with proper Modes and
+ * cross-collection variable aliases — exactly the end-state designers want.
  */
 StyleDictionary.registerFormat({
-  name: 'json/figma-mode',
-  format: async ({ dictionary, options }) => {
-    const scope = options?.scope;
-    const isPrimitives = scope === 'primitives';
-    const modeName = isPrimitives
-      ? 'Primitives'
-      : scope[0].toUpperCase() + scope.slice(1);
+  name: 'json/figma-plugin-export',
+  format: async ({ dictionary }) => {
+    const all = dictionary.allTokens.filter(
+      (t) => !FIGMA_SKIP_TYPES.has(t.$type) && FIGMA_INCLUDE_TYPES.has(t.$type),
+    );
 
-    const tree = {
-      $extensions: { 'com.figma.modeName': modeName },
-    };
+    const PRIMITIVES_COLL_ID = 'collection_primitives';
+    const THEMES_COLL_ID = 'collection_themes';
+    const PRIMITIVES_MODE_ID = 'mode_primitives_default';
+    const THEME_MODE_IDS = Object.fromEntries(
+      THEMES.map((t) => [t, `mode_${t}`]),
+    );
 
-    for (const t of dictionary.allTokens) {
-      if (FIGMA_SKIP_TYPES.has(t.$type)) continue;
+    const titleCase = (s) => s[0].toUpperCase() + s.slice(1);
 
-      const tokenIsTheme = isTheme(t);
-      const include = isPrimitives ? !tokenIsTheme : tokenIsTheme && t.path[0] === scope;
-      if (!include) continue;
+    const collections = [
+      {
+        id: PRIMITIVES_COLL_ID,
+        name: 'Primitives',
+        modes: [{ modeId: PRIMITIVES_MODE_ID, name: 'Mode 1' }],
+        defaultModeId: PRIMITIVES_MODE_ID,
+      },
+      {
+        id: THEMES_COLL_ID,
+        name: 'Themes',
+        modes: THEMES.map((t) => ({
+          modeId: THEME_MODE_IDS[t],
+          name: titleCase(t),
+        })),
+        defaultModeId: THEME_MODE_IDS.light,
+      },
+    ];
 
-      const path = isPrimitives ? t.path : t.path.slice(1);
-      let node = tree;
-      for (let i = 0; i < path.length - 1; i++) {
-        const key = path[i];
-        node[key] ??= {};
-        node = node[key];
-      }
-      node[path[path.length - 1]] = {
-        $type: t.$type,
-        $value: t.$type === 'color' ? toFigmaColor(t.$value) : t.$value,
-      };
+    // Primitive variables — one per non-theme token, single mode value.
+    const primitiveTokens = all.filter((t) => !isTheme(t));
+    const primitiveVars = primitiveTokens.map((t) => ({
+      id: idForVariable('prim', t.path),
+      name: figmaName(t.path),
+      description: '',
+      resolvedType: figmaResolvedType(t.$type),
+      scopes: ['ALL_SCOPES'],
+      variableCollectionId: PRIMITIVES_COLL_ID,
+      valuesByMode: {
+        [PRIMITIVES_MODE_ID]: toFigmaValue(t),
+      },
+    }));
+
+    // Map each primitive's source path (e.g. `color.primitive.zinc.900`)
+    // to its variable id, so we can resolve DTCG aliases → VARIABLE_ALIAS.
+    const primIdByDottedPath = new Map();
+    for (const t of primitiveTokens) {
+      primIdByDottedPath.set(t.path.join('.'), idForVariable('prim', t.path));
     }
-    return JSON.stringify(tree, null, 2) + '\n';
+
+    // Semantic variables — group theme tokens by their post-prefix path
+    // (`light.bg.canvas` and `dark.bg.canvas` → `bg/canvas`).
+    const semanticGroups = new Map();
+    for (const t of all) {
+      if (!isTheme(t)) continue;
+      const [theme, ...rest] = t.path;
+      const semKey = rest.join('.');
+      if (!semanticGroups.has(semKey)) {
+        semanticGroups.set(semKey, { path: rest, byTheme: {} });
+      }
+      semanticGroups.get(semKey).byTheme[theme] = t;
+    }
+
+    const semanticVars = [];
+    for (const [, group] of semanticGroups) {
+      const sampleToken =
+        group.byTheme.light ?? Object.values(group.byTheme)[0];
+      const valuesByMode = {};
+      for (const theme of THEMES) {
+        const t = group.byTheme[theme];
+        if (!t) continue;
+        const modeId = THEME_MODE_IDS[theme];
+
+        // If the source value is a DTCG alias like {color.primitive.zinc.900},
+        // emit a VARIABLE_ALIAS pointing at the primitive variable. Otherwise
+        // emit a direct value.
+        const orig = t.original?.$value;
+        if (
+          typeof orig === 'string' &&
+          orig.startsWith('{') &&
+          orig.endsWith('}')
+        ) {
+          const refPath = orig.slice(1, -1);
+          const targetId = primIdByDottedPath.get(refPath);
+          if (targetId) {
+            valuesByMode[modeId] = { type: 'VARIABLE_ALIAS', id: targetId };
+            continue;
+          }
+        }
+        valuesByMode[modeId] = toFigmaValue(t);
+      }
+
+      semanticVars.push({
+        id: idForVariable('theme', group.path),
+        name: figmaName(group.path),
+        description: '',
+        resolvedType: figmaResolvedType(sampleToken.$type),
+        scopes: ['ALL_SCOPES'],
+        variableCollectionId: THEMES_COLL_ID,
+        valuesByMode,
+      });
+    }
+
+    return (
+      JSON.stringify(
+        {
+          variables: [...primitiveVars, ...semanticVars],
+          collections,
+          exportedAt: new Date().toISOString(),
+          pluginVersion: 'auxiliary-1.0.0',
+        },
+        null,
+        2,
+      ) + '\n'
+    );
   },
 });
 
@@ -192,15 +339,9 @@ const sd = new StyleDictionary({
       buildPath: 'dist/',
       files: [
         {
-          destination: 'figma.primitives.tokens.json',
-          format: 'json/figma-mode',
-          options: { scope: 'primitives' },
+          destination: 'figma.tokens.json',
+          format: 'json/figma-plugin-export',
         },
-        ...THEMES.map((theme) => ({
-          destination: `figma.${theme}.tokens.json`,
-          format: 'json/figma-mode',
-          options: { scope: theme },
-        })),
       ],
     },
   },
