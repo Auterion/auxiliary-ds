@@ -1,0 +1,27 @@
+{
+  "color": {
+    "primitive": {
+      "night": {
+        "amber": {
+          "50":  { "$type": "color", "$value": "rgb(255, 211, 167)" },
+          "100": { "$type": "color", "$value": "rgb(234, 167, 94)" },
+          "200": { "$type": "color", "$value": "rgb(199, 136, 66)" },
+          "300": { "$type": "color", "$value": "rgb(156, 106, 52)" }
+        },
+        "brown": {
+          "500": { "$type": "color", "$value": "rgb(95, 67, 38)" },
+          "600": { "$type": "color", "$value": "rgb(72, 52, 31)" },
+          "700": { "$type": "color", "$value": "rgb(39, 27, 16)" },
+          "800": { "$type": "color", "$value": "rgb(9, 20, 15)" }
+        },
+        "status": {
+          "alarm":    { "$type": "color", "$value": "rgb(233, 15, 32)" },
+          "warning":  { "$type": "color", "$value": "rgb(186, 90, 0)" },
+          "caution":  { "$type": "color", "$value": "rgb(137, 115, 0)" },
+          "advisory": { "$type": "color", "$value": "rgb(66, 92, 130)" },
+          "nominal":  { "$type": "color", "$value": "rgb(0, 136, 0)" }
+        }
+      }
+    }
+  }
+}
