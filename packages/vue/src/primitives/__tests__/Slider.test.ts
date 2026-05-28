@@ -71,14 +71,13 @@ describe('Slider', () => {
     expect(results).toHaveNoViolations();
   });
 
-  // BUG: Passing `aria-label` for an accessible name lands it on the root <span>
-  // (which reka-ui renders with NO role), producing an axe `aria-prohibited-attr`
-  // violation ("aria-label cannot be used on a span with no valid role"). The
-  // accessible name never reaches the role="slider" thumb. The Slider wrapper
-  // exposes no way to label the actual slider input, so it cannot be given an
-  // accessible name without tripping a11y rules.
-  it.skip('accepts an accessible name without axe violations', async () => {
+  // An accessible name routes to the role="slider" thumb, not the role-less root <span>.
+  it('routes an accessible name to the slider thumb without axe violations', async () => {
     const wrapper = mount(Slider, { props: { modelValue: [60], 'aria-label': 'Brightness' } });
+    const thumb = wrapper.find('[role="slider"]');
+    expect(thumb.attributes('aria-label')).toBe('Brightness');
+    // The prohibited attr must NOT be on the role-less root.
+    expect(wrapper.element.getAttribute('aria-label')).toBeNull();
     const results = await axe(wrapper.element);
     expect(results).toHaveNoViolations();
   });

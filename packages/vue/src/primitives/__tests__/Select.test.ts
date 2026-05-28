@@ -11,13 +11,13 @@ import SelectSeparator from '../Select/SelectSeparator.vue';
 
 // Reka teleports SelectContent into document.body. Build a fresh harness component
 // per test and unmount it afterwards so Vue tears down its own teleported nodes.
-function harness(rootProps: Record<string, unknown> = {}) {
+function harness(rootProps: Record<string, unknown> = {}, contentProps: Record<string, unknown> = {}) {
   return defineComponent({
     setup() {
       return () =>
         h(Select, rootProps, () => [
           h(SelectTrigger, () => h(SelectValue, { placeholder: 'Pick a unit' })),
-          h(SelectContent, () => [
+          h(SelectContent, contentProps, () => [
             h(SelectItem, { value: 'metric' }, () => 'Metric'),
             h(SelectSeparator),
             h(SelectItem, { value: 'imperial' }, () => 'Imperial'),
@@ -122,17 +122,19 @@ describe('Select', () => {
     expect(results).toHaveNoViolations();
   });
 
-  // BUG: When open, SelectContent renders a [role="listbox"] with no accessible name,
-  // tripping axe's `aria-input-field-name` rule ("ARIA input fields must have an
-  // accessible name"). SelectContent should expose a way to label the listbox (e.g.
-  // forward aria-label / aria-labelledby, or associate it with the trigger). The open
-  // content also surfaces `aria-hidden-focus` violations from Reka's focus-guard spans
-  // (tabindex="0" + aria-hidden), but the listbox-name gap is the design-system one.
-  it.skip('has no axe violations when open', async () => {
-    const wrapper = mount(harness({ defaultOpen: true }));
+  // SelectContent forwards aria-label onto the role="listbox" element, giving the listbox an
+  // accessible name. axe is scoped to the listbox subtree: Reka's focus-guard spans
+  // (tabindex="0" + aria-hidden) are rendered as siblings *outside* the listbox and trip an
+  // unrelated upstream `aria-hidden-focus` rule, so they are not part of this component's surface.
+  it('gives the open listbox an accessible name with no axe violations', async () => {
+    const wrapper = mount(harness({ defaultOpen: true }, { 'aria-label': 'Measurement unit' }));
     await nextTick();
 
-    const results = await axe(document.body);
+    const listbox = document.body.querySelector('[role="listbox"]');
+    expect(listbox).not.toBeNull();
+    expect(listbox!.getAttribute('aria-label')).toBe('Measurement unit');
+
+    const results = await axe(listbox as HTMLElement);
     expect(results).toHaveNoViolations();
     wrapper.unmount();
   });
