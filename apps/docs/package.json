@@ -1,15 +1,30 @@
 {
   "name": "@auxiliary/docs",
   "version": "0.0.0",
-  "description": "Auxiliary documentation site (VitePress).",
+  "description": "Auxiliary documentation site (VitePress). Runs at http://localhost:5173.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "echo \"@auxiliary/docs build — Step 6 will wire VitePress\" && exit 0",
-    "dev": "echo \"@auxiliary/docs dev — Step 6 will wire VitePress at :5173\" && exit 0",
-    "lint": "echo \"@auxiliary/docs lint — no sources yet\" && exit 0",
-    "typecheck": "echo \"@auxiliary/docs typecheck — no sources yet\" && exit 0",
-    "test": "echo \"@auxiliary/docs test — no sources yet\" && exit 0"
+    "dev": "vitepress dev --port 5173",
+    "build": "vitepress build",
+    "preview": "vitepress preview --port 5173",
+    "lint": "echo \"@auxiliary/docs lint — TODO\" && exit 0",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "echo \"@auxiliary/docs test — TODO\" && exit 0"
+  },
+  "dependencies": {
+    "@auxiliary/css": "workspace:*",
+    "@auxiliary/icons": "workspace:*",
+    "@auxiliary/tokens": "workspace:*",
+    "@auxiliary/vue": "workspace:*",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "tailwindcss": "^4.0.0",
+    "vitepress": "^1.5.0",
+    "vue-tsc": "^2.2.0"
   }
 }

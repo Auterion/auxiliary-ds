@@ -21,8 +21,8 @@ pnpm-debug.log*
 .env.*.local
 
 # VitePress
-.vitepress/cache/
-.vitepress/dist/
+**/.vitepress/cache/
+**/.vitepress/dist/
 
 # Vite playground (Step 4 scratch — not committed)
 playground/
