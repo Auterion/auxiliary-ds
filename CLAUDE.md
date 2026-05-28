@@ -4,13 +4,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current state
 
-The repository is in a **bootstrap state**: only `README.md` exists. The structure described below is the *intended* layout from the README — none of the `packages/`, `apps/`, or tooling files have been created yet. Treat the README as a design intent document, not a description of code that exists.
+The monorepo is fully scaffolded and building. The pnpm + Turborepo workspace, CI, and changesets release flow are all in place, and the component library has been built out across many merged steps. This is no longer a greenfield repo — when asked to implement something, extend the existing package rather than scaffolding from scratch.
 
-When asked to implement something, first check whether the relevant package directory exists. If it doesn't, scaffolding it (with the right `package.json`, build config, and workspace wiring) is part of the task.
+Packages (all under the `@auxiliary/*` scope):
 
-## Intended architecture
+- `packages/tokens` — `@auxiliary/tokens`
+- `packages/css` — `@auxiliary/css`
+- `packages/vue` — `@auxiliary/vue`
+- `packages/icons` — `@auxiliary/icons`
+- `packages/figma-sync` — `@auxiliary/figma-sync` (parked — see its README)
 
-Auxiliary is Auterion's design system, planned as a **pnpm + Turborepo monorepo** built Vue-first on Tailwind v4, with framework-agnostic tokens.
+Apps:
+
+- `apps/docs` — `@auxiliary/docs`, VitePress docs at `http://localhost:5173`
+- `apps/demo` — `@auxiliary/demo`, Vite playground at `http://localhost:5174`
+
+## Architecture
+
+Auxiliary is Auterion's design system, a **pnpm + Turborepo monorepo** built Vue-first on Tailwind v4, with framework-agnostic tokens.
 
 Layered dependency flow (downstream packages depend on upstream ones):
 
@@ -42,24 +53,38 @@ APIs and tokens will change without notice until the first tagged release. No ba
 
 ## Environment & commands
 
-Requires **Node 22+** and **pnpm 10+**.
+Requires **Node 24+** (`.nvmrc` pins `24`) and **pnpm 11+** (`packageManager` is `pnpm@11.4.0`).
 
-From README (will work once the workspace is scaffolded):
+Root scripts (all `turbo run` orchestrated except the changeset helpers):
 
 ```bash
 pnpm install
-pnpm build      # turbo-orchestrated build across packages
-pnpm dev        # runs docs site + watch builds
+pnpm build       # build across packages, respecting the dependency graph
+pnpm dev         # docs + demo + watch builds
+pnpm lint        # most package lint scripts are still stubs
+pnpm test        # most package test scripts are still stubs
+pnpm typecheck
+pnpm changeset   # add a changeset (required on every PR — see below)
+pnpm release     # build + changeset publish
 ```
 
-Package-scoped commands once Turborepo is wired:
+Package-scoped commands use the real names:
 
 ```bash
-pnpm --filter @auxiliary/tokens build
-pnpm --filter @auxiliary/docs dev
+pnpm --filter @auxiliary/tokens build   # node build.mjs
+pnpm --filter @auxiliary/css build      # tsc
+pnpm --filter @auxiliary/vue build      # vite build && vue-tsc
+pnpm --filter @auxiliary/docs dev       # VitePress on :5173
 ```
 
-(Exact package names are TBD — the README doesn't fix them. Check `package.json` once it exists.)
+## CI / contribution gotchas
+
+CI (`.github/workflows/ci.yml`) enforces two things that are easy to miss:
+
+1. **The icon registry is generated and must be committed in sync.** `packages/icons/src/registry.ts` is produced from `packages/icons/src/config.ts` (and `packages/icons/inputs/*.svg`). After changing either, run `pnpm --filter @auxiliary/icons sync` and commit the regenerated `registry.ts` — CI fails if it drifts. Icons build on Font Awesome Pro Sharp plus a custom kit, so installing/syncing needs `FONTAWESOME_PACKAGE_TOKEN` in the environment.
+2. **Every PR needs a changeset.** CI runs `changeset status --since=origin/main`; add one with `pnpm changeset`.
+
+`@auxiliary/figma-sync` is currently parked — its build/lint/test scripts are stubs.
 
 ## License
 
