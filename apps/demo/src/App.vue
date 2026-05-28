@@ -59,6 +59,13 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+  Badge,
+  Progress,
+  Spinner,
+  Skeleton,
 } from '@auxiliary/vue';
 
 const THEMES = ['system', 'light', 'dark', 'sunlight', 'darknight'] as const;
@@ -637,6 +644,86 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
               </Accordion>
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      <!-- Visuals: Avatar / Badge / Progress / Spinner / Skeleton -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Visuals</h2>
+        <p class="mb-5 text-sm text-muted">
+          <code class="font-mono">&lt;Avatar&gt;</code>,
+          <code class="font-mono">&lt;Badge&gt;</code>,
+          <code class="font-mono">&lt;Progress&gt;</code>,
+          <code class="font-mono">&lt;Spinner&gt;</code>,
+          <code class="font-mono">&lt;Skeleton&gt;</code> — small visual surface
+          pieces that complete the universal-basics set.
+        </p>
+        <div class="grid gap-5 rounded-md border border-default bg-surface p-5 lg:grid-cols-2">
+          <div class="space-y-4">
+            <div>
+              <div class="mb-2 text-xs uppercase text-muted">Avatars (initials fallback)</div>
+              <div class="flex items-center gap-3">
+                <Avatar size="sm"><AvatarFallback>YD</AvatarFallback></Avatar>
+                <Avatar size="md"><AvatarFallback>AM</AvatarFallback></Avatar>
+                <Avatar size="lg"><AvatarFallback>OP</AvatarFallback></Avatar>
+              </div>
+            </div>
+
+            <div>
+              <div class="mb-2 text-xs uppercase text-muted">Badges (generic — distinct from StatusBadge)</div>
+              <div class="flex flex-wrap items-center gap-2">
+                <Badge variant="default">default</Badge>
+                <Badge variant="secondary">secondary</Badge>
+                <Badge variant="outline">outline</Badge>
+                <Badge variant="accent">accent</Badge>
+                <Badge size="sm">v4.2.1</Badge>
+                <Badge size="sm" variant="outline">beta</Badge>
+              </div>
+            </div>
+
+            <div>
+              <div class="mb-2 text-xs uppercase text-muted">Spinner</div>
+              <div class="flex items-center gap-4 text-secondary">
+                <Spinner size="sm" />
+                <Spinner size="md" />
+                <Spinner size="lg" />
+                <span class="text-sm text-muted">inherits color via currentColor</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <div class="mb-2 text-xs uppercase text-muted">Progress (battery 74% — warning if &lt;30%)</div>
+              <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                  <span class="font-mono tabular text-xs text-muted w-12">74%</span>
+                  <Progress :value="74" level="nominal" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="font-mono tabular text-xs text-muted w-12">42%</span>
+                  <Progress :value="42" level="caution" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="font-mono tabular text-xs text-muted w-12">18%</span>
+                  <Progress :value="18" level="warning" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="font-mono tabular text-xs text-muted w-12">5%</span>
+                  <Progress :value="5" level="alarm" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="mb-2 text-xs uppercase text-muted">Skeleton (loading placeholders)</div>
+              <div class="space-y-2">
+                <Skeleton class="h-3 w-32" />
+                <Skeleton class="h-3 w-48" />
+                <Skeleton class="h-3 w-24" />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
