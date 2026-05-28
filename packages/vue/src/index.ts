@@ -44,3 +44,8 @@ export { default as ToastTitle } from './primitives/Toast/ToastTitle.vue';
 export { default as ToastDescription } from './primitives/Toast/ToastDescription.vue';
 export { default as ToastAction } from './primitives/Toast/ToastAction.vue';
 export { default as ToastClose } from './primitives/Toast/ToastClose.vue';
+
+// Operational primitives — Auterion-specific (mission control, telemetry, alerts)
+export { default as StatusBadge, type StatusLevel } from './primitives/StatusBadge.vue';
+export { default as TelemetryValue } from './primitives/TelemetryValue.vue';
+export { default as AlertBanner, type AlertLevel } from './primitives/AlertBanner.vue';
