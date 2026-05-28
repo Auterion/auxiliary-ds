@@ -39,6 +39,9 @@ import {
   ToastDescription,
   ToastAction,
   ToastClose,
+  StatusBadge,
+  TelemetryValue,
+  AlertBanner,
 } from '@auxiliary/vue';
 
 const THEMES = ['system', 'light', 'dark', 'sunlight', 'darknight'] as const;
@@ -122,25 +125,93 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <section>
         <h2 class="mb-1 text-lg font-medium">Status hierarchy</h2>
         <p class="mb-5 text-sm text-muted">
-          Five levels, populated per theme. Same vocabulary across product, marketing,
-          internal tools. Foundation for operational surfaces (Level 3–4).
+          <code class="font-mono">&lt;StatusBadge&gt;</code> — five levels, populated
+          per theme. Solid for active state; outline for muted contexts. The vocabulary
+          nobody else in the Vue ecosystem ships.
         </p>
-        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          <div
-            v-for="s in STATUSES"
-            :key="s"
-            :class="[
-              'rounded-md border p-4',
-              s === 'alarm' ? 'bg-alarm text-alarm border-alarm' : '',
-              s === 'warning' ? 'bg-warning text-warning border-warning' : '',
-              s === 'caution' ? 'bg-caution text-caution border-caution' : '',
-              s === 'advisory' ? 'bg-advisory text-advisory border-advisory' : '',
-              s === 'nominal' ? 'bg-nominal text-nominal border-nominal' : '',
-            ]"
-          >
-            <div class="text-xs uppercase tracking-wide opacity-80">{{ s }}</div>
-            <div class="mt-1 font-medium">{{ STATUS_LABELS[s] }}</div>
+        <div class="space-y-3 rounded-md border border-default bg-surface p-5">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="w-16 text-xs uppercase text-muted">Solid</span>
+            <StatusBadge v-for="s in STATUSES" :key="`s-${s}`" :level="s" dot>{{ s }}</StatusBadge>
           </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="w-16 text-xs uppercase text-muted">Outline</span>
+            <StatusBadge
+              v-for="s in STATUSES"
+              :key="`o-${s}`"
+              :level="s"
+              variant="outline"
+            >{{ s }}</StatusBadge>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-default mt-3">
+            <span class="w-16 text-xs uppercase text-muted">In situ</span>
+            <span class="text-sm text-secondary">Link status:</span>
+            <StatusBadge level="alarm" size="sm" dot>Lost</StatusBadge>
+            <span class="text-sm text-secondary ml-3">Battery:</span>
+            <StatusBadge level="warning" size="sm" dot>Low</StatusBadge>
+            <span class="text-sm text-secondary ml-3">GPS:</span>
+            <StatusBadge level="nominal" size="sm" dot>12 sats</StatusBadge>
+          </div>
+        </div>
+      </section>
+
+      <!-- Telemetry -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Telemetry</h2>
+        <p class="mb-5 text-sm text-muted">
+          <code class="font-mono">&lt;TelemetryValue&gt;</code> — mono tabular readouts
+          with optional unit, label, precision, and trend arrow. Colors by status when
+          a value crosses a threshold.
+        </p>
+        <div class="grid grid-cols-2 gap-x-6 gap-y-4 rounded-md border border-default bg-surface p-5 sm:grid-cols-4">
+          <TelemetryValue label="Altitude" :value="408.2" unit="m" trend="up" />
+          <TelemetryValue label="Ground speed" :value="12.4" unit="m/s" trend="stable" />
+          <TelemetryValue label="Heading" :value="247" unit="°" :precision="0" />
+          <TelemetryValue label="Battery" :value="74" unit="%" :precision="0" trend="down" />
+          <TelemetryValue label="Sats" :value="12" :precision="0" level="nominal" />
+          <TelemetryValue label="RSSI" :value="-87" unit="dBm" :precision="0" level="caution" />
+          <TelemetryValue label="Wind" :value="11.2" unit="m/s" trend="up" level="warning" />
+          <TelemetryValue label="Link" value="LOST" level="alarm" />
+        </div>
+      </section>
+
+      <!-- Alerts -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Alert banners</h2>
+        <p class="mb-5 text-sm text-muted">
+          <code class="font-mono">&lt;AlertBanner&gt;</code> — persistent, severity-coded
+          banners. Use for in-flight conditions that need visible acknowledgement, not
+          dismiss-after-N-seconds toasts.
+        </p>
+        <div class="space-y-2">
+          <AlertBanner
+            level="alarm"
+            title="Telemetry link lost"
+            description="No packets received for 3.4s. Failsafe will trigger in 5s."
+            action-label="Override"
+          />
+          <AlertBanner
+            level="warning"
+            title="Battery below 30%"
+            description="Estimated 4 minutes of flight remaining at current draw."
+            dismissible
+          />
+          <AlertBanner
+            level="caution"
+            title="Wind exceeds operational limits"
+            description="Sustained 11.2 m/s; recommended max for this airframe is 10 m/s."
+          />
+          <AlertBanner
+            level="advisory"
+            title="New waypoint queued"
+            description="WP-06 (47.380° N, 8.543° E) added from ground station."
+            dismissible
+          />
+          <AlertBanner
+            level="nominal"
+            title="Mission complete"
+            description="All 5 waypoints reached. Vehicle returning to home."
+          />
         </div>
       </section>
 
