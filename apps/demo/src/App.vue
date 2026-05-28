@@ -67,6 +67,7 @@ import {
   Spinner,
   Skeleton,
 } from '@auxiliary/vue';
+import { Icon, ICON_NAMES } from '@auxiliary/icons';
 
 const THEMES = ['system', 'light', 'dark', 'sunlight', 'darknight'] as const;
 type Theme = (typeof THEMES)[number];
@@ -746,6 +747,70 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             <div class="text-xs uppercase text-muted-foreground">bg-popover</div>
             <div class="mt-2 text-sm">Popover / dropdown</div>
           </div>
+        </div>
+      </section>
+
+      <!-- Icons -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Icons</h2>
+        <p class="mb-5 text-sm text-muted-foreground">
+          <code class="font-mono text-xs">&lt;Icon name="…" weight="…" size="…" /&gt;</code>
+          — typed name union from <code class="font-mono text-xs">@auxiliary/icons</code>.
+          Inherits <code class="font-mono text-xs">currentColor</code>; pair with the alarm-tier text utilities.
+        </p>
+
+        <!-- Size scale -->
+        <div class="mb-6 flex items-end gap-6">
+          <div v-for="size in (['xs', 'sm', 'md', 'lg', 'xl'] as const)" :key="size" class="flex flex-col items-center gap-2">
+            <Icon name="drone" :size="size" />
+            <span class="text-[10px] uppercase tracking-wide text-muted-foreground">{{ size }}</span>
+          </div>
+        </div>
+
+        <!-- Status pairing -->
+        <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-5">
+          <div class="flex items-center gap-2 rounded-md border border-border bg-card p-3">
+            <span class="text-alarm"><Icon name="drone" size="md" /></span>
+            <span class="text-xs">alarm</span>
+          </div>
+          <div class="flex items-center gap-2 rounded-md border border-border bg-card p-3">
+            <span class="text-warning"><Icon name="drone" size="md" /></span>
+            <span class="text-xs">warning</span>
+          </div>
+          <div class="flex items-center gap-2 rounded-md border border-border bg-card p-3">
+            <span class="text-caution"><Icon name="drone" size="md" /></span>
+            <span class="text-xs">caution</span>
+          </div>
+          <div class="flex items-center gap-2 rounded-md border border-border bg-card p-3">
+            <span class="text-advisory"><Icon name="drone" size="md" /></span>
+            <span class="text-xs">advisory</span>
+          </div>
+          <div class="flex items-center gap-2 rounded-md border border-border bg-card p-3">
+            <span class="text-nominal"><Icon name="drone" size="md" /></span>
+            <span class="text-xs">nominal</span>
+          </div>
+        </div>
+
+        <!-- Registry coverage -->
+        <div class="rounded-md border border-border bg-card p-5">
+          <div class="mb-3 flex items-center justify-between">
+            <span class="text-xs uppercase tracking-wide text-muted-foreground">Registry</span>
+            <span class="font-mono text-xs text-muted-foreground">{{ ICON_NAMES.length }} icons</span>
+          </div>
+          <div class="grid grid-cols-4 gap-3 sm:grid-cols-8">
+            <div
+              v-for="name in ICON_NAMES"
+              :key="name"
+              class="flex flex-col items-center gap-1.5 rounded border border-border p-2 text-muted-foreground"
+            >
+              <Icon :name="name" size="md" />
+              <span class="font-mono text-[10px] truncate w-full text-center">{{ name }}</span>
+            </div>
+          </div>
+          <p class="mt-4 text-xs text-muted-foreground">
+            Run <code class="font-mono">pnpm --filter @auxiliary/icons sync</code> with
+            <code class="font-mono">FONTAWESOME_PACKAGE_TOKEN</code> set to populate FA Pro Sharp glyphs.
+          </p>
         </div>
       </section>
     </div>

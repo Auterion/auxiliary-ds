@@ -27,7 +27,22 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
+        env:
+          FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
         run: pnpm install --frozen-lockfile
+
+      - name: Verify icon registry in sync with config
+        env:
+          FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
+        run: |
+          pnpm --filter @auxiliary/icons sync
+          if ! git diff --exit-code packages/icons/src/registry.ts; then
+            echo "::error::packages/icons/src/registry.ts is out of date."
+            echo "::error::Edit packages/icons/src/config.ts (or inputs/*.svg), then run"
+            echo "::error::  pnpm --filter @auxiliary/icons sync"
+            echo "::error::and commit the result."
+            exit 1
+          fi
 
       - name: Lint
         run: pnpm lint
@@ -58,6 +73,8 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
+        env:
+          FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
         run: pnpm install --frozen-lockfile
 
       - name: Verify changeset present

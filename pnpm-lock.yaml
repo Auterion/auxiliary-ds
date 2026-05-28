@@ -26,6 +26,9 @@ importers:
       '@auxiliary/css':
         specifier: workspace:*
         version: link:../../packages/css
+      '@auxiliary/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
       '@auxiliary/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
@@ -71,7 +74,20 @@ importers:
 
   packages/figma-sync: {}
 
-  packages/icons: {}
+  packages/icons:
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.0
+        version: 5.2.4(vite@6.4.2(jiti@2.7.0)(lightningcss@1.32.0))(vue@3.5.34(typescript@6.0.3))
+      vite:
+        specifier: ^6.0.0
+        version: 6.4.2(jiti@2.7.0)(lightningcss@1.32.0)
+      vue:
+        specifier: ^3.5.0
+        version: 3.5.34(typescript@6.0.3)
+      vue-tsc:
+        specifier: ^2.2.0
+        version: 2.2.12(typescript@6.0.3)
 
   packages/tokens:
     devDependencies:
