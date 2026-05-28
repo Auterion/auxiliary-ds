@@ -23,6 +23,22 @@ After the fix:
 - `figma.tokens.json`: zero OKLCH strings (sample values: `#ef363c` red 500, `#f7791a` orange 500, `#f6b900` yellow 500, etc.)
 - `tailwind-v4.css` + `tokens.css`: 188 OKLCH literals each, untouched
 
+### Also: per-mode files so themes become Figma Modes (not folders)
+
+A single nested JSON makes the plugin create `light/bg/canvas`, `dark/bg/canvas`, … as **separate variables in folders** — not as **modes of a single variable**. That defeats the entire purpose of theming: components would need 4 references instead of 1.
+
+The fix: emit **5 files** matching the Styleframe DTCG / DTCG Design Token Manager convention:
+
+- `figma.primitives.tokens.json` — raw zinc / red / orange / yellow / blue / green / spacing / radius / typography / density (82 tokens). Mode name `Primitives`.
+- `figma.light.tokens.json` — semantic, path-flattened (`bg/canvas`, not `light/bg/canvas`). 32 tokens. Mode name `Light`.
+- `figma.dark.tokens.json` — same 32 paths, different values. Mode name `Dark`.
+- `figma.sunlight.tokens.json` — same 32 paths. Mode name `Sunlight`.
+- `figma.darknight.tokens.json` — same 32 paths. Mode name `Darknight`.
+
+Each file declares its mode via `$extensions.com.figma.modeName`. Designer imports primitives first (one Primitives collection), then the four theme files in any order — the plugin merges them into **one Themes collection with 4 modes** because the paths match. Components reference `bg/canvas` once; switching mode flips the value.
+
+Implementation: new `json/figma-mode` format in `build.mjs` taking a `scope` option (`'primitives'` or one of the 4 theme names). The platform config maps each scope to a destination file.
+
 ### Also: skip `cubicBezier` + `shadow` types in the figma artifact
 
 Two more plugin warnings surfaced after the OKLCH fix:

@@ -15,25 +15,35 @@ Verified working as of Step 7. Free Figma plugin; no GitHub auth required.
 
 ### Import / re-import
 
+The build emits **5 separate files** — one for primitives, one per theme. Importing them in order creates two Figma Variable collections: **Primitives** (one mode) and **Themes** (four modes — Light, Dark, Sunlight, Darknight). The plugin merges files that share token paths into one variable with multiple modes — that's how four imports become a single themed variable surface.
+
 1. From the repo root, build the tokens:
 
    ```bash
    pnpm --filter @auxiliary/tokens build
    ```
 
-   This regenerates `packages/tokens/dist/figma.tokens.json` from the DTCG source files in `packages/tokens/src/`.
+   This regenerates 5 files in `packages/tokens/dist/`:
+
+   - `figma.primitives.tokens.json` — raw color / spacing / radius / etc. (82 tokens)
+   - `figma.light.tokens.json` — semantic for Light (32 tokens)
+   - `figma.dark.tokens.json` — semantic for Dark (32 tokens)
+   - `figma.sunlight.tokens.json` — semantic for Sunlight (32 tokens)
+   - `figma.darknight.tokens.json` — semantic for Darknight (32 tokens)
 
 2. Open the target Figma file → run the plugin.
 
-3. In the plugin: **Import** → **Single file** → choose `packages/tokens/dist/figma.tokens.json` from your local disk.
+3. Import the **primitives file first**: Plugin → **Import** → **Single file** → `figma.primitives.tokens.json`. The plugin creates a **Primitives** collection containing the raw zinc / red / orange / yellow / blue / green ramps, plus spacing, radius, typography, density.
 
-4. The plugin creates Figma Variables matching the DTCG token tree:
-   - `color/primitive/zinc/50` through `color/primitive/zinc/950`
-   - `color/primitive/red|orange|yellow|blue|green/{300,500,700}`
-   - `light/bg/canvas`, `light/text/primary`, … and the same for `dark/`, `sunlight/`, `darknight/`
-   - `spacing/0` through `spacing/24`, `radius/none`–`radius/full`, etc.
+4. Import the **four theme files** one after another, in any order. The plugin recognizes the `$extensions.com.figma.modeName` declarations (`Light`, `Dark`, `Sunlight`, `Darknight`) and merges them into a single **Themes** collection with four modes. After the fourth import, every semantic variable (e.g. `bg/canvas`, `text/primary`, `status-alarm-bg`) has four mode values — the plugin auto-switches the displayed value when a designer changes the active mode.
 
-5. Apply variables to layers as you would any Figma variable. Publish the file as a Library so consuming design files inherit.
+5. In Figma, design-file layers reference a `bg/canvas` variable once; switching the Themes mode at the page or document level flips every component to the new theme. No 4× duplication.
+
+6. Publish the file as a Library so consuming design files inherit both collections.
+
+### Why 5 files instead of 1
+
+The DTCG Design Token Manager plugin (and the Styleframe convention it implements) maps **mode-per-file** to **Figma Modes**. A single nested file would create folders (`light/bg/canvas`, `dark/bg/canvas`, …) — separate variables, not modes — defeating the entire point of theme switching. Multiple files with matching paths is what triggers the mode-merge behavior.
 
 ### What gets through correctly
 

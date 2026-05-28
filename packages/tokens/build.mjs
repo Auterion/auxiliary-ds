@@ -119,19 +119,48 @@ StyleDictionary.registerFormat({
   },
 });
 
+/**
+ * Per-mode DTCG emitter for the DTCG Design Token Manager Figma plugin
+ * (Styleframe convention). Each emitted file declares one Figma mode via
+ * `$extensions.com.figma.modeName` and contains only the tokens that belong
+ * to that mode. Paths are flattened (semantic tokens drop the theme prefix
+ * so `light.bg.canvas` and `dark.bg.canvas` share the path `bg.canvas` and
+ * the plugin merges them into a single variable with two modes).
+ *
+ * `options.scope`:
+ *   - "primitives" — include only non-theme tokens (the color primitives,
+ *     spacing, radius, etc.). Filename mode is the literal "Primitives".
+ *   - one of THEMES (light/dark/sunlight/darknight) — include only that
+ *     theme's semantic tokens, prefix stripped from paths.
+ */
 StyleDictionary.registerFormat({
-  name: 'json/dtcg',
-  format: async ({ dictionary }) => {
-    const tree = {};
+  name: 'json/figma-mode',
+  format: async ({ dictionary, options }) => {
+    const scope = options?.scope;
+    const isPrimitives = scope === 'primitives';
+    const modeName = isPrimitives
+      ? 'Primitives'
+      : scope[0].toUpperCase() + scope.slice(1);
+
+    const tree = {
+      $extensions: { 'com.figma.modeName': modeName },
+    };
+
     for (const t of dictionary.allTokens) {
       if (FIGMA_SKIP_TYPES.has(t.$type)) continue;
+
+      const tokenIsTheme = isTheme(t);
+      const include = isPrimitives ? !tokenIsTheme : tokenIsTheme && t.path[0] === scope;
+      if (!include) continue;
+
+      const path = isPrimitives ? t.path : t.path.slice(1);
       let node = tree;
-      for (let i = 0; i < t.path.length - 1; i++) {
-        const key = t.path[i];
+      for (let i = 0; i < path.length - 1; i++) {
+        const key = path[i];
         node[key] ??= {};
         node = node[key];
       }
-      node[t.path[t.path.length - 1]] = {
+      node[path[path.length - 1]] = {
         $type: t.$type,
         $value: t.$type === 'color' ? toFigmaColor(t.$value) : t.$value,
       };
@@ -161,7 +190,18 @@ const sd = new StyleDictionary({
     figma: {
       transformGroup: 'js',
       buildPath: 'dist/',
-      files: [{ destination: 'figma.tokens.json', format: 'json/dtcg' }],
+      files: [
+        {
+          destination: 'figma.primitives.tokens.json',
+          format: 'json/figma-mode',
+          options: { scope: 'primitives' },
+        },
+        ...THEMES.map((theme) => ({
+          destination: `figma.${theme}.tokens.json`,
+          format: 'json/figma-mode',
+          options: { scope: theme },
+        })),
+      ],
     },
   },
 });
