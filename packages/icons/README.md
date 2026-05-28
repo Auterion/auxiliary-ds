@@ -60,6 +60,12 @@ This pairs cleanly with the 5-level alarm hierarchy in [`@auxiliary/tokens`](../
 
 ## Adding icons
 
+> **The round-trip**
+>
+> - **Local**: edit `src/config.ts` (or drop an SVG in `inputs/`), run `pnpm --filter @auxiliary/icons sync`, commit the regenerated `src/registry.ts`.
+> - **CI**: re-runs `sync` and fails the PR if you forgot to commit.
+> - **Consumers**: install the package and get every icon baked in — zero FA Pro dependency at their end.
+
 ### From Font Awesome Pro Sharp
 
 1. Add an entry to `FA_ICONS` in [`src/config.ts`](src/config.ts):
@@ -125,8 +131,6 @@ before adding, and reach for restraint before adding at all.
 
 ## Status
 
-- **Initial state**: 1 custom glyph (`drone`). FA-sourced icons require a one-time
-  `pnpm sync` with `FONTAWESOME_PACKAGE_TOKEN` set; the resulting registry is
-  committed and ships with the package.
+- **Currently ships**: 36 FA Pro Sharp glyphs across four weights + 1 Auterion custom glyph (`drone`). See [`src/config.ts`](src/config.ts) for the canonical allow-list.
 - **Pre-1.0**: APIs subject to change. The `IconName` union is the contract — if it
   doesn't move, your code doesn't break.
