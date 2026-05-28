@@ -45,6 +45,20 @@ export { default as ToastDescription } from './primitives/Toast/ToastDescription
 export { default as ToastAction } from './primitives/Toast/ToastAction.vue';
 export { default as ToastClose } from './primitives/Toast/ToastClose.vue';
 
+export { default as Card } from './primitives/Card/Card.vue';
+export { default as CardHeader } from './primitives/Card/CardHeader.vue';
+export { default as CardTitle } from './primitives/Card/CardTitle.vue';
+export { default as CardDescription } from './primitives/Card/CardDescription.vue';
+export { default as CardContent } from './primitives/Card/CardContent.vue';
+export { default as CardFooter } from './primitives/Card/CardFooter.vue';
+
+export { default as Separator } from './primitives/Separator.vue';
+
+export { default as Accordion } from './primitives/Accordion/Accordion.vue';
+export { default as AccordionItem } from './primitives/Accordion/AccordionItem.vue';
+export { default as AccordionTrigger } from './primitives/Accordion/AccordionTrigger.vue';
+export { default as AccordionContent } from './primitives/Accordion/AccordionContent.vue';
+
 export { default as Checkbox } from './primitives/Checkbox.vue';
 export { default as Switch } from './primitives/Switch.vue';
 export { default as RadioGroup } from './primitives/RadioGroup/RadioGroup.vue';
