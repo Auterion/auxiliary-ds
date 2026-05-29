@@ -1,6 +1,6 @@
 # StatusBadge
 
-A pill-shaped, 5-level operational status indicator bound to the **alarm hierarchy** ([FAA 14 CFR Part 25.1322](/foundations/colors#alarm-hierarchy) compliant). Use it for live state — link, battery, GPS, mission, vehicle.
+A pill-shaped, 5-level operational status indicator built on the `statusBadge` recipe and bound to the **alarm hierarchy** ([FAA 14 CFR Part 25.1322](/foundations/colors#alarm-hierarchy) compliant). Color is never the only signal: each level also carries a grayscale-distinct glyph and an always-rendered, screen-reader-only level label. Use it for live state — link, battery, GPS, mission, vehicle.
 
 <div class="auxiliary-demo">
   <StatusBadge level="alarm" dot>Link lost</StatusBadge>
@@ -22,18 +22,11 @@ A pill-shaped, 5-level operational status indicator bound to the **alarm hierarc
 - For **persistent system identity** like version numbers (`v1.0`) or environment tags (`staging`) — those are Badge, not StatusBadge.
 - For **non-operational status that doesn't map to the alarm hierarchy** — if a UI state is "draft / published / archived," that's domain status, not alarm tier; use Badge or a custom chip.
 
-## Props
-
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| `level` | `'alarm' \| 'warning' \| 'caution' \| 'advisory' \| 'nominal'` | required | The alarm tier. Color is bound by `@auxiliary/tokens`. |
-| `variant` | `'solid' \| 'outline'` | `'solid'` | Solid = filled pill, outline = border + transparent fill. |
-| `size` | `'sm' \| 'md'` | `'md'` | `sm` = 20px tall, 10px text. `md` = 24px tall, 12px text. |
-| `dot` | `boolean` | `false` | Adds a leading dot indicator. On solid, the dot uses the foreground color; on outline, it matches the border. |
-
 ## Examples
 
 ### Solid variant (default)
+
+The per-level glyph is on by default — an octagon for `alarm`, triangle for `warning`, diamond for `caution`, info circle for `advisory`, check circle for `nominal`. The shapes are grayscale-distinct, so the level reads even without color.
 
 <div class="auxiliary-demo">
   <StatusBadge level="alarm">Alarm</StatusBadge>
@@ -80,7 +73,23 @@ Outline reads as quieter — use when the surrounding surface already carries a 
 <StatusBadge level="nominal" dot variant="outline">12 sats</StatusBadge>
 ```
 
-The dot adds a visual indicator that the badge is *live* — useful when multiple badges share the same row and the eye needs an anchor.
+The dot adds a leading "live" indicator next to the glyph — useful when multiple badges share the same row and the eye needs an anchor. On solid it uses the foreground color; on outline it matches the level color.
+
+### Without the glyph
+
+Set `:icon="false"` to drop the leading shape — the dot and slot text remain, and the level is still announced to assistive tech via the hidden label. Reach for this only in space-constrained rows where the dot alone is enough of a cue.
+
+<div class="auxiliary-demo">
+  <StatusBadge level="alarm" :icon="false" dot>Lost</StatusBadge>
+  <StatusBadge level="warning" :icon="false" dot>Low</StatusBadge>
+  <StatusBadge level="nominal" :icon="false" dot>OK</StatusBadge>
+</div>
+
+```vue
+<StatusBadge level="alarm" :icon="false" dot>Lost</StatusBadge>
+<StatusBadge level="warning" :icon="false" dot>Low</StatusBadge>
+<StatusBadge level="nominal" :icon="false" dot>OK</StatusBadge>
+```
 
 ### In situ
 
@@ -101,16 +110,22 @@ The dot adds a visual indicator that the badge is *live* — useful when multipl
 
 The `size="sm"` variant (20 px tall) is the right call for telemetry strips where multiple labels stack vertically.
 
+## Props
+
+<PropsTable name="StatusBadge" />
+
+`level` accepts the five alarm tiers (`alarm`, `warning`, `caution`, `advisory`, `nominal`). The component forwards `class` and merges it via `cn()`, so you can extend layout without overriding the recipe's color bindings.
+
 ## Accessibility
 
-- The badge renders as a `<span>` — screen readers read the slot content as inline text. Make sure the slot carries the meaning ("Link lost", "Battery 18%"), not just the level.
-- The color alone never carries the meaning. A red pill that says nothing visible to a screen reader is meaningless to a user using a screen reader; meet WCAG 1.4.1 by always including text.
-- The dot is `aria-hidden="true"` — it's decorative; the badge text is the assertion.
+- The badge renders as a `<span>` with the slot content read inline. A **visually-hidden level label is always rendered** (e.g. "Alarm", "Nominal") ahead of the slot, so the alarm tier is announced even when the slot text is empty or non-descriptive. Override it with `label` when the default English word isn't what you want screen readers to hear.
+- **Color is never the only cue.** Beyond the hidden label, each level draws a grayscale-distinct glyph (octagon, triangle, diamond, info circle, check circle), so the severity is legible to color-blind users and in monochrome. This satisfies WCAG 1.4.1 (Use of Color) without relying on the consumer to add text — though descriptive slot text ("Battery 18%") is still the right call.
+- The decorative glyph (`<svg>`) and the dot are both `aria-hidden="true"` — the hidden label and slot text are what carry meaning to assistive tech.
 - For *time-critical* alarm states that need to interrupt the user (link lost, geofence breach), don't rely on the badge alone — pair it with a `<Toast>` or `<AlertBanner>` so the change announces itself via ARIA live regions.
 
 ## Tokens consumed
 
-Each level binds three semantic tokens — the background, the readable foreground, and (used only by the outline variant) the border:
+Each level binds three semantic tokens — the background, the readable foreground, and (used only by the outline variant) the border. The glyph and dot inherit these in lockstep via the recipe's compound variants:
 
 | Level | Solid bg | Solid text | Outline border/text |
 | --- | --- | --- | --- |
