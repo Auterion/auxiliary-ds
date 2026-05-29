@@ -4,13 +4,278 @@
   "description": "Vue 3 primitives for Auxiliary, styled via @auxiliary/css recipes and utilities.",
   "license": "UNLICENSED",
   "type": "module",
+  "sideEffects": false,
   "files": [
     "dist"
   ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/auxiliary-vue.js"
+      "import": "./dist/index.js"
+    },
+    "./Accordion": {
+      "types": "./dist/primitives/Accordion/Accordion.vue.d.ts",
+      "import": "./dist/primitives/Accordion/Accordion.vue.js"
+    },
+    "./AccordionContent": {
+      "types": "./dist/primitives/Accordion/AccordionContent.vue.d.ts",
+      "import": "./dist/primitives/Accordion/AccordionContent.vue.js"
+    },
+    "./AccordionItem": {
+      "types": "./dist/primitives/Accordion/AccordionItem.vue.d.ts",
+      "import": "./dist/primitives/Accordion/AccordionItem.vue.js"
+    },
+    "./AccordionTrigger": {
+      "types": "./dist/primitives/Accordion/AccordionTrigger.vue.d.ts",
+      "import": "./dist/primitives/Accordion/AccordionTrigger.vue.js"
+    },
+    "./AlertBanner": {
+      "types": "./dist/primitives/AlertBanner.vue.d.ts",
+      "import": "./dist/primitives/AlertBanner.vue.js"
+    },
+    "./Avatar": {
+      "types": "./dist/primitives/Avatar/Avatar.vue.d.ts",
+      "import": "./dist/primitives/Avatar/Avatar.vue.js"
+    },
+    "./AvatarFallback": {
+      "types": "./dist/primitives/Avatar/AvatarFallback.vue.d.ts",
+      "import": "./dist/primitives/Avatar/AvatarFallback.vue.js"
+    },
+    "./AvatarImage": {
+      "types": "./dist/primitives/Avatar/AvatarImage.vue.d.ts",
+      "import": "./dist/primitives/Avatar/AvatarImage.vue.js"
+    },
+    "./Badge": {
+      "types": "./dist/primitives/Badge.vue.d.ts",
+      "import": "./dist/primitives/Badge.vue.js"
+    },
+    "./Button": {
+      "types": "./dist/primitives/Button.vue.d.ts",
+      "import": "./dist/primitives/Button.vue.js"
+    },
+    "./Card": {
+      "types": "./dist/primitives/Card/Card.vue.d.ts",
+      "import": "./dist/primitives/Card/Card.vue.js"
+    },
+    "./CardContent": {
+      "types": "./dist/primitives/Card/CardContent.vue.d.ts",
+      "import": "./dist/primitives/Card/CardContent.vue.js"
+    },
+    "./CardDescription": {
+      "types": "./dist/primitives/Card/CardDescription.vue.d.ts",
+      "import": "./dist/primitives/Card/CardDescription.vue.js"
+    },
+    "./CardFooter": {
+      "types": "./dist/primitives/Card/CardFooter.vue.d.ts",
+      "import": "./dist/primitives/Card/CardFooter.vue.js"
+    },
+    "./CardHeader": {
+      "types": "./dist/primitives/Card/CardHeader.vue.d.ts",
+      "import": "./dist/primitives/Card/CardHeader.vue.js"
+    },
+    "./CardTitle": {
+      "types": "./dist/primitives/Card/CardTitle.vue.d.ts",
+      "import": "./dist/primitives/Card/CardTitle.vue.js"
+    },
+    "./Checkbox": {
+      "types": "./dist/primitives/Checkbox.vue.d.ts",
+      "import": "./dist/primitives/Checkbox.vue.js"
+    },
+    "./Dialog": {
+      "types": "./dist/primitives/Dialog/Dialog.vue.d.ts",
+      "import": "./dist/primitives/Dialog/Dialog.vue.js"
+    },
+    "./DialogClose": {
+      "types": "./dist/primitives/Dialog/DialogClose.vue.d.ts",
+      "import": "./dist/primitives/Dialog/DialogClose.vue.js"
+    },
+    "./DialogContent": {
+      "types": "./dist/primitives/Dialog/DialogContent.vue.d.ts",
+      "import": "./dist/primitives/Dialog/DialogContent.vue.js"
+    },
+    "./DialogDescription": {
+      "types": "./dist/primitives/Dialog/DialogDescription.vue.d.ts",
+      "import": "./dist/primitives/Dialog/DialogDescription.vue.js"
+    },
+    "./DialogTitle": {
+      "types": "./dist/primitives/Dialog/DialogTitle.vue.d.ts",
+      "import": "./dist/primitives/Dialog/DialogTitle.vue.js"
+    },
+    "./DialogTrigger": {
+      "types": "./dist/primitives/Dialog/DialogTrigger.vue.d.ts",
+      "import": "./dist/primitives/Dialog/DialogTrigger.vue.js"
+    },
+    "./DropdownMenu": {
+      "types": "./dist/primitives/DropdownMenu/DropdownMenu.vue.d.ts",
+      "import": "./dist/primitives/DropdownMenu/DropdownMenu.vue.js"
+    },
+    "./DropdownMenuContent": {
+      "types": "./dist/primitives/DropdownMenu/DropdownMenuContent.vue.d.ts",
+      "import": "./dist/primitives/DropdownMenu/DropdownMenuContent.vue.js"
+    },
+    "./DropdownMenuItem": {
+      "types": "./dist/primitives/DropdownMenu/DropdownMenuItem.vue.d.ts",
+      "import": "./dist/primitives/DropdownMenu/DropdownMenuItem.vue.js"
+    },
+    "./DropdownMenuLabel": {
+      "types": "./dist/primitives/DropdownMenu/DropdownMenuLabel.vue.d.ts",
+      "import": "./dist/primitives/DropdownMenu/DropdownMenuLabel.vue.js"
+    },
+    "./DropdownMenuSeparator": {
+      "types": "./dist/primitives/DropdownMenu/DropdownMenuSeparator.vue.d.ts",
+      "import": "./dist/primitives/DropdownMenu/DropdownMenuSeparator.vue.js"
+    },
+    "./DropdownMenuTrigger": {
+      "types": "./dist/primitives/DropdownMenu/DropdownMenuTrigger.vue.d.ts",
+      "import": "./dist/primitives/DropdownMenu/DropdownMenuTrigger.vue.js"
+    },
+    "./Input": {
+      "types": "./dist/primitives/Input.vue.d.ts",
+      "import": "./dist/primitives/Input.vue.js"
+    },
+    "./Label": {
+      "types": "./dist/primitives/Label.vue.d.ts",
+      "import": "./dist/primitives/Label.vue.js"
+    },
+    "./Popover": {
+      "types": "./dist/primitives/Popover/Popover.vue.d.ts",
+      "import": "./dist/primitives/Popover/Popover.vue.js"
+    },
+    "./PopoverContent": {
+      "types": "./dist/primitives/Popover/PopoverContent.vue.d.ts",
+      "import": "./dist/primitives/Popover/PopoverContent.vue.js"
+    },
+    "./PopoverTrigger": {
+      "types": "./dist/primitives/Popover/PopoverTrigger.vue.d.ts",
+      "import": "./dist/primitives/Popover/PopoverTrigger.vue.js"
+    },
+    "./Progress": {
+      "types": "./dist/primitives/Progress.vue.d.ts",
+      "import": "./dist/primitives/Progress.vue.js"
+    },
+    "./RadioGroup": {
+      "types": "./dist/primitives/RadioGroup/RadioGroup.vue.d.ts",
+      "import": "./dist/primitives/RadioGroup/RadioGroup.vue.js"
+    },
+    "./RadioGroupItem": {
+      "types": "./dist/primitives/RadioGroup/RadioGroupItem.vue.d.ts",
+      "import": "./dist/primitives/RadioGroup/RadioGroupItem.vue.js"
+    },
+    "./Select": {
+      "types": "./dist/primitives/Select/Select.vue.d.ts",
+      "import": "./dist/primitives/Select/Select.vue.js"
+    },
+    "./SelectContent": {
+      "types": "./dist/primitives/Select/SelectContent.vue.d.ts",
+      "import": "./dist/primitives/Select/SelectContent.vue.js"
+    },
+    "./SelectItem": {
+      "types": "./dist/primitives/Select/SelectItem.vue.d.ts",
+      "import": "./dist/primitives/Select/SelectItem.vue.js"
+    },
+    "./SelectSeparator": {
+      "types": "./dist/primitives/Select/SelectSeparator.vue.d.ts",
+      "import": "./dist/primitives/Select/SelectSeparator.vue.js"
+    },
+    "./SelectTrigger": {
+      "types": "./dist/primitives/Select/SelectTrigger.vue.d.ts",
+      "import": "./dist/primitives/Select/SelectTrigger.vue.js"
+    },
+    "./SelectValue": {
+      "types": "./dist/primitives/Select/SelectValue.vue.d.ts",
+      "import": "./dist/primitives/Select/SelectValue.vue.js"
+    },
+    "./Separator": {
+      "types": "./dist/primitives/Separator.vue.d.ts",
+      "import": "./dist/primitives/Separator.vue.js"
+    },
+    "./Skeleton": {
+      "types": "./dist/primitives/Skeleton.vue.d.ts",
+      "import": "./dist/primitives/Skeleton.vue.js"
+    },
+    "./Slider": {
+      "types": "./dist/primitives/Slider.vue.d.ts",
+      "import": "./dist/primitives/Slider.vue.js"
+    },
+    "./Spinner": {
+      "types": "./dist/primitives/Spinner.vue.d.ts",
+      "import": "./dist/primitives/Spinner.vue.js"
+    },
+    "./StatusBadge": {
+      "types": "./dist/primitives/StatusBadge.vue.d.ts",
+      "import": "./dist/primitives/StatusBadge.vue.js"
+    },
+    "./Switch": {
+      "types": "./dist/primitives/Switch.vue.d.ts",
+      "import": "./dist/primitives/Switch.vue.js"
+    },
+    "./Tabs": {
+      "types": "./dist/primitives/Tabs/Tabs.vue.d.ts",
+      "import": "./dist/primitives/Tabs/Tabs.vue.js"
+    },
+    "./TabsContent": {
+      "types": "./dist/primitives/Tabs/TabsContent.vue.d.ts",
+      "import": "./dist/primitives/Tabs/TabsContent.vue.js"
+    },
+    "./TabsList": {
+      "types": "./dist/primitives/Tabs/TabsList.vue.d.ts",
+      "import": "./dist/primitives/Tabs/TabsList.vue.js"
+    },
+    "./TabsTrigger": {
+      "types": "./dist/primitives/Tabs/TabsTrigger.vue.d.ts",
+      "import": "./dist/primitives/Tabs/TabsTrigger.vue.js"
+    },
+    "./TelemetryValue": {
+      "types": "./dist/primitives/TelemetryValue.vue.d.ts",
+      "import": "./dist/primitives/TelemetryValue.vue.js"
+    },
+    "./Textarea": {
+      "types": "./dist/primitives/Textarea.vue.d.ts",
+      "import": "./dist/primitives/Textarea.vue.js"
+    },
+    "./Toast": {
+      "types": "./dist/primitives/Toast/Toast.vue.d.ts",
+      "import": "./dist/primitives/Toast/Toast.vue.js"
+    },
+    "./ToastAction": {
+      "types": "./dist/primitives/Toast/ToastAction.vue.d.ts",
+      "import": "./dist/primitives/Toast/ToastAction.vue.js"
+    },
+    "./ToastClose": {
+      "types": "./dist/primitives/Toast/ToastClose.vue.d.ts",
+      "import": "./dist/primitives/Toast/ToastClose.vue.js"
+    },
+    "./ToastDescription": {
+      "types": "./dist/primitives/Toast/ToastDescription.vue.d.ts",
+      "import": "./dist/primitives/Toast/ToastDescription.vue.js"
+    },
+    "./ToastProvider": {
+      "types": "./dist/primitives/Toast/ToastProvider.vue.d.ts",
+      "import": "./dist/primitives/Toast/ToastProvider.vue.js"
+    },
+    "./ToastTitle": {
+      "types": "./dist/primitives/Toast/ToastTitle.vue.d.ts",
+      "import": "./dist/primitives/Toast/ToastTitle.vue.js"
+    },
+    "./ToastViewport": {
+      "types": "./dist/primitives/Toast/ToastViewport.vue.d.ts",
+      "import": "./dist/primitives/Toast/ToastViewport.vue.js"
+    },
+    "./Tooltip": {
+      "types": "./dist/primitives/Tooltip/Tooltip.vue.d.ts",
+      "import": "./dist/primitives/Tooltip/Tooltip.vue.js"
+    },
+    "./TooltipContent": {
+      "types": "./dist/primitives/Tooltip/TooltipContent.vue.d.ts",
+      "import": "./dist/primitives/Tooltip/TooltipContent.vue.js"
+    },
+    "./TooltipProvider": {
+      "types": "./dist/primitives/Tooltip/TooltipProvider.vue.d.ts",
+      "import": "./dist/primitives/Tooltip/TooltipProvider.vue.js"
+    },
+    "./TooltipTrigger": {
+      "types": "./dist/primitives/Tooltip/TooltipTrigger.vue.d.ts",
+      "import": "./dist/primitives/Tooltip/TooltipTrigger.vue.js"
     }
   },
   "scripts": {
@@ -18,7 +283,8 @@
     "lint": "eslint . --max-warnings 0",
     "typecheck": "vue-tsc -p tsconfig.build.json --noEmit",
     "test": "vitest run --coverage",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "gen:exports": "node scripts/gen-exports.mjs"
   },
   "dependencies": {
     "@auxiliary/css": "workspace:*",

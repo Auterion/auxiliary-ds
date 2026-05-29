@@ -7,11 +7,10 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'AuxiliaryVue',
-      fileName: 'auxiliary-vue',
       formats: ['es'],
     },
     rollupOptions: {
+      // Keep deps external so tree-shaking is about which OF OUR components ship.
       external: [
         'vue',
         'reka-ui',
@@ -21,7 +20,13 @@ export default defineConfig({
         '@auxiliary/tokens',
       ],
       output: {
-        globals: { vue: 'Vue' },
+        // One JS chunk per source module (mirrors src/) instead of a single
+        // bundle. With "sideEffects": false this lets a downstream bundler drop
+        // unused components even when imported from the barrel. Per-component
+        // export subpaths in package.json point at these emitted files.
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+        entryFileNames: '[name].js',
       },
     },
   },
