@@ -3,9 +3,9 @@
 A numeric entry control with steppers, bounds, and an optional unit — built on Reka UI's headless `NumberField`. Decrement · value · unit · increment, in one bordered row. For altitude, speed, frequency, step counts, and the rest of the numbers an operator types or nudges.
 
 <div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 1rem; max-width: 16rem;">
-  <NumberField :model-value="408" unit="m" />
-  <NumberField :model-value="12" :min="0" :max="60" unit="kts" />
-  <NumberField :model-value="5" disabled />
+  <NumberField :default-value="408" unit="m" />
+  <NumberField :default-value="12" :min="0" :max="60" unit="kts" />
+  <NumberField :default-value="5" disabled />
 </div>
 
 ## When to use
@@ -27,7 +27,7 @@ A numeric entry control with steppers, bounds, and an optional unit — built on
 `min`, `max`, and `step` clamp and snap the value. The spinbutton announces the current value and its range to assistive tech.
 
 <div class="auxiliary-demo vp-raw" style="max-width: 16rem;">
-  <NumberField :model-value="20" :min="0" :max="100" :step="5" unit="%" />
+  <NumberField :default-value="20" :min="0" :max="100" :step="5" unit="%" />
 </div>
 
 ```vue
@@ -54,7 +54,7 @@ const altitude = ref(408)
 `formatOptions` forwards straight to `Intl.NumberFormat`, so currencies, units, and precision are the platform's job, not yours.
 
 <div class="auxiliary-demo vp-raw" style="max-width: 16rem;">
-  <NumberField :model-value="1500" :format-options="{ style: 'unit', unit: 'meter' }" />
+  <NumberField :default-value="1500" :format-options="{ style: 'unit', unit: 'meter' }" />
 </div>
 
 ```vue
@@ -64,9 +64,9 @@ const altitude = ref(408)
 ### Sizes
 
 <div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.75rem; max-width: 16rem;">
-  <NumberField size="sm" :model-value="1" unit="m" />
-  <NumberField size="md" :model-value="2" unit="m" />
-  <NumberField size="lg" :model-value="3" unit="m" />
+  <NumberField size="sm" :default-value="1" unit="m" />
+  <NumberField size="md" :default-value="2" unit="m" />
+  <NumberField size="lg" :default-value="3" unit="m" />
 </div>
 
 ```vue
@@ -80,7 +80,7 @@ const altitude = ref(408)
 `invalid` sets `aria-invalid` on the input and a destructive border. Pair it with a field-level error message wired through `aria-describedby`.
 
 <div class="auxiliary-demo vp-raw" style="max-width: 16rem;">
-  <NumberField :model-value="150" :max="100" invalid unit="%" />
+  <NumberField :default-value="150" invalid unit="%" />
 </div>
 
 ```vue
@@ -93,7 +93,7 @@ The canonical form pattern: a `<Label for>` tied to the field's `id` (Reka wires
 
 <div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.375rem; max-width: 16rem;">
   <Label for="alt">Altitude</Label>
-  <NumberField id="alt" :model-value="408" :min="0" unit="m" />
+  <NumberField id="alt" :default-value="408" :min="0" unit="m" />
 </div>
 
 ```vue
