@@ -61,6 +61,7 @@ export default defineConfig({
           { text: 'Checkbox', link: '/components/checkbox' },
           { text: 'Input', link: '/components/input' },
           { text: 'Label', link: '/components/label' },
+          { text: 'NumberField', link: '/components/number-field' },
           { text: 'RadioGroup', link: '/components/radio-group' },
           { text: 'Select', link: '/components/select' },
           { text: 'Slider', link: '/components/slider' },

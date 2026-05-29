@@ -9,6 +9,7 @@ export { textarea, type TextareaVariants } from './textarea.js';
 export { checkbox, type CheckboxVariants } from './checkbox.js';
 export { switchControl, type SwitchVariants } from './switch.js';
 export { radioGroup } from './radio-group.js';
+export { numberField, type NumberFieldVariants } from './number-field.js';
 export { slider } from './slider.js';
 
 // Overlays & menus
