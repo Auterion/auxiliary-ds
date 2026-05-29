@@ -10,11 +10,16 @@
  *      so utilities like bg-background, text-foreground, bg-primary,
  *      ring-ring, bg-alarm etc. auto-generate. Same vocabulary as
  *      shadcn-ui / shadcn-vue — Auxiliary tokens drop in directly.
- *   4. Base typography (Inter Variable + Geist Mono via Google Fonts,
+ *   4. Base typography (Inter Variable + Geist Mono, self-hosted/vendored,
  *      tabular-nums + ss02 for mission-ID disambiguation)
+ *
+ * Air-gap-first: fonts are vendored into ./fonts/ and shipped in this package
+ * (no runtime CDN). See scripts/sync-fonts.mjs. A test gate
+ * (src/__tests__/no-external-deps.test.ts) fails CI if a runtime CDN ref
+ * reappears here.
  */
 
-@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:opsz,wght@14..32,100..900&display=swap");
+@import "./fonts/fonts.css";
 @import "tailwindcss";
 @import "@auxiliary/tokens/dist/tailwind-v4.css";
 
