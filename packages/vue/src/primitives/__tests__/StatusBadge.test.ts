@@ -31,11 +31,16 @@ describe('StatusBadge', () => {
   });
 
   it('renders an aria-hidden dot only when dot=true', () => {
-    const without = mount(StatusBadge, { props: { level: 'nominal' }, slots: { default: 'OK' } });
+    // Disable the default per-level glyph so we isolate the dot (the glyph is also
+    // aria-hidden). With both off there is no decorative aria-hidden element.
+    const without = mount(StatusBadge, {
+      props: { level: 'nominal', icon: false },
+      slots: { default: 'OK' },
+    });
     expect(without.find('[aria-hidden="true"]').exists()).toBe(false);
 
     const withDot = mount(StatusBadge, {
-      props: { level: 'nominal', dot: true },
+      props: { level: 'nominal', icon: false, dot: true },
       slots: { default: 'OK' },
     });
     const dot = withDot.find('[aria-hidden="true"]');
@@ -43,11 +48,13 @@ describe('StatusBadge', () => {
   });
 
   // Load-bearing a11y invariant (see ROADMAP Phase 1): operational status must never be
-  // conveyed by color alone — a text label is always rendered alongside the color.
-  it('never conveys status by color alone — a text label is always present', () => {
+  // conveyed by color alone. Stronger than slot text — even with an EMPTY slot the
+  // component still renders an intrinsic, AT-visible level label. See status-cue.test.ts
+  // for the full per-level / per-component gate.
+  it('never conveys status by color alone — an intrinsic label is present even with no slot', () => {
     for (const level of LEVELS) {
-      const wrapper = mount(StatusBadge, { props: { level }, slots: { default: `${level} state` } });
-      expect(wrapper.text().trim().length).toBeGreaterThan(0);
+      const wrapper = mount(StatusBadge, { props: { level }, slots: { default: '' } });
+      expect(wrapper.text().toLowerCase()).toContain(level);
     }
   });
 

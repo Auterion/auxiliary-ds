@@ -2,13 +2,15 @@ import { tv, type VariantProps } from 'tailwind-variants';
 
 /**
  * Color-blind-safe status pill. Color encodes `level`, but it is never the only
- * signal — the slot text (and the optional dot) carry the meaning too. The
- * `level × variant` color pairings live in compoundVariants so both the pill
- * and its dot stay in lockstep.
+ * signal — a per-level glyph (grayscale-distinct shape) and an always-rendered
+ * visually-hidden level label carry the meaning independent of color or of any
+ * consumer-supplied slot text. The `level × variant` color pairings live in
+ * compoundVariants so the pill, its glyph, and its dot stay in lockstep.
  */
 export const statusBadge = tv({
   slots: {
     base: 'inline-flex items-center gap-1.5 rounded-full font-medium uppercase tracking-wide',
+    icon: 'shrink-0',
     dot: 'h-2 w-2 rounded-full',
   },
   variants: {
@@ -24,8 +26,8 @@ export const statusBadge = tv({
       outline: '',
     },
     size: {
-      sm: { base: 'h-5 px-2 text-[10px]' },
-      md: { base: 'h-6 px-2.5 text-xs' },
+      sm: { base: 'h-5 px-2 text-[10px]', icon: 'h-3 w-3' },
+      md: { base: 'h-6 px-2.5 text-xs', icon: 'h-3.5 w-3.5' },
     },
   },
   compoundVariants: [

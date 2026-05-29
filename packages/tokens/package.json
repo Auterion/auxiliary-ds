@@ -18,10 +18,12 @@
     "build": "node build.mjs",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "echo \"@auxiliary/tokens typecheck — no sources yet\" && exit 0",
-    "test": "echo \"@auxiliary/tokens test — no sources yet\" && exit 0"
+    "test": "vitest run"
   },
   "devDependencies": {
+    "@types/node": "^22.19.19",
     "culori": "^4.0.2",
-    "style-dictionary": "^5.4.1"
+    "style-dictionary": "^5.4.1",
+    "vitest": "^4.1.7"
   }
 }

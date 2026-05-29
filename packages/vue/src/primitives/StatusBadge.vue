@@ -2,21 +2,28 @@
 import { computed, type HTMLAttributes } from 'vue';
 import { statusBadge } from '@auxiliary/css/recipes';
 import { cn } from '@auxiliary/css/utils';
+import { STATUS_GLYPHS, STATUS_LABELS, type StatusKind } from './status-glyphs';
 
-export type StatusLevel = 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal';
+export type StatusLevel = StatusKind;
 
 const props = withDefaults(
   defineProps<{
     level: StatusLevel;
     variant?: 'solid' | 'outline';
     size?: 'sm' | 'md';
+    /** Per-level glyph — the grayscale-distinct visual cue. On by default. */
+    icon?: boolean;
     dot?: boolean;
+    /** Overrides the visually-hidden level label announced to assistive tech. */
+    label?: string;
     class?: HTMLAttributes['class'];
   }>(),
   {
     variant: 'solid',
     size: 'md',
+    icon: true,
     dot: false,
+    label: undefined,
   },
 );
 
@@ -25,16 +32,35 @@ const styles = computed(() =>
 );
 
 const classes = computed(() => cn(styles.value.base(), props.class));
+const iconClass = computed(() => styles.value.icon());
 const dotClass = computed(() => styles.value.dot());
+const glyph = computed(() => STATUS_GLYPHS[props.level]);
+const srLabel = computed(() => props.label ?? STATUS_LABELS[props.level]);
 </script>
 
 <template>
   <span :class="classes">
+    <svg
+      v-if="icon"
+      :class="iconClass"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path :d="glyph" />
+    </svg>
     <span
       v-if="dot"
       :class="dotClass"
       aria-hidden="true"
     />
+    <!-- Always present: conveys the level to assistive tech and in grayscale even
+         when the slot is empty or non-descriptive. Never color-only. -->
+    <span class="sr-only">{{ srLabel }}</span>
     <slot />
   </span>
 </template>

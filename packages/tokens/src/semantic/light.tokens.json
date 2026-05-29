@@ -11,16 +11,16 @@
     "secondary":             { "$type": "color", "$value": "{color.primitive.zinc.100}" },
     "secondary-foreground":  { "$type": "color", "$value": "{color.primitive.zinc.900}" },
     "muted":                 { "$type": "color", "$value": "{color.primitive.zinc.100}" },
-    "muted-foreground":      { "$type": "color", "$value": "{color.primitive.zinc.500}" },
+    "muted-foreground":      { "$type": "color", "$value": "{color.primitive.zinc.600}" },
     "accent":                { "$type": "color", "$value": "{color.primitive.zinc.100}" },
     "accent-foreground":     { "$type": "color", "$value": "{color.primitive.zinc.900}" },
-    "destructive":           { "$type": "color", "$value": "{color.primitive.red.500}" },
+    "destructive":           { "$type": "color", "$value": "{color.primitive.red.700}" },
     "destructive-foreground":{ "$type": "color", "$value": "{color.primitive.white}" },
     "border":                { "$type": "color", "$value": "{color.primitive.zinc.200}" },
     "input":                 { "$type": "color", "$value": "{color.primitive.zinc.200}" },
     "ring":                  { "$type": "color", "$value": "{color.primitive.zinc.400}" },
 
-    "alarm":                 { "$type": "color", "$value": "{color.primitive.red.500}" },
+    "alarm":                 { "$type": "color", "$value": "{color.primitive.red.700}" },
     "alarm-foreground":      { "$type": "color", "$value": "{color.primitive.white}" },
     "warning":               { "$type": "color", "$value": "{color.primitive.orange.500}" },
     "warning-foreground":    { "$type": "color", "$value": "{color.primitive.black}" },
@@ -28,7 +28,7 @@
     "caution-foreground":    { "$type": "color", "$value": "{color.primitive.black}" },
     "advisory":              { "$type": "color", "$value": "{color.primitive.cyan.500}" },
     "advisory-foreground":   { "$type": "color", "$value": "{color.primitive.black}" },
-    "nominal":               { "$type": "color", "$value": "{color.primitive.green.500}" },
+    "nominal":               { "$type": "color", "$value": "{color.primitive.green.700}" },
     "nominal-foreground":    { "$type": "color", "$value": "{color.primitive.white}" }
   }
 }

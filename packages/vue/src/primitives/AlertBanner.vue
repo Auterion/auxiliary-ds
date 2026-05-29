@@ -2,8 +2,9 @@
 import { computed, type HTMLAttributes } from 'vue';
 import { alertBanner } from '@auxiliary/css/recipes';
 import { cn } from '@auxiliary/css/utils';
+import { STATUS_GLYPHS, STATUS_LABELS, type StatusKind } from './status-glyphs';
 
-export type AlertLevel = 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal';
+export type AlertLevel = StatusKind;
 
 const props = withDefaults(
   defineProps<{
@@ -26,17 +27,11 @@ defineEmits<{
 
 const bannerClass = computed(() => cn(alertBanner({ level: props.level }), props.class));
 
-const icon = computed(() => {
-  // Maritime-style status glyphs: alarm/warning/caution use triangle exclamation,
-  // advisory uses circle-i, nominal uses checkmark.
-  if (['alarm', 'warning', 'caution'].includes(props.level)) {
-    return 'M12 2 L22 20 L2 20 Z M12 9 L12 14 M12 17 L12 17';
-  }
-  if (props.level === 'advisory') {
-    return 'M12 2 A10 10 0 1 0 12 22 A10 10 0 1 0 12 2 M12 8 L12 8 M12 11 L12 17';
-  }
-  return 'M5 12 L10 17 L20 7'; // nominal: checkmark
-});
+// Per-level glyph (grayscale-distinct shape) + the level word, shared with
+// StatusBadge so the two stay in lockstep. The glyph is decorative; the sr-only
+// label is what carries the level to assistive tech.
+const glyph = computed(() => STATUS_GLYPHS[props.level]);
+const srLabel = computed(() => STATUS_LABELS[props.level]);
 </script>
 
 <template>
@@ -53,10 +48,13 @@ const icon = computed(() => {
       class="mt-0.5 shrink-0"
       aria-hidden="true"
     >
-      <path :d="icon" />
+      <path :d="glyph" />
     </svg>
 
     <div class="min-w-0 flex-1">
+      <!-- Announces the severity to assistive tech (and in grayscale) regardless
+           of whether a title/description is supplied. Never color-only. -->
+      <span class="sr-only">{{ srLabel }}</span>
       <div v-if="title || $slots.title" class="font-medium">
         <slot name="title">{{ title }}</slot>
       </div>
