@@ -65,6 +65,19 @@ import {
   Progress,
   Spinner,
   Skeleton,
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxItem,
+  NumberField,
+  Table,
+  TableCaption,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
 } from '@auxiliary/vue';
 import { Icon, ICON_NAMES } from '@auxiliary/icons';
 
@@ -105,6 +118,53 @@ const geofenceEnabled = ref(true);
 const flightMode = ref('auto');
 const maxAltitude = ref([120]);
 const failsafeNote = ref('');
+
+// Combobox (type-ahead) state — radio frequency search
+const FREQUENCIES = [
+  { value: '433.000', label: '433.000 MHz · Telemetry' },
+  { value: '868.000', label: '868.000 MHz · Telemetry (EU)' },
+  { value: '915.000', label: '915.000 MHz · Telemetry (US)' },
+  { value: '2400.000', label: '2.400 GHz · Control link' },
+  { value: '5800.000', label: '5.800 GHz · Video downlink' },
+] as const;
+const radioFreq = ref('');
+
+// NumberField state — altitude / throttle with min/max clamp
+const targetAlt = ref(120);
+const throttle = ref(80);
+
+// Form-control size axis
+const FIELD_SIZES = ['sm', 'md', 'lg'] as const;
+
+// Validation demo — invalid when altitude exceeds the airframe ceiling
+const ceiling = 400;
+
+// Skeleton loading toggle
+const skeletonLoading = ref(true);
+
+// Data table — fleet overview with row selection
+interface FleetRow {
+  id: string;
+  vehicle: string;
+  level: (typeof STATUSES)[number];
+  status: string;
+  battery: number;
+  altitude: number;
+}
+const FLEET: FleetRow[] = [
+  { id: 'mx01', vehicle: 'MX-01', level: 'nominal', status: 'In mission', battery: 74, altitude: 408 },
+  { id: 'mx02', vehicle: 'MX-02', level: 'caution', status: 'Wind hold', battery: 41, altitude: 122 },
+  { id: 'mx03', vehicle: 'MX-03', level: 'warning', status: 'Battery low', battery: 18, altitude: 95 },
+  { id: 'mx04', vehicle: 'MX-04', level: 'alarm', status: 'Link lost', battery: 63, altitude: 0 },
+  { id: 'mx05', vehicle: 'MX-05', level: 'advisory', status: 'Returning', battery: 88, altitude: 210 },
+];
+const selectedVehicles = ref<Set<string>>(new Set(['mx01']));
+function toggleVehicle(id: string) {
+  const next = new Set(selectedVehicles.value);
+  if (next.has(id)) next.delete(id);
+  else next.add(id);
+  selectedVehicles.value = next;
+}
 
 // Toast state
 const toastOpen = ref(false);
@@ -375,6 +435,53 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
         </div>
       </section>
 
+      <!-- Validation & size -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Validation &amp; size</h2>
+        <p class="mb-5 text-sm text-muted-foreground">
+          The shared <code class="font-mono">invalid</code> flag (aria-invalid + destructive
+          border/ring) and <code class="font-mono">size</code> axis (<code class="font-mono">sm
+          / md / lg</code>) added across the form set in Phase 6.1 — one vocabulary for every
+          control.
+        </p>
+        <div class="grid max-w-3xl gap-6 rounded-md border border-border bg-card p-5 sm:grid-cols-2">
+          <div class="space-y-3">
+            <div class="text-xs uppercase text-muted-foreground">invalid</div>
+            <div class="flex flex-col gap-1.5">
+              <Label for="v-call">Callsign</Label>
+              <Input id="v-call" model-value="" invalid placeholder="Required" />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <Label for="v-mode">Mode</Label>
+              <Select model-value="">
+                <SelectTrigger id="v-mode" invalid class="w-full">
+                  <SelectValue placeholder="Required" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="auto">Auto</SelectItem>
+                  <SelectItem value="manual">Manual</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <label class="flex items-center gap-2 text-sm">
+              <Checkbox invalid />
+              <span>Accept flight risk (unconfirmed)</span>
+            </label>
+          </div>
+          <div class="space-y-3">
+            <div class="text-xs uppercase text-muted-foreground">size</div>
+            <div v-for="s in FIELD_SIZES" :key="s" class="flex items-center gap-3">
+              <span class="w-8 text-xs uppercase text-muted-foreground">{{ s }}</span>
+              <Input :size="s" :placeholder="`Input ${s}`" />
+            </div>
+            <p class="text-xs text-muted-foreground pt-1">
+              Compact (<code class="font-mono">sm</code>) suits dense GCS/telemetry panels;
+              the same axis will be driven by the Phase 6.2 operational register.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <!-- Typography -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Typography</h2>
@@ -515,6 +622,85 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
         </div>
       </section>
 
+      <!-- Type-ahead: Combobox -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Type-ahead</h2>
+        <p class="mb-5 text-sm text-muted-foreground">
+          <code class="font-mono">&lt;Combobox&gt;</code> — an input that filters a list as you
+          type. For large sets (frequencies, vehicle IDs, waypoints) where scanning a
+          <code class="font-mono">&lt;Select&gt;</code> is too slow. Shares the
+          <code class="font-mono">size</code> / <code class="font-mono">invalid</code>
+          vocabulary with the other controls.
+        </p>
+        <div class="flex flex-wrap items-end gap-6">
+          <div class="flex flex-col gap-1.5">
+            <Label for="freq">Radio frequency</Label>
+            <Combobox v-model="radioFreq">
+              <ComboboxInput
+                id="freq"
+                class="w-64"
+                placeholder="Type to filter…"
+                aria-label="Radio frequency"
+              />
+              <ComboboxContent>
+                <ComboboxEmpty>No matching frequency.</ComboboxEmpty>
+                <ComboboxItem v-for="f in FREQUENCIES" :key="f.value" :value="f.value">
+                  {{ f.label }}
+                </ComboboxItem>
+              </ComboboxContent>
+            </Combobox>
+            <p class="font-mono tabular text-xs text-muted-foreground">
+              v-model: <span class="text-muted-foreground">{{ radioFreq || '(none)' }}</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Number field -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Number field</h2>
+        <p class="mb-5 text-sm text-muted-foreground">
+          <code class="font-mono">&lt;NumberField&gt;</code> — stepper entry with
+          min/max/step clamp and an inline <code class="font-mono">unit</code>. For
+          altitude, speed, frequency, throttle — where free-text input is error-prone.
+          Pairs with <code class="font-mono">&lt;TelemetryValue&gt;</code>.
+        </p>
+        <div class="flex flex-wrap items-end gap-6 rounded-md border border-border bg-card p-5">
+          <div class="flex flex-col gap-1.5">
+            <Label for="nf-alt">Target altitude</Label>
+            <NumberField
+              id="nf-alt"
+              v-model="targetAlt"
+              :min="0"
+              :max="ceiling"
+              :step="10"
+              unit="m"
+              :invalid="targetAlt > ceiling"
+              class="w-44"
+            />
+            <p class="font-mono tabular text-xs text-muted-foreground">
+              {{ targetAlt }} m · ceiling {{ ceiling }} m
+            </p>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <Label for="nf-thr">Throttle</Label>
+            <NumberField
+              id="nf-thr"
+              v-model="throttle"
+              :min="0"
+              :max="100"
+              :step="5"
+              unit="%"
+              class="w-44"
+            />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <span class="text-xs uppercase text-muted-foreground">disabled</span>
+            <NumberField :default-value="408" unit="m" disabled class="w-44" />
+          </div>
+        </div>
+      </section>
+
       <!-- Tabs -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Tabs</h2>
@@ -647,6 +833,58 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
         </div>
       </section>
 
+      <!-- Data table -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Data table</h2>
+        <p class="mb-5 text-sm text-muted-foreground">
+          <code class="font-mono">&lt;Table&gt;</code> — the top operational surface: fleets,
+          mission logs, telemetry streams, alert history. Sticky header on a bounded scroll
+          container, row selection, and <code class="font-mono">scope="row"</code> headers so
+          screen readers associate each row with its vehicle.
+        </p>
+        <div class="rounded-md border border-border bg-card">
+          <Table class="max-h-72">
+            <TableCaption class="px-4 pt-3">
+              Active fleet — {{ selectedVehicles.size }} of {{ FLEET.length }} selected
+            </TableCaption>
+            <TableHeader sticky>
+              <TableRow>
+                <TableHead class="w-10"><span class="sr-only">Select</span></TableHead>
+                <TableHead scope="col">Vehicle</TableHead>
+                <TableHead scope="col">Status</TableHead>
+                <TableHead scope="col">Battery</TableHead>
+                <TableHead scope="col">Altitude</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow
+                v-for="row in FLEET"
+                :key="row.id"
+                :data-state="selectedVehicles.has(row.id) ? 'selected' : undefined"
+              >
+                <TableCell>
+                  <Checkbox
+                    :model-value="selectedVehicles.has(row.id)"
+                    :aria-label="`Select ${row.vehicle}`"
+                    @update:model-value="toggleVehicle(row.id)"
+                  />
+                </TableCell>
+                <TableHead scope="row" class="font-medium text-foreground">{{ row.vehicle }}</TableHead>
+                <TableCell>
+                  <StatusBadge :level="row.level" size="sm" dot>{{ row.status }}</StatusBadge>
+                </TableCell>
+                <TableCell>
+                  <TelemetryValue :value="row.battery" unit="%" :precision="0" size="sm" />
+                </TableCell>
+                <TableCell>
+                  <TelemetryValue :value="row.altitude" unit="m" :precision="0" size="sm" />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </section>
+
       <!-- Visuals: Avatar / Badge / Progress / Spinner / Skeleton -->
       <section>
         <h2 class="mb-1 text-lg font-medium">Visuals</h2>
@@ -716,11 +954,23 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             </div>
 
             <div>
-              <div class="mb-2 text-xs uppercase text-muted-foreground">Skeleton (loading placeholders)</div>
+              <div class="mb-2 flex items-center justify-between">
+                <span class="text-xs uppercase text-muted-foreground">Skeleton (loading prop)</span>
+                <label class="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Switch v-model="skeletonLoading" />
+                  loading
+                </label>
+              </div>
               <div class="space-y-2">
-                <Skeleton class="h-3 w-32" />
-                <Skeleton class="h-3 w-48" />
-                <Skeleton class="h-3 w-24" />
+                <Skeleton :loading="skeletonLoading" class="h-3 w-32">
+                  <div class="text-sm">Vehicle MX-01</div>
+                </Skeleton>
+                <Skeleton :loading="skeletonLoading" class="h-3 w-48">
+                  <div class="text-sm text-muted-foreground">Quadcopter · firmware v4.2.1</div>
+                </Skeleton>
+                <Skeleton :loading="skeletonLoading" class="h-3 w-24">
+                  <div class="font-mono tabular text-sm">74%</div>
+                </Skeleton>
               </div>
             </div>
           </div>
