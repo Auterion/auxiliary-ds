@@ -216,6 +216,81 @@ StyleDictionary.registerFormat({
 });
 
 /**
+ * Figma-native variable export (ROADMAP Phase 5a — the contract for figma-sync).
+ *
+ * Emits two collections mapping 1:1 onto the Figma Plugin API variable model, so the
+ * `@auxiliary/figma-sync` use_figma push script applies them directly:
+ *   - "Primitives" (single mode "Base") — every scalar primitive as a COLOR / FLOAT /
+ *     STRING variable. Names use "/" (Figma variable groups).
+ *   - "Semantic" (4 modes light/dark/sunlight/darknight) — each semantic role as one
+ *     COLOR variable whose per-mode value is a cross-collection alias into Primitives.
+ *
+ * Figma Variables are unitless, so dimension/duration collapse to FLOAT (px for
+ * spacing/radius/text, rem for breakpoint, em for tracking, ms for duration). shadow and
+ * cubicBezier are NOT representable as variables — skipped here (shadows ship as Effect
+ * Styles via figma-sync; easings stay documentation).
+ */
+const FIGMA_PRIMITIVES = 'Primitives';
+const FIGMA_SKIP = new Set(['shadow', 'cubicBezier']);
+const figmaType = (type) =>
+  type === 'color' ? 'COLOR' : type === 'fontFamily' ? 'STRING' : 'FLOAT';
+// `{color.primitive.red.700}` → `Primitives/color/primitive/red/700`
+const aliasToVarRef = (ref) => `${FIGMA_PRIMITIVES}/${ref.replace(/[{}]/g, '').split('.').join('/')}`;
+
+const toFigmaValue = (token) => {
+  const raw = token.original?.$value ?? token.$value;
+  if (typeof raw === 'string' && raw.startsWith('{') && raw.endsWith('}')) {
+    return { alias: aliasToVarRef(raw) };
+  }
+  if (token.$type === 'color') {
+    const c = toDtcgColor(raw);
+    if (!c) return null;
+    const [r, g, b] = c.components;
+    return { r, g, b, a: c.alpha ?? 1 };
+  }
+  if (token.$type === 'fontFamily') return Array.isArray(raw) ? raw.join(', ') : String(raw);
+  // dimension / number / duration / fontWeight → unitless FLOAT
+  if (typeof raw === 'number') return raw;
+  const m = String(raw).match(DIM_RE);
+  return m ? parseFloat(m[1]) : null;
+};
+
+StyleDictionary.registerFormat({
+  name: 'json/figma-native',
+  format: async ({ dictionary }) => {
+    const primitives = dictionary.allTokens.filter((t) => !isTheme(t) && !FIGMA_SKIP.has(t.$type));
+    const primitiveVars = primitives.map((t) => ({
+      name: t.path.join('/'),
+      type: figmaType(t.$type),
+      valuesByMode: { Base: toFigmaValue(t) },
+    }));
+
+    // Group the 4 theme files by role (path after the theme segment) into one variable
+    // per role with a per-mode alias.
+    const roles = new Map();
+    for (const t of dictionary.allTokens.filter(isTheme)) {
+      const mode = t.path[0];
+      const name = t.path.slice(1).join('/');
+      if (!roles.has(name)) roles.set(name, { name, type: figmaType(t.$type), valuesByMode: {} });
+      roles.get(name).valuesByMode[mode] = toFigmaValue(t);
+    }
+
+    return (
+      JSON.stringify(
+        {
+          collections: [
+            { name: FIGMA_PRIMITIVES, modes: ['Base'], variables: primitiveVars },
+            { name: 'Semantic', modes: THEMES, variables: [...roles.values()] },
+          ],
+        },
+        null,
+        2,
+      ) + '\n'
+    );
+  },
+});
+
+/**
  * Build-time invariant: every semantic theme token must be a `{path}` alias
  * to a primitive. Catches accidental "literal RGB" cells like the bespoke
  * OpenBridge night palette we deleted. Throws with a clear list of offenders.
@@ -261,6 +336,11 @@ const sd = new StyleDictionary({
       transformGroup: 'js',
       buildPath: 'dist/',
       files: [{ destination: 'tokens.json', format: 'json/dtcg' }],
+    },
+    figma: {
+      transformGroup: 'js',
+      buildPath: 'dist/',
+      files: [{ destination: 'figma-native.json', format: 'json/figma-native' }],
     },
   },
 });
