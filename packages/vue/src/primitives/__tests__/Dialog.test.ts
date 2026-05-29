@@ -32,6 +32,46 @@ function cleanBody() {
 }
 
 describe('Dialog', () => {
+  // Regression: these thin pass-through wrappers declare no `class` prop, so a
+  // consumer `class` reaches the underlying button via Vue's single-root
+  // attribute fallthrough. Lock it so a future `inheritAttrs: false` can't break it.
+  it('forwards class to the DialogTrigger button', () => {
+    const cmp = defineComponent({
+      setup() {
+        return () =>
+          h(Dialog, {}, () => [
+            h(DialogTrigger, { class: 'trigger-x' }, () => 'Open'),
+            h(DialogContent, () => [h(DialogTitle, () => 'T'), h(DialogDescription, () => 'D')]),
+          ]);
+      },
+    });
+    const wrapper = mount(cmp);
+    expect(wrapper.find('button.trigger-x').exists()).toBe(true);
+    wrapper.unmount();
+    cleanBody();
+  });
+
+  it('forwards class to the DialogClose button', async () => {
+    const cmp = defineComponent({
+      setup() {
+        return () =>
+          h(Dialog, { defaultOpen: true }, () => [
+            h(DialogTrigger, () => 'Open'),
+            h(DialogContent, () => [
+              h(DialogTitle, () => 'T'),
+              h(DialogDescription, () => 'D'),
+              h(DialogClose, { class: 'close-x' }, () => 'Cancel'),
+            ]),
+          ]);
+      },
+    });
+    const wrapper = mount(cmp);
+    await nextTick();
+    expect(document.body.querySelector('button.close-x')).not.toBeNull();
+    wrapper.unmount();
+    cleanBody();
+  });
+
   it('renders the trigger but keeps content out of the DOM while closed', () => {
     const wrapper = mount(harness());
     expect(wrapper.text()).toContain('Open dialog');

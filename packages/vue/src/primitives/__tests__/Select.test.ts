@@ -58,6 +58,38 @@ describe('Select', () => {
     wrapper.unmount();
   });
 
+  it('flexes the trigger height via the size prop', () => {
+    const cmp = defineComponent({
+      setup() {
+        return () =>
+          h(Select, null, () =>
+            h(SelectTrigger, { size: 'lg' }, () => h(SelectValue, { placeholder: 'x' })),
+          );
+      },
+    });
+    const wrapper = mount(cmp);
+    expect(wrapper.find('button').classes()).toContain('h-10');
+    wrapper.unmount();
+  });
+
+  it('sets aria-invalid and a destructive border on the trigger when invalid', () => {
+    const cmp = defineComponent({
+      setup() {
+        return () =>
+          h(Select, null, () =>
+            h(SelectTrigger, { invalid: true, 'aria-label': 'Unit' }, () =>
+              h(SelectValue, { placeholder: 'x' }),
+            ),
+          );
+      },
+    });
+    const wrapper = mount(cmp);
+    const trigger = wrapper.find('button');
+    expect(trigger.attributes('aria-invalid')).toBe('true');
+    expect(trigger.classes()).toContain('border-destructive');
+    wrapper.unmount();
+  });
+
   it('teleports the listbox and items to document.body when defaultOpen is set', async () => {
     const wrapper = mount(harness({ defaultOpen: true }));
     await nextTick();

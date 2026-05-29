@@ -80,6 +80,20 @@
         "default": null,
         "required": false,
         "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\" | \"lg\"",
+        "default": null,
+        "required": false,
+        "description": "Shared size scale (sm | md | lg). Note: shadows the rarely-used native `size` character-width attribute, which is not exposed — use width utilities."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Marks the field invalid: sets aria-invalid + destructive border/ring."
       }
     ],
     "events": [
@@ -652,7 +666,22 @@
   },
   "SelectTrigger": {
     "file": "./primitives/Select/SelectTrigger.vue",
-    "props": [],
+    "props": [
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\" | \"lg\"",
+        "default": null,
+        "required": false,
+        "description": "Shared size scale (sm | md | lg) — flexes the trigger height/padding/type."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Marks the control invalid: sets aria-invalid + destructive border/ring."
+      }
+    ],
     "events": [],
     "slots": [
       "default"
@@ -1354,9 +1383,19 @@
   },
   "Skeleton": {
     "file": "./primitives/Skeleton.vue",
-    "props": [],
+    "props": [
+      {
+        "name": "loading",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": ""
+      }
+    ],
     "events": [],
-    "slots": []
+    "slots": [
+      "default"
+    ]
   },
   "Checkbox": {
     "file": "./primitives/Checkbox.vue",
@@ -1437,6 +1476,13 @@
         "default": null,
         "required": false,
         "description": "When `true`, indicates that the user must set the value before the owning form can be submitted."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Marks the control invalid: sets aria-invalid + destructive border/ring."
       }
     ],
     "events": [
@@ -1527,6 +1573,13 @@
         "default": null,
         "required": false,
         "description": "When `true`, indicates that the user must set the value before the owning form can be submitted."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Marks the control invalid: sets aria-invalid + destructive border/ring."
       }
     ],
     "events": [
@@ -1610,6 +1663,13 @@
         "default": null,
         "required": false,
         "description": "When `true`, indicates that the user must set the value before the owning form can be submitted."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Marks the group invalid: sets aria-invalid on the group root. Pair with a field-level error message; individual items are not recolored."
       }
     ],
     "events": [
@@ -1818,6 +1878,20 @@
         "default": null,
         "required": false,
         "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\" | \"lg\"",
+        "default": null,
+        "required": false,
+        "description": "Shared size scale (sm | md | lg) — flexes padding + type."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Marks the field invalid: sets aria-invalid + destructive border/ring."
       }
     ],
     "events": [

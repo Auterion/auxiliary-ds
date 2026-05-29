@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, type HTMLAttributes } from 'vue';
 import { cn } from '@auxiliary/css/utils';
-import { input } from '@auxiliary/css/recipes';
+import { input, type InputVariants } from '@auxiliary/css/recipes';
 
 const props = defineProps<{
   modelValue?: string | number;
@@ -9,6 +9,11 @@ const props = defineProps<{
   placeholder?: string;
   disabled?: boolean;
   id?: string;
+  /** Shared size scale (sm | md | lg). Note: shadows the rarely-used native
+   * `size` character-width attribute, which is not exposed — use width utilities. */
+  size?: InputVariants['size'];
+  /** Marks the field invalid: sets aria-invalid + destructive border/ring. */
+  invalid?: boolean;
   class?: HTMLAttributes['class'];
 }>();
 
@@ -16,7 +21,9 @@ defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
 
-const rootClass = computed(() => cn(input(), props.class));
+const rootClass = computed(() =>
+  cn(input({ size: props.size, invalid: props.invalid }), props.class),
+);
 </script>
 
 <template>
@@ -26,6 +33,7 @@ const rootClass = computed(() => cn(input(), props.class));
     :value="modelValue"
     :placeholder="placeholder"
     :disabled="disabled"
+    :aria-invalid="invalid || undefined"
     :class="rootClass"
     @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
   />

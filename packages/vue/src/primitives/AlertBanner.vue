@@ -66,7 +66,7 @@ const srLabel = computed(() => STATUS_LABELS[props.level]);
     <button
       v-if="actionLabel"
       type="button"
-      class="shrink-0 rounded px-2 py-1 text-xs font-medium underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 ring-ring"
+      class="shrink-0 rounded px-2 py-1 text-xs font-medium underline-offset-2 hover:underline active:bg-foreground/10 focus-visible:outline-none focus-visible:ring-2 ring-ring"
       @click="$emit('action')"
     >
       {{ actionLabel }}
@@ -76,7 +76,7 @@ const srLabel = computed(() => STATUS_LABELS[props.level]);
       v-if="dismissible"
       type="button"
       aria-label="Dismiss"
-      class="shrink-0 rounded p-1 opacity-70 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 ring-ring"
+      class="shrink-0 rounded p-1 opacity-70 hover:opacity-100 active:bg-foreground/10 focus-visible:outline-none focus-visible:ring-2 ring-ring"
       @click="$emit('dismiss')"
     >
       <svg

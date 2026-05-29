@@ -10,6 +10,29 @@ on its own. The opt-in constraint from `ROADMAP-6.md` still holds: hardening bas
 (below) is in scope for 6.2/6.4; turning `AlertBanner`/`StatusBadge` into the operational alert
 **model** is not — that stays a separate opt-in piece (6.3).
 
+## Backlog status (updated as items land)
+
+A first cleanup pass worked the backlog and, crucially, **verified each finding before building**.
+That mattered: **4 of the highest-ranked items turned out to be false positives** — already handled
+by the framework, the global CSS reset, or Reka defaults. The audit's per-component agents reasoned
+from surface signals ("no explicit `v-bind`", "no `motion-reduce:` in the recipe") without accounting
+for mechanisms one layer down. **Treat audit findings as leads to verify, not facts.**
+
+| # | Item | Status |
+|---|---|---|
+| 1 | Shared validation API (`invalid` flag) | ✅ shipped — `invalid` prop on Input, Textarea, Select, Checkbox, Switch (aria-invalid + destructive border/ring); RadioGroup sets `aria-invalid` on the group |
+| 2 | `$attrs` forwarding "bug" | ⛔ false positive — Vue single-root fallthrough already forwards; regression-tested |
+| 4 | Recipe-level `prefers-reduced-motion` | ⛔ false positive — a global unlayered `!important` reset in `theme.css` already neutralizes all motion, gated by `reduced-motion.test.ts` (one source of truth, better than per-recipe) |
+| 5 | Shared `size` axis | ✅ shipped — `size` (sm/md/lg) on Input, Textarea, Select (the controls where height/type is unambiguous; Checkbox/Switch deferred — box/thumb co-scaling is a deliberate, fiddlier change) |
+| 9 | `class` passthrough on Dialog/Toast leaves | ⛔ false positive — single-root fallthrough already forwards `class` to the button (confirmed on DialogTrigger/DialogClose/ToastAction); regression-tested |
+| 13 | Active/pressed feedback | ✅ shipped — `active:` states on the Button recipe (all 4 variants) + AlertBanner action/dismiss buttons |
+| 14 | `SelectSeparator` role | ⛔ false positive — Reka's `SelectSeparator` already hardcodes `aria-hidden="true"` |
+| 17 | Skeleton `loading` prop | ✅ shipped — `loading` (default `true`); `false` renders the default slot, dropping the consumer `v-if` |
+
+Still open (need design thought or are net-new features): RadioGroup per-item error recolor (needs
+context propagation), `Input.type` union (#12), the missing primitives (Table, NumberField,
+Combobox…), and the deeper test-coverage / docs items.
+
 ## Overall health
 
 26 components audited. **Most are solid or have only minor gaps.** Two need work, for real reasons.

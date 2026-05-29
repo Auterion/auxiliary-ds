@@ -92,6 +92,13 @@ describe('RadioGroup', () => {
     expect(horizontal.find('[role="radiogroup"]').classes()).toContain('flex-row');
   });
 
+  it('sets aria-invalid on the group root when invalid', () => {
+    const wrapper = mountGroup({ invalid: true });
+    const root = wrapper.find('[role="radiogroup"]');
+    expect(root.attributes('aria-invalid')).toBe('true');
+    expect(root.attributes('invalid')).toBeUndefined();
+  });
+
   it('forwards the group name to a hidden input for form submission', () => {
     const wrapper = mountGroup({ name: 'flightMode', modelValue: 'auto' });
     // Reka renders a single visually-hidden bubble input carrying the group name/value.

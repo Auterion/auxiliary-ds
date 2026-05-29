@@ -10,21 +10,27 @@ import { computed, type HTMLAttributes } from 'vue';
 import { checkbox } from '@auxiliary/css/recipes';
 import { cn } from '@auxiliary/css/utils';
 
-const props = defineProps<CheckboxRootProps & { class?: HTMLAttributes['class'] }>();
+const props = defineProps<
+  CheckboxRootProps & {
+    /** Marks the control invalid: sets aria-invalid + destructive border/ring. */
+    invalid?: boolean;
+    class?: HTMLAttributes['class'];
+  }
+>();
 const emits = defineEmits<CheckboxRootEmits>();
 
 const delegated = computed(() => {
-  const { class: _class, ...rest } = props;
+  const { class: _class, invalid: _invalid, ...rest } = props;
   return rest;
 });
 const forwarded = useForwardPropsEmits(delegated, emits);
 
-const styles = checkbox();
-const rootClass = computed(() => cn(styles.root(), props.class));
+const styles = computed(() => checkbox({ invalid: props.invalid }));
+const rootClass = computed(() => cn(styles.value.root(), props.class));
 </script>
 
 <template>
-  <CheckboxRoot v-bind="forwarded" :class="rootClass">
+  <CheckboxRoot v-bind="forwarded" :aria-invalid="invalid || undefined" :class="rootClass">
     <CheckboxIndicator :class="styles.indicator()">
       <svg
         v-if="props.modelValue === 'indeterminate'"

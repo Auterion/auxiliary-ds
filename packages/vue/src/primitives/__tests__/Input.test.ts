@@ -49,6 +49,30 @@ describe('Input', () => {
     expect(input.classes()).toContain('disabled:cursor-not-allowed');
   });
 
+  it('maps each size prop to its recipe height class (defaulting to md)', () => {
+    const cases: Array<['sm' | 'md' | 'lg', string]> = [
+      ['sm', 'h-8'],
+      ['md', 'h-9'],
+      ['lg', 'h-10'],
+    ];
+    for (const [size, cls] of cases) {
+      const wrapper = mount(Input, { props: { size } });
+      expect(wrapper.find('input').classes()).toContain(cls);
+    }
+    expect(mount(Input).find('input').classes()).toContain('h-9');
+  });
+
+  it('sets aria-invalid and a destructive border when invalid', () => {
+    const wrapper = mount(Input, { props: { invalid: true } });
+    const input = wrapper.find('input');
+    expect(input.attributes('aria-invalid')).toBe('true');
+    expect(input.classes()).toContain('border-destructive');
+  });
+
+  it('omits aria-invalid when not invalid', () => {
+    expect(mount(Input).find('input').attributes('aria-invalid')).toBeUndefined();
+  });
+
   it('forwards arbitrary attributes (aria-*, data-*, maxlength, required) to the input element', () => {
     const wrapper = mount(Input, {
       attrs: {

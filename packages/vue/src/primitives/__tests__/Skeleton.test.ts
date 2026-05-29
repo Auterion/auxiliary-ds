@@ -33,6 +33,21 @@ describe('Skeleton', () => {
     expect(classes).toContain('bg-muted');
   });
 
+  it('shows the placeholder (not the slot) while loading, which is the default', () => {
+    const wrapper = mount(Skeleton, { slots: { default: '<p>Real content</p>' } });
+    expect(wrapper.classes()).toContain('animate-pulse');
+    expect(wrapper.html()).not.toContain('Real content');
+  });
+
+  it('renders the default slot instead of the placeholder when loading is false', () => {
+    const wrapper = mount(Skeleton, {
+      props: { loading: false },
+      slots: { default: '<p>Real content</p>' },
+    });
+    expect(wrapper.find('.animate-pulse').exists()).toBe(false);
+    expect(wrapper.html()).toContain('Real content');
+  });
+
   it('has no axe violations', async () => {
     const wrapper = mount(Skeleton, { attrs: { class: 'h-4 w-32' } });
     const results = await axe(wrapper.element);

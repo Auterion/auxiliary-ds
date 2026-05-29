@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, type HTMLAttributes } from 'vue';
 import { cn } from '@auxiliary/css/utils';
-import { textarea } from '@auxiliary/css/recipes';
+import { textarea, type TextareaVariants } from '@auxiliary/css/recipes';
 
 const props = defineProps<{
   modelValue?: string;
@@ -9,6 +9,10 @@ const props = defineProps<{
   disabled?: boolean;
   rows?: number;
   id?: string;
+  /** Shared size scale (sm | md | lg) — flexes padding + type. */
+  size?: TextareaVariants['size'];
+  /** Marks the field invalid: sets aria-invalid + destructive border/ring. */
+  invalid?: boolean;
   class?: HTMLAttributes['class'];
 }>();
 
@@ -16,7 +20,9 @@ defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
 
-const rootClass = computed(() => cn(textarea(), props.class));
+const rootClass = computed(() =>
+  cn(textarea({ size: props.size, invalid: props.invalid }), props.class),
+);
 </script>
 
 <template>
@@ -26,6 +32,7 @@ const rootClass = computed(() => cn(textarea(), props.class));
     :placeholder="placeholder"
     :disabled="disabled"
     :rows="rows ?? 4"
+    :aria-invalid="invalid || undefined"
     :class="rootClass"
     @input="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
   />

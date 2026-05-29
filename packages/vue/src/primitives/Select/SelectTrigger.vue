@@ -2,16 +2,22 @@
 import { SelectIcon, SelectTrigger } from 'reka-ui';
 import { computed, type HTMLAttributes } from 'vue';
 import { cn } from '@auxiliary/css/utils';
-import { select } from '@auxiliary/css/recipes';
+import { select, type SelectVariants } from '@auxiliary/css/recipes';
 
-const props = defineProps<{ class?: HTMLAttributes['class'] }>();
+const props = defineProps<{
+  /** Shared size scale (sm | md | lg) — flexes the trigger height/padding/type. */
+  size?: SelectVariants['size'];
+  /** Marks the control invalid: sets aria-invalid + destructive border/ring. */
+  invalid?: boolean;
+  class?: HTMLAttributes['class'];
+}>();
 
-const styles = select();
-const rootClass = computed(() => cn(styles.trigger(), props.class));
+const styles = computed(() => select({ size: props.size, invalid: props.invalid }));
+const rootClass = computed(() => cn(styles.value.trigger(), props.class));
 </script>
 
 <template>
-  <SelectTrigger :class="rootClass">
+  <SelectTrigger :aria-invalid="invalid || undefined" :class="rootClass">
     <slot />
     <SelectIcon>
       <svg

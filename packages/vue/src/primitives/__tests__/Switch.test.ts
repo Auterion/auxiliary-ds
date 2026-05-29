@@ -42,6 +42,14 @@ describe('Switch', () => {
     expect(wrapper.emitted('update:modelValue')).toBeFalsy();
   });
 
+  it('sets aria-invalid and a destructive border on the root when invalid', () => {
+    const wrapper = mount(Switch, { props: { invalid: true } });
+    const root = wrapper.find('[role="switch"]');
+    expect(root.attributes('aria-invalid')).toBe('true');
+    expect(root.classes()).toContain('border-destructive');
+    expect(root.attributes('invalid')).toBeUndefined();
+  });
+
   it('forwards the name prop for form association', () => {
     const wrapper = mount(Switch, { props: { name: 'notifications', modelValue: true } });
     // Reka renders a hidden input carrying the name/value for native form submission.

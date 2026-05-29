@@ -3,9 +3,9 @@ export { type Size, type SizeSm } from './sizes.js';
 // General primitives
 export { button, type ButtonVariants } from './button.js';
 export { badge, type BadgeVariants } from './badge.js';
-export { input } from './input.js';
+export { input, type InputVariants } from './input.js';
 export { label } from './label.js';
-export { textarea } from './textarea.js';
+export { textarea, type TextareaVariants } from './textarea.js';
 export { checkbox, type CheckboxVariants } from './checkbox.js';
 export { switchControl, type SwitchVariants } from './switch.js';
 export { radioGroup } from './radio-group.js';
@@ -16,7 +16,7 @@ export { dialog, type DialogVariants } from './dialog.js';
 export { popover } from './popover.js';
 export { tooltip } from './tooltip.js';
 export { dropdownMenu } from './dropdown-menu.js';
-export { select } from './select.js';
+export { select, type SelectVariants } from './select.js';
 
 // Structure & navigation
 export { card } from './card.js';
