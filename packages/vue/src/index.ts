@@ -32,6 +32,13 @@ export { default as SelectContent } from './primitives/Select/SelectContent.vue'
 export { default as SelectItem } from './primitives/Select/SelectItem.vue';
 export { default as SelectSeparator } from './primitives/Select/SelectSeparator.vue';
 
+export { default as Combobox } from './primitives/Combobox/Combobox.vue';
+export { default as ComboboxInput } from './primitives/Combobox/ComboboxInput.vue';
+export { default as ComboboxContent } from './primitives/Combobox/ComboboxContent.vue';
+export { default as ComboboxItem } from './primitives/Combobox/ComboboxItem.vue';
+export { default as ComboboxEmpty } from './primitives/Combobox/ComboboxEmpty.vue';
+export { default as ComboboxSeparator } from './primitives/Combobox/ComboboxSeparator.vue';
+
 export { default as Tabs } from './primitives/Tabs/Tabs.vue';
 export { default as TabsList } from './primitives/Tabs/TabsList.vue';
 export { default as TabsTrigger } from './primitives/Tabs/TabsTrigger.vue';
@@ -53,6 +60,14 @@ export { default as CardContent } from './primitives/Card/CardContent.vue';
 export { default as CardFooter } from './primitives/Card/CardFooter.vue';
 
 export { default as Separator } from './primitives/Separator.vue';
+
+export { default as Table } from './primitives/Table/Table.vue';
+export { default as TableHeader } from './primitives/Table/TableHeader.vue';
+export { default as TableBody } from './primitives/Table/TableBody.vue';
+export { default as TableRow } from './primitives/Table/TableRow.vue';
+export { default as TableHead } from './primitives/Table/TableHead.vue';
+export { default as TableCell } from './primitives/Table/TableCell.vue';
+export { default as TableCaption } from './primitives/Table/TableCaption.vue';
 
 export { default as Accordion } from './primitives/Accordion/Accordion.vue';
 export { default as AccordionItem } from './primitives/Accordion/AccordionItem.vue';
