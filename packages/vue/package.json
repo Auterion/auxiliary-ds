@@ -137,6 +137,10 @@
       "types": "./dist/primitives/Label.vue.d.ts",
       "import": "./dist/primitives/Label.vue.js"
     },
+    "./NumberField": {
+      "types": "./dist/primitives/NumberField.vue.d.ts",
+      "import": "./dist/primitives/NumberField.vue.js"
+    },
     "./Popover": {
       "types": "./dist/primitives/Popover/Popover.vue.d.ts",
       "import": "./dist/primitives/Popover/Popover.vue.js"

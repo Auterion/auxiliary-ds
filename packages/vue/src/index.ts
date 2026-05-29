@@ -74,6 +74,7 @@ export { default as RadioGroup } from './primitives/RadioGroup/RadioGroup.vue';
 export { default as RadioGroupItem } from './primitives/RadioGroup/RadioGroupItem.vue';
 export { default as Slider } from './primitives/Slider.vue';
 export { default as Textarea } from './primitives/Textarea.vue';
+export { default as NumberField } from './primitives/NumberField.vue';
 
 // Operational primitives — Auterion-specific (mission control, telemetry, alerts)
 export { default as StatusBadge, type StatusLevel } from './primitives/StatusBadge.vue';

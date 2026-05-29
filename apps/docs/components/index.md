@@ -11,6 +11,7 @@ primitive exists, styled through the [`@auxiliary/css`](/foundations/colors) rec
 | --- | --- |
 | [Input](/components/input) | Single-line text field, `v-model`-bound. |
 | [Textarea](/components/textarea) | Multi-line text field. |
+| [NumberField](/components/number-field) | Numeric entry with steppers, bounds, and a unit. |
 | [Label](/components/label) | Accessible `<label>` tied to a control via `for`. |
 | [Checkbox](/components/checkbox) | Tri-state checkbox (on / off / indeterminate). |
 | [Switch](/components/switch) | Binary on/off toggle. |

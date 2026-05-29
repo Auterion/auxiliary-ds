@@ -1903,6 +1903,166 @@
     ],
     "slots": []
   },
+  "NumberField": {
+    "file": "./primitives/NumberField.vue",
+    "props": [
+      {
+        "name": "defaultValue",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "modelValue",
+        "type": "number | null",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "The smallest value allowed for the input."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "The largest value allowed for the input."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "The amount that the input value changes with each increment or decrement \"tick\"."
+      },
+      {
+        "name": "stepSnapping",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `false`, prevents the value from snapping to the nearest increment of the step value"
+      },
+      {
+        "name": "focusOnChange",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, the input will be focused when the value changes."
+      },
+      {
+        "name": "formatOptions",
+        "type": "NumberFormatOptions",
+        "default": null,
+        "required": false,
+        "description": "Formatting options for the value displayed in the number field. This also affects what characters are allowed to be typed by the user."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "The locale to use for formatting and currencies"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, prevents the user from interacting with the Number Field."
+      },
+      {
+        "name": "readonly",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, the Number Field is read-only."
+      },
+      {
+        "name": "disableWheelChange",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, prevents the value from changing on wheel scroll."
+      },
+      {
+        "name": "invertWheelChange",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, inverts the direction of the wheel change."
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Id of the element"
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Change the default rendered element for the one passed as a child, merging their props and behavior. Read our [Composition](https://www.reka-ui.com/docs/guides/composition) guide for more details."
+      },
+      {
+        "name": "as",
+        "type": "AsTag | Component",
+        "default": null,
+        "required": false,
+        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "The name of the field. Submitted with its owning form as part of a name/value pair."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, indicates that the user must set the value before the owning form can be submitted."
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\" | \"lg\"",
+        "default": null,
+        "required": false,
+        "description": "Shared size scale (sm | md | lg)."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Marks the control invalid: sets aria-invalid + destructive border/ring."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Trailing unit label (e.g. \"m\", \"kts\", \"MHz\") — decorative, shown after the value."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:modelValue",
+        "type": "[val: number]",
+        "description": ""
+      }
+    ],
+    "slots": []
+  },
   "StatusBadge": {
     "file": "./primitives/StatusBadge.vue",
     "props": [
