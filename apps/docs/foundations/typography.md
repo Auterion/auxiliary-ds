@@ -102,6 +102,28 @@ The `font-display` utility shifts to the optical-sizing display rendering for he
 <h1 class="font-display text-2xl">Auxiliary</h1>
 ```
 
+## Semantic roles
+
+Named text-size roles alias the t-shirt scale so you size by intent, not by number.
+They generate `text-*` utilities (`text-body`, `text-heading`, …); pair each with the
+recommended `leading` and `font-*` weight.
+
+| Role | Size token | Pair with |
+| --- | --- | --- |
+| `text-display` | 32px | `leading-tight` · `font-semibold` |
+| `text-heading` | 24px (`{text.2xl}`) | `leading-tight` · `font-semibold` |
+| `text-title` | 20px (`{text.xl}`) | `leading-snug` · `font-medium` |
+| `text-body-lg` | 18px (`{text.lg}`) | `leading-normal` |
+| `text-body` | 16px (`{text.base}`) | `leading-normal` |
+| `text-label` | 14px (`{text.sm}`) | `leading-snug` · `font-medium` |
+| `text-caption` | 12px (`{text.xs}`) | `leading-snug` · `text-muted-foreground` |
+
+```vue
+<h2 class="text-heading leading-tight font-semibold">Telemetry</h2>
+<p class="text-body leading-normal">Altitude holding at 408 m AGL.</p>
+<span class="text-caption text-muted-foreground">Updated 2 s ago</span>
+```
+
 <style>
 .aux-type-spec {
   display: flex;

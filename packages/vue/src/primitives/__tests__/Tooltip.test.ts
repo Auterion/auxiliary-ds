@@ -94,7 +94,7 @@ describe('Tooltip', () => {
     expect(cls).toContain('bg-primary');
     expect(cls).toContain('text-primary-foreground');
     expect(cls).toContain('rounded-md');
-    expect(cls).toContain('z-50');
+    expect(cls).toContain('z-[var(--z-tooltip)]');
   });
 
   it('honours the side prop on the rendered content', async () => {

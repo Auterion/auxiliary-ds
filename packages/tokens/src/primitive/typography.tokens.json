@@ -22,7 +22,14 @@
     "lg":      { "$type": "dimension", "$value": "18px" },
     "xl":      { "$type": "dimension", "$value": "20px" },
     "2xl":     { "$type": "dimension", "$value": "24px" },
-    "display": { "$type": "dimension", "$value": "32px" }
+    "display": { "$type": "dimension", "$value": "32px" },
+
+    "caption": { "$type": "dimension", "$value": "{text.xs}" },
+    "label":   { "$type": "dimension", "$value": "{text.sm}" },
+    "body":    { "$type": "dimension", "$value": "{text.base}" },
+    "body-lg": { "$type": "dimension", "$value": "{text.lg}" },
+    "title":   { "$type": "dimension", "$value": "{text.xl}" },
+    "heading": { "$type": "dimension", "$value": "{text.2xl}" }
   },
   "leading": {
     "tight":  { "$type": "number", "$value": 1.2 },
