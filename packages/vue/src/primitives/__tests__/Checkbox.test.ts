@@ -60,6 +60,15 @@ describe('Checkbox', () => {
     expect(input.attributes('value')).toBe('accepted');
   });
 
+  it('sets aria-invalid and a destructive border on the root when invalid', () => {
+    const wrapper = mount(Checkbox, { props: { modelValue: false, invalid: true } });
+    const root = wrapper.get('[role="checkbox"]');
+    expect(root.attributes('aria-invalid')).toBe('true');
+    expect(root.classes()).toContain('border-destructive');
+    // `invalid` is consumed, not leaked as a DOM attribute
+    expect(root.attributes('invalid')).toBeUndefined();
+  });
+
   it('forwards aria-label to the checkbox root', () => {
     const wrapper = mount(Checkbox, {
       attrs: { 'aria-label': 'Accept terms' },

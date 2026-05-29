@@ -10,21 +10,27 @@ import { computed, type HTMLAttributes } from 'vue';
 import { switchControl } from '@auxiliary/css/recipes';
 import { cn } from '@auxiliary/css/utils';
 
-const props = defineProps<SwitchRootProps & { class?: HTMLAttributes['class'] }>();
+const props = defineProps<
+  SwitchRootProps & {
+    /** Marks the control invalid: sets aria-invalid + destructive border/ring. */
+    invalid?: boolean;
+    class?: HTMLAttributes['class'];
+  }
+>();
 const emits = defineEmits<SwitchRootEmits>();
 
 const delegated = computed(() => {
-  const { class: _class, ...rest } = props;
+  const { class: _class, invalid: _invalid, ...rest } = props;
   return rest;
 });
 const forwarded = useForwardPropsEmits(delegated, emits);
 
-const styles = switchControl();
-const rootClass = computed(() => cn(styles.root(), props.class));
+const styles = computed(() => switchControl({ invalid: props.invalid }));
+const rootClass = computed(() => cn(styles.value.root(), props.class));
 </script>
 
 <template>
-  <SwitchRoot v-bind="forwarded" :class="rootClass">
+  <SwitchRoot v-bind="forwarded" :aria-invalid="invalid || undefined" :class="rootClass">
     <SwitchThumb :class="styles.thumb()" />
   </SwitchRoot>
 </template>

@@ -49,6 +49,26 @@ describe('Textarea', () => {
     expect((wrapper.get('textarea').element as HTMLTextAreaElement).value).toBe('second');
   });
 
+  it('maps each size prop to its recipe padding class (defaulting to md)', () => {
+    const cases: Array<['sm' | 'md' | 'lg', string]> = [
+      ['sm', 'py-1.5'],
+      ['md', 'py-2'],
+      ['lg', 'py-2.5'],
+    ];
+    for (const [size, cls] of cases) {
+      const wrapper = mount(Textarea, { props: { size } });
+      expect(wrapper.get('textarea').classes()).toContain(cls);
+    }
+    expect(mount(Textarea).get('textarea').classes()).toContain('py-2');
+  });
+
+  it('sets aria-invalid and a destructive border when invalid', () => {
+    const wrapper = mount(Textarea, { props: { invalid: true } });
+    const el = wrapper.get('textarea');
+    expect(el.attributes('aria-invalid')).toBe('true');
+    expect(el.classes()).toContain('border-destructive');
+  });
+
   it('forwards arbitrary attributes (aria-*, data-*, maxlength, required) to the textarea', () => {
     const wrapper = mount(Textarea, {
       attrs: {

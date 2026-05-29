@@ -29,6 +29,7 @@ const Harness = defineComponent({
     description: { type: String, default: 'Your changes were saved.' },
     withAction: { type: Boolean, default: false },
     withClose: { type: Boolean, default: false },
+    actionClass: { type: String, default: undefined },
   },
   emits: ['update:open'],
   setup(props, { emit }) {
@@ -48,7 +49,11 @@ const Harness = defineComponent({
                 h(ToastTitle, null, { default: () => props.title }),
                 h(ToastDescription, null, { default: () => props.description }),
                 props.withAction
-                  ? h(ToastAction, { altText: 'Undo the save' }, { default: () => 'Undo' })
+                  ? h(
+                      ToastAction,
+                      { altText: 'Undo the save', class: props.actionClass },
+                      { default: () => 'Undo' },
+                    )
                   : null,
                 props.withClose ? h(ToastClose) : null,
               ],
@@ -91,6 +96,16 @@ describe('Toast', () => {
     expect(cls).toContain('bg-popover');
     expect(cls).toContain('text-foreground');
     expect(cls).toContain('border-border');
+  });
+
+  it('forwards class to the ToastAction button (single-root fallthrough)', async () => {
+    mount(Harness, {
+      props: { open: true, withAction: true, actionClass: 'action-x' },
+      attachTo: document.body,
+    });
+    await nextTick();
+    const root = toastRoot()!;
+    expect(root.querySelector('.action-x')).not.toBeNull();
   });
 
   it('renders the viewport as an <ol> region with the fixed-position classes', () => {

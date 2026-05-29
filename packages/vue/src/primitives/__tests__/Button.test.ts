@@ -39,6 +39,22 @@ describe('Button', () => {
     }
   });
 
+  it('defines a distinct active/pressed state per variant', () => {
+    const cases: Array<[string, string]> = [
+      ['primary', 'active:bg-primary/80'],
+      ['secondary', 'active:bg-secondary/70'],
+      ['ghost', 'active:bg-accent/80'],
+      ['danger', 'active:bg-destructive/80'],
+    ];
+    for (const [variant, cls] of cases) {
+      const wrapper = mount(Button, {
+        props: { variant: variant as never },
+        slots: { default: variant },
+      });
+      expect(wrapper.classes()).toContain(cls);
+    }
+  });
+
   it('applies loading styling and disables the button when loading', () => {
     const wrapper = mount(Button, { props: { loading: true }, slots: { default: 'Saving' } });
     expect(wrapper.classes()).toContain('opacity-80');

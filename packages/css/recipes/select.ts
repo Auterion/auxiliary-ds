@@ -1,9 +1,9 @@
-import { tv } from 'tailwind-variants';
+import { tv, type VariantProps } from 'tailwind-variants';
 
 export const select = tv({
   slots: {
     trigger:
-      'inline-flex h-9 w-full items-center justify-between gap-2 rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:ring-2 ring-ring disabled:opacity-50 disabled:cursor-not-allowed data-[placeholder]:text-muted-foreground',
+      'inline-flex w-full items-center justify-between gap-2 rounded-md border border-input bg-background text-foreground outline-none focus-visible:ring-2 ring-ring disabled:opacity-50 disabled:cursor-not-allowed data-[placeholder]:text-muted-foreground',
     triggerIcon: 'text-muted-foreground',
     content:
       'z-[var(--z-dropdown)] min-w-[var(--reka-select-trigger-width)] overflow-hidden rounded-md border border-border bg-popover text-sm text-foreground shadow-md outline-none',
@@ -12,4 +12,20 @@ export const select = tv({
     itemIndicator: 'absolute left-2 flex items-center justify-center',
     separator: 'my-1 border-t border-border',
   },
+  variants: {
+    // Shared size vocabulary (see sizes.ts) — flexes the trigger only.
+    size: {
+      sm: { trigger: 'h-8 px-2.5 text-sm' },
+      md: { trigger: 'h-9 px-3 text-sm' },
+      lg: { trigger: 'h-10 px-3.5 text-base' },
+    },
+    invalid: {
+      true: { trigger: 'border-destructive focus-visible:ring-destructive' },
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
 });
+
+export type SelectVariants = VariantProps<typeof select>;
