@@ -72,7 +72,7 @@ function findViolations(): string[] {
       re.lastIndex = 0;
       for (const m of text.matchAll(re)) {
         const url = m[1];
-        if (ALLOWED_HOST.test(hostOf(url))) continue;
+        if (!url || ALLOWED_HOST.test(hostOf(url))) continue;
         const line = text.slice(0, m.index).split('\n').length;
         hits.push(`${relative(repoRoot, file)}:${line} → ${url}`);
       }
