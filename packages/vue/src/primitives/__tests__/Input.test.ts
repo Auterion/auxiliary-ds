@@ -49,6 +49,26 @@ describe('Input', () => {
     expect(input.classes()).toContain('disabled:cursor-not-allowed');
   });
 
+  it('forwards arbitrary attributes (aria-*, data-*, maxlength, required) to the input element', () => {
+    const wrapper = mount(Input, {
+      attrs: {
+        'aria-label': 'Search',
+        'aria-invalid': 'true',
+        'data-testid': 'search-box',
+        maxlength: 40,
+        required: true,
+        autocomplete: 'off',
+      },
+    });
+    const input = wrapper.find('input');
+    expect(input.attributes('aria-label')).toBe('Search');
+    expect(input.attributes('aria-invalid')).toBe('true');
+    expect(input.attributes('data-testid')).toBe('search-box');
+    expect(input.attributes('maxlength')).toBe('40');
+    expect(input.attributes('required')).toBeDefined();
+    expect(input.attributes('autocomplete')).toBe('off');
+  });
+
   it('has no axe violations when associated with a label', async () => {
     const wrapper = mount(Input, {
       props: { id: 'name-field', modelValue: '' },

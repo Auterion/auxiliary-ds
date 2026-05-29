@@ -49,6 +49,24 @@ describe('Textarea', () => {
     expect((wrapper.get('textarea').element as HTMLTextAreaElement).value).toBe('second');
   });
 
+  it('forwards arbitrary attributes (aria-*, data-*, maxlength, required) to the textarea', () => {
+    const wrapper = mount(Textarea, {
+      attrs: {
+        'aria-label': 'Notes',
+        'aria-invalid': 'true',
+        'data-testid': 'notes-box',
+        maxlength: 200,
+        required: true,
+      },
+    });
+    const el = wrapper.get('textarea');
+    expect(el.attributes('aria-label')).toBe('Notes');
+    expect(el.attributes('aria-invalid')).toBe('true');
+    expect(el.attributes('data-testid')).toBe('notes-box');
+    expect(el.attributes('maxlength')).toBe('200');
+    expect(el.attributes('required')).toBeDefined();
+  });
+
   it('has no axe violations when associated with a label', async () => {
     const wrapper = mount(
       {
