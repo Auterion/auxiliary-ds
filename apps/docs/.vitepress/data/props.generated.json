@@ -1,0 +1,1995 @@
+{
+  "Button": {
+    "file": "./primitives/Button.vue",
+    "props": [
+      {
+        "name": "variant",
+        "type": "\"primary\" | \"secondary\" | \"ghost\" | \"danger\"",
+        "default": "primary",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\" | \"lg\"",
+        "default": "md",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "\"button\" | \"submit\" | \"reset\"",
+        "default": "button",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "Input": {
+    "file": "./primitives/Input.vue",
+    "props": [
+      {
+        "name": "modelValue",
+        "type": "string | number",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [
+      {
+        "name": "update:modelValue",
+        "type": "[value: string]",
+        "description": ""
+      }
+    ],
+    "slots": []
+  },
+  "Label": {
+    "file": "./primitives/Label.vue",
+    "props": [
+      {
+        "name": "for",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "Dialog": {
+    "file": "./primitives/Dialog/Dialog.vue",
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The controlled open state of the dialog. Can be binded as `v-model:open`."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The open state of the dialog when it is initially rendered. Use when you do not need to control its open state."
+      },
+      {
+        "name": "modal",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The modality of the dialog When set to `true`, <br> interaction with outside elements will be disabled and only dialog content will be visible to screen readers."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:open",
+        "type": "[value: boolean]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
+  },
+  "DialogTrigger": {
+    "file": "./primitives/Dialog/DialogTrigger.vue",
+    "props": [
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "DialogContent": {
+    "file": "./primitives/Dialog/DialogContent.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "DialogTitle": {
+    "file": "./primitives/Dialog/DialogTitle.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "DialogDescription": {
+    "file": "./primitives/Dialog/DialogDescription.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "DialogClose": {
+    "file": "./primitives/Dialog/DialogClose.vue",
+    "props": [
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "Popover": {
+    "file": "./primitives/Popover/Popover.vue",
+    "props": [
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The open state of the popover when it is initially rendered. Use when you do not need to control its open state."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The controlled open state of the popover."
+      },
+      {
+        "name": "modal",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The modality of the popover. When set to true, interaction with outside elements will be disabled and only popover content will be visible to screen readers."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:open",
+        "type": "[value: boolean]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
+  },
+  "PopoverTrigger": {
+    "file": "./primitives/Popover/PopoverTrigger.vue",
+    "props": [
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "PopoverContent": {
+    "file": "./primitives/Popover/PopoverContent.vue",
+    "props": [
+      {
+        "name": "side",
+        "type": "\"bottom\" | \"top\" | \"right\" | \"left\"",
+        "default": "bottom",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "align",
+        "type": "\"center\" | \"start\" | \"end\"",
+        "default": "center",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "sideOffset",
+        "type": "number",
+        "default": "6",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "alignOffset",
+        "type": "number",
+        "default": "0",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "TooltipProvider": {
+    "file": "./primitives/Tooltip/TooltipProvider.vue",
+    "props": [
+      {
+        "name": "delayDuration",
+        "type": "number",
+        "default": "400",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "skipDelayDuration",
+        "type": "number",
+        "default": "200",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "disableHoverableContent",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "Tooltip": {
+    "file": "./primitives/Tooltip/Tooltip.vue",
+    "props": [
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The open state of the tooltip when it is initially rendered. Use when you do not need to control its open state."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The controlled open state of the tooltip."
+      },
+      {
+        "name": "delayDuration",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "Override the duration given to the `Provider` to customise the open delay for a specific tooltip."
+      },
+      {
+        "name": "disableHoverableContent",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Prevents Tooltip.Content from remaining open when hovering. Disabling this has accessibility consequences. Inherits from Tooltip.Provider."
+      },
+      {
+        "name": "disableClosingTrigger",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, clicking on trigger will not close the content."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, disable tooltip"
+      },
+      {
+        "name": "ignoreNonKeyboardFocus",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Prevent the tooltip from opening if the focus did not come from the keyboard by matching against the `:focus-visible` selector. This is useful if you want to avoid opening it when switching browser tabs or closing a dialog."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:open",
+        "type": "[value: boolean]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
+  },
+  "TooltipTrigger": {
+    "file": "./primitives/Tooltip/TooltipTrigger.vue",
+    "props": [
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "TooltipContent": {
+    "file": "./primitives/Tooltip/TooltipContent.vue",
+    "props": [
+      {
+        "name": "side",
+        "type": "\"bottom\" | \"top\" | \"right\" | \"left\"",
+        "default": "top",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "align",
+        "type": "\"center\" | \"start\" | \"end\"",
+        "default": "center",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "sideOffset",
+        "type": "number",
+        "default": "4",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "DropdownMenu": {
+    "file": "./primitives/DropdownMenu/DropdownMenu.vue",
+    "props": [
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The open state of the dropdown menu when it is initially rendered. Use when you do not need to control its open state."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The controlled open state of the menu. Can be used as `v-model:open`."
+      },
+      {
+        "name": "dir",
+        "type": "Direction$4",
+        "default": null,
+        "required": false,
+        "description": "The reading direction of the combobox when applicable. If omitted, inherits globally from `ConfigProvider` or assumes LTR (left-to-right) reading mode."
+      },
+      {
+        "name": "modal",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The modality of the dropdown menu. When set to `true`, interaction with outside elements will be disabled and only menu content will be visible to screen readers."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:open",
+        "type": "[payload: boolean]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
+  },
+  "DropdownMenuTrigger": {
+    "file": "./primitives/DropdownMenu/DropdownMenuTrigger.vue",
+    "props": [
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "DropdownMenuContent": {
+    "file": "./primitives/DropdownMenu/DropdownMenuContent.vue",
+    "props": [
+      {
+        "name": "side",
+        "type": "\"bottom\" | \"top\" | \"right\" | \"left\"",
+        "default": "bottom",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "align",
+        "type": "\"center\" | \"start\" | \"end\"",
+        "default": "start",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "sideOffset",
+        "type": "number",
+        "default": "4",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "DropdownMenuItem": {
+    "file": "./primitives/DropdownMenu/DropdownMenuItem.vue",
+    "props": [
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [
+      {
+        "name": "select",
+        "type": "[event: Event]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
+  },
+  "DropdownMenuLabel": {
+    "file": "./primitives/DropdownMenu/DropdownMenuLabel.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "DropdownMenuSeparator": {
+    "file": "./primitives/DropdownMenu/DropdownMenuSeparator.vue",
+    "props": [],
+    "events": [],
+    "slots": []
+  },
+  "Select": {
+    "file": "./primitives/Select/Select.vue",
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The controlled open state of the Select. Can be bind as `v-model:open`."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The open state of the select when it is initially rendered. Use when you do not need to control its open state."
+      },
+      {
+        "name": "defaultValue",
+        "type": "AcceptableValue | AcceptableValue[]",
+        "default": null,
+        "required": false,
+        "description": "The value of the select when initially rendered. Use when you do not need to control the state of the Select"
+      },
+      {
+        "name": "modelValue",
+        "type": "AcceptableValue | AcceptableValue[]",
+        "default": null,
+        "required": false,
+        "description": "The controlled value of the Select. Can be bind as `v-model`."
+      },
+      {
+        "name": "by",
+        "type": "string | ((a: AcceptableValue, b: AcceptableValue) => boolean)",
+        "default": null,
+        "required": false,
+        "description": "Use this to compare objects by a particular field, or pass your own comparison function for complete control over how objects are compared."
+      },
+      {
+        "name": "dir",
+        "type": "Direction",
+        "default": null,
+        "required": false,
+        "description": "The reading direction of the combobox when applicable. <br> If omitted, inherits globally from `ConfigProvider` or assumes LTR (left-to-right) reading mode."
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Whether multiple options can be selected or not."
+      },
+      {
+        "name": "autocomplete",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Native html input `autocomplete` attribute."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, prevents the user from interacting with Select"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "The name of the field. Submitted with its owning form as part of a name/value pair."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, indicates that the user must set the value before the owning form can be submitted."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:modelValue",
+        "type": "[value: AcceptableValue]",
+        "description": ""
+      },
+      {
+        "name": "update:open",
+        "type": "[value: boolean]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
+  },
+  "SelectTrigger": {
+    "file": "./primitives/Select/SelectTrigger.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "SelectValue": {
+    "file": "./primitives/Select/SelectValue.vue",
+    "props": [
+      {
+        "name": "placeholder",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "SelectContent": {
+    "file": "./primitives/Select/SelectContent.vue",
+    "props": [
+      {
+        "name": "position",
+        "type": "\"popper\" | \"item-aligned\"",
+        "default": "popper",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "side",
+        "type": "\"bottom\" | \"top\" | \"right\" | \"left\"",
+        "default": "bottom",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "sideOffset",
+        "type": "number",
+        "default": "4",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "SelectItem": {
+    "file": "./primitives/Select/SelectItem.vue",
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "SelectSeparator": {
+    "file": "./primitives/Select/SelectSeparator.vue",
+    "props": [],
+    "events": [],
+    "slots": []
+  },
+  "Tabs": {
+    "file": "./primitives/Tabs/Tabs.vue",
+    "props": [
+      {
+        "name": "defaultValue",
+        "type": "StringOrNumber",
+        "default": null,
+        "required": false,
+        "description": "The value of the tab that should be active when initially rendered. Use when you do not need to control the state of the tabs"
+      },
+      {
+        "name": "orientation",
+        "type": "DataOrientation",
+        "default": null,
+        "required": false,
+        "description": "The orientation the tabs are laid out. Mainly so arrow navigation is done accordingly (left & right vs. up & down)"
+      },
+      {
+        "name": "dir",
+        "type": "Direction",
+        "default": null,
+        "required": false,
+        "description": "The reading direction of the combobox when applicable. <br> If omitted, inherits globally from `ConfigProvider` or assumes LTR (left-to-right) reading mode."
+      },
+      {
+        "name": "activationMode",
+        "type": "\"automatic\" | \"manual\"",
+        "default": null,
+        "required": false,
+        "description": "Whether a tab is activated automatically (on focus) or manually (on click)."
+      },
+      {
+        "name": "modelValue",
+        "type": "StringOrNumber",
+        "default": null,
+        "required": false,
+        "description": "The controlled value of the tab to activate. Can be bind as `v-model`."
+      },
+      {
+        "name": "unmountOnHide",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, the element will be unmounted on closed state."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Change the default rendered element for the one passed as a child, merging their props and behavior. Read our [Composition](https://www.reka-ui.com/docs/guides/composition) guide for more details."
+      },
+      {
+        "name": "as",
+        "type": "AsTag | Component",
+        "default": null,
+        "required": false,
+        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:modelValue",
+        "type": "[payload: StringOrNumber]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
+  },
+  "TabsList": {
+    "file": "./primitives/Tabs/TabsList.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "TabsTrigger": {
+    "file": "./primitives/Tabs/TabsTrigger.vue",
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "TabsContent": {
+    "file": "./primitives/Tabs/TabsContent.vue",
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "forceMount",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "ToastProvider": {
+    "file": "./primitives/Toast/ToastProvider.vue",
+    "props": [
+      {
+        "name": "duration",
+        "type": "number",
+        "default": "5000",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": "Notification",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "swipeDirection",
+        "type": "\"right\" | \"left\" | \"up\" | \"down\"",
+        "default": "right",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "swipeThreshold",
+        "type": "number",
+        "default": "50",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "ToastViewport": {
+    "file": "./primitives/Toast/ToastViewport.vue",
+    "props": [],
+    "events": [],
+    "slots": []
+  },
+  "Toast": {
+    "file": "./primitives/Toast/Toast.vue",
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "\"foreground\" | \"background\"",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [
+      {
+        "name": "update:open",
+        "type": "[open: boolean]",
+        "description": ""
+      },
+      {
+        "name": "escapeKeyDown",
+        "type": "[event: KeyboardEvent]",
+        "description": ""
+      },
+      {
+        "name": "pause",
+        "type": "[]",
+        "description": ""
+      },
+      {
+        "name": "resume",
+        "type": "[]",
+        "description": ""
+      },
+      {
+        "name": "swipeStart",
+        "type": "[event: CustomEvent<any>]",
+        "description": ""
+      },
+      {
+        "name": "swipeMove",
+        "type": "[event: CustomEvent<any>]",
+        "description": ""
+      },
+      {
+        "name": "swipeCancel",
+        "type": "[event: CustomEvent<any>]",
+        "description": ""
+      },
+      {
+        "name": "swipeEnd",
+        "type": "[event: CustomEvent<any>]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
+  },
+  "ToastTitle": {
+    "file": "./primitives/Toast/ToastTitle.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "ToastDescription": {
+    "file": "./primitives/Toast/ToastDescription.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "ToastAction": {
+    "file": "./primitives/Toast/ToastAction.vue",
+    "props": [
+      {
+        "name": "altText",
+        "type": "string",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "ToastClose": {
+    "file": "./primitives/Toast/ToastClose.vue",
+    "props": [
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "Card": {
+    "file": "./primitives/Card/Card.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "CardHeader": {
+    "file": "./primitives/Card/CardHeader.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "CardTitle": {
+    "file": "./primitives/Card/CardTitle.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "CardDescription": {
+    "file": "./primitives/Card/CardDescription.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "CardContent": {
+    "file": "./primitives/Card/CardContent.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "CardFooter": {
+    "file": "./primitives/Card/CardFooter.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "Separator": {
+    "file": "./primitives/Separator.vue",
+    "props": [
+      {
+        "name": "orientation",
+        "type": "\"vertical\" | \"horizontal\"",
+        "default": "horizontal",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "decorative",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Accordion": {
+    "file": "./primitives/Accordion/Accordion.vue",
+    "props": [
+      {
+        "name": "collapsible",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When type is \"single\", allows closing content when clicking trigger for an open item. When type is \"multiple\", this prop has no effect."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, prevents the user from interacting with the accordion and all its items"
+      },
+      {
+        "name": "dir",
+        "type": "Direction",
+        "default": null,
+        "required": false,
+        "description": "The reading direction of the accordion when applicable. If omitted, assumes LTR (left-to-right) reading mode."
+      },
+      {
+        "name": "orientation",
+        "type": "DataOrientation",
+        "default": null,
+        "required": false,
+        "description": "The orientation of the accordion."
+      },
+      {
+        "name": "unmountOnHide",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, the element will be unmounted on closed state."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Change the default rendered element for the one passed as a child, merging their props and behavior. Read our [Composition](https://www.reka-ui.com/docs/guides/composition) guide for more details."
+      },
+      {
+        "name": "as",
+        "type": "AsTag | Component",
+        "default": null,
+        "required": false,
+        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
+      },
+      {
+        "name": "type",
+        "type": "SingleOrMultipleType",
+        "default": null,
+        "required": false,
+        "description": "Determines whether a \"single\" or \"multiple\" items can be selected at a time. This prop will overwrite the inferred type from `modelValue` and `defaultValue`."
+      },
+      {
+        "name": "modelValue",
+        "type": "string | string[]",
+        "default": null,
+        "required": false,
+        "description": "The controlled value of the active item(s). Use this when you need to control the state of the items. Can be binded with `v-model`"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | string[]",
+        "default": null,
+        "required": false,
+        "description": "The default active value of the item(s). Use when you do not need to control the state of the item(s)."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:modelValue",
+        "type": "[value: string | string[] | undefined]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
+  },
+  "AccordionItem": {
+    "file": "./primitives/Accordion/AccordionItem.vue",
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "AccordionTrigger": {
+    "file": "./primitives/Accordion/AccordionTrigger.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "AccordionContent": {
+    "file": "./primitives/Accordion/AccordionContent.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "Avatar": {
+    "file": "./primitives/Avatar/Avatar.vue",
+    "props": [
+      {
+        "name": "size",
+        "type": "Size",
+        "default": "md",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "AvatarImage": {
+    "file": "./primitives/Avatar/AvatarImage.vue",
+    "props": [
+      {
+        "name": "src",
+        "type": "string",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "alt",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "AvatarFallback": {
+    "file": "./primitives/Avatar/AvatarFallback.vue",
+    "props": [
+      {
+        "name": "delayMs",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "Badge": {
+    "file": "./primitives/Badge.vue",
+    "props": [
+      {
+        "name": "variant",
+        "type": "\"default\" | \"secondary\" | \"outline\" | \"accent\"",
+        "default": "default",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\"",
+        "default": "md",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "Progress": {
+    "file": "./primitives/Progress.vue",
+    "props": [
+      {
+        "name": "value",
+        "type": "number | null",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "default": "100",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "level",
+        "type": "\"alarm\" | \"warning\" | \"caution\" | \"advisory\" | \"nominal\" | null",
+        "default": "null",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Spinner": {
+    "file": "./primitives/Spinner.vue",
+    "props": [
+      {
+        "name": "size",
+        "type": "Size",
+        "default": "md",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": "Loading",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Skeleton": {
+    "file": "./primitives/Skeleton.vue",
+    "props": [],
+    "events": [],
+    "slots": []
+  },
+  "Checkbox": {
+    "file": "./primitives/Checkbox.vue",
+    "props": [
+      {
+        "name": "defaultValue",
+        "type": "boolean | \"indeterminate\"",
+        "default": null,
+        "required": false,
+        "description": "The value of the checkbox when it is initially rendered. Use when you do not need to control its value."
+      },
+      {
+        "name": "modelValue",
+        "type": "boolean | \"indeterminate\" | null",
+        "default": null,
+        "required": false,
+        "description": "The controlled value of the checkbox. Can be binded with v-model."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, prevents the user from interacting with the checkbox"
+      },
+      {
+        "name": "value",
+        "type": "AcceptableValue",
+        "default": null,
+        "required": false,
+        "description": "The value given as data when submitted with a `name`."
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Id of the element"
+      },
+      {
+        "name": "trueValue",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The value used when the checkbox is checked. Defaults to `true`."
+      },
+      {
+        "name": "falseValue",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The value used when the checkbox is unchecked. Defaults to `false`."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Change the default rendered element for the one passed as a child, merging their props and behavior. Read our [Composition](https://www.reka-ui.com/docs/guides/composition) guide for more details."
+      },
+      {
+        "name": "as",
+        "type": "AsTag | Component",
+        "default": null,
+        "required": false,
+        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "The name of the field. Submitted with its owning form as part of a name/value pair."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, indicates that the user must set the value before the owning form can be submitted."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:modelValue",
+        "type": "[value: boolean | \"indeterminate\"]",
+        "description": ""
+      }
+    ],
+    "slots": []
+  },
+  "Switch": {
+    "file": "./primitives/Switch.vue",
+    "props": [
+      {
+        "name": "defaultValue",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The state of the switch when it is initially rendered. Use when you do not need to control its state."
+      },
+      {
+        "name": "modelValue",
+        "type": "boolean | null",
+        "default": null,
+        "required": false,
+        "description": "The controlled state of the switch. Can be bind as `v-model`."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, prevents the user from interacting with the switch."
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "The value given as data when submitted with a `name`."
+      },
+      {
+        "name": "trueValue",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The value used when the switch is on. Defaults to `true`."
+      },
+      {
+        "name": "falseValue",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The value used when the switch is off. Defaults to `false`."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Change the default rendered element for the one passed as a child, merging their props and behavior. Read our [Composition](https://www.reka-ui.com/docs/guides/composition) guide for more details."
+      },
+      {
+        "name": "as",
+        "type": "AsTag | Component",
+        "default": null,
+        "required": false,
+        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "The name of the field. Submitted with its owning form as part of a name/value pair."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, indicates that the user must set the value before the owning form can be submitted."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:modelValue",
+        "type": "[payload: boolean]",
+        "description": ""
+      }
+    ],
+    "slots": []
+  },
+  "RadioGroup": {
+    "file": "./primitives/RadioGroup/RadioGroup.vue",
+    "props": [
+      {
+        "name": "modelValue",
+        "type": "AcceptableValue",
+        "default": null,
+        "required": false,
+        "description": "The controlled value of the radio item to check. Can be binded as `v-model`."
+      },
+      {
+        "name": "defaultValue",
+        "type": "AcceptableValue",
+        "default": null,
+        "required": false,
+        "description": "The value of the radio item that should be checked when initially rendered. Use when you do not need to control the state of the radio items."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, prevents the user from interacting with radio items."
+      },
+      {
+        "name": "orientation",
+        "type": "DataOrientation",
+        "default": null,
+        "required": false,
+        "description": "The orientation of the component."
+      },
+      {
+        "name": "dir",
+        "type": "Direction",
+        "default": null,
+        "required": false,
+        "description": "The reading direction of the combobox when applicable. <br> If omitted, inherits globally from `ConfigProvider` or assumes LTR (left-to-right) reading mode."
+      },
+      {
+        "name": "loop",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, keyboard navigation will loop from last item to first, and vice versa."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Change the default rendered element for the one passed as a child, merging their props and behavior. Read our [Composition](https://www.reka-ui.com/docs/guides/composition) guide for more details."
+      },
+      {
+        "name": "as",
+        "type": "AsTag | Component",
+        "default": null,
+        "required": false,
+        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "The name of the field. Submitted with its owning form as part of a name/value pair."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, indicates that the user must set the value before the owning form can be submitted."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:modelValue",
+        "type": "[payload: AcceptableValue]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
+  },
+  "RadioGroupItem": {
+    "file": "./primitives/RadioGroup/RadioGroupItem.vue",
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Slider": {
+    "file": "./primitives/Slider.vue",
+    "props": [
+      {
+        "name": "defaultValue",
+        "type": "number[]",
+        "default": null,
+        "required": false,
+        "description": "The value of the slider when initially rendered. Use when you do not need to control the state of the slider."
+      },
+      {
+        "name": "modelValue",
+        "type": "number[] | null",
+        "default": null,
+        "required": false,
+        "description": "The controlled value of the slider. Can be bind as `v-model`."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, prevents the user from interacting with the slider."
+      },
+      {
+        "name": "orientation",
+        "type": "DataOrientation",
+        "default": "horizontal",
+        "required": false,
+        "description": "The orientation of the slider."
+      },
+      {
+        "name": "dir",
+        "type": "Direction",
+        "default": null,
+        "required": false,
+        "description": "The reading direction of the combobox when applicable. <br> If omitted, inherits globally from `ConfigProvider` or assumes LTR (left-to-right) reading mode."
+      },
+      {
+        "name": "inverted",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Whether the slider is visually inverted."
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "default": "0",
+        "required": false,
+        "description": "The minimum value for the range."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "default": "100",
+        "required": false,
+        "description": "The maximum value for the range."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "default": "1",
+        "required": false,
+        "description": "The stepping interval."
+      },
+      {
+        "name": "minStepsBetweenThumbs",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "The minimum permitted steps between multiple thumbs."
+      },
+      {
+        "name": "thumbAlignment",
+        "type": "ThumbAlignment",
+        "default": null,
+        "required": false,
+        "description": "The alignment of the slider thumb. - `contain`: thumbs will be contained within the bounds of the track. - `overflow`: thumbs will not be bound by the track. No extra offset will be added."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Change the default rendered element for the one passed as a child, merging their props and behavior. Read our [Composition](https://www.reka-ui.com/docs/guides/composition) guide for more details."
+      },
+      {
+        "name": "as",
+        "type": "AsTag | Component",
+        "default": null,
+        "required": false,
+        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "The name of the field. Submitted with its owning form as part of a name/value pair."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, indicates that the user must set the value before the owning form can be submitted."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:modelValue",
+        "type": "[payload: number[] | undefined]",
+        "description": ""
+      },
+      {
+        "name": "valueCommit",
+        "type": "[payload: number[]]",
+        "description": ""
+      }
+    ],
+    "slots": []
+  },
+  "Textarea": {
+    "file": "./primitives/Textarea.vue",
+    "props": [
+      {
+        "name": "modelValue",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "rows",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [
+      {
+        "name": "update:modelValue",
+        "type": "[value: string]",
+        "description": ""
+      }
+    ],
+    "slots": []
+  },
+  "StatusBadge": {
+    "file": "./primitives/StatusBadge.vue",
+    "props": [
+      {
+        "name": "level",
+        "type": "StatusKind",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "variant",
+        "type": "\"outline\" | \"solid\"",
+        "default": "solid",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\"",
+        "default": "md",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "icon",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Per-level glyph — the grayscale-distinct visual cue. On by default."
+      },
+      {
+        "name": "dot",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Overrides the visually-hidden level label announced to assistive tech."
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "TelemetryValue": {
+    "file": "./primitives/TelemetryValue.vue",
+    "props": [
+      {
+        "name": "value",
+        "type": "string | number",
+        "default": null,
+        "required": true,
+        "description": "Numeric or pre-formatted string value. Numeric values use precision + tabular-nums."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Unit suffix (e.g. \"m\", \"m/s\", \"°\")."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Optional label rendered above the value."
+      },
+      {
+        "name": "precision",
+        "type": "number",
+        "default": "1",
+        "required": false,
+        "description": "Decimals for numeric values (ignored for strings)."
+      },
+      {
+        "name": "trend",
+        "type": "\"up\" | \"down\" | \"stable\" | null",
+        "default": "null",
+        "required": false,
+        "description": "Trend arrow next to the value."
+      },
+      {
+        "name": "size",
+        "type": "Size",
+        "default": "md",
+        "required": false,
+        "description": "Visual size."
+      },
+      {
+        "name": "level",
+        "type": "\"alarm\" | \"warning\" | \"caution\" | \"advisory\" | \"nominal\" | null",
+        "default": "null",
+        "required": false,
+        "description": "Status level — colors the value when set (e.g. red for alarm threshold)."
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "AlertBanner": {
+    "file": "./primitives/AlertBanner.vue",
+    "props": [
+      {
+        "name": "level",
+        "type": "StatusKind",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "dismissible",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "actionLabel",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [
+      {
+        "name": "dismiss",
+        "type": "[]",
+        "description": ""
+      },
+      {
+        "name": "action",
+        "type": "[]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "title",
+      "default"
+    ]
+  }
+}

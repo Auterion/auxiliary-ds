@@ -49,10 +49,64 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Components',
+        text: 'Forms',
+        items: [
+          { text: 'Checkbox', link: '/components/checkbox' },
+          { text: 'Input', link: '/components/input' },
+          { text: 'Label', link: '/components/label' },
+          { text: 'RadioGroup', link: '/components/radio-group' },
+          { text: 'Select', link: '/components/select' },
+          { text: 'Slider', link: '/components/slider' },
+          { text: 'Switch', link: '/components/switch' },
+          { text: 'Textarea', link: '/components/textarea' },
+        ],
+      },
+      {
+        text: 'Actions',
         items: [
           { text: 'Button', link: '/components/button' },
+          { text: 'DropdownMenu', link: '/components/dropdown-menu' },
+        ],
+      },
+      {
+        text: 'Overlays',
+        items: [
+          { text: 'Dialog', link: '/components/dialog' },
+          { text: 'Popover', link: '/components/popover' },
+          { text: 'Toast', link: '/components/toast' },
+          { text: 'Tooltip', link: '/components/tooltip' },
+        ],
+      },
+      {
+        text: 'Feedback',
+        items: [
+          { text: 'Progress', link: '/components/progress' },
+          { text: 'Skeleton', link: '/components/skeleton' },
+          { text: 'Spinner', link: '/components/spinner' },
+        ],
+      },
+      {
+        text: 'Operational',
+        items: [
+          { text: 'AlertBanner', link: '/components/alert-banner' },
           { text: 'StatusBadge', link: '/components/status-badge' },
+          { text: 'TelemetryValue', link: '/components/telemetry-value' },
+        ],
+      },
+      {
+        text: 'Data display',
+        items: [
+          { text: 'Avatar', link: '/components/avatar' },
+          { text: 'Badge', link: '/components/badge' },
+        ],
+      },
+      {
+        text: 'Layout',
+        items: [
+          { text: 'Accordion', link: '/components/accordion' },
+          { text: 'Card', link: '/components/card' },
+          { text: 'Separator', link: '/components/separator' },
+          { text: 'Tabs', link: '/components/tabs' },
         ],
       },
     ],
