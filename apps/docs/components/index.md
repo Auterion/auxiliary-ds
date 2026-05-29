@@ -18,6 +18,7 @@ primitive exists, styled through the [`@auxiliary/css`](/foundations/colors) rec
 | [Slider](/components/slider) | Range input with keyboard + drag, one or more thumbs. |
 | [RadioGroup](/components/radio-group) | Single choice from a small mutually-exclusive set. |
 | [Select](/components/select) | Dropdown picker for one value from many. |
+| [Combobox](/components/combobox) | Type-ahead select that filters a large option set as you type. |
 
 ## Actions
 
@@ -61,6 +62,7 @@ The defense-oriented core — built around the
 | --- | --- |
 | [Avatar](/components/avatar) | User image with an initials/text fallback. |
 | [Badge](/components/badge) | Small non-interactive label, count, or tag. |
+| [Table](/components/table) | Composable data table — sorting/selection wired via slots. |
 
 ## Layout
 

@@ -18,6 +18,7 @@ export { popover } from './popover.js';
 export { tooltip } from './tooltip.js';
 export { dropdownMenu } from './dropdown-menu.js';
 export { select, type SelectVariants } from './select.js';
+export { combobox, type ComboboxVariants } from './combobox.js';
 
 // Structure & navigation
 export { card } from './card.js';
@@ -25,6 +26,7 @@ export { separator } from './separator.js';
 export { accordion } from './accordion.js';
 export { tabs } from './tabs.js';
 export { toast } from './toast.js';
+export { table, type TableVariants } from './table.js';
 
 // Visual primitives
 export { avatar, avatarImage, avatarFallback, type AvatarVariants } from './avatar.js';

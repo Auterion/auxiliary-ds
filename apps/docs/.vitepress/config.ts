@@ -59,6 +59,7 @@ export default defineConfig({
         text: 'Forms',
         items: [
           { text: 'Checkbox', link: '/components/checkbox' },
+          { text: 'Combobox', link: '/components/combobox' },
           { text: 'Input', link: '/components/input' },
           { text: 'Label', link: '/components/label' },
           { text: 'NumberField', link: '/components/number-field' },
@@ -106,6 +107,7 @@ export default defineConfig({
         items: [
           { text: 'Avatar', link: '/components/avatar' },
           { text: 'Badge', link: '/components/badge' },
+          { text: 'Table', link: '/components/table' },
         ],
       },
       {

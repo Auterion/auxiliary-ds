@@ -762,6 +762,259 @@
     "events": [],
     "slots": []
   },
+  "Combobox": {
+    "file": "./primitives/Combobox/Combobox.vue",
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The controlled open state of the Combobox. Can be binded with `v-model:open`."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The open state of the combobox when it is initially rendered. <br> Use when you do not need to control its open state."
+      },
+      {
+        "name": "resetSearchTermOnBlur",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Whether to reset the searchTerm when the Combobox input blurred"
+      },
+      {
+        "name": "resetSearchTermOnSelect",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Whether to reset the searchTerm when the Combobox value is selected"
+      },
+      {
+        "name": "openOnFocus",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Whether to open the combobox when the input is focused"
+      },
+      {
+        "name": "openOnClick",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Whether to open the combobox when the input is clicked"
+      },
+      {
+        "name": "ignoreFilter",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, disable the default filters"
+      },
+      {
+        "name": "resetModelValueOnClear",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true` the `modelValue` will be reset to `null` (or `[]` if `multiple`)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, prevents the user from interacting with listbox"
+      },
+      {
+        "name": "modelValue",
+        "type": "AcceptableValue | AcceptableValue[]",
+        "default": null,
+        "required": false,
+        "description": "The controlled value of the listbox. Can be binded with `v-model`."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Change the default rendered element for the one passed as a child, merging their props and behavior. Read our [Composition](https://www.reka-ui.com/docs/guides/composition) guide for more details."
+      },
+      {
+        "name": "dir",
+        "type": "Direction",
+        "default": null,
+        "required": false,
+        "description": "The reading direction of the listbox when applicable. <br> If omitted, inherits globally from `ConfigProvider` or assumes LTR (left-to-right) reading mode."
+      },
+      {
+        "name": "defaultValue",
+        "type": "AcceptableValue | AcceptableValue[]",
+        "default": null,
+        "required": false,
+        "description": "The value of the listbox when initially rendered. Use when you do not need to control the state of the Listbox"
+      },
+      {
+        "name": "by",
+        "type": "string | ((a: AcceptableValue, b: AcceptableValue) => boolean)",
+        "default": null,
+        "required": false,
+        "description": "Use this to compare objects by a particular field, or pass your own comparison function for complete control over how objects are compared."
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Whether multiple options can be selected or not."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "The name of the field. Submitted with its owning form as part of a name/value pair."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, indicates that the user must set the value before the owning form can be submitted."
+      },
+      {
+        "name": "highlightOnHover",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "When `true`, hover over item will trigger highlight"
+      },
+      {
+        "name": "as",
+        "type": "AsTag | Component",
+        "default": null,
+        "required": false,
+        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
+      }
+    ],
+    "events": [
+      {
+        "name": "update:modelValue",
+        "type": "[value: AcceptableValue]",
+        "description": ""
+      },
+      {
+        "name": "update:open",
+        "type": "[value: boolean]",
+        "description": ""
+      },
+      {
+        "name": "highlight",
+        "type": "[payload: { ref: HTMLElement; value: AcceptableValue; } | undefined]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
+  },
+  "ComboboxInput": {
+    "file": "./primitives/Combobox/ComboboxInput.vue",
+    "props": [
+      {
+        "name": "placeholder",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\" | \"lg\"",
+        "default": null,
+        "required": false,
+        "description": "Shared size scale (sm | md | lg)."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Marks the control invalid: sets aria-invalid + destructive border/ring."
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "ComboboxContent": {
+    "file": "./primitives/Combobox/ComboboxContent.vue",
+    "props": [
+      {
+        "name": "position",
+        "type": "\"popper\" | \"inline\"",
+        "default": "popper",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "side",
+        "type": "\"bottom\" | \"top\" | \"right\" | \"left\"",
+        "default": "bottom",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "sideOffset",
+        "type": "number",
+        "default": "4",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "ComboboxItem": {
+    "file": "./primitives/Combobox/ComboboxItem.vue",
+    "props": [
+      {
+        "name": "value",
+        "type": "string | number | Record<string, unknown>",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "ComboboxEmpty": {
+    "file": "./primitives/Combobox/ComboboxEmpty.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "ComboboxSeparator": {
+    "file": "./primitives/Combobox/ComboboxSeparator.vue",
+    "props": [],
+    "events": [],
+    "slots": []
+  },
   "Tabs": {
     "file": "./primitives/Tabs/Tabs.vue",
     "props": [
@@ -1131,6 +1384,78 @@
     ],
     "events": [],
     "slots": []
+  },
+  "Table": {
+    "file": "./primitives/Table/Table.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "TableHeader": {
+    "file": "./primitives/Table/TableHeader.vue",
+    "props": [
+      {
+        "name": "sticky",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Stick the header row to the top of the scroll container (needs a bounded height on Table)."
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "TableBody": {
+    "file": "./primitives/Table/TableBody.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "TableRow": {
+    "file": "./primitives/Table/TableRow.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "TableHead": {
+    "file": "./primitives/Table/TableHead.vue",
+    "props": [
+      {
+        "name": "scope",
+        "type": "\"col\" | \"row\" | \"colgroup\" | \"rowgroup\"",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "TableCell": {
+    "file": "./primitives/Table/TableCell.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "TableCaption": {
+    "file": "./primitives/Table/TableCaption.vue",
+    "props": [],
+    "events": [],
+    "slots": [
+      "default"
+    ]
   },
   "Accordion": {
     "file": "./primitives/Accordion/Accordion.vue",

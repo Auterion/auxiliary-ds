@@ -81,6 +81,30 @@
       "types": "./dist/primitives/Checkbox.vue.d.ts",
       "import": "./dist/primitives/Checkbox.vue.js"
     },
+    "./Combobox": {
+      "types": "./dist/primitives/Combobox/Combobox.vue.d.ts",
+      "import": "./dist/primitives/Combobox/Combobox.vue.js"
+    },
+    "./ComboboxContent": {
+      "types": "./dist/primitives/Combobox/ComboboxContent.vue.d.ts",
+      "import": "./dist/primitives/Combobox/ComboboxContent.vue.js"
+    },
+    "./ComboboxEmpty": {
+      "types": "./dist/primitives/Combobox/ComboboxEmpty.vue.d.ts",
+      "import": "./dist/primitives/Combobox/ComboboxEmpty.vue.js"
+    },
+    "./ComboboxInput": {
+      "types": "./dist/primitives/Combobox/ComboboxInput.vue.d.ts",
+      "import": "./dist/primitives/Combobox/ComboboxInput.vue.js"
+    },
+    "./ComboboxItem": {
+      "types": "./dist/primitives/Combobox/ComboboxItem.vue.d.ts",
+      "import": "./dist/primitives/Combobox/ComboboxItem.vue.js"
+    },
+    "./ComboboxSeparator": {
+      "types": "./dist/primitives/Combobox/ComboboxSeparator.vue.d.ts",
+      "import": "./dist/primitives/Combobox/ComboboxSeparator.vue.js"
+    },
     "./Dialog": {
       "types": "./dist/primitives/Dialog/Dialog.vue.d.ts",
       "import": "./dist/primitives/Dialog/Dialog.vue.js"
@@ -212,6 +236,34 @@
     "./Switch": {
       "types": "./dist/primitives/Switch.vue.d.ts",
       "import": "./dist/primitives/Switch.vue.js"
+    },
+    "./Table": {
+      "types": "./dist/primitives/Table/Table.vue.d.ts",
+      "import": "./dist/primitives/Table/Table.vue.js"
+    },
+    "./TableBody": {
+      "types": "./dist/primitives/Table/TableBody.vue.d.ts",
+      "import": "./dist/primitives/Table/TableBody.vue.js"
+    },
+    "./TableCaption": {
+      "types": "./dist/primitives/Table/TableCaption.vue.d.ts",
+      "import": "./dist/primitives/Table/TableCaption.vue.js"
+    },
+    "./TableCell": {
+      "types": "./dist/primitives/Table/TableCell.vue.d.ts",
+      "import": "./dist/primitives/Table/TableCell.vue.js"
+    },
+    "./TableHead": {
+      "types": "./dist/primitives/Table/TableHead.vue.d.ts",
+      "import": "./dist/primitives/Table/TableHead.vue.js"
+    },
+    "./TableHeader": {
+      "types": "./dist/primitives/Table/TableHeader.vue.d.ts",
+      "import": "./dist/primitives/Table/TableHeader.vue.js"
+    },
+    "./TableRow": {
+      "types": "./dist/primitives/Table/TableRow.vue.d.ts",
+      "import": "./dist/primitives/Table/TableRow.vue.js"
     },
     "./Tabs": {
       "types": "./dist/primitives/Tabs/Tabs.vue.d.ts",
