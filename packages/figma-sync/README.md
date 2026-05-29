@@ -1,48 +1,59 @@
 # @auxiliary/figma-sync
 
-**Status: parked.** This package is reserved for future Figma sync tooling but is not actively developed.
+**One-way, session-triggered sync of Auxiliary tokens → Figma Variables, via the Figma MCP.**
+Code is the source of truth; this pushes into Figma and never reads back (README Principle 1).
 
 ---
 
-## Why
+## Why MCP, not REST
 
-We evaluated two paths for pushing Auxiliary tokens into Figma Variables and rejected each for Auterion's current context:
+`file_variables:write` (the Variables REST API) is Figma **Enterprise**-only; Auterion is on
+**Organization** tier, so a headless "sync on merge to `main`" isn't possible. The Figma **MCP**
+exposes the full Plugin API from an agent session (`use_figma`), which collapses the
+"build & publish a custom plugin" path — we reach a multi-mode collection + cross-collection
+aliases + Effect Styles without shipping a plugin. Trade-off: the push is **session/agent-
+triggered**, not CI-automated (the MCP is interactively authenticated). Revisit CI automation
+only if Auterion moves to Enterprise — at which point the same `figma-native.json` contract
+feeds a REST action.
 
-- **REST API + GitHub Action** — gold standard, but `file_variables:write` is Enterprise-only. Auterion is on Organization tier.
-- **DTCG Design Token Manager plugin** — free, but can't produce a multi-mode collection from a single file. Themes arrive as folders, defeating the point of theming.
+## How it works
 
-Building our own plugin (~250 LOC) was scoped but deferred.
-
-## What we ship instead
-
-The tokens package emits a **DTCG-spec-compliant** JSON at `packages/tokens/dist/tokens.json`. Any design tool that consumes DTCG tokens — Paper, Magic Path, Pencil, future Figma plugins, etc. — can read this directly. Code stays the source of truth; downstream tools own their import.
-
-```bash
-pnpm --filter @auxiliary/tokens build
+```
+@auxiliary/tokens build ──▶ dist/figma-native.json   (Primitives + 4-mode Semantic + aliases)
+                            dist/tokens.json          (shadows)
+        │
+   figma-sync build ──▶ dist/push.figma.js            (self-contained use_figma program)
+        │
+   /figma-sync skill ──▶ use_figma(push.figma.js) ──▶ Figma file
+                              ├─ Collection "Primitives" (Base)
+                              ├─ Collection "Semantic"   (light / dark / sunlight / darknight)
+                              └─ Effect Styles  shadow/sm · shadow/md · shadow/lg
 ```
 
-## When to revisit Figma sync
+The `json/figma-native` build format (in `@auxiliary/tokens/build.mjs`) is the contract; the push
+program is idempotent (matches collections/variables by name, two-pass alias resolution), so
+re-running updates in place — no duplicates.
 
-Reopen this package when ANY of:
+## Run it
 
-- Auterion moves to Figma Enterprise → wire a GitHub Action that calls the Variables REST API on merge to `main`.
-- The team decides Figma Variables are operationally required and the one-time setup cost is justified → build a custom one-way push plugin.
-- A second Figma file needs syncing (manual cost multiplies).
-- Semantic theme mappings start changing more than ~once a month.
+Use the **`/figma-sync` skill** (`.claude/skills/figma-sync`) in a session where the Figma MCP is
+connected. In short:
 
-## Open follow-up: Figma MCP exploration
+```bash
+pnpm --filter @auxiliary/tokens build      # → figma-native.json + tokens.json
+pnpm --filter @auxiliary/figma-sync build  # → dist/push.figma.js
+```
 
-Track separately. Approach: use the Figma MCP (already loaded in the Claude environment) to programmatically build a small test file with primitives + 4-mode semantic collection + cross-collection aliases, then read it back via `get_variable_defs` to capture Figma's actual native variable JSON shape. Use the captured shape as the contract for a `json/figma-native` build format in `@auxiliary/tokens` that emits matching JSON. This bypasses third-party plugin format guesswork and gives us a deterministic round-trip with Figma Variables on the Organization tier.
+then the skill feeds `dist/push.figma.js` to `use_figma` against a target file URL and verifies
+with `get_variable_defs`.
 
-Out of scope for the current PR; tracked here so we can pick it up without re-scoping.
+## What can't be a Variable (still designer-maintained)
 
----
+Figma Variables can't model composite `shadow` or `cubicBezier` — even the Enterprise REST API
+can't. Shadows are pushed as **Effect Styles** by this tool; **easings remain documentation**.
+`packages/tokens/src/primitive/shadow.tokens.json` and `motion.tokens.json` are authoritative.
 
-## Shadows + easings in Figma (still relevant for designers)
-
-Figma Variables can't model `cubicBezier` or composite multi-layer `shadow` types — even Enterprise REST API doesn't. If a designer mirrors Auxiliary tokens into a Figma file by hand, they need to maintain these as **Figma Effect Styles** (shadows) and **Smart Animate** custom beziers (easings). Update these styles whenever the code values change — `packages/tokens/src/primitive/shadow.tokens.json` and `motion.tokens.json` are authoritative.
-
-### Shadows → Effect Styles
+### Shadows → Effect Styles (created by the push)
 
 | Style name | Type | Color | X | Y | Blur | Spread | Notes |
 |---|---|---|---|---|---|---|---|
@@ -52,7 +63,7 @@ Figma Variables can't model `cubicBezier` or composite multi-layer `shadow` type
 | `shadow/lg` (layer 1) | Drop shadow | `#000` 12% | 0 | 12 | 24 | −6 | composite |
 | `shadow/lg` (layer 2) | Drop shadow | `#000` 8% | 0 | 4 | 8 | −4 | same style |
 
-### Easings → Smart Animate custom bezier
+### Easings → Smart Animate custom bezier (manual)
 
 | Token | Bezier | Use case |
 |---|---|---|

@@ -1,14 +1,20 @@
 {
   "name": "@auxiliary/figma-sync",
   "version": "0.0.0",
-  "description": "Reserved slot for Figma sync tooling. Parked — see README.",
+  "description": "One-way, session-triggered sync of Auxiliary tokens into Figma Variables via the Figma MCP.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "echo \"@auxiliary/figma-sync — parked, see README\" && exit 0",
-    "lint": "echo \"@auxiliary/figma-sync — parked\" && exit 0",
-    "typecheck": "echo \"@auxiliary/figma-sync — parked\" && exit 0",
-    "test": "echo \"@auxiliary/figma-sync — parked\" && exit 0"
+    "build": "node src/build-program.mjs",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "echo \"@auxiliary/figma-sync — JS only, no typecheck\" && exit 0",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@auxiliary/tokens": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.7"
   }
 }
