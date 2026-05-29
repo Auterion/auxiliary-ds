@@ -2,7 +2,7 @@
 
 A compound image-with-fallback built on Reka UI's `AvatarRoot` and styled by the `avatar` recipe. `Avatar` is the circular container; `AvatarImage` loads the photo; `AvatarFallback` renders initials (or an icon) while the image loads or if it fails.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Avatar size="sm"><AvatarFallback>YD</AvatarFallback></Avatar>
   <Avatar size="md"><AvatarFallback>AM</AvatarFallback></Avatar>
   <Avatar size="lg"><AvatarFallback>OP</AvatarFallback></Avatar>
@@ -26,7 +26,7 @@ A compound image-with-fallback built on Reka UI's `AvatarRoot` and styled by the
 
 The most common case: no photo, just initials. `AvatarFallback` centers and uppercases its slot content. It needs `AvatarRoot` context, so it always lives inside `<Avatar>`.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Avatar size="sm"><AvatarFallback>YD</AvatarFallback></Avatar>
   <Avatar size="md"><AvatarFallback>AM</AvatarFallback></Avatar>
   <Avatar size="lg"><AvatarFallback>OP</AvatarFallback></Avatar>
@@ -42,7 +42,7 @@ The most common case: no photo, just initials. `AvatarFallback` centers and uppe
 
 Compose both children: `AvatarImage` paints the photo when it loads, `AvatarFallback` covers the gap until then (and stays if the load fails). This is the resilient default — never ship an `AvatarImage` without a fallback.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Avatar size="lg">
     <AvatarImage src="https://i.pravatar.cc/96?img=12" alt="Ava Mercer" />
     <AvatarFallback>AM</AvatarFallback>
@@ -70,7 +70,7 @@ Compose both children: `AvatarImage` paints the photo when it loads, `AvatarFall
 
 Three sizes track the recipe: `sm` (24 px), `md` (32 px, default), `lg` (40 px). The text scale of the fallback scales with the container.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Avatar size="sm"><AvatarFallback>SM</AvatarFallback></Avatar>
   <Avatar size="md"><AvatarFallback>MD</AvatarFallback></Avatar>
   <Avatar size="lg"><AvatarFallback>LG</AvatarFallback></Avatar>
@@ -86,7 +86,7 @@ Three sizes track the recipe: `sm` (24 px), `md` (32 px, default), `lg` (40 px).
 
 `AvatarFallback` accepts `delayMs` — it waits that long before showing, so a fast-loading image never flashes initials first. Use a small delay (~150 ms) when most users have the image cached; use `0` when you'd rather show initials immediately.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Avatar size="lg">
     <AvatarImage src="https://i.pravatar.cc/96?img=5" alt="Mira Osei" />
     <AvatarFallback :delay-ms="150">MO</AvatarFallback>

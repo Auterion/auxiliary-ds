@@ -2,7 +2,7 @@
 
 A compound action menu built on Reka UI's `DropdownMenuRoot` and styled by the `dropdownMenu` recipe. Compose a trigger and a portalled content panel of items, labels, and separators.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button variant="secondary" size="sm">Mission actions ▾</Button>
@@ -41,7 +41,7 @@ A compound action menu built on Reka UI's `DropdownMenuRoot` and styled by the `
 
 The minimum composition: a `<DropdownMenu>` provider wrapping a `<DropdownMenuTrigger>` and a `<DropdownMenuContent>` of items. Use `as-child` on the trigger to render your own `<Button>` as the trigger element rather than nesting a button inside one.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button variant="secondary" size="sm">Open menu ▾</Button>
@@ -71,7 +71,7 @@ The minimum composition: a `<DropdownMenu>` provider wrapping a `<DropdownMenuTr
 
 Group items into sections with `<DropdownMenuLabel>` (a non-interactive, uppercased caption) and divide groups with `<DropdownMenuSeparator>`. Neither is focusable — they're structure, not actions.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button variant="secondary" size="sm">Mission actions ▾</Button>
@@ -107,7 +107,7 @@ Group items into sections with `<DropdownMenuLabel>` (a non-interactive, upperca
 
 An item gated by state takes `disabled` — it dims, drops out of keyboard navigation, and won't fire. Listen to `@select` on an item to run its action; the event payload is the native DOM event.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button variant="secondary" size="sm">Vehicle ▾</Button>
@@ -137,7 +137,7 @@ An item gated by state takes `disabled` — it dims, drops out of keyboard navig
 
 `<DropdownMenuContent>` is portalled and positioned relative to the trigger. Tune it with `side` (`top` / `right` / `bottom` / `left`), `align` (`start` / `center` / `end`), and `sideOffset` (gap in px). Defaults are `side="bottom"`, `align="start"`, `sideOffset="4"`.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button variant="secondary" size="sm">End-aligned ▾</Button>

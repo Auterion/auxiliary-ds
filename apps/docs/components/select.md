@@ -2,7 +2,7 @@
 
 A compound listbox built on Reka UI's `SelectRoot` and styled by the `select` recipe. You compose it from six parts — `Select` (the provider), `SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`, and `SelectSeparator` — to pick one value (or many) from a closed set.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Select :default-value="'auto'">
     <SelectTrigger class="w-48">
       <SelectValue placeholder="Select mode" />
@@ -37,7 +37,7 @@ A compound listbox built on Reka UI's `SelectRoot` and styled by the `select` re
 
 Every Select needs the full composition: a `<Select>` provider wrapping a `<SelectTrigger>` (with a `<SelectValue>` for the chosen label) and a `<SelectContent>` holding the `<SelectItem>`s.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Select>
     <SelectTrigger class="w-48">
       <SelectValue placeholder="Select mode" />
@@ -73,7 +73,7 @@ Every Select needs the full composition: a `<Select>` provider wrapping a `<Sele
 
 `<Select>` supports `v-model` for the chosen value and emits `update:modelValue`. Bind it to drive state elsewhere in your UI.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Select :default-value="'loiter'">
     <SelectTrigger class="w-48">
       <SelectValue placeholder="Select mode" />
@@ -114,7 +114,7 @@ Use `default-value` instead of `v-model` when you only need an initial selection
 
 `<SelectSeparator>` draws a thin divider between item groups — useful when the set has a natural split (e.g. assisted modes vs. manual recovery).
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Select>
     <SelectTrigger class="w-56">
       <SelectValue placeholder="Flight mode" />
@@ -152,7 +152,7 @@ A `disabled` `<SelectItem>` stays visible but can't be chosen or focused — use
 
 Set `disabled` on `<Select>` to gate the whole control when there's no valid choice to make yet.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Select disabled>
     <SelectTrigger class="w-48">
       <SelectValue placeholder="Select mode" />

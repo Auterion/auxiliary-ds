@@ -2,7 +2,7 @@
 
 A pill-shaped, 5-level operational status indicator built on the `statusBadge` recipe and bound to the **alarm hierarchy** ([FAA 14 CFR Part 25.1322](/foundations/colors#alarm-hierarchy) compliant). Color is never the only signal: each level also carries a grayscale-distinct glyph and an always-rendered, screen-reader-only level label. Use it for live state — link, battery, GPS, mission, vehicle.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <StatusBadge level="alarm" dot>Link lost</StatusBadge>
   <StatusBadge level="warning" dot>Battery 18%</StatusBadge>
   <StatusBadge level="caution" dot>Wind 11 m/s</StatusBadge>
@@ -28,7 +28,7 @@ A pill-shaped, 5-level operational status indicator built on the `statusBadge` r
 
 The per-level glyph is on by default — an octagon for `alarm`, triangle for `warning`, diamond for `caution`, info circle for `advisory`, check circle for `nominal`. The shapes are grayscale-distinct, so the level reads even without color.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <StatusBadge level="alarm">Alarm</StatusBadge>
   <StatusBadge level="warning">Warning</StatusBadge>
   <StatusBadge level="caution">Caution</StatusBadge>
@@ -46,7 +46,7 @@ The per-level glyph is on by default — an octagon for `alarm`, triangle for `w
 
 ### Outline variant
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <StatusBadge level="alarm" variant="outline">Alarm</StatusBadge>
   <StatusBadge level="warning" variant="outline">Warning</StatusBadge>
   <StatusBadge level="caution" variant="outline">Caution</StatusBadge>
@@ -62,7 +62,7 @@ Outline reads as quieter — use when the surrounding surface already carries a 
 
 ### With dot
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <StatusBadge level="alarm" dot>Link lost</StatusBadge>
   <StatusBadge level="warning" dot>Battery 18%</StatusBadge>
   <StatusBadge level="nominal" dot variant="outline">12 sats</StatusBadge>
@@ -79,7 +79,7 @@ The dot adds a leading "live" indicator next to the glyph — useful when multip
 
 Set `:icon="false"` to drop the leading shape — the dot and slot text remain, and the level is still announced to assistive tech via the hidden label. Reach for this only in space-constrained rows where the dot alone is enough of a cue.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <StatusBadge level="alarm" :icon="false" dot>Lost</StatusBadge>
   <StatusBadge level="warning" :icon="false" dot>Low</StatusBadge>
   <StatusBadge level="nominal" :icon="false" dot>OK</StatusBadge>
@@ -93,7 +93,7 @@ Set `:icon="false"` to drop the leading shape — the dot and slot text remain, 
 
 ### In situ
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
   <div style="display: flex; align-items: center; gap: 0.5rem;">
     <span style="font-size: 0.875rem; color: var(--muted-foreground);">Link status:</span>
     <StatusBadge level="alarm" size="sm" dot>Lost</StatusBadge>

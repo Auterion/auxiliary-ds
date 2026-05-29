@@ -2,7 +2,7 @@
 
 A two-state toggle built on Reka UI's `SwitchRoot` / `SwitchThumb` and styled by the `switchControl` recipe. Use it for settings that take effect immediately.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Switch :default-value="true" />
   <Switch :default-value="false" />
   <Switch :default-value="true" disabled />
@@ -27,7 +27,7 @@ A two-state toggle built on Reka UI's `SwitchRoot` / `SwitchThumb` and styled by
 
 The common case: bind state with `v-model` and react to it.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
   <div style="display: flex; align-items: center; gap: 0.75rem;">
     <Switch id="geofence" :default-value="true" />
     <Label for="geofence">Geofence active</Label>
@@ -54,7 +54,7 @@ Always pair the switch with a `<Label>` whose `for` matches the switch `id` — 
 
 When you don't need to read the state in script, set the initial value with `default-value` and let the component own it.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Switch :default-value="true" />
   <Switch :default-value="false" />
 </div>
@@ -66,7 +66,7 @@ When you don't need to read the state in script, set the initial value with `def
 
 ### Disabled
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Switch :default-value="true" disabled />
   <Switch :default-value="false" disabled />
 </div>
@@ -82,7 +82,7 @@ When you don't need to read the state in script, set the initial value with `def
 
 With a `name` (and optional `value`), the switch participates in native form submission as a name/value pair when on.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
   <div style="display: flex; align-items: center; gap: 0.75rem;">
     <Switch id="record" name="recordTelemetry" :default-value="true" />
     <Label for="record">Record telemetry</Label>

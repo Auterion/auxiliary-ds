@@ -2,7 +2,7 @@
 
 A monospaced, tabular readout for live numeric telemetry — altitude, speed, battery, RSSI — built on the `telemetryValue` recipe. It formats numbers to a fixed precision, aligns digits with `tabular-nums`, and can recolor at a threshold via the **alarm hierarchy**.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <TelemetryValue label="Altitude" :value="408.2" unit="m" trend="up" />
   <TelemetryValue label="Ground speed" :value="12.4" unit="m/s" trend="stable" />
   <TelemetryValue label="Heading" :value="247" unit="°" :precision="0" />
@@ -34,7 +34,7 @@ The component renders a `<div>` and forwards `$attrs`, so `id`, `data-*`, and `a
 
 ### Numeric readouts with units and precision
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <TelemetryValue label="Altitude" :value="408.2" unit="m" />
   <TelemetryValue label="Heading" :value="247" unit="°" :precision="0" />
   <TelemetryValue label="RSSI" :value="-87" unit="dBm" :precision="0" />
@@ -50,7 +50,7 @@ The component renders a `<div>` and forwards `$attrs`, so `id`, `data-*`, and `a
 
 ### Trend arrows
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <TelemetryValue label="Climb" :value="2.1" unit="m/s" trend="up" />
   <TelemetryValue label="Descent" :value="-1.4" unit="m/s" trend="down" />
   <TelemetryValue label="Cruise" :value="12.4" unit="m/s" trend="stable" />
@@ -66,7 +66,7 @@ The component renders a `<div>` and forwards `$attrs`, so `id`, `data-*`, and `a
 
 ### Threshold coloring with `level`
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <TelemetryValue label="Sats" :value="12" :precision="0" level="nominal" />
   <TelemetryValue label="RSSI" :value="-87" unit="dBm" :precision="0" level="caution" />
   <TelemetryValue label="Wind" :value="11.2" unit="m/s" trend="up" level="warning" />
@@ -84,7 +84,7 @@ The component renders a `<div>` and forwards `$attrs`, so `id`, `data-*`, and `a
 
 ### Sizes
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <TelemetryValue label="Battery" :value="74" unit="%" :precision="0" size="sm" />
   <TelemetryValue label="Battery" :value="74" unit="%" :precision="0" size="md" />
   <TelemetryValue label="Battery" :value="74" unit="%" :precision="0" size="lg" />

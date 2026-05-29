@@ -2,7 +2,7 @@
 
 A determinate (or indeterminate) bar built on Reka UI's `ProgressRoot` and styled by the `progress` recipe. With no `level` the fill uses `--primary`; pass an alarm tier to recolor it.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
   <Progress :value="74" />
   <Progress :value="42" level="caution" />
   <Progress :value="18" level="warning" />
@@ -27,7 +27,7 @@ A determinate (or indeterminate) bar built on Reka UI's `ProgressRoot` and style
 
 `value` is read against `max` (default `100`) and clamped to 0–100%.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
   <Progress :value="25" />
   <Progress :value="60" />
   <Progress :value="100" />
@@ -43,7 +43,7 @@ A determinate (or indeterminate) bar built on Reka UI's `ProgressRoot` and style
 
 `value` doesn't have to be a percentage — set `max` to your domain's scale and Progress does the math.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
   <Progress :value="3" :max="8" />
 </div>
 
@@ -56,7 +56,7 @@ A determinate (or indeterminate) bar built on Reka UI's `ProgressRoot` and style
 
 Pass a `level` to recolor the fill from the [alarm hierarchy](/foundations/colors#alarm-hierarchy). Drive it from your own threshold logic so the bar's color matches the reading's severity.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
   <Progress :value="88" level="nominal" />
   <Progress :value="42" level="caution" />
   <Progress :value="18" level="warning" />
@@ -76,7 +76,7 @@ The color is a redundant cue, not the only one — see [Accessibility](#accessib
 
 Omit `value` (or pass `null`) and the fill parks off-screen, signalling "in progress, extent unknown."
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
   <Progress />
 </div>
 

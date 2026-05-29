@@ -2,7 +2,7 @@
 
 A full-width, severity-coded banner built on the `alertBanner` recipe and bound to the **alarm hierarchy** ([FAA 14 CFR Part 25.1322](/foundations/colors#alarm-hierarchy) compliant). Use it for a persistent, in-flight condition that needs to stay on screen and be acknowledged — not a transient toast.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.5rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.5rem;">
   <AlertBanner
     level="alarm"
     title="Telemetry link lost"
@@ -48,7 +48,7 @@ The component emits `dismiss` (when the close button is clicked, shown only with
 
 Every level renders a distinct grayscale glyph (octagon, triangle, diamond, circle-i, circle-check) so severity is legible without color.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.5rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.5rem;">
   <AlertBanner level="alarm" title="Alarm" description="Immediate action required." />
   <AlertBanner level="warning" title="Warning" description="Action required soon." />
   <AlertBanner level="caution" title="Caution" description="Be aware of this condition." />
@@ -68,7 +68,7 @@ Every level renders a distinct grayscale glyph (octagon, triangle, diamond, circ
 
 `actionLabel` renders a single text button on the trailing edge and emits `action` on click. Use it for the one response that resolves the condition.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch;">
   <AlertBanner
     level="alarm"
     title="Telemetry link lost"
@@ -91,7 +91,7 @@ Every level renders a distinct grayscale glyph (octagon, triangle, diamond, circ
 
 Set `dismissible` to add a close button that emits `dismiss`. The component does not hide itself — you own the visibility state, so the parent decides whether dismissing is allowed.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch;">
   <AlertBanner
     level="advisory"
     title="New waypoint queued"
@@ -117,7 +117,7 @@ Reserve `dismissible` for advisory and nominal conditions. An active `alarm` sho
 
 `title` and `description` are both optional. A title alone reads as a terse status line.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch;">
   <AlertBanner level="caution" title="Wind exceeds operational limits" />
 </div>
 

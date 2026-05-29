@@ -2,7 +2,7 @@
 
 A small, rounded label styled by the `badge` recipe — four variants, two sizes. Use it for static metadata: version numbers, environment tags, counts, categories.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Badge variant="default">default</Badge>
   <Badge variant="secondary">secondary</Badge>
   <Badge variant="outline">outline</Badge>
@@ -31,7 +31,7 @@ The component forwards `$attrs`, so `aria-*`, `data-*`, `id`, `title` etc. all l
 
 ### Variant matrix
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Badge variant="default">default</Badge>
   <Badge variant="secondary">secondary</Badge>
   <Badge variant="outline">outline</Badge>
@@ -49,7 +49,7 @@ The component forwards `$attrs`, so `aria-*`, `data-*`, `id`, `title` etc. all l
 
 ### Sizes
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Badge size="sm">v4.2.1</Badge>
   <Badge size="md">v4.2.1</Badge>
 </div>
@@ -63,7 +63,7 @@ The component forwards `$attrs`, so `aria-*`, `data-*`, `id`, `title` etc. all l
 
 ### Version and environment tags
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Badge size="sm">v4.2.1</Badge>
   <Badge size="sm" variant="outline">beta</Badge>
   <Badge size="sm" variant="accent">new</Badge>
@@ -79,7 +79,7 @@ A common pattern: a neutral version chip, a quiet outline tag for the build chan
 
 ### In situ
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
   <div style="display: flex; align-items: center; gap: 0.5rem;">
     <span style="font-size: 0.875rem;">Auterion OS</span>
     <Badge size="sm" variant="secondary">v4.2.1</Badge>

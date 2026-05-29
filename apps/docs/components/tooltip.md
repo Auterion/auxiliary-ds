@@ -2,7 +2,7 @@
 
 A floating hint anchored to a trigger, built on Reka UI's tooltip primitive and styled by the `tooltip` recipe. It's a compound component: a single `TooltipProvider` wraps the app (or a section), then each `Tooltip` pairs a `TooltipTrigger` with a `TooltipContent`.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <TooltipProvider>
     <Tooltip :default-open="true">
       <TooltipTrigger as-child>
@@ -34,7 +34,7 @@ A floating hint anchored to a trigger, built on Reka UI's tooltip primitive and 
 
 A `TooltipProvider` near the root, then a `Tooltip` wrapping the trigger and content. Use `as-child` on the trigger so the tooltip attaches to your own element (here a `Button`) instead of injecting an extra `<button>`.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger as-child>
@@ -64,7 +64,7 @@ A `TooltipProvider` near the root, then a `Tooltip` wrapping the trigger and con
 
 `TooltipContent` takes `side` (`top` | `right` | `bottom` | `left`, default `top`) and `align` (`start` | `center` | `end`, default `center`). Use `side-offset` to nudge the gap between trigger and content.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <TooltipProvider>
     <Tooltip :default-open="true">
       <TooltipTrigger as-child>
@@ -109,7 +109,7 @@ A `TooltipProvider` near the root, then a `Tooltip` wrapping the trigger and con
 
 `TooltipProvider` sets the timing for every tooltip beneath it. `delayDuration` (default `400`ms) is how long the pointer must rest before opening; `skipDelayDuration` (default `200`ms) is the window in which moving to a *neighbouring* tooltip opens it instantly, so a row of icons feels responsive rather than re-arming the delay each time.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <TooltipProvider :delay-duration="0" :skip-delay-duration="0">
     <Tooltip>
       <TooltipTrigger as-child>
@@ -143,7 +143,7 @@ A single `delayDuration` on an individual `<Tooltip>` overrides the provider for
 
 The most common production use: a tooltip echoes the `aria-label` of an icon button for sighted users. The label still carries the accessible name — the tooltip is the visual reinforcement, not the source of truth.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <TooltipProvider>
     <Tooltip :default-open="true">
       <TooltipTrigger as-child>

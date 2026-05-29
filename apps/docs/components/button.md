@@ -2,7 +2,7 @@
 
 A native `<button>` styled by the `button` recipe — four variants, three sizes, a loading state.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Button variant="primary">Launch</Button>
   <Button variant="secondary">Cancel</Button>
   <Button variant="ghost">Skip</Button>
@@ -31,7 +31,7 @@ The component forwards `$attrs`, so `@click`, `aria-*`, `data-*`, `id` etc. all 
 
 ### Variant matrix
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Button variant="primary">Primary</Button>
   <Button variant="secondary">Secondary</Button>
   <Button variant="ghost">Ghost</Button>
@@ -47,7 +47,7 @@ The component forwards `$attrs`, so `@click`, `aria-*`, `data-*`, `id` etc. all 
 
 ### Sizes
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Button size="sm">Small</Button>
   <Button size="md">Medium</Button>
   <Button size="lg">Large</Button>
@@ -61,7 +61,7 @@ The component forwards `$attrs`, so `@click`, `aria-*`, `data-*`, `id` etc. all 
 
 ### Loading
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Button :loading="true">
     <Spinner /> Saving…
   </Button>

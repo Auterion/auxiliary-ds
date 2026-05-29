@@ -2,7 +2,7 @@
 
 A placeholder shimmer for loading states, built on the `skeleton` recipe — a single `block animate-pulse rounded bg-muted` surface you size with utility classes to match the content it stands in for.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
   <Skeleton class="h-3 w-32" />
   <Skeleton class="h-3 w-48" />
   <Skeleton class="h-3 w-24" />
@@ -33,7 +33,7 @@ Skeleton takes no props of its own. It's a styling-only primitive: pass Tailwind
 
 Stack a few skeletons at text height with varied widths to suggest a paragraph or a label group.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
   <Skeleton class="h-3 w-48" />
   <Skeleton class="h-3 w-40" />
   <Skeleton class="h-3 w-24" />
@@ -53,7 +53,7 @@ The last line is shorter on purpose — uneven widths read as text, even widths 
 
 Compose skeletons into the shape of a list item: a round avatar placeholder next to two stacked lines.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <div style="display: flex; align-items: center; gap: 0.75rem;">
     <Skeleton class="h-10 w-10 rounded-full" />
     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
@@ -79,7 +79,7 @@ Compose skeletons into the shape of a list item: a round avatar placeholder next
 
 Match a card's footprint: a media block on top, then a title and supporting lines.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <div style="width: 16rem; display: flex; flex-direction: column; gap: 0.75rem;">
     <Skeleton class="h-32 w-full rounded-md" />
     <Skeleton class="h-4 w-3/4" />

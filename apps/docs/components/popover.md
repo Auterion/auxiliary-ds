@@ -2,7 +2,7 @@
 
 A floating panel anchored to a trigger, built on Reka UI's `PopoverRoot` and styled by the `popover` recipe. Use it for richer content than a tooltip can hold — forms, menus, filters — dismissible with Escape or an outside click.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Popover>
     <PopoverTrigger as-child>
       <Button variant="secondary" size="sm">Open popover</Button>
@@ -42,7 +42,7 @@ A floating panel anchored to a trigger, built on Reka UI's `PopoverRoot` and sty
 
 The three parts are always present: `Popover` owns state, `PopoverTrigger` is the anchor, `PopoverContent` is the floating panel (portaled to the body).
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Popover>
     <PopoverTrigger as-child>
       <Button variant="secondary" size="sm">Quick settings</Button>
@@ -88,7 +88,7 @@ The three parts are always present: `Popover` owns state, `PopoverTrigger` is th
 
 `PopoverContent` forwards Reka UI's positioning props. `side` picks the edge, `align` the alignment along that edge, and `sideOffset` / `alignOffset` nudge it in pixels.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Popover>
     <PopoverTrigger as-child>
       <Button variant="secondary" size="sm">Open to the right</Button>
@@ -120,7 +120,7 @@ Reka UI flips the panel automatically when the requested side would overflow the
 
 `defaultOpen` renders the popover open on mount without you owning the state — useful for onboarding hints or a static documentation demo.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Popover :default-open="true">
     <PopoverTrigger as-child>
       <Button variant="secondary" size="sm">Already open</Button>
@@ -159,7 +159,7 @@ For full control, bind `:open` and listen to `@update:open` instead of using `de
 
 `modal` disables interaction with everything behind the popover and hides outside content from screen readers while it is open — for a focused, dialog-like flow that still anchors to its trigger.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Popover :modal="true">
     <PopoverTrigger as-child>
       <Button variant="secondary" size="sm">Modal popover</Button>

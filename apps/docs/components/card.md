@@ -2,7 +2,7 @@
 
 A surface container built from the `card` recipe — a bordered, rounded panel on `bg-card` with a small family of slot components (`CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`) that give its regions consistent spacing and type.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Card style="width: 320px;">
     <CardHeader>
       <CardTitle>Vehicle MX-01</CardTitle>
@@ -42,7 +42,7 @@ A surface container built from the `card` recipe — a bordered, rounded panel o
 
 The full family composes top-to-bottom: a `CardHeader` (which holds `CardTitle` and `CardDescription`), a `CardContent` body, and a `CardFooter` for actions. Every piece is optional — use only the regions you need.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Card style="width: 340px;">
     <CardHeader>
       <CardTitle>Mission Bravo</CardTitle>
@@ -84,7 +84,7 @@ The full family composes top-to-bottom: a `CardHeader` (which holds `CardTitle` 
 
 Drop `CardContent` and `CardFooter` when the card is purely a labeled tile — a status summary or a navigation target.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Card style="width: 280px;">
     <CardHeader>
       <CardTitle>GPS lock</CardTitle>
@@ -112,7 +112,7 @@ Drop `CardContent` and `CardFooter` when the card is purely a labeled tile — a
 
 The card is a host surface — it composes with everything else. Here it wraps an `Accordion` for a progressively-disclosed checklist. Pass `class` to any slot to tune spacing locally (here `px-1` so the accordion sits flush).
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Card style="width: 380px;">
     <CardHeader>
       <CardTitle>Pre-flight checks</CardTitle>
@@ -178,7 +178,7 @@ The card is a host surface — it composes with everything else. Here it wraps a
 
 Cards earn their keep in a grid — a uniform surface treatment across many units. Lay them out with your own grid container; the card doesn't impose width.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch;">
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
     <Card>
       <CardHeader>

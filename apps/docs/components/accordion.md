@@ -2,7 +2,7 @@
 
 A vertically stacked set of disclosure panels, styled by the `accordion` recipe and built on Reka UI's `AccordionRoot`. Compose four parts: `<Accordion>` wraps the set, each `<AccordionItem>` is one panel, `<AccordionTrigger>` is its clickable header (it renders the chevron for you), and `<AccordionContent>` is the collapsible body.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Accordion type="single" collapsible default-value="airspace" style="width: 100%; max-width: 480px;">
     <AccordionItem value="airspace">
       <AccordionTrigger>Airspace authorization</AccordionTrigger>
@@ -44,7 +44,7 @@ A vertically stacked set of disclosure panels, styled by the `accordion` recipe 
 
 `<Accordion>` defaults to `type="single"`, so opening one item closes the others. Add `collapsible` to let the user close the open item by clicking its trigger again, and `default-value` to start with one open.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Accordion type="single" collapsible default-value="connectivity" style="width: 100%; max-width: 480px;">
     <AccordionItem value="connectivity">
       <AccordionTrigger>Connectivity</AccordionTrigger>
@@ -94,7 +94,7 @@ A vertically stacked set of disclosure panels, styled by the `accordion` recipe 
 
 Set `type="multiple"` to let several items stay open at once. With `multiple`, `default-value` takes an array and `collapsible` has no effect — every item can already close independently.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Accordion type="multiple" :default-value="['airframe', 'battery']" style="width: 100%; max-width: 480px;">
     <AccordionItem value="airframe">
       <AccordionTrigger>Airframe</AccordionTrigger>
@@ -138,7 +138,7 @@ Set `type="multiple"` to let several items stay open at once. With `multiple`, `
 
 Set `disabled` on an `<AccordionItem>` to gray out and block a single panel — useful for a section that isn't applicable to the current mission. Set `disabled` on the `<Accordion>` itself to lock the whole set.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Accordion type="single" collapsible default-value="checks" style="width: 100%; max-width: 480px;">
     <AccordionItem value="checks">
       <AccordionTrigger>Pre-flight checks</AccordionTrigger>
