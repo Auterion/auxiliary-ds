@@ -98,7 +98,7 @@ describe('Toast', () => {
     const viewport = document.body.querySelector('ol') as HTMLElement | null;
     expect(viewport).not.toBeNull();
     expect(viewport!.className).toContain('fixed');
-    expect(viewport!.className).toContain('z-[100]');
+    expect(viewport!.className).toContain('z-[var(--z-toast)]');
     // viewport lives inside Reka's labelled toast region landmark
     expect(document.body.querySelector('[role="region"]')).not.toBeNull();
   });
