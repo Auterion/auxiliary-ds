@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { defineComponent, h, nextTick, ref } from 'vue';
 import { axe } from '../../test-utils/a11y';
 import NumberField from '../NumberField.vue';
 
@@ -16,6 +17,57 @@ describe('NumberField', () => {
     const spin = wrapper.get('[role="spinbutton"]');
     expect(spin.attributes('aria-valuenow')).toBe('408');
     expect((spin.element as HTMLInputElement).value).toContain('408');
+  });
+
+  it('increments and decrements the bound value when the steppers are clicked', async () => {
+    const Host = defineComponent({
+      setup() {
+        const value = ref(5);
+        return () =>
+          h(NumberField, {
+            modelValue: value.value,
+            min: 0,
+            max: 10,
+            'onUpdate:modelValue': (n: number) => (value.value = n),
+          });
+      },
+    });
+    const wrapper = mount(Host, { attachTo: document.body });
+    await nextTick();
+    const spin = () => wrapper.get('[role="spinbutton"]');
+
+    await wrapper.get('[aria-label="Increase"]').trigger('pointerdown');
+    await wrapper.get('[aria-label="Increase"]').trigger('click');
+    await nextTick();
+    expect(spin().attributes('aria-valuenow')).toBe('6');
+
+    await wrapper.get('[aria-label="Decrease"]').trigger('pointerdown');
+    await wrapper.get('[aria-label="Decrease"]').trigger('click');
+    await nextTick();
+    expect(spin().attributes('aria-valuenow')).toBe('5');
+
+    wrapper.unmount();
+  });
+
+  it('works uncontrolled via defaultValue (steppers update the internal value)', async () => {
+    const wrapper = mount(NumberField, { props: { defaultValue: 5 }, attachTo: document.body });
+    await nextTick();
+    await wrapper.get('[aria-label="Increase"]').trigger('pointerdown');
+    await wrapper.get('[aria-label="Increase"]').trigger('click');
+    await nextTick();
+    expect(wrapper.get('[role="spinbutton"]').attributes('aria-valuenow')).toBe('6');
+    wrapper.unmount();
+  });
+
+  it('clamps stepping at the configured bounds', async () => {
+    const wrapper = mount(NumberField, { props: { defaultValue: 10, min: 0, max: 10 }, attachTo: document.body });
+    await nextTick();
+    await wrapper.get('[aria-label="Increase"]').trigger('pointerdown');
+    await wrapper.get('[aria-label="Increase"]').trigger('click');
+    await nextTick();
+    // already at max — stays at 10
+    expect(wrapper.get('[role="spinbutton"]').attributes('aria-valuenow')).toBe('10');
+    wrapper.unmount();
   });
 
   it('exposes min/max on the spinbutton when bounded', () => {
