@@ -24,7 +24,7 @@ const props = withDefaults(
     label?: string;
   }>(),
   {
-    weight: 'regular',
+    weight: 'solid',
     size: 'md',
   },
 );
@@ -34,8 +34,8 @@ const shape = computed(() => {
   const weights = entry.weights as Record<string, string | undefined>;
   const inner =
     weights[props.weight] ??
-    weights.regular ??
     weights.solid ??
+    weights.regular ??
     weights.light ??
     weights.thin ??
     '';
