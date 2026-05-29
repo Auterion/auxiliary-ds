@@ -23,15 +23,22 @@ on its own. The opt-in constraint from `ROADMAP-6.md` still holds: hardening bas
 > "Missing state" counts below are raw matrix misses; several are *correctly* N/A (a Separator has
 > no loading state). The misses that matter are the cross-cutting ones called out under **State gaps**.
 
-## The one correctness bug (fix first)
+## The "$attrs bug" — verified false positive
 
-`Input` and `Textarea` **document `$attrs` forwarding** (`aria-*`, `data-*`, `maxlength`, `required`)
-**but never call `v-bind="$attrs"`** — only explicitly-listed props bind. The docs promise
-accessibility wiring the code doesn't deliver. This is a bug, not an inconsistency. It's the main
-reason **Textarea** lands at `needs-work`, and it also affects **Input**.
+The audit flagged `Input`/`Textarea` for documenting `$attrs` forwarding (`aria-*`, `data-*`,
+`maxlength`, `required`) while never calling `v-bind="$attrs"`. **This was checked and is wrong.**
+Both components have a single root element and don't set `inheritAttrs: false`, so Vue 3's implicit
+fallthrough forwards every attribute to the `<input>`/`<textarea>` automatically — the docs are
+accurate. Regression tests now lock this (see `Input.test.ts` / `Textarea.test.ts`,
+*"forwards arbitrary attributes…"*), closing the audit's separate "no `$attrs` coverage" gap.
 
-**Checkbox** is the other `needs-work`: no hover/active feedback, no error/invalid path, no
-read-only, and accessible-name pairing is advisory rather than enforced.
+> Lesson: the audit reasoned from "no explicit `v-bind`" without accounting for implicit
+> fallthrough. Treat its findings as leads to verify, not facts.
+
+With that removed, **Textarea** is effectively `minor-gaps` — its remaining gaps (error / read-only
+states) are the same cross-cutting ones shared across the form set, below. **Checkbox** stays the
+one genuine `needs-work`: no hover/active feedback, no error/invalid path, no read-only, and
+accessible-name pairing is advisory rather than enforced.
 
 ## State gaps (cross-cutting)
 
@@ -99,7 +106,8 @@ new primitives (6.4 compose). None touch the 6.3 opt-in alert model.
 
 1. **Shared validation API** — `invalid`/`error` prop auto-wiring `aria-invalid` + `aria-describedby`
    across Input, Textarea, Select, Checkbox, RadioGroup, Switch. *Single highest-value fix.*
-2. **Fix the `$attrs` forwarding bug** on Input and Textarea (implement `v-bind="$attrs"`).
+2. ~~Fix the `$attrs` forwarding bug on Input/Textarea~~ — **done & disproven**: not a bug (Vue
+   implicit fallthrough already forwards); regression tests added.
 3. Add **error / read-only / hover** states to form-control recipes (incl. `border-destructive`
    error styling and a distinct read-only treatment).
 4. **Centralize a `prefers-reduced-motion` contract** at the recipe layer; apply to Button, Switch,
