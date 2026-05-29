@@ -42,6 +42,9 @@ export default defineConfig({
       {
         text: 'Foundations',
         items: [
+          { text: 'Visual language', link: '/foundations/visual-language' },
+          { text: 'Registers', link: '/foundations/registers' },
+          { text: 'Voice & lexicon', link: '/foundations/voice-and-lexicon' },
           { text: 'Colors', link: '/foundations/colors' },
           { text: 'Typography', link: '/foundations/typography' },
           { text: 'Spacing', link: '/foundations/spacing' },

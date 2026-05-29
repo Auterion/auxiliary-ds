@@ -189,6 +189,10 @@
       "types": "./dist/primitives/RadioGroup/RadioGroupItem.vue.d.ts",
       "import": "./dist/primitives/RadioGroup/RadioGroupItem.vue.js"
     },
+    "./Register": {
+      "types": "./dist/primitives/Register.vue.d.ts",
+      "import": "./dist/primitives/Register.vue.js"
+    },
     "./Select": {
       "types": "./dist/primitives/Select/Select.vue.d.ts",
       "import": "./dist/primitives/Select/Select.vue.js"

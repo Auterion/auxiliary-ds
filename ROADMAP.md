@@ -326,7 +326,7 @@ load and on degraded/offline connections.
 | Sub-phase | Tracks | Ships | Size |
 |---|---|---|---|
 | **6.1 Audit & decide** | 6a, 6d-audit, 6b/6c needs-inventory, **6g design** | Per-component states matrix + a11y-depth audit; gap analysis vs Reka/shadcn *filtered to Auterion needs*; icon-coverage audit; prioritized primitive backlog; **2 locked decisions** (register model; blocks home) | M |
-| **6.2 Spine** | 6f, 6g build, 6h | Articulated visual-language doc; thin **register layer** over semantic tokens (density/motion/color/type flex expressive↔operational); voice/tone + operational lexicon + unit/coord/format conventions | L |
+| **6.2 Spine** ✅ | 6f, 6g build, 6h | **Delivered.** Visual-language + registers + voice/lexicon foundation docs; `[data-register]` token layer (control-height/radius/motion flex expressive↔operational) wired into recipes; orthogonality build-assert + CSS gate; `<Register>` wrapper; operational lexicon anchored to the status ladder + unit/coord conventions | L |
 | **6.3 Defense layer** | 6i | Alert **model**, guarded/confirm primitives, 508 / WCAG 2.2 AA + MIL-STD-1472 pass, extended sunlight/night threshold gates, MGRS/unit-system formatting in `TelemetryValue` | XL |
 | **6.4 Compose** | 6b, 6c, 6j | Block catalog (marketing/app/operational); page templates (dashboard, GCS, mission-planning, list+detail, auth, offline/degraded); motion language + keyboard/SR depth per component | XL |
 | **6.5 Data-viz** | 6e | Token-driven, 4-theme- + CVD-safe viz palettes; chart set (time-series, gauges, sparklines, map-linked); streaming-perf budgets (10–60 Hz). Likely a new `@auxiliary/viz` package | XL |
@@ -545,8 +545,9 @@ new primitives (6.4 compose). None touch the 6.3 opt-in alert model.
 
 ## §6g — The expressive ↔ operational register (decision record)
 
-**Status: DECIDED (2026-05-29), design only.** Implementation is 6.2 (Spine). This record locks the
-*architecture* so 6.2 builds without re-litigating it.
+**Status: BUILT in 6.2 (Spine).** Architecture DECIDED 2026-05-29; implemented as the
+`[data-register]` token-mode layer. This record is kept as the rationale; the shipped shape and the
+resolved open questions are at the end of this section.
 
 ### The decision
 
@@ -634,25 +635,35 @@ guidance** (documented in 6f/6h, enforced by review, not the cascade):
 
 Each component's docs will state which register(s) it serves and how it adapts.
 
-### Implementation shape for 6.2 (not built yet)
+### Implementation shape — as built in 6.2
 
-1. Promote the flex tokens to **register-aware semantic tokens** in `@auxiliary/tokens`: base
-   (expressive) values in `:root`, an `[data-register="operational"]` override block — mirroring the
-   `[data-theme]` blocks in `build.mjs`.
-2. Point recipes at those semantic vars where they currently hardcode height/radius/motion (most
-   already use tokens; the gap is control-height + motion duration).
-3. Add a gate: **orthogonality test** (no color varies by register; no density/motion varies by
-   theme) + a per-register contrast/legibility spot-check.
-4. Optional ergonomics: a `<Register>` provider / composable that just sets the attribute on a
-   subtree. Pure convenience over the attribute.
+1. **Register-aware tokens in `@auxiliary/tokens`.** A `REGISTERS` array + `isRegister()` partition in
+   `build.mjs` mirror the `THEMES`/`isTheme()` machinery; `src/register/operational.tokens.json`
+   holds the operational overrides; base (expressive) values live in `@theme`/`:root`. The emitter
+   adds an `[data-register="operational"]` block after the `[data-theme]` blocks. `expressive` is the
+   default and needs no block.
+2. **Recipes** point control height at `--control-height-{sm,md,lg}` (the one real gap); radius and
+   motion already resolve through `--radius-*` / `--duration-*`, so `rounded-*` and `transition-*`
+   flex for free once `--default-transition-duration` is bridged to `--duration-base` in `theme.css`.
+3. **Gates.** `assertRegisterOrthogonality()` in `build.mjs` (no color in register, no non-color flex
+   token in theme) + `packages/css/test/register-orthogonality.test.ts` locking the generated CSS.
+   Color is invariant across registers, so the per-register contrast spot-check is satisfied by
+   construction.
+4. **Ergonomics.** `<Register>` (`@auxiliary/vue`) sets `data-register` on a subtree — pure
+   convenience over the attribute, defaults to `operational`, supports an `expressive` opt-out.
 
-### Open questions deferred to 6.2
+### Open questions — resolved in 6.2
 
-- Exact token list + values per register (especially the spacing multiplier and whether type scale
-  flexes).
-- Whether operational motion is **0ms** or merely **shortened** (leaning shortened, so state-change
-  affordances still read; full-zero is what reduced-motion is for).
-- Whether a neutral middle register is ever needed, or two poles suffice (start with two).
+- **Flex token set + values.** Locked to control-height (32/36/40 → 28/32/36), radius
+  (4/6/8 → 2/4/6), motion (120/200/320 → 80/120/200ms). **Type scale does not flex** (legibility under
+  glare/scotopic/MIL-STD-1472). A global spacing-scale multiplier was evaluated and **deferred**: the
+  build emits an explicit named `--spacing-*` scale, so a `--spacing` base override is ineffective and
+  a full rescale is layout-broad — better validated against real layouts in 6.4 (Compose). Operational
+  density is carried by control height + radius + motion for the spine.
+- **Motion is shortened, not 0ms** — state-change affordances still read; full-zero stays reserved for
+  `prefers-reduced-motion` (an a11y override that always wins, independent of register).
+- **Two poles, no neutral middle** — `expressive` (default) + `operational` (opt-in). The four-rung
+  `density` scale remains available for explicit per-surface use; the registers map onto two rungs.
 
 ---
 

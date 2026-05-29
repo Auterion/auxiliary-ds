@@ -3,8 +3,18 @@ import { converter, formatHex, parse as parseColor } from 'culori';
 
 const THEMES = ['light', 'dark', 'sunlight', 'darknight'];
 
+// Registers are the second orthogonal axis (ROADMAP §6g): [data-register]
+// re-resolves the non-color "flex" tokens (control height, radius, motion)
+// exactly the way [data-theme] re-resolves color. `expressive` is the default
+// (no attribute, no override block) so only `operational` ships a token file.
+const REGISTERS = ['expressive', 'operational'];
+
 const toSrgb = converter('rgb');
 const isTheme = (t) => THEMES.includes(t.path[0]);
+const isRegister = (t) => REGISTERS.includes(t.path[0]);
+// Register override blocks, emitted only for registers that actually have tokens.
+const registersWithTokens = (allTokens) =>
+  REGISTERS.filter((name) => allTokens.some((t) => t.path[0] === name));
 
 const kebabSegment = (s) => String(s).replace(/_/g, '-');
 const cssName = (path) => path.map(kebabSegment).join('-');
@@ -20,9 +30,12 @@ const renderVars = (tokens, stripPrefix, indent = '  ') =>
 StyleDictionary.registerFormat({
   name: 'css/auxiliary-tailwind-themes',
   format: async ({ dictionary }) => {
-    const primitives = dictionary.allTokens.filter((t) => !isTheme(t));
+    const primitives = dictionary.allTokens.filter((t) => !isTheme(t) && !isRegister(t));
     const byTheme = Object.fromEntries(
       THEMES.map((name) => [name, dictionary.allTokens.filter((t) => t.path[0] === name)])
+    );
+    const byRegister = Object.fromEntries(
+      REGISTERS.map((name) => [name, dictionary.allTokens.filter((t) => t.path[0] === name)])
     );
 
     let out = '';
@@ -43,8 +56,18 @@ StyleDictionary.registerFormat({
     for (const theme of THEMES) {
       out += `[data-theme="${theme}"] {\n`;
       out += renderVars(byTheme[theme], true) + '\n';
+      out += '}\n\n';
+    }
+
+    // Register overrides via [data-register] — the orthogonal non-color axis.
+    // expressive = default (the @theme/primitive values above), so only the
+    // operational override block is emitted.
+    const regs = registersWithTokens(dictionary.allTokens);
+    for (const register of regs) {
+      out += `[data-register="${register}"] {\n`;
+      out += renderVars(byRegister[register], true) + '\n';
       out += '}\n';
-      if (theme !== THEMES.at(-1)) out += '\n';
+      if (register !== regs.at(-1)) out += '\n';
     }
     return out;
   },
@@ -53,9 +76,12 @@ StyleDictionary.registerFormat({
 StyleDictionary.registerFormat({
   name: 'css/auxiliary-vars',
   format: async ({ dictionary }) => {
-    const primitives = dictionary.allTokens.filter((t) => !isTheme(t));
+    const primitives = dictionary.allTokens.filter((t) => !isTheme(t) && !isRegister(t));
     const byTheme = Object.fromEntries(
       THEMES.map((name) => [name, dictionary.allTokens.filter((t) => t.path[0] === name)])
+    );
+    const byRegister = Object.fromEntries(
+      REGISTERS.map((name) => [name, dictionary.allTokens.filter((t) => t.path[0] === name)])
     );
 
     let out = '/* Generated — do not edit */\n\n';
@@ -71,6 +97,13 @@ StyleDictionary.registerFormat({
     for (const theme of THEMES) {
       out += `[data-theme="${theme}"] {\n`;
       out += renderVars(byTheme[theme], true) + '\n';
+      out += '}\n\n';
+    }
+
+    // [data-register] — the orthogonal non-color axis (ROADMAP §6g).
+    for (const register of registersWithTokens(dictionary.allTokens)) {
+      out += `[data-register="${register}"] {\n`;
+      out += renderVars(byRegister[register], true) + '\n';
       out += '}\n\n';
     }
     return out;
@@ -258,7 +291,9 @@ const toFigmaValue = (token) => {
 StyleDictionary.registerFormat({
   name: 'json/figma-native',
   format: async ({ dictionary }) => {
-    const primitives = dictionary.allTokens.filter((t) => !isTheme(t) && !FIGMA_SKIP.has(t.$type));
+    const primitives = dictionary.allTokens.filter(
+      (t) => !isTheme(t) && !isRegister(t) && !FIGMA_SKIP.has(t.$type),
+    );
     const primitiveVars = primitives.map((t) => ({
       name: t.path.join('/'),
       type: figmaType(t.$type),
@@ -314,6 +349,31 @@ const assertPrimitivePurity = (dictionary) => {
   }
 };
 
+/**
+ * Build-time orthogonality invariant (ROADMAP §6g): the two axes never overlap.
+ * Register controls everything *non-color* (density/radius/motion); theme
+ * controls *only* color. So: no register token may be a color, and no theme
+ * token may be a non-color flex token. A drift here would couple the axes and
+ * break the "[data-theme] × [data-register] compose freely" contract.
+ */
+const assertRegisterOrthogonality = (dictionary) => {
+  const offenders = [];
+  for (const t of dictionary.allTokens) {
+    if (isRegister(t) && t.$type === 'color') {
+      offenders.push(`  register ${t.path.join('.')} is a color (register never touches color)`);
+    }
+    if (isTheme(t) && t.$type !== 'color') {
+      offenders.push(`  theme ${t.path.join('.')} is ${t.$type} (theme is color-only)`);
+    }
+  }
+  if (offenders.length > 0) {
+    throw new Error(
+      `Register/theme orthogonality check failed — ${offenders.length} token(s) cross the axis:\n` +
+        offenders.join('\n'),
+    );
+  }
+};
+
 const sd = new StyleDictionary({
   source: ['src/**/*.tokens.json'],
   platforms: {
@@ -348,6 +408,7 @@ const sd = new StyleDictionary({
 // Run the purity assertion against a hydrated dictionary, then build.
 const dict = await sd.getPlatformTokens('dtcg');
 assertPrimitivePurity(dict);
+assertRegisterOrthogonality(dict);
 
 await sd.cleanAllPlatforms();
 await sd.buildAllPlatforms();

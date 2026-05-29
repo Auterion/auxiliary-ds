@@ -51,15 +51,15 @@ describe('Input', () => {
 
   it('maps each size prop to its recipe height class (defaulting to md)', () => {
     const cases: Array<['sm' | 'md' | 'lg', string]> = [
-      ['sm', 'h-8'],
-      ['md', 'h-9'],
-      ['lg', 'h-10'],
+      ['sm', 'h-[var(--control-height-sm)]'],
+      ['md', 'h-[var(--control-height-md)]'],
+      ['lg', 'h-[var(--control-height-lg)]'],
     ];
     for (const [size, cls] of cases) {
       const wrapper = mount(Input, { props: { size } });
       expect(wrapper.find('input').classes()).toContain(cls);
     }
-    expect(mount(Input).find('input').classes()).toContain('h-9');
+    expect(mount(Input).find('input').classes()).toContain('h-[var(--control-height-md)]');
   });
 
   it('sets aria-invalid and a destructive border when invalid', () => {

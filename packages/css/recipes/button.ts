@@ -15,10 +15,13 @@ export const button = tv({
       ghost:     'text-foreground hover:bg-accent hover:text-accent-foreground active:bg-accent/80',
       danger:    'bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/80',
     },
+    // Control height is register-flex (ROADMAP §6g): the rungs resolve from
+    // --control-height-* (32/36/40 expressive → 28/32/36 operational) instead
+    // of fixed h-8/9/10, so [data-register="operational"] tightens controls.
     size: {
-      sm: 'h-8 px-3 text-sm',
-      md: 'h-9 px-4 text-sm',
-      lg: 'h-10 px-6 text-base',
+      sm: 'h-[var(--control-height-sm)] px-3 text-sm',
+      md: 'h-[var(--control-height-md)] px-4 text-sm',
+      lg: 'h-[var(--control-height-lg)] px-6 text-base',
     },
     loading: {
       true: 'opacity-80 pointer-events-none',

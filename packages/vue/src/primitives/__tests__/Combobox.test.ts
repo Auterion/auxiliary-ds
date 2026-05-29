@@ -77,9 +77,11 @@ describe('Combobox', () => {
     wrapper.unmount();
   });
 
-  it('flexes the input height via the size prop', () => {
+  it('flexes the anchor height via the size prop (register-flex control-height)', () => {
     const wrapper = mount(harness({}, { size: 'lg' }));
-    expect(wrapper.find('input').element.closest('.h-10')).not.toBeNull();
+    // The anchor wraps the input and carries the lg control-height var; match via
+    // a class-substring selector since the class name contains brackets/parens.
+    expect(wrapper.find('input').element.closest('[class*="control-height-lg"]')).not.toBeNull();
     wrapper.unmount();
   });
 
