@@ -2,7 +2,7 @@
 
 A tri-state checkbox built on Reka UI's `CheckboxRoot` / `CheckboxIndicator`, styled by the `checkbox` recipe. It supports checked, unchecked, and a third `indeterminate` state, and binds to a model with `v-model`.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Checkbox :default-value="true" id="hero" />
   <Label for="hero">Arm vehicle on launch</Label>
 </div>
@@ -25,7 +25,7 @@ A tri-state checkbox built on Reka UI's `CheckboxRoot` / `CheckboxIndicator`, st
 
 The component is controlled with `v-model`. Pair every checkbox with a `<Label>` whose `for` matches the checkbox `id` so the label is clickable and announced.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Checkbox :default-value="true" id="ex-armed" />
   <Label for="ex-armed">Arm vehicle on launch</Label>
 </div>
@@ -44,7 +44,7 @@ const armed = ref(true);
 
 ### Unchecked / checked
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <div style="display: flex; align-items: center; gap: 0.5rem;">
     <Checkbox :default-value="false" id="ex-off" />
     <Label for="ex-off">Off</Label>
@@ -66,7 +66,7 @@ A checked box fills with `--primary` and draws the check in `--primary-foregroun
 
 Set the value to the string `'indeterminate'` for a "partially selected" state — typically the parent of a checkbox group where some, but not all, children are checked. The indicator renders a dash instead of a check.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Checkbox default-value="indeterminate" id="ex-mixed" />
   <Label for="ex-mixed">Select all checks</Label>
 </div>
@@ -87,7 +87,7 @@ const allChecks = ref('indeterminate'); // boolean | 'indeterminate'
 
 ### Disabled
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <div style="display: flex; align-items: center; gap: 0.5rem;">
     <Checkbox :default-value="true" disabled id="ex-dis-on" />
     <Label for="ex-dis-on">Locked on</Label>

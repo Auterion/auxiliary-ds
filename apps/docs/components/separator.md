@@ -2,7 +2,7 @@
 
 A thin rule that divides content, styled by the `separator` recipe and built on Reka UI's `Separator` primitive. Horizontal by default, decorative by default.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.75rem; max-width: 320px;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.75rem; max-width: 320px;">
   <span style="font-size: 0.875rem;">Telemetry</span>
   <Separator />
   <span style="font-size: 0.875rem;">Mission log</span>
@@ -32,7 +32,7 @@ The component forwards `class`, so you can size a vertical separator (`class="h-
 
 ### Horizontal (default)
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.75rem; max-width: 320px;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.75rem; max-width: 320px;">
   <span style="font-size: 0.875rem;">Flight controls</span>
   <Separator />
   <span style="font-size: 0.875rem;">Payload</span>
@@ -48,7 +48,7 @@ A horizontal separator stretches to fill its container's width (`w-full`) and si
 
 ### Vertical
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
     <span>Connected</span>
     <Separator orientation="vertical" class="h-4" />
@@ -72,7 +72,7 @@ A vertical separator is `w-px` and stretches to `h-full`, so it needs a height t
 
 ### Semantic (non-decorative)
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.75rem; max-width: 320px;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.75rem; max-width: 320px;">
   <span style="font-size: 0.875rem;">Pre-flight checklist</span>
   <Separator :decorative="false" />
   <span style="font-size: 0.875rem;">In-flight telemetry</span>

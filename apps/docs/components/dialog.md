@@ -2,7 +2,7 @@
 
 A modal overlay built on Reka UI's `Dialog` and styled by the `dialog` recipe. The family is a compound set — `Dialog` provides state, `DialogTrigger` opens it, and `DialogContent` portals a focus-trapped panel with `DialogTitle`, `DialogDescription`, and `DialogClose` inside.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Dialog>
     <DialogTrigger as-child>
       <Button variant="secondary">Confirm abort</Button>
@@ -43,7 +43,7 @@ A modal overlay built on Reka UI's `Dialog` and styled by the `dialog` recipe. T
 
 The default composition: a trigger, a titled panel, a description, and two close buttons. `DialogClose` with `as-child` wraps a `<Button>` so the action both runs *and* dismisses the dialog.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Dialog>
     <DialogTrigger as-child>
       <Button variant="danger">Delete waypoint</Button>
@@ -91,7 +91,7 @@ The default composition: a trigger, a titled panel, a description, and two close
 
 `defaultOpen` mounts the dialog already open without taking control of its state — Reka UI still manages opening and closing from there. Useful for onboarding moments, or for a static demo where you want the panel visible.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Dialog :default-open="true">
     <DialogTrigger as-child>
       <Button variant="secondary">Pre-flight check</Button>

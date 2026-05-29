@@ -2,7 +2,7 @@
 
 A compound tab set built on Reka UI's `TabsRoot` family and styled by the `tabs` recipe — one `Tabs` provider wrapping a `TabsList` of `TabsTrigger`s and a `TabsContent` panel per trigger. The active trigger fills with `--primary`; keyboard navigation and ARIA wiring come from the primitive.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Tabs default-value="telemetry" class="max-w-2xl">
     <TabsList>
       <TabsTrigger value="telemetry">Telemetry</TabsTrigger>
@@ -48,7 +48,7 @@ A compound tab set built on Reka UI's `TabsRoot` family and styled by the `tabs`
 
 The full shape: a `Tabs` provider with `default-value` set to the tab that should open first, a `TabsList` of `TabsTrigger`s, and one `TabsContent` per trigger. The `value` on each trigger must match the `value` on its content.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Tabs default-value="telemetry" class="max-w-2xl">
     <TabsList>
       <TabsTrigger value="telemetry">Telemetry</TabsTrigger>
@@ -94,7 +94,7 @@ The full shape: a `Tabs` provider with `default-value` set to the tab that shoul
 
 A single trigger can be gated with `disabled` — it stays visible but is skipped by both pointer and keyboard. Use it when a panel exists in the layout but isn't yet available (no data, insufficient permissions).
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Tabs default-value="overview" class="max-w-2xl">
     <TabsList>
       <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -137,7 +137,7 @@ A single trigger can be gated with `disabled` — it stays visible but is skippe
 
 Bind `Tabs` with `v-model` (the `modelValue` / `update:modelValue` pair) when something outside the tab strip needs to read or set the active tab — deep-linking, a "next" button, or syncing with app state. Omit `v-model` and use `default-value` when the component can own its own state.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Tabs default-value="map" class="max-w-2xl">
     <TabsList>
       <TabsTrigger value="map">Map</TabsTrigger>
@@ -179,7 +179,7 @@ const active = ref('map')
 
 By default a tab activates as soon as it receives keyboard focus (`activation-mode="automatic"`). Set `activation-mode="manual"` so arrow keys only *move* focus and the user confirms with <kbd>Enter</kbd> or <kbd>Space</kbd> — the right call when each panel is expensive to render or fetches on mount.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Tabs default-value="summary" activation-mode="manual" class="max-w-2xl">
     <TabsList>
       <TabsTrigger value="summary">Summary</TabsTrigger>

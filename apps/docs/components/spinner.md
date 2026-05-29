@@ -2,7 +2,7 @@
 
 An indeterminate, spinning loading indicator built on the `spinner` recipe — three sizes, a built-in accessible label, and a color it inherits from the surrounding text.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Spinner size="sm" />
   <Spinner size="md" />
   <Spinner size="lg" />
@@ -24,7 +24,7 @@ An indeterminate, spinning loading indicator built on the `spinner` recipe — t
 
 ### Sizes
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Spinner size="sm" />
   <Spinner size="md" />
   <Spinner size="lg" />
@@ -40,7 +40,7 @@ An indeterminate, spinning loading indicator built on the `spinner` recipe — t
 
 ### Inside a button
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Button :loading="true">
     <Spinner size="sm" /> Saving…
   </Button>
@@ -56,7 +56,7 @@ Button doesn't render its own spinner — `loading` only dims the button and blo
 
 ### Custom label
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Spinner size="lg" label="Fetching telemetry" />
 </div>
 
@@ -68,7 +68,7 @@ The `label` is announced to screen readers and is *not* visible on screen. Alway
 
 ### On a colored surface
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; border-radius: var(--radius-md); background: var(--primary); color: var(--primary-foreground);">
     <Spinner size="sm" /> Connecting…
   </div>

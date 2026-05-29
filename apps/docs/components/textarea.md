@@ -2,7 +2,7 @@
 
 A native `<textarea>` styled by the `textarea` recipe — a single, unadorned multi-line input bound to the form tokens. No variants, no sizes; the only knob is `rows`.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Textarea placeholder="Free-text instructions on link-loss behavior…" :rows="4" style="max-width: 28rem;" />
 </div>
 
@@ -28,7 +28,7 @@ The component forwards `$attrs`, so `aria-*`, `data-*`, `maxlength`, `name`, `re
 
 ### Basic with v-model
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Textarea placeholder="Operator notes…" :rows="4" style="max-width: 28rem;" />
 </div>
 
@@ -47,7 +47,7 @@ const notes = ref('')
 
 ### Sizing with `rows`
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.75rem; max-width: 28rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.75rem; max-width: 28rem;">
   <Textarea placeholder="2 rows" :rows="2" />
   <Textarea placeholder="6 rows" :rows="6" />
 </div>
@@ -61,7 +61,7 @@ const notes = ref('')
 
 ### Labelled field
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.5rem; max-width: 28rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.5rem; max-width: 28rem;">
   <Label for="failsafe-demo">Failsafe note (operator)</Label>
   <Textarea id="failsafe-demo" placeholder="Free-text instructions on link-loss behavior…" :rows="3" />
 </div>
@@ -80,7 +80,7 @@ Wiring the `<Label>`'s `for` to the Textarea's `id` is what makes the label clic
 
 ### Disabled
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Textarea placeholder="Read-only context" :rows="3" disabled style="max-width: 28rem;" />
 </div>
 

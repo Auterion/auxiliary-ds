@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitepress';
+import { defineConfig, postcssIsolateStyles } from 'vitepress';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath } from 'node:url';
 
@@ -135,6 +135,15 @@ export default defineConfig({
     // tailwindcss is typed against Vite 6; VitePress bundles Vite 5. Same
     // runtime API, type cast satisfies the older PluginOption shape.
     plugins: [tailwindcss() as never],
+    // VitePress's theme-default base.css ships UNLAYERED element resets
+    // (button/input { background:transparent; padding:0 }). Per the CSS cascade,
+    // unlayered rules beat Tailwind v4's @layer utilities, so live demo components
+    // would render unstyled. postcssIsolateStyles rewrites those base.css rules to
+    // `:not(:where(.vp-raw, .vp-raw *))`, so they don't apply inside our
+    // `.auxiliary-demo vp-raw` wrappers — letting Auxiliary utilities win there
+    // without touching the shared @auxiliary/css or resorting to !important.
+    // Default includeFiles is [/base\.css/], exactly the file with the reset.
+    css: { postcss: { plugins: [postcssIsolateStyles()] } },
     resolve: {
       alias: {
         '@auxiliary/vue': fileURLToPath(new URL('../../../packages/vue/src/index.ts', import.meta.url)),

@@ -2,7 +2,7 @@
 
 A native `<label>` styled by the `label` recipe — muted, medium-weight caption type that binds a caption to a form control via the `for` prop.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: flex-start; gap: 0.375rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: flex-start; gap: 0.375rem;">
   <Label for="hero-callsign">Callsign</Label>
   <Input id="hero-callsign" placeholder="MSN-..." />
 </div>
@@ -31,7 +31,7 @@ The component forwards `$attrs` and accepts `class`, so `id`, `data-*`, and extr
 
 The most common pattern: a stacked label + control. Wiring `for` to the control's `id` makes the caption part of the input's click target.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: flex-start; gap: 0.375rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: flex-start; gap: 0.375rem;">
   <Label for="ex-altitude">Altitude (m)</Label>
   <Input id="ex-altitude" type="number" placeholder="408" />
 </div>
@@ -45,7 +45,7 @@ The most common pattern: a stacked label + control. Wiring `for` to the control'
 
 For checkboxes and switches, lay the label beside the control. Because `for` points at the control's `id`, clicking the text flips the toggle.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: flex-start; gap: 0.75rem;">
   <div style="display: flex; align-items: center; gap: 0.75rem;">
     <Checkbox id="ex-armed" />
     <Label for="ex-armed">Arm vehicle on launch</Label>
@@ -68,7 +68,7 @@ For checkboxes and switches, lay the label beside the control. Because `for` poi
 
 The slot renders any markup, so a label can carry a live value or a required marker alongside its text. Use `class="mb-2 block"` to give it spacing and full width above a control.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: flex-start; gap: 0.375rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: flex-start; gap: 0.375rem;">
   <Label for="ex-maxalt" class="mb-2 block">
     Max altitude
     <span style="font-family: var(--font-mono, monospace); font-size: 0.75rem; margin-left: 0.5rem;">120 m</span>

@@ -2,7 +2,7 @@
 
 A native `<input>` styled by the `input` recipe, with two-way binding through `v-model`. One look, every input type — `text`, `number`, `email`, `password`, and the rest are just the `type` prop.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; max-width: 22rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; max-width: 22rem;">
   <Input placeholder="Callsign — MSN-..." />
   <Input type="number" placeholder="Altitude (m)" />
   <Input placeholder="Disabled" disabled />
@@ -25,7 +25,7 @@ A native `<input>` styled by the `input` recipe, with two-way binding through `v
 
 ### Basic text input
 
-<div class="auxiliary-demo" style="max-width: 22rem;">
+<div class="auxiliary-demo vp-raw" style="max-width: 22rem;">
   <Input placeholder="Search missions…" />
 </div>
 
@@ -37,7 +37,7 @@ A native `<input>` styled by the `input` recipe, with two-way binding through `v
 
 The component is a controlled input — pass `modelValue` (or use `v-model`) and read every change back through `update:modelValue`.
 
-<div class="auxiliary-demo" style="max-width: 22rem;">
+<div class="auxiliary-demo vp-raw" style="max-width: 22rem;">
   <Input model-value="MSN-204" placeholder="Callsign" />
 </div>
 
@@ -56,7 +56,7 @@ const callsign = ref('MSN-204')
 
 The `type` prop forwards straight to the native element — anything the browser supports works (`text`, `number`, `email`, `password`, `search`, `url`, …).
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; max-width: 22rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; max-width: 22rem;">
   <Input type="text" placeholder="Text" />
   <Input type="number" placeholder="408" />
   <Input type="email" placeholder="pilot@auterion.com" />
@@ -72,7 +72,7 @@ The `type` prop forwards straight to the native element — anything the browser
 
 ### Disabled
 
-<div class="auxiliary-demo" style="max-width: 22rem;">
+<div class="auxiliary-demo vp-raw" style="max-width: 22rem;">
   <Input model-value="MSN-204" disabled />
 </div>
 
@@ -86,7 +86,7 @@ The `type` prop forwards straight to the native element — anything the browser
 
 The canonical form pattern: a `<Label for>` tied to the input's `id`. Clicking the label moves focus into the field.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 1rem; max-width: 22rem;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 1rem; max-width: 22rem;">
   <div style="display: flex; flex-direction: column; gap: 0.375rem;">
     <Label for="callsign">Callsign</Label>
     <Input id="callsign" placeholder="MSN-..." />

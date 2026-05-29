@@ -2,7 +2,7 @@
 
 A horizontal (or vertical) track for picking a number from a continuous range, built on Reka UI's `Slider` primitive and styled by the `slider` recipe. Its value is always an array of numbers — one thumb per entry — so the same component covers single-value and range selection.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <Slider :defaultValue="[160]" :min="10" :max="400" :step="10" aria-label="Max altitude" style="width: 280px;" />
 </div>
 
@@ -25,7 +25,7 @@ A horizontal (or vertical) track for picking a number from a continuous range, b
 
 A slider carries no visible value of its own — bind it to state and render the number yourself. This is the pattern from the demo's mission form.
 
-<div class="auxiliary-demo" style="flex-direction: column; align-items: stretch; gap: 0.5rem; max-width: 320px;">
+<div class="auxiliary-demo vp-raw" style="flex-direction: column; align-items: stretch; gap: 0.5rem; max-width: 320px;">
   <Slider :defaultValue="[160]" :min="10" :max="400" :step="10" aria-label="Max altitude" />
 </div>
 
@@ -50,7 +50,7 @@ const maxAltitude = ref([160])
 
 Give `defaultValue` (or `v-model`) two entries and the component renders two thumbs. `minStepsBetweenThumbs` keeps them from crossing.
 
-<div class="auxiliary-demo" style="max-width: 320px;">
+<div class="auxiliary-demo vp-raw" style="max-width: 320px;">
   <Slider :defaultValue="[40, 80]" :min="0" :max="100" :minStepsBetweenThumbs="1" aria-label="Operating band" style="width: 280px;" />
 </div>
 
@@ -68,7 +68,7 @@ Give `defaultValue` (or `v-model`) two entries and the component renders two thu
 
 A larger `step` turns the continuous track into discrete stops — useful when only round values make sense.
 
-<div class="auxiliary-demo" style="max-width: 320px;">
+<div class="auxiliary-demo vp-raw" style="max-width: 320px;">
   <Slider :defaultValue="[50]" :min="0" :max="100" :step="25" aria-label="Quality" style="width: 280px;" />
 </div>
 
@@ -78,7 +78,7 @@ A larger `step` turns the continuous track into discrete stops — useful when o
 
 ### Disabled
 
-<div class="auxiliary-demo" style="max-width: 320px;">
+<div class="auxiliary-demo vp-raw" style="max-width: 320px;">
   <Slider :defaultValue="[30]" :disabled="true" aria-label="Locked value" style="width: 280px;" />
 </div>
 

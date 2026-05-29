@@ -2,7 +2,7 @@
 
 A single-select control built on Reka UI's `RadioGroupRoot` / `RadioGroupItem` and styled by the `radioGroup` recipe. `RadioGroup` owns the value and roving focus; each `RadioGroupItem` is one mutually-exclusive option.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <RadioGroup default-value="auto">
     <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
       <RadioGroupItem id="hero-auto" value="auto" />
@@ -37,7 +37,7 @@ A single-select control built on Reka UI's `RadioGroupRoot` / `RadioGroupItem` a
 
 Each `RadioGroupItem` is just the dot control — wrap it in a `<label>` with text so the option is clickable and labelled. The group stacks vertically by default.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <RadioGroup default-value="balanced">
     <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
       <RadioGroupItem id="q-eco" value="eco" />
@@ -75,7 +75,7 @@ Each `RadioGroupItem` is just the dot control — wrap it in a `<label>` with te
 
 Set `orientation="horizontal"` to lay the items out in a row — useful for compact settings panels where the labels are short.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <RadioGroup default-value="auto" orientation="horizontal">
     <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
       <RadioGroupItem id="fm-auto" value="auto" />
@@ -142,7 +142,7 @@ const flightMode = ref('auto')
 
 `disabled` on the group disables every item; `disabled` on a single `RadioGroupItem` gates just that option. Disabled items are skipped by keyboard navigation.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <RadioGroup default-value="standard">
     <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
       <RadioGroupItem id="p-standard" value="standard" />

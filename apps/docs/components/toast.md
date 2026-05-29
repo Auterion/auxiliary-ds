@@ -2,7 +2,7 @@
 
 A transient, non-modal notification family built on Reka UI's Toast primitives and styled by the `toast` recipe. A `<ToastProvider>` manages timing and swipe behavior, a single `<ToastViewport>` anchors where toasts stack, and each `<Toast>` composes a title, description, and optional action/close controls.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <ToastProvider :duration="1000000">
     <Toast :default-open="true" :duration="1000000">
       <div>
@@ -40,7 +40,7 @@ A transient, non-modal notification family built on Reka UI's Toast primitives a
 
 Wrap the app once in a `<ToastProvider>`, render a single `<ToastViewport>`, and drive each `<Toast>` with `v-model:open`. The provider's `duration` controls how long a toast lingers before auto-dismissing.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <ToastProvider :duration="1000000">
     <Toast :default-open="true" :duration="1000000">
       <div>
@@ -72,7 +72,7 @@ Wrap the app once in a `<ToastProvider>`, render a single `<ToastViewport>`, and
 
 `<ToastAction>` requires an `alt-text` — the textual equivalent screen readers announce in place of the button's visuals. Use `as-child` to project a real `<Button>` as the action so it inherits the recipe styling.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <ToastProvider :duration="1000000">
     <Toast :default-open="true" :duration="1000000">
       <div>
@@ -112,7 +112,7 @@ Wrap the app once in a `<ToastProvider>`, render a single `<ToastViewport>`, and
 
 `duration` on the provider sets the default for every toast; `duration` on an individual `<Toast>` overrides it. Set a longer duration for messages that warrant a second read, or shorter for low-signal confirmations.
 
-<div class="auxiliary-demo">
+<div class="auxiliary-demo vp-raw">
   <ToastProvider :duration="1000000">
     <Toast :default-open="true" :duration="1000000">
       <div>
