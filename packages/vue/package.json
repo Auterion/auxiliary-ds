@@ -153,6 +153,10 @@
       "types": "./dist/primitives/DropdownMenu/DropdownMenuTrigger.vue.d.ts",
       "import": "./dist/primitives/DropdownMenu/DropdownMenuTrigger.vue.js"
     },
+    "./GuardedAction": {
+      "types": "./dist/primitives/GuardedAction.vue.d.ts",
+      "import": "./dist/primitives/GuardedAction.vue.js"
+    },
     "./Input": {
       "types": "./dist/primitives/Input.vue.d.ts",
       "import": "./dist/primitives/Input.vue.js"

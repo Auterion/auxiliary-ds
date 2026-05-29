@@ -78,6 +78,7 @@ export default defineConfig({
         items: [
           { text: 'Button', link: '/components/button' },
           { text: 'DropdownMenu', link: '/components/dropdown-menu' },
+          { text: 'GuardedAction', link: '/components/guarded-action' },
         ],
       },
       {
