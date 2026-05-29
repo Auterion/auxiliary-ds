@@ -22,7 +22,7 @@ export default defineConfig({
 
     nav: [
       { text: 'Foundations', link: '/foundations/colors' },
-      { text: 'Components', link: '/components/button' },
+      { text: 'Components', link: '/components/' },
       {
         text: 'pre-1.0',
         items: [
@@ -46,6 +46,12 @@ export default defineConfig({
           { text: 'Typography', link: '/foundations/typography' },
           { text: 'Spacing', link: '/foundations/spacing' },
           { text: 'Radii', link: '/foundations/radii' },
+        ],
+      },
+      {
+        text: 'Components',
+        items: [
+          { text: 'Overview', link: '/components/' },
         ],
       },
       {

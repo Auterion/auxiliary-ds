@@ -24,7 +24,7 @@ features:
     details: alarm · warning · caution · advisory · nominal — FAA 14 CFR Part 25.1322 compliant. Red, orange, yellow, cyan, green. Reserved colors stay reserved.
 
   - title: Restraint over reach
-    details: ~20 primitives, not 60. Every component is a deliberate addition. Removing complexity is part of the work.
+    details: ~25 primitives, not 60. Every component is a deliberate addition. Removing complexity is part of the work.
 
   - title: Code is the source of truth
     details: Tokens emit DTCG JSON · Tailwind v4 @theme · raw CSS vars · typed TS exports. Figma consumes from code, never the reverse.
@@ -41,7 +41,7 @@ This documentation site is **pre-1.0** — APIs and tokens will change without n
 
 If you're a designer, the [Foundations](/foundations/colors) section is the right starting point. It documents the tokens that everything else is built from.
 
-If you're an engineer integrating a primitive, the [Components](/components/button) section gives you the full picture per component: when to use it, when not to, props, examples, accessibility notes, and the tokens it consumes.
+If you're an engineer integrating a primitive, the [Components](/components/) section gives you the full picture per component: when to use it, when not to, props, examples, accessibility notes, and the tokens it consumes.
 
 If you're contributing to the system itself, read the [README at the repo root](https://github.com/Auterion/auxiliary-ds#readme) and [CLAUDE.md](https://github.com/Auterion/auxiliary-ds/blob/main/CLAUDE.md) for the architectural constraints.
 
