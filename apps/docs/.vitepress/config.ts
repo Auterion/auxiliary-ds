@@ -118,6 +118,7 @@ export default defineConfig({
         items: [
           { text: 'Accordion', link: '/components/accordion' },
           { text: 'Card', link: '/components/card' },
+          { text: 'Register', link: '/components/register' },
           { text: 'Separator', link: '/components/separator' },
           { text: 'Tabs', link: '/components/tabs' },
         ],

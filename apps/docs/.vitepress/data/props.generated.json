@@ -121,6 +121,29 @@
       "default"
     ]
   },
+  "Register": {
+    "file": "./primitives/Register.vue",
+    "props": [
+      {
+        "name": "register",
+        "type": "\"operational\" | \"expressive\"",
+        "default": "operational",
+        "required": false,
+        "description": "Which register this subtree resolves under."
+      },
+      {
+        "name": "as",
+        "type": "string",
+        "default": "div",
+        "required": false,
+        "description": "Element to render. Defaults to a plain block wrapper."
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
   "Dialog": {
     "file": "./primitives/Dialog/Dialog.vue",
     "props": [
@@ -836,6 +859,13 @@
         "description": "The controlled value of the listbox. Can be binded with `v-model`."
       },
       {
+        "name": "as",
+        "type": "AsTag | Component",
+        "default": null,
+        "required": false,
+        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
+      },
+      {
         "name": "asChild",
         "type": "boolean",
         "default": null,
@@ -890,13 +920,6 @@
         "default": null,
         "required": false,
         "description": "When `true`, hover over item will trigger highlight"
-      },
-      {
-        "name": "as",
-        "type": "AsTag | Component",
-        "default": null,
-        "required": false,
-        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
       }
     ],
     "events": [
