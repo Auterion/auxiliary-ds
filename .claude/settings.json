@@ -4,5 +4,8 @@
       "Bash(mkdir -p /Users/yasendimov/Documents/GitHub/Auterion/auxiliary-ds/.claude/plans)",
       "Bash(cp /Users/yasendimov/.claude/plans/so-now-gently-check-ancient-sun.md /Users/yasendimov/Documents/GitHub/Auterion/auxiliary-ds/.claude/plans/auxiliary-build-plan.md)"
     ]
+  },
+  "enabledPlugins": {
+    "figma@claude-plugins-official": true
   }
 }
