@@ -76,7 +76,7 @@ The same semantic name resolves to different OKLCH values per theme:
 - **light** — default; bright neutral surfaces, dark text. Cool gray-zinc.
 - **dark** — inverted; dark surfaces, near-white text. Same hue family.
 - **sunlight** — high-contrast variant of light for outdoor / direct-sun operation.
-- **darknight** — cockpit-night-vision variant of dark. Amber-shifted foreground; cyan/amber instead of bright white text.
+- **darknight** — cockpit-night-vision variant of dark, tuned toward OpenBridge night (warm black + bat-signal gold). Pure-black background; amber/gold foreground, accents, and warm amber-brown neutrals (`secondary`/`accent`/`border`/`input`); a brighter gold focus `ring`. `nominal` reads as a clear "safe" signal — dim green surface with vivid mint text — while the other status tiers stay as in dark. Low-blue throughout to preserve scotopic dark adaptation.
 
 A consumer switches themes by setting `data-theme` on `<html>`:
 
