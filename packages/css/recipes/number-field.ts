@@ -16,10 +16,12 @@ export const numberField = tv({
     unit: 'flex shrink-0 select-none items-center pr-2 text-sm text-muted-foreground',
   },
   variants: {
+    // Register-flex height via --control-height-* (ROADMAP §6g) — stays aligned
+    // with Input/Select rungs and tightens under [data-register="operational"].
     size: {
-      sm: { root: 'h-8 text-sm' },
-      md: { root: 'h-9 text-sm' },
-      lg: { root: 'h-10 text-base' },
+      sm: { root: 'h-[var(--control-height-sm)] text-sm' },
+      md: { root: 'h-[var(--control-height-md)] text-sm' },
+      lg: { root: 'h-[var(--control-height-lg)] text-base' },
     },
     invalid: {
       true: { root: 'border-destructive focus-within:ring-destructive' },

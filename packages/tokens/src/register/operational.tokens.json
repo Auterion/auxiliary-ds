@@ -1,0 +1,21 @@
+{
+  "operational": {
+    "control": {
+      "height": {
+        "sm": { "$type": "dimension", "$value": "28px" },
+        "md": { "$type": "dimension", "$value": "32px" },
+        "lg": { "$type": "dimension", "$value": "36px" }
+      }
+    },
+    "radius": {
+      "sm": { "$type": "dimension", "$value": "2px" },
+      "md": { "$type": "dimension", "$value": "4px" },
+      "lg": { "$type": "dimension", "$value": "6px" }
+    },
+    "duration": {
+      "fast": { "$type": "duration", "$value": "80ms" },
+      "base": { "$type": "duration", "$value": "120ms" },
+      "slow": { "$type": "duration", "$value": "200ms" }
+    }
+  }
+}

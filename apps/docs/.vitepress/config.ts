@@ -42,6 +42,9 @@ export default defineConfig({
       {
         text: 'Foundations',
         items: [
+          { text: 'Visual language', link: '/foundations/visual-language' },
+          { text: 'Registers', link: '/foundations/registers' },
+          { text: 'Voice & lexicon', link: '/foundations/voice-and-lexicon' },
           { text: 'Colors', link: '/foundations/colors' },
           { text: 'Typography', link: '/foundations/typography' },
           { text: 'Spacing', link: '/foundations/spacing' },
@@ -115,6 +118,7 @@ export default defineConfig({
         items: [
           { text: 'Accordion', link: '/components/accordion' },
           { text: 'Card', link: '/components/card' },
+          { text: 'Register', link: '/components/register' },
           { text: 'Separator', link: '/components/separator' },
           { text: 'Tabs', link: '/components/tabs' },
         ],

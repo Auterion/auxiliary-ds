@@ -13,11 +13,12 @@ export const select = tv({
     separator: 'my-1 border-t border-border',
   },
   variants: {
-    // Shared size vocabulary (see sizes.ts) — flexes the trigger only.
+    // Shared size vocabulary (see sizes.ts) — flexes the trigger only. Height is
+    // register-flex via --control-height-* (ROADMAP §6g).
     size: {
-      sm: { trigger: 'h-8 px-2.5 text-sm' },
-      md: { trigger: 'h-9 px-3 text-sm' },
-      lg: { trigger: 'h-10 px-3.5 text-base' },
+      sm: { trigger: 'h-[var(--control-height-sm)] px-2.5 text-sm' },
+      md: { trigger: 'h-[var(--control-height-md)] px-3 text-sm' },
+      lg: { trigger: 'h-[var(--control-height-lg)] px-3.5 text-base' },
     },
     invalid: {
       true: { trigger: 'border-destructive focus-visible:ring-destructive' },

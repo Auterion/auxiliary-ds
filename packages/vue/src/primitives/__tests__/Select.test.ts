@@ -68,7 +68,7 @@ describe('Select', () => {
       },
     });
     const wrapper = mount(cmp);
-    expect(wrapper.find('button').classes()).toContain('h-10');
+    expect(wrapper.find('button').classes()).toContain('h-[var(--control-height-lg)]');
     wrapper.unmount();
   });
 

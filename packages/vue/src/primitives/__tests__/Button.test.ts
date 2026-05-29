@@ -11,7 +11,7 @@ describe('Button', () => {
     expect(wrapper.text()).toContain('Click me');
     // default variant=primary, size=md
     expect(wrapper.classes()).toContain('bg-primary');
-    expect(wrapper.classes()).toContain('h-9');
+    expect(wrapper.classes()).toContain('h-[var(--control-height-md)]');
   });
 
   it('maps each variant prop to its recipe classes', () => {
@@ -27,11 +27,11 @@ describe('Button', () => {
     }
   });
 
-  it('maps each size prop to its recipe classes', () => {
+  it('maps each size prop to its register-flex control-height class', () => {
     const cases: Array<[string, string]> = [
-      ['sm', 'h-8'],
-      ['md', 'h-9'],
-      ['lg', 'h-10'],
+      ['sm', 'h-[var(--control-height-sm)]'],
+      ['md', 'h-[var(--control-height-md)]'],
+      ['lg', 'h-[var(--control-height-lg)]'],
     ];
     for (const [size, cls] of cases) {
       const wrapper = mount(Button, { props: { size: size as never }, slots: { default: size } });

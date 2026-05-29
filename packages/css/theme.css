@@ -89,6 +89,19 @@
  * Base layer — global defaults
  * -------------------------------------------------------------------------- */
 
+/* -------------------------------------------------------------------------- *
+ * Register motion bridge (ROADMAP §6g / Phase 6.2)
+ *
+ * Point Tailwind's bare transition utilities (`transition`, `transition-colors`,
+ * `transition-transform`) at our motion scale instead of its fixed 150ms default,
+ * so they re-resolve under [data-register="operational"] (which shortens
+ * --duration-base). Unlayered :root so it wins over Tailwind's @theme default.
+ * prefers-reduced-motion still overrides everything below with !important.
+ * -------------------------------------------------------------------------- */
+:root {
+  --default-transition-duration: var(--duration-base);
+}
+
 @layer base {
   :root {
     color-scheme: light dark;

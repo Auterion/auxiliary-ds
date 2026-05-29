@@ -2,6 +2,9 @@ export { default as Button } from './primitives/Button.vue';
 export { default as Input } from './primitives/Input.vue';
 export { default as Label } from './primitives/Label.vue';
 
+// Register — expressive↔operational duality wrapper (ROADMAP §6g / Phase 6.2).
+export { default as Register } from './primitives/Register.vue';
+
 export { default as Dialog } from './primitives/Dialog/Dialog.vue';
 export { default as DialogTrigger } from './primitives/Dialog/DialogTrigger.vue';
 export { default as DialogContent } from './primitives/Dialog/DialogContent.vue';

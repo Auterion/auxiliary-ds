@@ -475,9 +475,14 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
               <Input :size="s" :placeholder="`Input ${s}`" />
             </div>
             <p class="text-xs text-muted-foreground pt-1">
-              Compact (<code class="font-mono">sm</code>) suits dense GCS/telemetry panels;
-              the same axis will be driven by the Phase 6.2 operational register.
+              Compact (<code class="font-mono">sm</code>) suits dense GCS/telemetry panels.
+              The whole axis also flexes by register — the same markup tightens under
+              <code class="font-mono">data-register="operational"</code>:
             </p>
+            <div data-register="operational" class="flex items-center gap-3">
+              <span class="w-8 text-xs uppercase text-muted-foreground">op</span>
+              <Input size="md" placeholder="Input md · operational" />
+            </div>
           </div>
         </div>
       </section>
