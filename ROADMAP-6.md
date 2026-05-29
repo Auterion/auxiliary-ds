@@ -52,11 +52,14 @@ base design-system alerts.**
 - Rationale: Principle 3 (restraint — don't bloat base components) and Principle 4 (one library,
   many surfaces — base alerts serve all surfaces; the model is operational-only).
 
-## The one early decision
+## The one early decision — ✅ DECIDED
 
-**6g — the register/duality model** ("the single most important conceptual addition"). Whether
-it's a token-mode layer (like themes), component props, or a `density`-style primitive changes how
-6.2–6.5 are built. Decide it (design only) in **6.1** to avoid rework.
+**6g — the register/duality model** ("the single most important conceptual addition"). The fork was:
+token-mode layer (like themes) vs. per-component props vs. a context provider. **Decided: a
+token-mode layer via `[data-register]`**, orthogonal to `[data-theme]` — mirrors the proven theme
+system, near-zero component churn, framework-agnostic. Full design record (registers, the flex-token
+set, theme orthogonality, 6.2 implementation shape) in
+[`ROADMAP-6g-register.md`](ROADMAP-6g-register.md). Implementation is 6.2.
 
 ## Sequencing & recommendation
 
