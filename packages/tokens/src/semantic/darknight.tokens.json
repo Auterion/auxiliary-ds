@@ -8,17 +8,17 @@
     "popover-foreground":    { "$type": "color", "$value": "{color.primitive.amber.500}" },
     "primary":               { "$type": "color", "$value": "{color.primitive.amber.500}" },
     "primary-foreground":    { "$type": "color", "$value": "{color.primitive.black}" },
-    "secondary":             { "$type": "color", "$value": "{color.primitive.stone.800}" },
+    "secondary":             { "$type": "color", "$value": "{color.primitive.amber.950}" },
     "secondary-foreground":  { "$type": "color", "$value": "{color.primitive.amber.500}" },
     "muted":                 { "$type": "color", "$value": "{color.primitive.stone.900}" },
     "muted-foreground":      { "$type": "color", "$value": "{color.primitive.amber.600}" },
-    "accent":                { "$type": "color", "$value": "{color.primitive.stone.800}" },
+    "accent":                { "$type": "color", "$value": "{color.primitive.amber.950}" },
     "accent-foreground":     { "$type": "color", "$value": "{color.primitive.amber.500}" },
     "destructive":           { "$type": "color", "$value": "{color.primitive.red.800}" },
     "destructive-foreground":{ "$type": "color", "$value": "{color.primitive.amber.300}" },
-    "border":                { "$type": "color", "$value": "{color.primitive.stone.800}" },
-    "input":                 { "$type": "color", "$value": "{color.primitive.stone.700}" },
-    "ring":                  { "$type": "color", "$value": "{color.primitive.amber.700}" },
+    "border":                { "$type": "color", "$value": "{color.primitive.amber.950}" },
+    "input":                 { "$type": "color", "$value": "{color.primitive.amber.900}" },
+    "ring":                  { "$type": "color", "$value": "{color.primitive.amber.400}" },
 
     "alarm":                 { "$type": "color", "$value": "{color.primitive.red.800}" },
     "alarm-foreground":      { "$type": "color", "$value": "{color.primitive.amber.300}" },
@@ -28,7 +28,7 @@
     "caution-foreground":    { "$type": "color", "$value": "{color.primitive.amber.300}" },
     "advisory":              { "$type": "color", "$value": "{color.primitive.cyan.900}" },
     "advisory-foreground":   { "$type": "color", "$value": "{color.primitive.amber.300}" },
-    "nominal":               { "$type": "color", "$value": "{color.primitive.green.800}" },
-    "nominal-foreground":    { "$type": "color", "$value": "{color.primitive.amber.300}" }
+    "nominal":               { "$type": "color", "$value": "{color.primitive.green.900}" },
+    "nominal-foreground":    { "$type": "color", "$value": "{color.primitive.emerald.300}" }
   }
 }
