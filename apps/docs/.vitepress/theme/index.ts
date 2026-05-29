@@ -5,6 +5,7 @@ import * as Aux from '@auxiliary/vue';
 import { Icon } from '@auxiliary/icons';
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
 import TokenRow from './components/TokenRow.vue';
+import PropsTable from './components/PropsTable.vue';
 
 import '@auxiliary/css/theme.css';
 import './style.css';
@@ -25,6 +26,7 @@ const theme: Theme = {
     }
     app.component('Icon', Icon);
     app.component('TokenRow', TokenRow);
+    app.component('PropsTable', PropsTable);
   },
 };
 
