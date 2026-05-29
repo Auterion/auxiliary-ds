@@ -1,18 +1,22 @@
 # Auxiliary — path to a world-class design system
 
-Status as of 2026-05-28. This is a phased execution plan grounded in the current code, not the
-stale `CLAUDE.md` (which still describes a "bootstrap state" — that's wrong; the monorepo is real
-and well-layered: 5 packages, 2 apps, ~30 Vue primitives).
+Status as of 2026-05-29. This is the single forward-looking source of truth — a phased execution
+plan grounded in the current code. The monorepo is real and well-layered: 5 packages, 2 apps,
+~30 Vue primitives. Phases 1–5 are largely delivered; Phase 6 ("Elevation") is the large, active
+frontier and is detailed in full below.
 
-The debt is concentrated in three places, in priority order:
+The debt was concentrated in three places, in priority order:
 
-1. **The quality gate is hollow** — `lint`/`test` are `echo "… TODO" && exit 0` in every package.
-2. **The styling layer is inconsistent** — three idioms, three names for "which look".
-3. **Packaging is not library-grade** — single barrel, no tree-shaking signals, docs cover 2/30.
+1. **The quality gate was hollow** — `lint`/`test` were `echo "… TODO" && exit 0` in every package.
+2. **The styling layer was inconsistent** — three idioms, three names for "which look".
+3. **Packaging was not library-grade** — single barrel, no tree-shaking signals, docs cover 2/30.
+
+Phases 1–3 retire those three; Phases 4–5 close docs and the Figma loop; Phase 6 lifts the system
+from *correct* to *exceptional* and makes its defense orientation explicit.
 
 ## Sequencing principle: gate before refactor
 
-The roadmap from the original review listed styling unification first. **We are flipping that.**
+The roadmap from the original review listed styling unification first. **We flipped that.**
 Unifying ~28 components onto recipes + `cn()` rewrites every component's class output. Without
 tests and a11y assertions in place first, that refactor is blind — you can't distinguish an
 intended rename from a regression. So: **build the gate (Phase 1), then refactor under it
@@ -37,11 +41,11 @@ The gate immediately earned its keep — it surfaced two real a11y bugs (see "Su
 
 **Goal:** CI fails when a component breaks behaviorally, visually, or in a11y — not just on types.
 
-Current state:
-- `packages/vue/package.json` → `"lint"`/`"test"` are TODO stubs; only `typecheck` (`vue-tsc`) is real.
+Original state:
+- `packages/vue/package.json` → `"lint"`/`"test"` were TODO stubs; only `typecheck` (`vue-tsc`) was real.
 - `packages/css/package.json` → same stubs ("no sources yet").
 - `.github/workflows/ci.yml` already calls `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`
-  — so the wiring exists; the package scripts behind it are empty.
+  — so the wiring existed; the package scripts behind it were empty.
 - `turbo.json` already declares `lint`/`test`/`typecheck` tasks with `coverage/**` output. Good.
 
 Steps:
@@ -64,7 +68,7 @@ Steps:
 **Acceptance:** `pnpm test` and `pnpm lint` do real work; CI red on a deliberately-broken
 component (color-only status, removed label, broken variant). No new `echo … TODO` scripts.
 
-### Surfaced bugs (found by the new gate — fix in Phase 2, both are component changes)
+### Surfaced bugs (found by the new gate — fixed in Phase 2, both component changes)
 
 1. **Slider** — a consumer `aria-label` falls through `v-bind="forwarded"` onto `SliderRoot` (the
    role-less root `<span>`), never reaching the `role="slider"` `SliderThumb`, which has no naming
@@ -90,21 +94,21 @@ level — not a wrapper bug; the component-scoped axe check passes.)
 
 **Goal:** one styling idiom, one variant vocabulary, every component restyleable by consumers.
 
-Current state — three idioms coexist:
+Original state — three idioms coexisted:
 - **Recipe (the target):** `Button.vue` consumes `button()` from `@auxiliary/css/recipes`
   (`packages/css/recipes/button.ts`, a `tv()` definition). Clean, typed.
-- **Inline object-map:** `Badge.vue`, `StatusBadge.vue`, `AlertBanner.vue` hand-roll
+- **Inline object-map:** `Badge.vue`, `StatusBadge.vue`, `AlertBanner.vue` hand-rolled
   `{ alarm: '…', … }[props.level]` + `.join(' ')` inside the `.vue`. This is exactly what `tv()`
   replaces.
-- **Inline class-string:** `Checkbox.vue`, `DialogContent.vue` carry long raw Tailwind strings.
+- **Inline class-string:** `Checkbox.vue`, `DialogContent.vue` carried long raw Tailwind strings.
 
-And `packages/css/recipes/index.ts` exports **only** `button` — every other component reinvents
+And `packages/css/recipes/index.ts` exported **only** `button` — every other component reinvented
 variants locally.
 
 Steps:
 1. **Add and export `cn()`** — `tailwind-merge` is already a dependency of `@auxiliary/css`
-   (`package.json:28`) with **zero** current uses. Create `packages/css/src/cn.ts`
-   (`twMerge` + a `clsx`-style joiner) and export it from a new `@auxiliary/css/utils` subpath.
+   (`package.json:28`). Create `packages/css/src/cn.ts` (`twMerge` + a `clsx`-style joiner) and
+   export it from a new `@auxiliary/css/utils` subpath.
 2. **One recipe per component** — port `Badge`, `StatusBadge`, `AlertBanner`, then the inline-string
    components, into `tv()` recipes under `packages/css/recipes/`. Export each from
    `recipes/index.ts`. Components shrink to: read props → call recipe → `cn(recipe(...), props.class)`.
@@ -115,7 +119,7 @@ Steps:
 4. **Shared size scale** — define one `size` vocabulary in `@auxiliary/css` and reference it from
    recipes so `Button` (`sm/md/lg`) and the badges (`sm/md`) stop diverging arbitrarily.
 5. **`class` passthrough** — every component accepts `class` and merges via `cn()` so consumers can
-   safely override. Currently none do.
+   safely override.
 
 **Acceptance:** `recipes/index.ts` exports a recipe for every styled component; no component
 contains a `{…}[props.x].join(' ')` map or a bare inline class string for its variants; every
@@ -127,7 +131,7 @@ component accepts `class`; `intent` is gone; Phase 1 tests still green.
 
 **Goal:** `@auxiliary/vue` tree-shakes and behaves like a serious published library.
 
-Current state: `packages/vue/package.json` ships a single entry
+Original state: `packages/vue/package.json` ships a single entry
 (`"." → ./dist/auxiliary-vue.js`), `files: ["dist"]`, **no `sideEffects: false`**, no per-component
 subpaths. `src/index.ts` is one big barrel.
 
@@ -145,7 +149,7 @@ Steps:
 
 **Goal:** one page per component; close the 2-of-~30 gap.
 
-Current state: `apps/docs/components/` has only `button.md` and `status-badge.md`.
+Original state: `apps/docs/components/` had only `button.md` and `status-badge.md`.
 `apps/docs/foundations/` has `colors`, `radii`, `spacing`, `typography`.
 
 Steps:
@@ -212,152 +216,443 @@ rather than latent. Today the operational DNA lives only in the artifacts (four 
 `TelemetryValue`, the `density` primitive, color-blind-safe status). Phase 6 promotes that intent
 to a first-class destination.
 
-This is by far the largest phase and will almost certainly **fan out into its own sub-roadmap**
-when we reach it. It is captured here as a single milestone so the ambition is on record.
-Sequencing *within* Phase 6 is not yet locked; the tracks are largely independent. Most tracks
-begin with an **audit** (inventory current state, name the gaps) before any build — the point of
-the break is to see the whole system clearly before elevating it.
+This is by far the largest phase. It fans out into its own numbered sub-phases (6.1–6.5, below).
+Sequencing *within* Phase 6 is partly locked (6.1 first; then the spine; then defense/compose/data-viz);
+most tracks are otherwise independent. Most tracks begin with an **audit** (inventory current state,
+name the gaps) before any build — the point of the break is to see the whole system clearly before
+elevating it.
 
-### 6a. Full component audit
+### Already delivered by Phases 1–5 (do not re-scope)
 
-**Goal:** know exactly what we have, how good it is, and what's missing — before adding more
-(Principle 3, restraint).
+- **6f** (token layer) — 5b filled `z-index`, `breakpoints`, semantic typography.
+- **6i** (gates) — reduced-motion reset, per-theme contrast + `darknight` blue-cap gates,
+  color-blind non-color-cue gate, air-gap gate all exist. What's missing from 6i is the alert
+  **model**, **guarded primitives**, **standards certification**, and **units/MGRS** — not the gates.
+- **6a** (docs) — Phase 4 gave per-component props + usage guidance. Missing: the **states matrix**
+  and the **gap analysis** (now delivered — see §6.1 below).
 
-- Inventory all ~28 primitives: API consistency (prop names, `variant`/`size`/`level` axes,
-  `class` passthrough), a11y depth beyond axe, controlled/uncontrolled patterns, slot/composition
-  surface.
-- **States matrix** per component: default, hover, focus-visible, active, disabled, loading,
-  empty, error, read-only, skeleton. Flag every component missing a state it should have.
-- **Gap analysis** against a reference surface area (Radix/Reka + shadcn vocabulary) *filtered by
-  what Auterion products actually need* — not kitchen-sink. Name the missing primitives
-  (e.g. Combobox, Command palette, Table/DataGrid, Pagination, Breadcrumb, Calendar/DatePicker,
-  Toolbar, Resizable/Splitter, Tree, Menubar, NumberField).
-- Per-component **usage guidance**: when to use, when not, do/don't, anti-patterns.
+### The tracks (6a–6j)
 
-### 6b. Blocks & pattern audit (marketing, app, operational)
+The thematic goals. The sub-phase plan that follows buckets these into shippable units 6.1–6.5.
 
-**Goal:** catalog the composed blocks each surface needs (Principle 4, many surfaces), so product
-teams assemble from blessed patterns instead of re-inventing.
+**6a. Full component audit** — know exactly what we have, how good it is, and what's missing before
+adding more (Principle 3, restraint). Inventory all ~28 primitives: API consistency
+(`variant`/`size`/`level` axes, `class` passthrough), a11y depth beyond axe, controlled/uncontrolled
+patterns, slot/composition surface. **States matrix** per component (default, hover, focus-visible,
+active, disabled, loading, empty, error, read-only, skeleton). **Gap analysis** against a reference
+surface (Radix/Reka + shadcn) *filtered to what Auterion products need* — not kitchen-sink. Per-component
+usage guidance (when to use, when not, do/don't). → **Delivered in §6.1.**
 
-- **Marketing blocks:** hero, feature grid, pricing, logo wall, testimonial, CTA, stat band,
-  footer, nav/header.
-- **App blocks:** app shell (top bar + sidebar + content), command palette, settings panels,
-  filter bars, data tables with toolbar, detail drawers, empty/onboarding states, notifications
-  center.
-- **Operational blocks:** mission-control layouts, telemetry dashboards, map + overlay panels,
-  alert/event feeds, video/stream tiles, command & control panels. These are where the defense
-  character concentrates.
-- Decide the home for blocks (composed examples in docs vs a `@auxiliary/blocks` package) — flag
-  the decision; don't ship a package speculatively.
+**6b. Blocks & pattern audit (marketing, app, operational)** — catalog the composed blocks each
+surface needs (Principle 4). Marketing: hero, feature grid, pricing, logo wall, testimonial, CTA,
+stat band, footer, nav/header. App: app shell (top bar + sidebar + content), command palette, settings
+panels, filter bars, data tables with toolbar, detail drawers, empty/onboarding, notifications center.
+Operational: mission-control layouts, telemetry dashboards, map + overlay panels, alert/event feeds,
+video/stream tiles, command & control panels (where the defense character concentrates). Decide the
+home for blocks (docs examples vs a `@auxiliary/blocks` package) — flag the decision; don't ship a
+package speculatively.
 
-### 6c. Page templates & larger compositions
+**6c. Page templates & larger compositions** — end-to-end, copy-able page scaffolds. Generic:
+dashboard, list+detail (master/detail), multi-step wizard/flow, settings, auth, empty/first-run,
+error/404/offline. Operational: ground-control-station layout, mission-planning view, fleet/asset
+overview, post-flight review. Treat air-gap/offline and degraded-connectivity as template *states*,
+not edge cases.
 
-**Goal:** end-to-end, copy-able page scaffolds, not just parts.
+**6d. Iconography, pictograms & imagery** — a complete, coherent visual-symbol layer across the
+expressive↔operational range. Icon audit: coverage gaps, optical sizing/alignment, stroke
+consistency, semantic naming, the Font Awesome Pro Sharp + custom-kit split. Pictograms: larger
+conceptual/operational glyphs (vehicle states, payloads, sensor modes, comms status); evaluate
+**map/military symbology** (MIL-STD-2525 / APP-6) — decide what we adopt vs. draw. Imagery &
+illustration: photography direction, illustration style, empty-state art, diagram style; define what
+"on-brand imagery" means and where it's appropriate (expressive) vs. forbidden (operational — no
+decorative imagery in a GCS).
 
-- Generic: dashboard, list+detail (master/detail), multi-step wizard/flow, settings, auth,
-  empty/first-run, error/404/offline.
-- Operational: ground-control-station layout, mission-planning view, fleet/asset overview,
-  post-flight review. Treat air-gap/offline and degraded-connectivity as template states, not
-  edge cases.
+**6e. Data visualization** — a first-class, theme- and color-blind-safe viz layer for telemetry and
+analytics. Viz token layer: categorical / sequential / diverging palettes that survive all four
+themes (incl. `sunlight` glare and `darknight` scotopic constraints) **and** CVD — derived from
+`@auxiliary/tokens`, never ad-hoc. Chart set: time-series (streaming telemetry), gauges/dials,
+sparklines, bars, distributions, map-linked viz. Decide headless+token-driven vs. a charting lib
+(spike; flag the call). Streaming performance: budgets for high-rate updates (10–60 Hz), no-reflow
+value updates, `tabular-nums`, downsampling.
 
-### 6d. Iconography, pictograms & imagery
+**6f. Visual design & style language** — a deliberate, coherent *look*; the system has functional
+tokens but no articulated visual voice. Define the language: type scale & pairing, spacing rhythm,
+elevation/shadow, radius, border, color-application rules (semantic vs. accent vs. neutral) — the
+*why*, not just the values. Tighten the thin semantic token layer (per 5b). Establish a visual QA
+bar: do components *look* designed, or merely unbroken?
 
-**Goal:** a complete, coherent visual-symbol layer across the expressive↔operational range.
+**6g. Expressive ↔ operational duality** — treat the two registers as a first-class axis (the single
+most important conceptual addition). Expressive (marketing, web, brand): rich, animated, photographic,
+generous spacing. Operational (GCS, telemetry, C2): dense, calm, deterministic, glance-able,
+high-contrast, decoration-free, motion-restrained. Model the duality explicitly — a mode/register
+layer over the semantic tokens, not two parallel systems. → **Architecture DECIDED — see §6g below.**
 
-- **Icon audit:** coverage gaps, optical sizing/alignment, stroke consistency, semantic naming,
-  the Font Awesome Pro Sharp + custom-kit split (does the custom kit cover operational needs?).
-- **Pictograms:** larger conceptual/operational glyphs — vehicle states, payloads, sensor modes,
-  comms status. Evaluate **map/military symbology** needs (e.g. MIL-STD-2525 / APP-6) for
-  operational surfaces; decide what we adopt vs. draw.
-- **Imagery & illustration:** photography direction, illustration style, empty-state art,
-  diagram/figure style. Define what "on-brand imagery" means and where it's appropriate
-  (expressive surfaces) vs. forbidden (operational surfaces — no decorative imagery in a GCS).
+**6h. Content, voice & operational lexicon** — content as a designed surface. Voice & tone per
+register; microcopy standards, button/label grammar, error-message patterns. **Operational lexicon:**
+consistent, unambiguous naming of states/actions/severities (no synonyms for the same concept across
+surfaces) — safety-relevant in a C2 context. Units, number, date/time, coordinate conventions (see 6i).
 
-### 6e. Data visualization
+**6i. Operational, safety & standards layer (defense)** — make the defense orientation real and
+verifiable. **Alerting as a model, not a banner:** prioritization, acknowledgment, latching,
+escalation, inhibit/suppress, audible-cue hooks layered over `AlertBanner`/`StatusBadge`.
+**Safety-critical interaction:** guarded/confirm primitives for irreversible commands (arm/disarm,
+RTL, payload/release) — hold-to-confirm, double-action, undo windows. **Standards conformance:**
+Section 508 / **WCAG 2.2 AA** + a **MIL-STD-1472** human-engineering pass; evaluate DO-178C /
+ARINC 661 alerting semantics. **Sunlight/night validation gates:** per-theme contrast/legibility
+under glare; `darknight` preserves scotopic vision. **Determinism & reduced motion.** **Units /
+coordinates / locale:** unit systems (metric/imperial), coordinate formats (lat/long, **MGRS**),
+locale-aware numeric formatting in `TelemetryValue` and friends.
 
-**Goal:** a first-class, theme- and color-blind-safe viz layer for telemetry and analytics.
+**6j. Motion, interaction & accessibility depth** — behavior that feels designed and holds up under
+stress. A motion language tied to the `motion` primitives (purpose, duration, easing, expressive/
+operational split — no motion that obscures operational state). Keyboard model, focus management,
+screen-reader narration audited per component (beyond axe's static checks). Interaction states under
+load and on degraded/offline connections.
 
-- **Viz token layer:** categorical / sequential / diverging palettes that survive all four themes
-  (incl. `sunlight` glare and `darknight` scotopic constraints) **and** color-vision deficiency —
-  derived from `@auxiliary/tokens`, never ad-hoc.
-- Chart set: time-series (streaming telemetry), gauges/dials, sparklines, bars, distributions,
-  and map-linked viz. Decide headless+token-driven vs. a charting lib (spike; flag the call).
-- **Streaming performance:** budgets for high-rate updates (10–60 Hz), no-reflow value updates,
-  `tabular-nums`, downsampling. Viz must hold up under operational data rates, not just demos.
+### Dependency shape
 
-### 6f. Visual design & style language
+```
+6.1 AUDIT & DECIDE  (the "break" — see clearly, lock architecture)
+        │  → prioritized backlog + the register decision
+        ▼
+6.2 SPINE  (visual language 6f · register/duality 6g · voice+lexicon 6h)
+        ├───────────────┬───────────────────────┐
+        ▼               ▼                       ▼
+6.3 DEFENSE (6i)    6.4 COMPOSE (6b·6c·6j)   6.5 DATA-VIZ (6e)
+```
 
-**Goal:** a deliberate, coherent *look* — the system currently has functional tokens but no
-articulated visual voice.
+### Sub-phases
 
-- Define the language: type scale & pairing, spacing rhythm, elevation/shadow, radius, border,
-  and color-application rules (when semantic vs. accent vs. neutral). Document the *why*, not just
-  the values.
-- Tighten the token semantic layer where it's thin (per 5b: `z-index`, `breakpoints`, semantic
-  typography roles).
-- Establish a visual QA bar: do components *look* designed, or merely unbroken? Capture reference
-  comps for the flagship surfaces.
+| Sub-phase | Tracks | Ships | Size |
+|---|---|---|---|
+| **6.1 Audit & decide** | 6a, 6d-audit, 6b/6c needs-inventory, **6g design** | Per-component states matrix + a11y-depth audit; gap analysis vs Reka/shadcn *filtered to Auterion needs*; icon-coverage audit; prioritized primitive backlog; **2 locked decisions** (register model; blocks home) | M |
+| **6.2 Spine** | 6f, 6g build, 6h | Articulated visual-language doc; thin **register layer** over semantic tokens (density/motion/color/type flex expressive↔operational); voice/tone + operational lexicon + unit/coord/format conventions | L |
+| **6.3 Defense layer** | 6i | Alert **model**, guarded/confirm primitives, 508 / WCAG 2.2 AA + MIL-STD-1472 pass, extended sunlight/night threshold gates, MGRS/unit-system formatting in `TelemetryValue` | XL |
+| **6.4 Compose** | 6b, 6c, 6j | Block catalog (marketing/app/operational); page templates (dashboard, GCS, mission-planning, list+detail, auth, offline/degraded); motion language + keyboard/SR depth per component | XL |
+| **6.5 Data-viz** | 6e | Token-driven, 4-theme- + CVD-safe viz palettes; chart set (time-series, gauges, sparklines, map-linked); streaming-perf budgets (10–60 Hz). Likely a new `@auxiliary/viz` package | XL |
 
-### 6g. Expressive ↔ operational duality
+### Load-bearing constraint for 6.3 (decided)
 
-**Goal:** treat the two registers as a first-class axis of the system — the single most important
-conceptual addition.
+The operational alert/safety work is an **additive, opt-in layer — it must never supersede the
+base design-system alerts.**
 
-- **Expressive** (marketing, web, brand): rich, animated, photographic, generous spacing, brand
-  expression. **Operational** (GCS, telemetry, C2): dense, calm, deterministic, glance-able,
-  high-contrast, decoration-free, motion-restrained.
-- Model the duality explicitly: how tokens, density, motion, color application, imagery, and
-  typography flex across the spectrum — likely a **mode/register** layer over the semantic tokens,
-  not two parallel systems. One library, two registers (Principle 4).
-- Per-component guidance on which register(s) it serves and how it adapts.
+- `AlertBanner` and `StatusBadge` stay simple presentational primitives that every surface
+  (marketing, app, operational) uses as-is. They are **not** modified by 6.3.
+- The defense alert **model** — prioritization, acknowledgment, latching, escalation,
+  inhibit/suppress, audible-cue hooks — ships as a **separate, opt-in** piece (an
+  `AlertManager`/alert-center component or a `useAlertModel` composable) that *composes* the base
+  primitives for rendering. Operational/C2 surfaces opt in; nothing else changes.
+- Guarded/confirm interactions ship as **new primitives** (`GuardedAction` / hold-to-confirm),
+  not as changes to `Button`.
+- Rationale: Principle 3 (restraint — don't bloat base components) and Principle 4 (one library,
+  many surfaces — base alerts serve all surfaces; the model is operational-only).
 
-### 6h. Content, voice & operational lexicon
+### Sequencing & external flags
 
-**Goal:** content as a designed surface, not an afterthought ("exceptional content").
+Run **6.1 first**, led by the **full component audit (6a)** — foundational (restraint before
+adding), low-risk, and it produces the states-matrix + gap analysis that prioritizes everything
+after. Then 6.2 (the spine), then 6.3 / 6.4 / 6.5 (6.5 can run parallel to 6.3/6.4).
 
-- Voice & tone per register (expressive vs. operational). Microcopy standards, button/label
-  grammar, error-message patterns.
-- **Operational lexicon:** consistent, unambiguous naming of states, actions, and severities
-  (no synonyms for the same concept across surfaces) — safety-relevant in a C2 context.
-- Units, number, date/time, and coordinate formatting conventions (see 6i).
+- 6d needs `FONTAWESOME_PACKAGE_TOKEN`.
+- 6e needs a charting-approach spike.
+- 6i's MIL-STD-1472 / DO-178C pass likely needs human/expert sign-off (prep the conformance
+  checklist, don't self-certify).
 
-### 6i. Operational, safety & standards layer (defense)
-
-**Goal:** make the defense orientation real and verifiable — the gap between "modern generic DS"
-and "defense-oriented DS."
-
-- **Alerting as a model, not a banner:** prioritization, acknowledgment, latching, escalation,
-  inhibit/suppress, and audible-cue hooks layered over `AlertBanner`/`StatusBadge`.
-- **Safety-critical interaction:** guarded/confirm primitives for irreversible or dangerous
-  commands (arm/disarm, RTL, payload/release). Hold-to-confirm, double-action, undo windows.
-- **Standards conformance as an explicit target:** Section 508 / **WCAG 2.2 AA** (federal
-  procurement table-stakes) and a **MIL-STD-1472** human-engineering pass; evaluate DO-178C /
-  ARINC 661 alerting semantics for flight-relevant surfaces. axe (Phase 1) checks WCAG *semantics*
-  only — this certifies a *level*.
-- **Sunlight/night validation gates:** assert per-theme contrast/legibility under glare, and that
-  `darknight` preserves scotopic vision (no bright/blue leakage). Threshold tests, not vibes.
-- **Determinism & reduced motion:** state-bearing changes never animate in a way that hides
-  status; honor `prefers-reduced-motion`.
-- **Units / coordinates / locale:** unit *systems* (metric/imperial), coordinate formats
-  (lat/long, **MGRS**), and locale-aware numeric formatting in `TelemetryValue` and friends.
-
-### 6j. Motion, interaction & accessibility depth
-
-**Goal:** behavior that feels designed and holds up under stress.
-
-- A motion language tied to the `motion` primitives: purpose, duration, easing, and the
-  expressive/operational split (see 6g). No motion that obscures operational state.
-- Keyboard model, focus management, and screen-reader narration audited per component — beyond
-  axe's static checks.
-- Interaction states under load and on degraded/offline connections.
-
-**Acceptance:** every primitive has an audited API + states matrix + usage guidance and no
+**Phase 6 acceptance:** every primitive has an audited API + states matrix + usage guidance and no
 unfilled state gaps; a documented block & template catalog covers marketing, app, and operational
 surfaces; a token-driven, color-blind- and theme-safe data-viz layer exists; an articulated visual
 style language and an explicit expressive↔operational register model are documented and reflected
 in components; the operational/defense layer (alert model, guarded actions, 508/WCAG 2.2 AA + a
 MIL-STD-1472 pass, sunlight/night contrast gates, units/coordinates) is implemented and verified.
-Given the scope, Phase 6 is expected to ship as a sequence of its own numbered sub-phases.
+
+---
+
+## §6.1 — Component audit & gap analysis
+
+The states-matrix + a11y-depth audit that opens Phase 6.1. Every shipping component was audited by
+one agent against a 10-state matrix (default, hover, focus-visible, active, disabled, loading, empty,
+error, read-only, skeleton) plus API surface and a11y depth, then synthesized into the gap analysis
+and prioritized backlog below.
+
+**This is a planning artifact, not a spec.** It prioritizes 6.2+; it does not authorize any change
+on its own. The opt-in constraint above still holds: hardening base-primitive *states* (below) is in
+scope for 6.2/6.4; turning `AlertBanner`/`StatusBadge` into the operational alert **model** is not —
+that stays a separate opt-in piece (6.3).
+
+### Backlog status (updated as items land)
+
+A first cleanup pass worked the backlog and, crucially, **verified each finding before building**.
+That mattered: **4 of the highest-ranked items turned out to be false positives** — already handled
+by the framework, the global CSS reset, or Reka defaults. The audit's per-component agents reasoned
+from surface signals ("no explicit `v-bind`", "no `motion-reduce:` in the recipe") without accounting
+for mechanisms one layer down. **Treat audit findings as leads to verify, not facts.**
+
+| # | Item | Status |
+|---|---|---|
+| 1 | Shared validation API (`invalid` flag) | ✅ shipped — `invalid` prop on Input, Textarea, Select, Checkbox, Switch (aria-invalid + destructive border/ring); RadioGroup sets `aria-invalid` on the group |
+| 2 | `$attrs` forwarding "bug" | ⛔ false positive — Vue single-root fallthrough already forwards; regression-tested |
+| 4 | Recipe-level `prefers-reduced-motion` | ⛔ false positive — a global unlayered `!important` reset in `theme.css` already neutralizes all motion, gated by `reduced-motion.test.ts` (one source of truth, better than per-recipe) |
+| 5 | Shared `size` axis | ✅ shipped — `size` (sm/md/lg) on Input, Textarea, Select (the controls where height/type is unambiguous; Checkbox/Switch deferred — box/thumb co-scaling is a deliberate, fiddlier change) |
+| 9 | `class` passthrough on Dialog/Toast leaves | ⛔ false positive — single-root fallthrough already forwards `class` to the button (confirmed on DialogTrigger/DialogClose/ToastAction); regression-tested |
+| 13 | Active/pressed feedback | ✅ shipped — `active:` states on the Button recipe (all 4 variants) + AlertBanner action/dismiss buttons |
+| 14 | `SelectSeparator` role | ⛔ false positive — Reka's `SelectSeparator` already hardcodes `aria-hidden="true"` |
+| 17 | Skeleton `loading` prop | ✅ shipped — `loading` (default `true`); `false` renders the default slot, dropping the consumer `v-if` |
+
+Still open (need design thought or are net-new features): RadioGroup per-item error recolor (needs
+context propagation), `Input.type` union (#12), the missing primitives (Table, NumberField,
+Combobox…), and the deeper test-coverage / docs items.
+
+### Overall health
+
+26 components audited. **Most are solid or have only minor gaps.** Two need work, for real reasons.
+
+| Verdict | Count | Components |
+|---|---|---|
+| **solid** | 7 | Label, DropdownMenu, StatusBadge, TelemetryValue, AlertBanner, Accordion, Separator |
+| **minor-gaps** | 17 | Button, Input, Switch, Slider, RadioGroup, Select, Dialog, Popover, Tooltip, Toast, Progress, Spinner, Skeleton, Badge, Avatar, Card, Tabs |
+| **needs-work** | 2 | **Textarea**, **Checkbox** |
+
+> "Missing state" counts below are raw matrix misses; several are *correctly* N/A (a Separator has
+> no loading state). The misses that matter are the cross-cutting ones called out under **State gaps**.
+
+### The "$attrs bug" — verified false positive
+
+The audit flagged `Input`/`Textarea` for documenting `$attrs` forwarding (`aria-*`, `data-*`,
+`maxlength`, `required`) while never calling `v-bind="$attrs"`. **This was checked and is wrong.**
+Both components have a single root element and don't set `inheritAttrs: false`, so Vue 3's implicit
+fallthrough forwards every attribute to the `<input>`/`<textarea>` automatically — the docs are
+accurate. Regression tests now lock this (see `Input.test.ts` / `Textarea.test.ts`,
+*"forwards arbitrary attributes…"*), closing the audit's separate "no `$attrs` coverage" gap.
+
+> Lesson: the audit reasoned from "no explicit `v-bind`" without accounting for implicit
+> fallthrough. Treat its findings as leads to verify, not facts.
+
+With that removed, **Textarea** is effectively `minor-gaps` — its remaining gaps (error / read-only
+states) are the same cross-cutting ones shared across the form set, below. **Checkbox** stays the
+one genuine `needs-work`: no hover/active feedback, no error/invalid path, no read-only, and
+accessible-name pairing is advisory rather than enforced.
+
+### State gaps (cross-cutting)
+
+| Gap | Affected | Why it matters |
+|---|---|---|
+| **Error / `invalid`** | *Entire* form set — Input, Textarea, Select, Checkbox, Switch, RadioGroup | No `aria-invalid`, no error styling, no validation path. Every product form hand-rolls it. **Highest-impact gap.** |
+| **`read-only`** | Input, Textarea, Checkbox, Slider, RadioGroup | Distinct from disabled (allows select/copy, blocks edit) — needed for telemetry/data-display surfaces |
+| **loading / async** | Switch, Select, Popover, Card content | Async toggles & async-loaded data are common in C2/GCS |
+| **hover** | Input, Checkbox | Interactive elements give no pointer feedback before click |
+| **active / pressed** | Button, Checkbox, AlertBanner buttons | Weak tactile confidence on slow/high-latency operational networks |
+| **skeleton integration** | Avatar, Card | `Skeleton` exists but is not composed into data-display components |
+
+### A11y gaps (cross-cutting)
+
+- **No `prefers-reduced-motion` contract at the recipe layer.** Button (`transition-colors`), Switch,
+  Slider, Select, Tabs, Tooltip all animate unconditionally. The global reset in `theme.css` catches
+  some, but it's not encoded per-recipe and isn't tested per-component.
+- **Validation a11y wiring** (`aria-invalid` + `aria-describedby`) is provided by **no** form
+  component — error announcement depends entirely on consumer discipline.
+- **Color-only differentiation risk**: Button `ghost` hover (`bg-accent`) and Checkbox checked state
+  (color fill + border only) — potential WCAG 1.4.1 misses; add a shape/weight/icon cue.
+- **Accessible-name pairing is advisory, not contractual** on Checkbox, Switch, RadioGroupItem,
+  Avatar — a component can ship with no accessible name. Consider a `label` prop or enforced binding.
+- Minor: `SelectSeparator` lacks `role=presentation`/`aria-hidden`; Dialog disabled-trigger has no
+  `aria-disabled`; DropdownMenu disabled-item announcement under-specified.
+- **Test depth is shallow** for error states, `$attrs` passthrough, type-ahead, RTL/loop, and
+  reduced-motion across Textarea, Input, Select, RadioGroup, Tooltip, Card.
+
+### API consistency
+
+- **`level` vs `variant` is a deliberate split** (operational severity tiers
+  `alarm|warning|caution|advisory|nominal` vs design treatment) but is **undocumented as a
+  convention**. Toast's `type` (foreground/background → ARIA politeness) is a third spelling.
+  → Formalize: *`level` = operational severity, `variant` = design treatment*; annotate Toast `type`.
+- **Form controls expose no `size` axis** — Button/Badge do; Input/Textarea/Select/Checkbox/Switch
+  don't. Standardize a shared `sm/md/lg` scale for compact GCS/telemetry density.
+- **`class` passthrough missing** on `DialogTrigger`, `DialogClose`, `ToastAction` — every leaf
+  should accept `class?: HTMLAttributes['class']` merged via `cn()`.
+- **Typed `Props`/`Variants` exports inconsistent** — Button exports `ButtonVariants`; Input,
+  Textarea, StatusBadge, DropdownMenu, Popover don't, weakening downstream inference.
+- `Input.type` is loose `string` — tighten to a union of valid HTML input types.
+- **Good and worth keeping**: controlled/uncontrolled support (v-model + `defaultValue`) is
+  consistent across families — make it the documented standard for new components.
+
+### Missing primitives — filtered to Auterion operational needs
+
+Not a shadcn/Reka parity checklist; only what GCS/C2/marketing surfaces actually need (Principle 3,
+restraint).
+
+| Primitive | Ops value | Effort | Note |
+|---|---|---|---|
+| **Table / DataGrid** | high | L | *The* top missing surface — fleets, mission logs, telemetry streams, alert history. Build the headless primitive first (sortable, sticky header, density, row selection); defer virtualization. |
+| **NumberField** | high | S | Altitude/speed/frequency/step entry — steppers, min/max/step clamp, unit display. Input-as-string is error-prone. Pairs with `TelemetryValue`. |
+| **Combobox** | high | M | Type-ahead over large sets (vehicle IDs, waypoints, frequencies) where Select is too slow. Reka provides primitives. |
+| Command palette | medium | M | Keyboard-first launcher for dense consoles; composes on Combobox + DropdownMenu |
+| Pagination | medium | S | Companion to Table — only valuable once Table lands |
+| Toolbar | medium | S | Roving-tabindex action bars (map/console controls); fixes a11y of ad-hoc button clusters |
+| Resizable / Splitter | medium | M | Multi-pane operator consoles (map + telemetry + log) |
+| Tree | medium | L | Hierarchies (mission plans, layer/asset trees) — narrower than Table; defer unless a surface needs it |
+
+> Landed since the audit (see git history): **Combobox**, **Table**, and **NumberField** primitives
+> now exist in `packages/vue`. Keep this table as the original prioritization record.
+
+### Prioritized backlog
+
+Ordered by value. Items 1–5 are base-primitive hardening (lands in 6.2 spine / 6.4 depth); 6+ are
+new primitives (6.4 compose). None touch the 6.3 opt-in alert model.
+
+1. **Shared validation API** — `invalid`/`error` prop auto-wiring `aria-invalid` + `aria-describedby`
+   across Input, Textarea, Select, Checkbox, RadioGroup, Switch. *Single highest-value fix.*
+2. ~~Fix the `$attrs` forwarding bug on Input/Textarea~~ — **done & disproven**: not a bug (Vue
+   implicit fallthrough already forwards); regression tests added.
+3. Add **error / read-only / hover** states to form-control recipes (incl. `border-destructive`
+   error styling and a distinct read-only treatment).
+4. **Centralize a `prefers-reduced-motion` contract** at the recipe layer; apply to Button, Switch,
+   Slider, Select, Tabs, Tooltip; add reduced-motion tests.
+5. **Shared `size` axis** (`sm/md/lg`) on interactive controls for compact GCS/telemetry density.
+6. **Build Table/DataGrid** headless primitive — top operational surface.
+7. **Add NumberField** (steppers, min/max/step clamp, unit display).
+8. **Build Combobox** (type-ahead filtered select) on Reka primitives.
+9. Add `class` passthrough to `DialogTrigger`, `DialogClose`, `ToastAction`.
+10. Add **non-color secondary cues** to Checkbox checked + Button ghost hover (WCAG 1.4.1); verify
+    contrast across all Badge variants.
+11. Make **accessible-name pairing contractual** (or add a `label` prop) for Checkbox, Switch,
+    RadioGroupItem, Avatar; bind `aria-label` across Avatar image + fallback.
+12. Tighten `Input.type` to a union; export typed `Props`/`Variants` for Input, Textarea,
+    StatusBadge, DropdownMenu, Popover.
+13. Add **active/pressed** feedback to Button recipe and AlertBanner action/dismiss buttons.
+14. Fix `SelectSeparator` role; document Dialog disabled-trigger `aria-disabled` + DropdownMenu
+    disabled-item announcement.
+15. **Document the `level`-vs-`variant` vocabulary** as a formal API convention; reconcile/annotate
+    Toast `type`.
+16. Add **loading/async** states to Switch, Select, and Popover content.
+17. **Integrate Skeleton** into Avatar and Card; add a loading control prop to Skeleton to drop the
+    `v-if` boilerplate.
+18. Add **Pagination** and **Toolbar** once Table lands.
+19. **Deepen test coverage**: keyboard / type-ahead / RTL / error / `$attrs` / reduced-motion for
+    Select, RadioGroup, Textarea, Input, Tooltip, Card.
+20. Evaluate a Card `variant`/`level` axis and optional `CardTitle` tag override for vocabulary
+    alignment and heading-hierarchy flexibility.
+
+### Where this routes in Phase 6
+
+- **6.2 Spine** — the validation API, reduced-motion contract, and size axis are spine-level
+  conventions (#1, #3, #4, #5, #15).
+- **6.3 Defense** — unaffected; the alert *model* and guarded primitives remain separate/opt-in.
+- **6.4 Compose** — the missing primitives (#6–#9, #18), per-component a11y/motion depth (#10–#14,
+  #19), and Skeleton integration (#17).
+- **6.5 Data-viz** — Table/DataGrid (#6) is the natural neighbor; data-display surfaces feed it.
+
+---
+
+## §6g — The expressive ↔ operational register (decision record)
+
+**Status: DECIDED (2026-05-29), design only.** Implementation is 6.2 (Spine). This record locks the
+*architecture* so 6.2 builds without re-litigating it.
+
+### The decision
+
+Model the register as a **token-mode layer**: a `[data-register]` attribute that re-resolves a set
+of *flex* semantic tokens — exactly the way `[data-theme]` re-resolves color. Components do **not**
+change; they already consume semantic tokens, which now resolve differently per register.
+
+```html
+<div data-theme="darknight" data-register="operational">
+  <!-- dense, motion-restrained, tight radii -->
+</div>
+<section data-register="expressive">
+  <!-- roomy, animated, softer -->
+</section>
+```
+
+**Rejected:** per-component `density=` props (churn ×N components, repeat ×N instances, no subtree
+default, no inter-component rhythm) and a Vue context provider as the *primary* mechanism (per-
+component inject wiring; Vue-only, which violates Principle 2 — tokens stay framework-agnostic). A
+thin `<Register>` provider may later be added purely as ergonomics (it just sets the attribute), but
+it is not the source of truth.
+
+### Why
+
+- **Mirrors the proven `[data-theme]` system** — same build path, same mental model, same testing
+  approach. No new paradigm.
+- **Near-zero component churn** — components consume `--control-height`, `--radius-md`, etc.; they
+  don't know or care which register is active.
+- **Framework-agnostic** (Principle 2) — the axis lives in `@auxiliary/tokens` / CSS, not in Vue.
+- **One library, two registers** (Principle 4) — not two parallel systems.
+- It is the roadmap's own hint: *"likely a mode/register layer over the semantic tokens, not two
+  parallel systems."*
+
+### The two axes are orthogonal
+
+| Axis | Attribute | Controls | Values |
+|---|---|---|---|
+| **Theme** | `[data-theme]` | **color** | light · dark · sunlight · darknight |
+| **Register** | `[data-register]` | **everything non-color** (density, rhythm, radius, motion) | expressive · operational |
+
+They compose freely (`[data-theme=darknight][data-register=operational]`) and never overlap:
+**register never touches color; theme never touches density/motion.** A gate will assert this
+separation (no color token varies by register; no density/motion token varies by theme).
+
+### Registers
+
+Two poles for the first cut (the underlying `density` scale already has 4 rungs —
+`compact/default/comfortable/editorial` in `density.tokens.json` — which the registers map onto):
+
+- **`expressive`** — the **default** (no attribute needed). Roomy spacing, softer radii, full
+  motion, larger type rhythm. Marketing, web, brand, onboarding.
+- **`operational`** — **opt-in**. Compact density, tight radii, suppressed/short motion, glance-able
+  rhythm. GCS, telemetry, C2, mission-critical surfaces.
+
+Default = expressive so every existing surface is unchanged until it opts in. Operational being
+opt-in mirrors the air-gap / defense-layer philosophy (additive, never imposed) and is consistent
+with the 6.3 opt-in constraint.
+
+### What flexes by register (the "register-variable" token set)
+
+To be finalized with values in 6.2; the *set* is fixed here:
+
+- **Density / control height** — wire up the existing `density.control-height` scale
+  (operational → `compact` 28px, expressive → `default`/`comfortable`).
+- **Spacing rhythm** — a multiplier on the spacing scale (the `density.scale` factor).
+- **Radius** — operational tightens (`--radius-md` smaller); expressive softens.
+- **Motion** — operational shortens or zeroes durations. *Distinct from* `prefers-reduced-motion`
+  (a user/OS preference, already globally honored): register motion is a **design** choice, the
+  reduced-motion reset is an **accessibility** override. They're independent and both can suppress
+  motion; the global reset always wins when the user asks for it.
+- **Type scale step** (candidate, decide in 6.2) — operational may compress the modular scale.
+
+**Does NOT flex by register:** all color (theme's job), and the reserved status ladder
+(`alarm→…→nominal`) which is invariant everywhere.
+
+### Register-*guided*, not register-*tokenized*
+
+Some of the expressive/operational split can't be a token and stays **convention + per-component
+guidance** (documented in 6f/6h, enforced by review, not the cascade):
+
+- decorative imagery / photography / illustration — allowed expressive, **forbidden** operational
+  (no decoration in a GCS).
+- animation choreography (what animates, not just how fast).
+- copy voice/tone (6h).
+
+Each component's docs will state which register(s) it serves and how it adapts.
+
+### Implementation shape for 6.2 (not built yet)
+
+1. Promote the flex tokens to **register-aware semantic tokens** in `@auxiliary/tokens`: base
+   (expressive) values in `:root`, an `[data-register="operational"]` override block — mirroring the
+   `[data-theme]` blocks in `build.mjs`.
+2. Point recipes at those semantic vars where they currently hardcode height/radius/motion (most
+   already use tokens; the gap is control-height + motion duration).
+3. Add a gate: **orthogonality test** (no color varies by register; no density/motion varies by
+   theme) + a per-register contrast/legibility spot-check.
+4. Optional ergonomics: a `<Register>` provider / composable that just sets the attribute on a
+   subtree. Pure convenience over the attribute.
+
+### Open questions deferred to 6.2
+
+- Exact token list + values per register (especially the spacing multiplier and whether type scale
+  flexes).
+- Whether operational motion is **0ms** or merely **shortened** (leaning shortened, so state-change
+  affordances still read; full-zero is what reduced-motion is for).
+- Whether a neutral middle register is ever needed, or two poles suffice (start with two).
 
 ---
 
