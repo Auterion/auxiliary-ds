@@ -32,7 +32,9 @@ tokens  →  css  →  vue  →  docs
 ```
 
 - `packages/tokens` — DTCG-spec JSON. **Source of truth.** Every other package downstream of tokens must derive from these, not redefine.
-- `packages/css` — Tailwind v4 preset and `@theme` exports generated from tokens.
+- `packages/css` — Tailwind v4 preset and `@theme` exports generated from tokens. Also ships the
+  styling toolkit consumed by `vue`: `cn()` (`@auxiliary/css/utils`) and per-component recipes
+  with typed variants (`@auxiliary/css/recipes`).
 - `packages/vue` — Vue 3 components built on Reka UI, styled via the css preset.
 - `packages/icons` — icon set, consumable by `vue` and downstream surfaces.
 - `packages/figma-sync` — one-way push of tokens → Figma Variables. Code → Figma, never the reverse (see Principle 1 below).
@@ -61,8 +63,8 @@ Root scripts (all `turbo run` orchestrated except the changeset helpers):
 pnpm install
 pnpm build       # build across packages, respecting the dependency graph
 pnpm dev         # docs + demo + watch builds
-pnpm lint        # most package lint scripts are still stubs
-pnpm test        # most package test scripts are still stubs
+pnpm lint        # real gate: eslint --max-warnings 0 in every package (figma-sync parked)
+pnpm test        # @auxiliary/vue runs Vitest + vitest-axe w/ coverage; other packages are stubs
 pnpm typecheck
 pnpm changeset   # add a changeset (required on every PR — see below)
 pnpm release     # build + changeset publish
@@ -85,6 +87,18 @@ CI (`.github/workflows/ci.yml`) enforces two things that are easy to miss:
 2. **Every PR needs a changeset.** CI runs `changeset status --since=origin/main`; add one with `pnpm changeset`.
 
 `@auxiliary/figma-sync` is currently parked — its build/lint/test scripts are stubs.
+
+## Component patterns (vue)
+
+These are conventions in `packages/vue`, not optional style:
+
+1. **Style via recipes, not ad-hoc classes.** Components compose classes with `cn()` from
+   `@auxiliary/css/utils` and pull variants from a recipe in `@auxiliary/css/recipes`
+   (e.g. `import { button, type ButtonVariants } from '@auxiliary/css/recipes'`). Don't
+   hand-roll Tailwind class strings or redefine a variant vocabulary locally.
+2. **Every component gets an a11y test.** Tests live in `src/primitives/__tests__/*.test.ts`
+   and run axe via the shared runner in `src/test-utils/a11y.ts` (`configureAxe`), which disables
+   page-level rules (`region`, `html-has-lang`, …) that false-positive on isolated mounts.
 
 ## License
 

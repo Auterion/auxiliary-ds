@@ -1,8 +1,24 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir -p /Users/yasendimov/Documents/GitHub/Auterion/auxiliary-ds/.claude/plans)",
-      "Bash(cp /Users/yasendimov/.claude/plans/so-now-gently-check-ancient-sun.md /Users/yasendimov/Documents/GitHub/Auterion/auxiliary-ds/.claude/plans/auxiliary-build-plan.md)"
+      "Bash(pnpm install*)",
+      "Bash(pnpm build*)",
+      "Bash(pnpm dev)",
+      "Bash(pnpm lint*)",
+      "Bash(pnpm test*)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm changeset*)",
+      "Bash(pnpm --filter @auxiliary/*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)"
     ]
+  },
+  "enabledPlugins": {
+    "figma@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true
   }
 }
