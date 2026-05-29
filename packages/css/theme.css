@@ -126,3 +126,23 @@
     font-family: var(--font-mono);
   }
 }
+
+/* -------------------------------------------------------------------------- *
+ * Reduced motion — operational determinism (ROADMAP cross-cutting; Phase 6j/6i).
+ *
+ * Honor prefers-reduced-motion globally: collapse durations to ~0 and stop
+ * looping so a state-bearing change (an alarm appearing, a value updating) is
+ * never hidden behind, or obscured by, motion. Unlayered + !important so it
+ * overrides Tailwind's transition-/animate-* utilities regardless of cascade
+ * layer. A gate (test/reduced-motion.test.ts) asserts this stays in place.
+ * -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
