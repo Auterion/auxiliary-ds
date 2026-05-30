@@ -69,6 +69,23 @@ export function blueEnergy(c: Oklch): number {
   return oklchToLinear(c)[2];
 }
 
+/** OKLCh → OKLab (rectangular form): L unchanged, a = C·cos h, b = C·sin h. */
+export function oklab([L, C, h]: Oklch): [number, number, number] {
+  const rad = (h * Math.PI) / 180;
+  return [L, C * Math.cos(rad), C * Math.sin(rad)];
+}
+
+/**
+ * Perceptual color distance in OKLab (ΔEok) — Euclidean distance in (L, a, b).
+ * Used to assert the severity ladder's fills stay distinguishable by color, a
+ * complement to the grayscale-glyph color-blind gate.
+ */
+export function deltaEOk(a: Oklch, b: Oklch): number {
+  const [La, aa, ba] = oklab(a);
+  const [Lb, ab, bb] = oklab(b);
+  return Math.hypot(La - Lb, aa - ab, ba - bb);
+}
+
 /** WCAG 2.x contrast ratio between two oklch colors. */
 export function contrastRatio(a: Oklch, b: Oklch): number {
   const la = luminance(a);
