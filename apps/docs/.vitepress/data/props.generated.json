@@ -2470,14 +2470,14 @@
         "type": "string | number",
         "default": null,
         "required": true,
-        "description": "Numeric or pre-formatted string value. Numeric values use precision + tabular-nums."
+        "description": "Numeric or pre-formatted string value. With `quantity` set, a numeric value is treated as canonical SI and converted to the active unit system."
       },
       {
         "name": "unit",
         "type": "string",
         "default": null,
         "required": false,
-        "description": "Unit suffix (e.g. \"m\", \"m/s\", \"°\")."
+        "description": "Unit suffix (e.g. \"m\", \"m/s\", \"°\"). Ignored when `quantity` derives the unit."
       },
       {
         "name": "label",
@@ -2489,9 +2489,30 @@
       {
         "name": "precision",
         "type": "number",
-        "default": "1",
+        "default": null,
         "required": false,
-        "description": "Decimals for numeric values (ignored for strings)."
+        "description": "Decimals for numeric values (ignored for strings). Defaults to the unit's precision in quantity mode, else 1."
+      },
+      {
+        "name": "quantity",
+        "type": "Quantity",
+        "default": null,
+        "required": false,
+        "description": "Quantity kind — when set, `value` is canonical SI and gets converted + unit-labelled."
+      },
+      {
+        "name": "system",
+        "type": "UnitSystem",
+        "default": null,
+        "required": false,
+        "description": "Override the deployment unit system from `<UnitSystemProvider>`."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Override the deployment locale. Unset = deterministic formatting (no grouping)."
       },
       {
         "name": "trend",
@@ -2555,6 +2576,13 @@
         "default": null,
         "required": false,
         "description": ""
+      },
+      {
+        "name": "live",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Whether this banner is its own assertive live region (`role=\"alert\"`). Default `true` (a standalone banner announces itself). Set `false` when a parent owns a single live region for a managed stack (e.g. `<AlertManager>`), so acknowledging/reordering one banner doesn't re-announce the whole backlog."
       }
     ],
     "events": [
@@ -2571,6 +2599,249 @@
     ],
     "slots": [
       "title",
+      "default"
+    ]
+  },
+  "CoordinateValue": {
+    "file": "./primitives/CoordinateValue.vue",
+    "props": [
+      {
+        "name": "lat",
+        "type": "number",
+        "default": null,
+        "required": true,
+        "description": "WGS84 latitude in decimal degrees."
+      },
+      {
+        "name": "lon",
+        "type": "number",
+        "default": null,
+        "required": true,
+        "description": "WGS84 longitude in decimal degrees."
+      },
+      {
+        "name": "format",
+        "type": "CoordFormat",
+        "default": "dd",
+        "required": false,
+        "description": "Display format: decimal degrees, DMS, decimal minutes, or MGRS."
+      },
+      {
+        "name": "precision",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "Decimal places — meaning depends on `format` (dd → degrees, dms → seconds, ddm → minutes)."
+      },
+      {
+        "name": "mgrsAccuracy",
+        "type": "number",
+        "default": "5",
+        "required": false,
+        "description": "MGRS grid precision, 1..5 (10 km → 1 m). `mgrs` only."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Optional label rendered above the value."
+      },
+      {
+        "name": "showFormatTag",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Render a small format tag (e.g. \"MGRS\") next to the value."
+      },
+      {
+        "name": "size",
+        "type": "Size",
+        "default": "md",
+        "required": false,
+        "description": "Visual size."
+      },
+      {
+        "name": "level",
+        "type": "\"alarm\" | \"warning\" | \"caution\" | \"advisory\" | \"nominal\" | null",
+        "default": "null",
+        "required": false,
+        "description": "Status level — colors the value when set (e.g. red for an out-of-bounds fix)."
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "UnitSystemProvider": {
+    "file": "./primitives/UnitSystemProvider.vue",
+    "props": [
+      {
+        "name": "system",
+        "type": "UnitSystem",
+        "default": "metric",
+        "required": false,
+        "description": "Display unit system for descendant readouts."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Intl locale for descendant readouts (number grouping/separators). Unset = deterministic, no grouping."
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
+  },
+  "AlertManager": {
+    "file": "./primitives/AlertManager.vue",
+    "props": [
+      {
+        "name": "model",
+        "type": "AlertModel",
+        "default": null,
+        "required": true,
+        "description": "The model from `useAlertModel()`."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "Cap visible banners; the remainder is summarised as \"+N more\"."
+      },
+      {
+        "name": "ackLabel",
+        "type": "string",
+        "default": "Acknowledge",
+        "required": false,
+        "description": "Label for the per-banner acknowledge action."
+      },
+      {
+        "name": "ackAllLabel",
+        "type": "string",
+        "default": "Acknowledge all",
+        "required": false,
+        "description": "Label for the bulk acknowledge control."
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "AlertAnnunciator": {
+    "file": "./primitives/AlertAnnunciator.vue",
+    "props": [
+      {
+        "name": "model",
+        "type": "AlertModel",
+        "default": null,
+        "required": true,
+        "description": "The model from `useAlertModel()`."
+      },
+      {
+        "name": "nominalLabel",
+        "type": "string",
+        "default": "All nominal",
+        "required": false,
+        "description": "Resting label when there are no alerts."
+      },
+      {
+        "name": "actionLabel",
+        "type": "string",
+        "default": "View alerts",
+        "required": false,
+        "description": "Stable accessible name for the control's action."
+      }
+    ],
+    "events": [
+      {
+        "name": "select",
+        "type": "[]",
+        "description": ""
+      }
+    ],
+    "slots": []
+  },
+  "GuardedAction": {
+    "file": "./primitives/GuardedAction.vue",
+    "props": [
+      {
+        "name": "mode",
+        "type": "\"hold\" | \"double\" | \"confirm\"",
+        "default": "hold",
+        "required": false,
+        "description": "Guard interaction. Default `hold`."
+      },
+      {
+        "name": "holdMs",
+        "type": "number",
+        "default": "1500",
+        "required": false,
+        "description": "Hold duration in ms (hold mode). Default 1500."
+      },
+      {
+        "name": "doubleMs",
+        "type": "number",
+        "default": "2000",
+        "required": false,
+        "description": "Window in ms for the second activation (double mode). Default 2000."
+      },
+      {
+        "name": "variant",
+        "type": "\"primary\" | \"secondary\" | \"ghost\" | \"danger\"",
+        "default": "danger",
+        "required": false,
+        "description": "Reuses Button's variant vocabulary. Default `danger` (these are dangerous)."
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\" | \"lg\"",
+        "default": "md",
+        "required": false,
+        "description": "Shared register-flex size scale (sm | md | lg)."
+      },
+      {
+        "name": "confirmLabel",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Label shown once armed / holding (e.g. \"Hold to ARM\", \"Confirm ARM\")."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [
+      {
+        "name": "confirm",
+        "type": "[]",
+        "description": ""
+      },
+      {
+        "name": "cancel",
+        "type": "[]",
+        "description": ""
+      },
+      {
+        "name": "progress",
+        "type": "[fraction: number]",
+        "description": ""
+      }
+    ],
+    "slots": [
       "default"
     ]
   }

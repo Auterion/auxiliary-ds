@@ -98,3 +98,32 @@ export { default as NumberField } from './primitives/NumberField.vue';
 export { default as StatusBadge, type StatusLevel } from './primitives/StatusBadge.vue';
 export { default as TelemetryValue } from './primitives/TelemetryValue.vue';
 export { default as AlertBanner, type AlertLevel } from './primitives/AlertBanner.vue';
+
+// CoordinateValue — lat/long + MGRS coordinate readout (ROADMAP §6i / Phase 6.3).
+export { default as CoordinateValue } from './primitives/CoordinateValue.vue';
+
+// UnitSystemProvider — deployment-wide metric/imperial + locale context (ROADMAP §6i / Phase 6.3).
+export { default as UnitSystemProvider } from './primitives/UnitSystemProvider.vue';
+export {
+  useUnitSystem,
+  provideUnitSystem,
+  type UnitSystemContext,
+} from './composables/useUnitSystem';
+export type { UnitSystem, Quantity } from '@auxiliary/css/format';
+
+// Alert model — prioritized, acknowledgeable, latching alert set (ROADMAP §6i / Phase 6.3).
+// Composes AlertBanner + StatusBadge; never modifies them.
+export { default as AlertManager } from './primitives/AlertManager.vue';
+export { default as AlertAnnunciator } from './primitives/AlertAnnunciator.vue';
+export {
+  useAlertModel,
+  compareAlerts,
+  ALERT_LEVELS,
+  type Alert,
+  type AlertSource,
+  type AlertModel,
+  type UseAlertModelOptions,
+} from './composables/useAlertModel';
+
+// GuardedAction — hard-to-misfire control for irreversible commands (ROADMAP §6i / Phase 6.3).
+export { default as GuardedAction } from './primitives/GuardedAction.vue';

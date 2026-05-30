@@ -13,10 +13,18 @@ const props = withDefaults(
     description?: string;
     dismissible?: boolean;
     actionLabel?: string;
+    /**
+     * Whether this banner is its own assertive live region (`role="alert"`).
+     * Default `true` (a standalone banner announces itself). Set `false` when a
+     * parent owns a single live region for a managed stack (e.g. `<AlertManager>`),
+     * so acknowledging/reordering one banner doesn't re-announce the whole backlog.
+     */
+    live?: boolean;
     class?: HTMLAttributes['class'];
   }>(),
   {
     dismissible: false,
+    live: true,
   },
 );
 
@@ -35,7 +43,7 @@ const srLabel = computed(() => STATUS_LABELS[props.level]);
 </script>
 
 <template>
-  <div :class="bannerClass" role="alert">
+  <div :class="bannerClass" :role="live ? 'alert' : undefined">
     <svg
       width="20"
       height="20"

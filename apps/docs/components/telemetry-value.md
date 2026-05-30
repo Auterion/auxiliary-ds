@@ -98,6 +98,59 @@ The component renders a `<div>` and forwards `$attrs`, so `id`, `data-*`, and `a
 
 `size` scales only the value glyph; the label, unit, and trend stay constant. Use `sm` inside dense strips, `lg` for a primary HUD figure that should dominate.
 
+## Unit systems & locale
+
+Pass a `quantity` and the `value` is treated as **canonical SI** (metres, m/s, °C, degrees) and converted to the active unit system — the unit label is derived for you. The system is set **once per deployment** with `<UnitSystemProvider>`; readouts inside it follow along.
+
+<div class="auxiliary-demo vp-raw" style="gap: 2rem;">
+  <UnitSystemProvider system="metric">
+    <div style="display:flex; gap:1.5rem;">
+      <TelemetryValue label="Alt" :value="408" quantity="altitude" />
+      <TelemetryValue label="GS" :value="12.4" quantity="speed" />
+      <TelemetryValue label="OAT" :value="21" quantity="temperature" />
+    </div>
+  </UnitSystemProvider>
+  <UnitSystemProvider system="imperial">
+    <div style="display:flex; gap:1.5rem;">
+      <TelemetryValue label="Alt" :value="408" quantity="altitude" />
+      <TelemetryValue label="GS" :value="12.4" quantity="speed" />
+      <TelemetryValue label="OAT" :value="21" quantity="temperature" />
+    </div>
+  </UnitSystemProvider>
+</div>
+
+```vue
+<!-- Set the deployment's unit system once, high in the tree -->
+<UnitSystemProvider system="imperial">
+  <TelemetryValue label="Alt" :value="408" quantity="altitude" />  <!-- 1339 ft -->
+  <TelemetryValue label="GS"  :value="12.4" quantity="speed" />    <!-- 24.1 kn -->
+  <TelemetryValue label="OAT" :value="21" quantity="temperature" /><!-- 70°F -->
+</UnitSystemProvider>
+```
+
+**Imperial means the aviation convention** a GCS expects: altitude in **feet**, speed in **knots**, vertical speed in **ft/min**, temperature in **°F**. The supported quantities are `distance`, `altitude`, `speed`, `verticalSpeed`, `temperature`, and `angle`. A named `unit` override reaches the rest (`km`, `mph`, `NM`, `mils`):
+
+```vue
+<TelemetryValue :value="247" quantity="angle" unit="mils" />  <!-- 4391 mils -->
+<TelemetryValue :value="2000" quantity="distance" unit="NM" /><!-- 1.08 NM -->
+```
+
+`locale` engages `Intl.NumberFormat` for grouping/decimal separators — also a `<UnitSystemProvider>` prop, so a whole deployment localizes at once. It is **opt-in**: with no locale set, numbers format deterministically (no grouping), so existing readouts are unaffected.
+
+```vue
+<UnitSystemProvider system="metric" locale="de-DE">
+  <TelemetryValue :value="1234.5" quantity="speed" />  <!-- 1.234,5 m/s -->
+</UnitSystemProvider>
+```
+
+A per-component `system`, `locale`, `unit`, or `precision` prop overrides the provider for that one readout — but per the lexicon, prefer one consistent system per view.
+
+### `<UnitSystemProvider>` props
+
+<PropsTable name="UnitSystemProvider" />
+
+It provides a `system` + `locale` context (via the `useUnitSystem()` composable) to all descendant readouts and renders only its default slot — no wrapper element. Conversion logic lives framework-agnostically in `@auxiliary/css/format` (`formatQuantity` / `convertQuantity` / `formatNumber`).
+
 ## Accessibility
 
 - The readout is a plain `<div>` of inline `<span>`s, so a screen reader reads it in document order: label, then value, then unit, then trend. Keep `label` set so the number has a name — a bare `408.2 m` with no label is ambiguous out of context.

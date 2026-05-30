@@ -26,3 +26,16 @@ export const STATUS_LABELS: Record<StatusKind, string> = {
   advisory: 'Advisory',
   nominal: 'Nominal',
 };
+
+/**
+ * Severity rank for prioritization — lower is more urgent (alarm 0 … nominal 4).
+ * The single ordering the alert model sorts by, kept here so it never drifts
+ * from the ladder the glyphs/labels encode.
+ */
+export const STATUS_RANK: Record<StatusKind, number> = {
+  alarm: 0,
+  warning: 1,
+  caution: 2,
+  advisory: 3,
+  nominal: 4,
+};

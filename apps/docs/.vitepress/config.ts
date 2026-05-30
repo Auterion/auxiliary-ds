@@ -78,6 +78,7 @@ export default defineConfig({
         items: [
           { text: 'Button', link: '/components/button' },
           { text: 'DropdownMenu', link: '/components/dropdown-menu' },
+          { text: 'GuardedAction', link: '/components/guarded-action' },
         ],
       },
       {
@@ -101,6 +102,8 @@ export default defineConfig({
         text: 'Operational',
         items: [
           { text: 'AlertBanner', link: '/components/alert-banner' },
+          { text: 'Alert model', link: '/components/alert-model' },
+          { text: 'CoordinateValue', link: '/components/coordinate-value' },
           { text: 'StatusBadge', link: '/components/status-badge' },
           { text: 'TelemetryValue', link: '/components/telemetry-value' },
         ],

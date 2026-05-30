@@ -6,5 +6,5 @@
     "declaration": true,
     "declarationMap": true
   },
-  "include": ["recipes/**/*.ts", "utils/**/*.ts"]
+  "include": ["recipes/**/*.ts", "utils/**/*.ts", "format/**/*.ts"]
 }

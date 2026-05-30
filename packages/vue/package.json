@@ -29,9 +29,17 @@
       "types": "./dist/primitives/Accordion/AccordionTrigger.vue.d.ts",
       "import": "./dist/primitives/Accordion/AccordionTrigger.vue.js"
     },
+    "./AlertAnnunciator": {
+      "types": "./dist/primitives/AlertAnnunciator.vue.d.ts",
+      "import": "./dist/primitives/AlertAnnunciator.vue.js"
+    },
     "./AlertBanner": {
       "types": "./dist/primitives/AlertBanner.vue.d.ts",
       "import": "./dist/primitives/AlertBanner.vue.js"
+    },
+    "./AlertManager": {
+      "types": "./dist/primitives/AlertManager.vue.d.ts",
+      "import": "./dist/primitives/AlertManager.vue.js"
     },
     "./Avatar": {
       "types": "./dist/primitives/Avatar/Avatar.vue.d.ts",
@@ -105,6 +113,10 @@
       "types": "./dist/primitives/Combobox/ComboboxSeparator.vue.d.ts",
       "import": "./dist/primitives/Combobox/ComboboxSeparator.vue.js"
     },
+    "./CoordinateValue": {
+      "types": "./dist/primitives/CoordinateValue.vue.d.ts",
+      "import": "./dist/primitives/CoordinateValue.vue.js"
+    },
     "./Dialog": {
       "types": "./dist/primitives/Dialog/Dialog.vue.d.ts",
       "import": "./dist/primitives/Dialog/Dialog.vue.js"
@@ -152,6 +164,10 @@
     "./DropdownMenuTrigger": {
       "types": "./dist/primitives/DropdownMenu/DropdownMenuTrigger.vue.d.ts",
       "import": "./dist/primitives/DropdownMenu/DropdownMenuTrigger.vue.js"
+    },
+    "./GuardedAction": {
+      "types": "./dist/primitives/GuardedAction.vue.d.ts",
+      "import": "./dist/primitives/GuardedAction.vue.js"
     },
     "./Input": {
       "types": "./dist/primitives/Input.vue.d.ts",
@@ -336,6 +352,10 @@
     "./TooltipTrigger": {
       "types": "./dist/primitives/Tooltip/TooltipTrigger.vue.d.ts",
       "import": "./dist/primitives/Tooltip/TooltipTrigger.vue.js"
+    },
+    "./UnitSystemProvider": {
+      "types": "./dist/primitives/UnitSystemProvider.vue.d.ts",
+      "import": "./dist/primitives/UnitSystemProvider.vue.js"
     }
   },
   "scripts": {
