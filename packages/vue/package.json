@@ -344,6 +344,10 @@
     "./TooltipTrigger": {
       "types": "./dist/primitives/Tooltip/TooltipTrigger.vue.d.ts",
       "import": "./dist/primitives/Tooltip/TooltipTrigger.vue.js"
+    },
+    "./UnitSystemProvider": {
+      "types": "./dist/primitives/UnitSystemProvider.vue.d.ts",
+      "import": "./dist/primitives/UnitSystemProvider.vue.js"
     }
   },
   "scripts": {
