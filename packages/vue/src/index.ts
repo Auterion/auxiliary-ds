@@ -102,5 +102,14 @@ export { default as AlertBanner, type AlertLevel } from './primitives/AlertBanne
 // CoordinateValue — lat/long + MGRS coordinate readout (ROADMAP §6i / Phase 6.3).
 export { default as CoordinateValue } from './primitives/CoordinateValue.vue';
 
+// UnitSystemProvider — deployment-wide metric/imperial + locale context (ROADMAP §6i / Phase 6.3).
+export { default as UnitSystemProvider } from './primitives/UnitSystemProvider.vue';
+export {
+  useUnitSystem,
+  provideUnitSystem,
+  type UnitSystemContext,
+} from './composables/useUnitSystem';
+export type { UnitSystem, Quantity } from '@auxiliary/css/format';
+
 // GuardedAction — hard-to-misfire control for irreversible commands (ROADMAP §6i / Phase 6.3).
 export { default as GuardedAction } from './primitives/GuardedAction.vue';

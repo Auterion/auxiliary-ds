@@ -2470,14 +2470,14 @@
         "type": "string | number",
         "default": null,
         "required": true,
-        "description": "Numeric or pre-formatted string value. Numeric values use precision + tabular-nums."
+        "description": "Numeric or pre-formatted string value. With `quantity` set, a numeric value is treated as canonical SI and converted to the active unit system."
       },
       {
         "name": "unit",
         "type": "string",
         "default": null,
         "required": false,
-        "description": "Unit suffix (e.g. \"m\", \"m/s\", \"°\")."
+        "description": "Unit suffix (e.g. \"m\", \"m/s\", \"°\"). Ignored when `quantity` derives the unit."
       },
       {
         "name": "label",
@@ -2489,9 +2489,30 @@
       {
         "name": "precision",
         "type": "number",
-        "default": "1",
+        "default": null,
         "required": false,
-        "description": "Decimals for numeric values (ignored for strings)."
+        "description": "Decimals for numeric values (ignored for strings). Defaults to the unit's precision in quantity mode, else 1."
+      },
+      {
+        "name": "quantity",
+        "type": "Quantity",
+        "default": null,
+        "required": false,
+        "description": "Quantity kind — when set, `value` is canonical SI and gets converted + unit-labelled."
+      },
+      {
+        "name": "system",
+        "type": "UnitSystem",
+        "default": null,
+        "required": false,
+        "description": "Override the deployment unit system from `<UnitSystemProvider>`."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Override the deployment locale. Unset = deterministic formatting (no grouping)."
       },
       {
         "name": "trend",
@@ -2643,6 +2664,29 @@
     ],
     "events": [],
     "slots": []
+  },
+  "UnitSystemProvider": {
+    "file": "./primitives/UnitSystemProvider.vue",
+    "props": [
+      {
+        "name": "system",
+        "type": "UnitSystem",
+        "default": "metric",
+        "required": false,
+        "description": "Display unit system for descendant readouts."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Intl locale for descendant readouts (number grouping/separators). Unset = deterministic, no grouping."
+      }
+    ],
+    "events": [],
+    "slots": [
+      "default"
+    ]
   },
   "GuardedAction": {
     "file": "./primitives/GuardedAction.vue",

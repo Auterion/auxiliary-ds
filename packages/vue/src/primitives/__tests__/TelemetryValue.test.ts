@@ -67,4 +67,45 @@ describe('TelemetryValue', () => {
     const results = await axe(wrapper.element);
     expect(results).toHaveNoViolations();
   });
+
+  describe('unit systems (quantity mode)', () => {
+    it('treats the value as canonical SI and derives the unit', () => {
+      const metric = mount(TelemetryValue, { props: { value: 408, quantity: 'altitude' } });
+      expect(metric.text()).toContain('408');
+      expect(metric.find('.font-mono ~ span').text()).toBe('m');
+    });
+
+    it('converts to imperial (aviation) when system is imperial', () => {
+      const wrapper = mount(TelemetryValue, {
+        props: { value: 12.4, quantity: 'speed', system: 'imperial' },
+      });
+      expect(wrapper.text()).toContain('24.1');
+      expect(wrapper.text()).toContain('kn');
+    });
+
+    it("derived unit overrides the manual unit prop", () => {
+      const wrapper = mount(TelemetryValue, {
+        props: { value: 408, quantity: 'altitude', system: 'imperial', unit: 'WRONG' },
+      });
+      expect(wrapper.text()).not.toContain('WRONG');
+      expect(wrapper.text()).toContain('ft');
+    });
+  });
+
+  describe('locale formatting (opt-in)', () => {
+    it('localizes the number when a locale is given', () => {
+      const wrapper = mount(TelemetryValue, { props: { value: 1234.5, locale: 'de-DE' } });
+      expect(wrapper.text()).toContain('1.234,5');
+    });
+
+    // Load-bearing: existing readouts with no quantity/locale must be byte-identical
+    // to the previous toFixed behavior — no silent grouping or regression.
+    it('default formatting is unchanged (deterministic toFixed, no grouping)', () => {
+      expect(mount(TelemetryValue, { props: { value: 1234.5 } }).find('.font-mono').text()).toBe('1234.5');
+      expect(mount(TelemetryValue, { props: { value: 42 } }).find('.font-mono').text()).toBe('42.0');
+      expect(
+        mount(TelemetryValue, { props: { value: 3.14159, precision: 3 } }).find('.font-mono').text(),
+      ).toBe('3.142');
+    });
+  });
 });
