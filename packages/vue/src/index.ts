@@ -98,3 +98,6 @@ export { default as NumberField } from './primitives/NumberField.vue';
 export { default as StatusBadge, type StatusLevel } from './primitives/StatusBadge.vue';
 export { default as TelemetryValue } from './primitives/TelemetryValue.vue';
 export { default as AlertBanner, type AlertLevel } from './primitives/AlertBanner.vue';
+
+// GuardedAction — hard-to-misfire control for irreversible commands (ROADMAP §6i / Phase 6.3).
+export { default as GuardedAction } from './primitives/GuardedAction.vue';

@@ -2573,5 +2573,86 @@
       "title",
       "default"
     ]
+  },
+  "GuardedAction": {
+    "file": "./primitives/GuardedAction.vue",
+    "props": [
+      {
+        "name": "mode",
+        "type": "\"hold\" | \"double\" | \"confirm\"",
+        "default": "hold",
+        "required": false,
+        "description": "Guard interaction. Default `hold`."
+      },
+      {
+        "name": "holdMs",
+        "type": "number",
+        "default": "1500",
+        "required": false,
+        "description": "Hold duration in ms (hold mode). Default 1500."
+      },
+      {
+        "name": "doubleMs",
+        "type": "number",
+        "default": "2000",
+        "required": false,
+        "description": "Window in ms for the second activation (double mode). Default 2000."
+      },
+      {
+        "name": "variant",
+        "type": "\"primary\" | \"secondary\" | \"ghost\" | \"danger\"",
+        "default": "danger",
+        "required": false,
+        "description": "Reuses Button's variant vocabulary. Default `danger` (these are dangerous)."
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\" | \"lg\"",
+        "default": "md",
+        "required": false,
+        "description": "Shared register-flex size scale (sm | md | lg)."
+      },
+      {
+        "name": "confirmLabel",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Label shown once armed / holding (e.g. \"Hold to ARM\", \"Confirm ARM\")."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [
+      {
+        "name": "confirm",
+        "type": "[]",
+        "description": ""
+      },
+      {
+        "name": "cancel",
+        "type": "[]",
+        "description": ""
+      },
+      {
+        "name": "progress",
+        "type": "[fraction: number]",
+        "description": ""
+      }
+    ],
+    "slots": [
+      "default"
+    ]
   }
 }
