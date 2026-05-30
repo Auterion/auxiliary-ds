@@ -2574,6 +2574,76 @@
       "default"
     ]
   },
+  "CoordinateValue": {
+    "file": "./primitives/CoordinateValue.vue",
+    "props": [
+      {
+        "name": "lat",
+        "type": "number",
+        "default": null,
+        "required": true,
+        "description": "WGS84 latitude in decimal degrees."
+      },
+      {
+        "name": "lon",
+        "type": "number",
+        "default": null,
+        "required": true,
+        "description": "WGS84 longitude in decimal degrees."
+      },
+      {
+        "name": "format",
+        "type": "CoordFormat",
+        "default": "dd",
+        "required": false,
+        "description": "Display format: decimal degrees, DMS, decimal minutes, or MGRS."
+      },
+      {
+        "name": "precision",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "Decimal places — meaning depends on `format` (dd → degrees, dms → seconds, ddm → minutes)."
+      },
+      {
+        "name": "mgrsAccuracy",
+        "type": "number",
+        "default": "5",
+        "required": false,
+        "description": "MGRS grid precision, 1..5 (10 km → 1 m). `mgrs` only."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Optional label rendered above the value."
+      },
+      {
+        "name": "showFormatTag",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Render a small format tag (e.g. \"MGRS\") next to the value."
+      },
+      {
+        "name": "size",
+        "type": "Size",
+        "default": "md",
+        "required": false,
+        "description": "Visual size."
+      },
+      {
+        "name": "level",
+        "type": "\"alarm\" | \"warning\" | \"caution\" | \"advisory\" | \"nominal\" | null",
+        "default": "null",
+        "required": false,
+        "description": "Status level — colors the value when set (e.g. red for an out-of-bounds fix)."
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
   "GuardedAction": {
     "file": "./primitives/GuardedAction.vue",
     "props": [

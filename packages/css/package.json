@@ -9,7 +9,8 @@
     "theme.css",
     "fonts",
     "recipes",
-    "utils"
+    "utils",
+    "format"
   ],
   "exports": {
     "./theme.css": "./theme.css",
@@ -24,6 +25,10 @@
     "./utils": {
       "types": "./dist/utils/index.d.ts",
       "import": "./dist/utils/index.js"
+    },
+    "./format": {
+      "types": "./dist/format/index.d.ts",
+      "import": "./dist/format/index.js"
     }
   },
   "scripts": {
@@ -35,6 +40,7 @@
   },
   "dependencies": {
     "@auxiliary/tokens": "workspace:*",
+    "mgrs": "^2.1.0",
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.0"
   },

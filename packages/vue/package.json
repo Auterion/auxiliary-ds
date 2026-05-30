@@ -105,6 +105,10 @@
       "types": "./dist/primitives/Combobox/ComboboxSeparator.vue.d.ts",
       "import": "./dist/primitives/Combobox/ComboboxSeparator.vue.js"
     },
+    "./CoordinateValue": {
+      "types": "./dist/primitives/CoordinateValue.vue.d.ts",
+      "import": "./dist/primitives/CoordinateValue.vue.js"
+    },
     "./Dialog": {
       "types": "./dist/primitives/Dialog/Dialog.vue.d.ts",
       "import": "./dist/primitives/Dialog/Dialog.vue.js"
