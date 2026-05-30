@@ -75,8 +75,8 @@ The same semantic name resolves to different OKLCH values per theme:
 
 - **light** — default; bright neutral surfaces, dark text. Cool gray-zinc.
 - **dark** — inverted; dark surfaces, near-white text. Same hue family.
-- **sunlight** — high-contrast variant of light for outdoor / direct-sun operation.
-- **darknight** — cockpit-night-vision variant of dark, tuned toward OpenBridge night (warm black + bat-signal gold). Pure-black background; amber/gold foreground, accents, and warm amber-brown neutrals (`secondary`/`accent`/`border`/`input`); a brighter gold focus `ring`. `nominal` reads as a clear "safe" signal — dim green surface with vivid mint text — while the other status tiers stay as in dark. Low-blue throughout to preserve scotopic dark adaptation.
+- **sunlight** — hardened high-contrast variant of light for direct-sun operation. Pure white/black body (≈9–13:1) with **deepened structure** (`border` zinc.500, `input` zinc.600) and **deeper status fills** so panels, fields, and severity blocks hold up under veiling glare. Caution stays a bright yellow — its high luminance *is* its glare signal.
+- **darknight** — cockpit-night-vision variant, amber-on-black and **low-blue throughout** to preserve scotopic dark adaptation. Pure-black background; amber/gold foreground and `ring`; warm amber neutrals with structural amber.700 `border`/`input`. Severity is a **monotonic luminance ladder** — at night, rod vision reads *intensity*, not warm hue (a dark red would vanish), so `alarm` is the single brightest element (a glowing red.400), stepping down through warning/caution/advisory to a nearly **extinguished** `nominal` (the absence of urgency reads as the absence of light). Glyph shapes carry redundant distinction.
 
 A consumer switches themes by setting `data-theme` on `<html>`:
 
@@ -85,6 +85,18 @@ document.documentElement.setAttribute('data-theme', 'darknight');
 ```
 
 `data-theme` unset = `light`.
+
+## Operational legibility gates
+
+axe checks WCAG *semantics* at the component level, but it never exercises the `sunlight` (glare) and `darknight` (scotopic) themes, and contrast ratios alone don't capture night-vision or color separation. So the **token layer** carries its own gates (`packages/tokens/test/`), computed from the OKLCH source — a palette edit that regressed any of them fails CI:
+
+- **Per-theme text contrast** — every surface and status pair clears WCAG AA (4.5:1), with `sunlight` body raised toward AAA (7:1) to offset veiling glare.
+- **Focus visibility (WCAG 1.4.11)** — the focus `ring` clears 3:1 against the background in *every* theme, so a keyboard operator never loses focus under sun or in the dark.
+- **Structural UI contrast (1.4.11)** — `border` and `input` clear 3:1 in the operational themes, so panels and fields hold their geometry under glare / in the dark.
+- **Night-vision (darknight)** — *every* token, not just status fills, stays below a linear-sRGB blue cap (bright blue bleaches rhodopsin and destroys dark adaptation), **and** the severity fills emit in a strictly monotonic luminance ladder (alarm brightest → nominal dimmest), since scotopic vision reads intensity rather than warm hue.
+- **Severity separation** — the five ladder fills stay perceptually distinct from each other in OKLab (ΔEok), a color-channel complement to the grayscale-distinct status glyphs.
+
+Floors only ever ratchet up — they lock the contract the palette meets today so it can't silently regress.
 
 ## Pre-1.0 status
 

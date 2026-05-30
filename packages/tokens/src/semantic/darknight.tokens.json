@@ -1,34 +1,120 @@
 {
   "darknight": {
-    "background":            { "$type": "color", "$value": "{color.primitive.black}" },
-    "foreground":            { "$type": "color", "$value": "{color.primitive.amber.500}" },
-    "card":                  { "$type": "color", "$value": "{color.primitive.stone.950}" },
-    "card-foreground":       { "$type": "color", "$value": "{color.primitive.amber.500}" },
-    "popover":               { "$type": "color", "$value": "{color.primitive.stone.950}" },
-    "popover-foreground":    { "$type": "color", "$value": "{color.primitive.amber.500}" },
-    "primary":               { "$type": "color", "$value": "{color.primitive.amber.500}" },
-    "primary-foreground":    { "$type": "color", "$value": "{color.primitive.black}" },
-    "secondary":             { "$type": "color", "$value": "{color.primitive.amber.950}" },
-    "secondary-foreground":  { "$type": "color", "$value": "{color.primitive.amber.500}" },
-    "muted":                 { "$type": "color", "$value": "{color.primitive.stone.900}" },
-    "muted-foreground":      { "$type": "color", "$value": "{color.primitive.amber.600}" },
-    "accent":                { "$type": "color", "$value": "{color.primitive.amber.950}" },
-    "accent-foreground":     { "$type": "color", "$value": "{color.primitive.amber.500}" },
-    "destructive":           { "$type": "color", "$value": "{color.primitive.red.800}" },
-    "destructive-foreground":{ "$type": "color", "$value": "{color.primitive.amber.300}" },
-    "border":                { "$type": "color", "$value": "{color.primitive.amber.950}" },
-    "input":                 { "$type": "color", "$value": "{color.primitive.amber.900}" },
-    "ring":                  { "$type": "color", "$value": "{color.primitive.amber.400}" },
-
-    "alarm":                 { "$type": "color", "$value": "{color.primitive.red.800}" },
-    "alarm-foreground":      { "$type": "color", "$value": "{color.primitive.amber.300}" },
-    "warning":               { "$type": "color", "$value": "{color.primitive.orange.800}" },
-    "warning-foreground":    { "$type": "color", "$value": "{color.primitive.amber.300}" },
-    "caution":               { "$type": "color", "$value": "{color.primitive.yellow.800}" },
-    "caution-foreground":    { "$type": "color", "$value": "{color.primitive.amber.300}" },
-    "advisory":              { "$type": "color", "$value": "{color.primitive.cyan.900}" },
-    "advisory-foreground":   { "$type": "color", "$value": "{color.primitive.amber.300}" },
-    "nominal":               { "$type": "color", "$value": "{color.primitive.green.900}" },
-    "nominal-foreground":    { "$type": "color", "$value": "{color.primitive.emerald.300}" }
+    "background": {
+      "$type": "color",
+      "$value": "{color.primitive.black}"
+    },
+    "foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.500}"
+    },
+    "card": {
+      "$type": "color",
+      "$value": "{color.primitive.stone.950}"
+    },
+    "card-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.500}"
+    },
+    "popover": {
+      "$type": "color",
+      "$value": "{color.primitive.stone.950}"
+    },
+    "popover-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.500}"
+    },
+    "primary": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.500}"
+    },
+    "primary-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.black}"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.950}"
+    },
+    "secondary-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.400}"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{color.primitive.stone.900}"
+    },
+    "muted-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.600}"
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.900}"
+    },
+    "accent-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.300}"
+    },
+    "destructive": {
+      "$type": "color",
+      "$value": "{color.primitive.red.400}"
+    },
+    "destructive-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.black}"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.700}"
+    },
+    "input": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.700}"
+    },
+    "ring": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.400}"
+    },
+    "alarm": {
+      "$type": "color",
+      "$value": "{color.primitive.red.400}"
+    },
+    "alarm-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.black}"
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "{color.primitive.orange.600}"
+    },
+    "warning-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.black}"
+    },
+    "caution": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.800}"
+    },
+    "caution-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.300}"
+    },
+    "advisory": {
+      "$type": "color",
+      "$value": "{color.primitive.yellow.900}"
+    },
+    "advisory-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.300}"
+    },
+    "nominal": {
+      "$type": "color",
+      "$value": "{color.primitive.green.950}"
+    },
+    "nominal-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.lime.300}"
+    }
   }
 }
