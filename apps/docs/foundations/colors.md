@@ -98,6 +98,8 @@ axe checks WCAG *semantics* at the component level, but it never exercises the `
 
 Floors only ever ratchet up — they lock the contract the palette meets today so it can't silently regress.
 
+These gates are the evidence behind the system's [conformance posture](/foundations/conformance) — where they map to the specific WCAG 2.2 AA, Section 508, and MIL-STD-1472 criteria they satisfy.
+
 ## Pre-1.0 status
 
 Token names are still moving. The `IconName` union, the alarm-tier names, and the shadcn surface vocabulary (`background`, `card`, `primary`, etc.) are unlikely to change before 1.0 — the rest is fair game.

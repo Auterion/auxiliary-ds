@@ -6,7 +6,7 @@ import { tv, type VariantProps } from 'tailwind-variants';
  */
 export const progress = tv({
   slots: {
-    root: 'relative h-2 w-full overflow-hidden rounded-full bg-background',
+    root: 'relative h-2 w-full overflow-hidden rounded-full bg-muted',
     indicator: 'h-full w-full transition-transform duration-[var(--duration-slow)] bg-primary',
   },
   variants: {
