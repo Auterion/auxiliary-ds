@@ -2576,6 +2576,13 @@
         "default": null,
         "required": false,
         "description": ""
+      },
+      {
+        "name": "live",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Whether this banner is its own assertive live region (`role=\"alert\"`). Default `true` (a standalone banner announces itself). Set `false` when a parent owns a single live region for a managed stack (e.g. `<AlertManager>`), so acknowledging/reordering one banner doesn't re-announce the whole backlog."
       }
     ],
     "events": [
@@ -2687,6 +2694,75 @@
     "slots": [
       "default"
     ]
+  },
+  "AlertManager": {
+    "file": "./primitives/AlertManager.vue",
+    "props": [
+      {
+        "name": "model",
+        "type": "AlertModel",
+        "default": null,
+        "required": true,
+        "description": "The model from `useAlertModel()`."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "Cap visible banners; the remainder is summarised as \"+N more\"."
+      },
+      {
+        "name": "ackLabel",
+        "type": "string",
+        "default": "Acknowledge",
+        "required": false,
+        "description": "Label for the per-banner acknowledge action."
+      },
+      {
+        "name": "ackAllLabel",
+        "type": "string",
+        "default": "Acknowledge all",
+        "required": false,
+        "description": "Label for the bulk acknowledge control."
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "AlertAnnunciator": {
+    "file": "./primitives/AlertAnnunciator.vue",
+    "props": [
+      {
+        "name": "model",
+        "type": "AlertModel",
+        "default": null,
+        "required": true,
+        "description": "The model from `useAlertModel()`."
+      },
+      {
+        "name": "nominalLabel",
+        "type": "string",
+        "default": "All nominal",
+        "required": false,
+        "description": "Resting label when there are no alerts."
+      },
+      {
+        "name": "actionLabel",
+        "type": "string",
+        "default": "View alerts",
+        "required": false,
+        "description": "Stable accessible name for the control's action."
+      }
+    ],
+    "events": [
+      {
+        "name": "select",
+        "type": "[]",
+        "description": ""
+      }
+    ],
+    "slots": []
   },
   "GuardedAction": {
     "file": "./primitives/GuardedAction.vue",

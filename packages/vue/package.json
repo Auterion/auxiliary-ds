@@ -29,9 +29,17 @@
       "types": "./dist/primitives/Accordion/AccordionTrigger.vue.d.ts",
       "import": "./dist/primitives/Accordion/AccordionTrigger.vue.js"
     },
+    "./AlertAnnunciator": {
+      "types": "./dist/primitives/AlertAnnunciator.vue.d.ts",
+      "import": "./dist/primitives/AlertAnnunciator.vue.js"
+    },
     "./AlertBanner": {
       "types": "./dist/primitives/AlertBanner.vue.d.ts",
       "import": "./dist/primitives/AlertBanner.vue.js"
+    },
+    "./AlertManager": {
+      "types": "./dist/primitives/AlertManager.vue.d.ts",
+      "import": "./dist/primitives/AlertManager.vue.js"
     },
     "./Avatar": {
       "types": "./dist/primitives/Avatar/Avatar.vue.d.ts",

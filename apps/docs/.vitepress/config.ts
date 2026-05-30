@@ -102,6 +102,7 @@ export default defineConfig({
         text: 'Operational',
         items: [
           { text: 'AlertBanner', link: '/components/alert-banner' },
+          { text: 'Alert model', link: '/components/alert-model' },
           { text: 'CoordinateValue', link: '/components/coordinate-value' },
           { text: 'StatusBadge', link: '/components/status-badge' },
           { text: 'TelemetryValue', link: '/components/telemetry-value' },
