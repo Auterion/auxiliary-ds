@@ -26,6 +26,7 @@ primitive exists, styled through the [`@auxiliary/css`](/foundations/colors) rec
 | --- | --- |
 | [Button](/components/button) | The primary clickable action — four variants, three sizes. |
 | [DropdownMenu](/components/dropdown-menu) | A menu of actions anchored to a trigger. |
+| [GuardedAction](/components/guarded-action) | Hold / double / confirm guard for irreversible commands (arm, RTL, release). |
 
 ## Overlays
 
@@ -54,7 +55,9 @@ The defense-oriented core — built around the
 | --- | --- |
 | [StatusBadge](/components/status-badge) | Compact status pill carrying a level, with an intrinsic glyph + label. |
 | [AlertBanner](/components/alert-banner) | Inline, dismissible alert carrying a severity level. |
+| [Alert model](/components/alert-model) | Headless `useAlertModel()` + `AlertManager` / `AlertAnnunciator` — prioritization, ack, latching, escalation. |
 | [TelemetryValue](/components/telemetry-value) | Numeric readout with unit, label, trend, and optional level. |
+| [CoordinateValue](/components/coordinate-value) | Lat/long (DD · DMS · DDM) and MGRS coordinate readout. |
 
 ## Data display
 
@@ -72,3 +75,4 @@ The defense-oriented core — built around the
 | [Accordion](/components/accordion) | Vertically stacked, collapsible sections. |
 | [Tabs](/components/tabs) | Switch between peer panels in the same space. |
 | [Separator](/components/separator) | Horizontal or vertical divider between content. |
+| [Register](/components/register) | Wrapper that sets the expressive ↔ operational [register](/foundations/registers) for its subtree. |
