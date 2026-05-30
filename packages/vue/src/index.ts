@@ -99,5 +99,8 @@ export { default as StatusBadge, type StatusLevel } from './primitives/StatusBad
 export { default as TelemetryValue } from './primitives/TelemetryValue.vue';
 export { default as AlertBanner, type AlertLevel } from './primitives/AlertBanner.vue';
 
+// CoordinateValue — lat/long + MGRS coordinate readout (ROADMAP §6i / Phase 6.3).
+export { default as CoordinateValue } from './primitives/CoordinateValue.vue';
+
 // GuardedAction — hard-to-misfire control for irreversible commands (ROADMAP §6i / Phase 6.3).
 export { default as GuardedAction } from './primitives/GuardedAction.vue';
