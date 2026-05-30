@@ -50,6 +50,7 @@ export default defineConfig({
           { text: 'Spacing', link: '/foundations/spacing' },
           { text: 'Radii', link: '/foundations/radii' },
           { text: 'Layering & breakpoints', link: '/foundations/layering' },
+          { text: 'Conformance', link: '/foundations/conformance' },
         ],
       },
       {
