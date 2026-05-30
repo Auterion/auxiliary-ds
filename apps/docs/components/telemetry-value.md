@@ -145,6 +145,12 @@ Pass a `quantity` and the `value` is treated as **canonical SI** (metres, m/s, �
 
 A per-component `system`, `locale`, `unit`, or `precision` prop overrides the provider for that one readout — but per the lexicon, prefer one consistent system per view.
 
+### `<UnitSystemProvider>` props
+
+<PropsTable name="UnitSystemProvider" />
+
+It provides a `system` + `locale` context (via the `useUnitSystem()` composable) to all descendant readouts and renders only its default slot — no wrapper element. Conversion logic lives framework-agnostically in `@auxiliary/css/format` (`formatQuantity` / `convertQuantity` / `formatNumber`).
+
 ## Accessibility
 
 - The readout is a plain `<div>` of inline `<span>`s, so a screen reader reads it in document order: label, then value, then unit, then trend. Keep `label` set so the number has a name — a bare `408.2 m` with no label is ambiguous out of context.
