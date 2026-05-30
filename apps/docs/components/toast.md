@@ -1,3 +1,24 @@
+<script setup>
+import { ref } from 'vue';
+
+// Drives the interactive demo in "Driving toasts from state" below.
+const toastOpen = ref(false);
+const toastVariant = ref('info');
+
+const toastContent = {
+  info:    { title: 'Telemetry updated', body: '3 new sensor readings within the last 10s.' },
+  success: { title: 'Mission saved',     body: 'Waypoints stored to local mission cache.' },
+  alarm:   { title: 'Link lost',         body: 'No telemetry packets received for over 3s. Check radio link.' },
+};
+
+function showToast(variant) {
+  toastVariant.value = variant;
+  toastOpen.value = false;
+  // re-open on the next tick so repeat clicks restart the dismiss timer
+  setTimeout(() => (toastOpen.value = true), 50);
+}
+</script>
+
 # Toast
 
 A transient, non-modal notification family built on Reka UI's Toast primitives and styled by the `toast` recipe. A `<ToastProvider>` manages timing and swipe behavior, a single `<ToastViewport>` anchors where toasts stack, and each `<Toast>` composes a title, description, and optional action/close controls.
@@ -141,28 +162,61 @@ Wrap the app once in a `<ToastProvider>`, render a single `<ToastViewport>`, and
 
 ### Driving toasts from state
 
-In a real app the `<Toast>` markup is static; you toggle its `open` model from an event handler. Re-firing the same toast is a flip-to-`false`-then-`true` so the timer restarts.
+In a real app the `<Toast>` markup is static; you toggle its `open` model from an event handler. Re-firing the same toast is a flip-to-`false`-then-`true` so the timer restarts — and you can swap the content from the same handler to reuse one `<Toast>` for several messages.
+
+<div class="auxiliary-demo vp-raw">
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+    <Button variant="ghost" size="sm" @click="showToast('info')">Show info</Button>
+    <Button variant="secondary" size="sm" @click="showToast('success')">Show success</Button>
+    <Button variant="danger" size="sm" @click="showToast('alarm')">Show alarm</Button>
+  </div>
+  <ToastProvider :duration="4000">
+    <Toast v-model:open="toastOpen">
+      <div>
+        <ToastTitle>{{ toastContent[toastVariant].title }}</ToastTitle>
+        <ToastDescription>{{ toastContent[toastVariant].body }}</ToastDescription>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+        <ToastAction alt-text="View details" as-child>
+          <Button variant="ghost" size="sm">View</Button>
+        </ToastAction>
+        <ToastClose>Close</ToastClose>
+      </div>
+    </Toast>
+    <ToastViewport />
+  </ToastProvider>
+</div>
 
 ```vue
 <script setup>
 import { ref } from 'vue';
 
 const open = ref(false);
+const variant = ref('info');
 
-function notify() {
-  open.value = false;
-  setTimeout(() => (open.value = true), 50);
+const content = {
+  info:    { title: 'Telemetry updated', body: '3 new sensor readings within the last 10s.' },
+  success: { title: 'Mission saved',     body: 'Waypoints stored to local mission cache.' },
+  alarm:   { title: 'Link lost',         body: 'No telemetry packets received for over 3s. Check radio link.' },
+};
+
+function showToast(v) {
+  variant.value = v;
+  open.value = false;                          // flip off…
+  setTimeout(() => (open.value = true), 50);   // …then on, so the dismiss timer restarts
 }
 </script>
 
 <template>
-  <Button @click="notify">Save mission</Button>
+  <Button variant="ghost" size="sm" @click="showToast('info')">Show info</Button>
+  <Button variant="secondary" size="sm" @click="showToast('success')">Show success</Button>
+  <Button variant="danger" size="sm" @click="showToast('alarm')">Show alarm</Button>
 
   <ToastProvider :duration="4000">
     <Toast v-model:open="open">
       <div>
-        <ToastTitle>Mission saved</ToastTitle>
-        <ToastDescription>Waypoints stored to local mission cache.</ToastDescription>
+        <ToastTitle>{{ content[variant].title }}</ToastTitle>
+        <ToastDescription>{{ content[variant].body }}</ToastDescription>
       </div>
       <ToastClose />
     </Toast>
