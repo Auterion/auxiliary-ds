@@ -40,3 +40,4 @@ export { alertBanner, type AlertBannerVariants } from './alert-banner.js';
 export { telemetryValue, type TelemetryValueVariants } from './telemetry-value.js';
 export { guardedAction, type GuardedActionVariants } from './guarded-action.js';
 export { coordinateValue, type CoordinateValueVariants } from './coordinate-value.js';
+export { alertManager } from './alert-manager.js';
