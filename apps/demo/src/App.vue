@@ -216,7 +216,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
 
 <template>
   <TooltipProvider>
-  <ToastProvider :duration="6000">
+  <ToastProvider :duration="4000">
   <main class="min-h-dvh bg-background text-foreground">
     <header
       class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/80 px-8 py-4 backdrop-blur"
@@ -791,7 +791,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <section>
         <h2 class="mb-1 text-lg font-medium">Toast</h2>
         <p class="mb-5 text-sm text-muted-foreground">
-          Transient notifications. Appears bottom-right; auto-dismisses after 6s, swipe right to dismiss
+          Transient notifications. Auto-dismisses after 4s, swipe right to dismiss
           early, paused on hover. ARIA live-region announces to screen readers.
           Single global <code class="font-mono">&lt;ToastViewport&gt;</code> renders
           fixed bottom-right.
@@ -1167,16 +1167,7 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       Auxiliary · zinc-on-zinc, 4 themes, 5-level status · pre-1.0
     </footer>
   </main>
-  <Toast
-    v-model:open="toastOpen"
-    :class="
-      toastVariant === 'alarm'
-        ? 'border-l-4 border-l-alarm'
-        : toastVariant === 'success'
-        ? 'border-l-4 border-l-nominal'
-        : 'border-l-4 border-l-advisory'
-    "
-  >
+  <Toast v-model:open="toastOpen">
     <div>
       <ToastTitle>{{ toastVariant === 'alarm' ? 'Link lost' : toastVariant === 'success' ? 'Mission saved' : 'Telemetry updated' }}</ToastTitle>
       <ToastDescription>
