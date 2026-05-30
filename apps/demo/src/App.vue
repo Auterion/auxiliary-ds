@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
+import { tokens } from '@auxiliary/tokens';
 import {
   Button,
   Input,
@@ -90,6 +91,41 @@ watchEffect(() => {
   const html = document.documentElement;
   if (theme.value === 'system') html.removeAttribute('data-theme');
   else html.setAttribute('data-theme', theme.value);
+});
+
+// --- Color palette construction (driven by @auxiliary/tokens) ---
+const PALETTE_STEPS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] as const;
+// The grayscale spine + the status hues the operational palette actually draws from.
+const RAMP_FAMILIES = [
+  'zinc', 'neutral', 'red', 'orange', 'amber', 'yellow',
+  'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue',
+] as const;
+const primitive = tokens.color.primitive as unknown as Record<string, Record<string, string>>;
+const primitiveRamps = RAMP_FAMILIES.map((family) => {
+  const ramp = primitive[family] ?? {};
+  return { family, steps: PALETTE_STEPS.map((step) => ({ step, value: ramp[step] ?? 'transparent' })) };
+});
+
+// Reverse-lookup: which primitive step a resolved semantic value came from.
+const primitiveByValue = new Map<string, string>();
+for (const [family, ramp] of Object.entries(tokens.color.primitive)) {
+  if (typeof ramp === 'string') primitiveByValue.set(ramp, family);
+  else for (const [step, value] of Object.entries(ramp)) primitiveByValue.set(value, `${family}.${step}`);
+}
+const SEMANTIC_ROLES = [
+  'background', 'foreground', 'primary', 'secondary', 'muted', 'accent',
+  'border', 'ring', 'alarm', 'warning', 'caution', 'advisory', 'nominal',
+] as const;
+const activeThemeName = computed<'light' | 'dark' | 'sunlight' | 'darknight'>(() => {
+  if (theme.value !== 'system') return theme.value;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+});
+const semanticMap = computed(() => {
+  const t = tokens[activeThemeName.value] as Record<string, string>;
+  return SEMANTIC_ROLES.map((role) => {
+    const value = t[role] ?? 'transparent';
+    return { role, value, source: primitiveByValue.get(value) ?? 'custom' };
+  });
 });
 
 const STATUSES = ['alarm', 'warning', 'caution', 'advisory', 'nominal'] as const;
@@ -976,6 +1012,64 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
                 <Skeleton :loading="skeletonLoading" class="h-3 w-24">
                   <div class="font-mono tabular text-sm">74%</div>
                 </Skeleton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Color palette construction -->
+      <section>
+        <h2 class="mb-1 text-lg font-medium">Color palette</h2>
+        <p class="mb-5 text-sm text-muted-foreground">
+          One OKLCH primitive palette is the raw material. Semantic tokens —
+          <code class="font-mono">background</code>, <code class="font-mono">primary</code>, the
+          alarm ladder — reference specific steps, and each theme reassigns which step. Below: the
+          ramps, then how the active <strong class="text-foreground">{{ activeThemeName }}</strong>
+          theme selects from them.
+        </p>
+
+        <!-- Primitive ramps -->
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="w-16 shrink-0"></span>
+            <div class="flex flex-1 gap-0.5">
+              <span
+                v-for="s in PALETTE_STEPS"
+                :key="s"
+                class="flex-1 text-center text-[10px] tabular-nums text-muted-foreground"
+              >{{ s }}</span>
+            </div>
+          </div>
+          <div v-for="ramp in primitiveRamps" :key="ramp.family" class="flex items-center gap-2">
+            <span class="w-16 shrink-0 font-mono text-xs text-muted-foreground">{{ ramp.family }}</span>
+            <div class="flex flex-1 gap-0.5">
+              <div
+                v-for="sw in ramp.steps"
+                :key="sw.step"
+                class="h-7 flex-1 rounded-sm border border-border/40"
+                :style="{ backgroundColor: sw.value }"
+                :title="`${ramp.family}.${sw.step} — ${sw.value}`"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Semantic selection for the active theme -->
+        <div class="mt-6 rounded-md border border-border bg-card p-5">
+          <div class="mb-3 text-xs uppercase tracking-wide text-muted-foreground">
+            {{ activeThemeName }} theme — semantic token → primitive step
+          </div>
+          <div class="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-3 lg:grid-cols-4">
+            <div v-for="m in semanticMap" :key="m.role" class="flex items-center gap-2">
+              <div
+                class="h-6 w-6 shrink-0 rounded border border-border"
+                :style="{ backgroundColor: m.value }"
+                :title="m.value"
+              />
+              <div class="min-w-0">
+                <div class="font-mono text-xs text-foreground">{{ m.role }}</div>
+                <div class="truncate font-mono text-[10px] text-muted-foreground">{{ m.source }}</div>
               </div>
             </div>
           </div>
