@@ -19,6 +19,8 @@ Apps:
 - `apps/docs` — `@auxiliary/docs`, VitePress docs at `http://localhost:5173`
 - `apps/demo` — `@auxiliary/demo`, Vite playground at `http://localhost:5174`
 
+**Where things are headed:** `ROADMAP.md` is the single forward-looking source of truth (phased plan; active frontier is Phase 6 "Elevation"). Design grounding lives in `.claude/docs/` — incl. `auterion-product-inventory.md` (real Mission Control / Suite / OS surfaces to design against).
+
 ## Architecture
 
 Auxiliary is Auterion's design system, a **pnpm + Turborepo monorepo** built Vue-first on Tailwind v4, with framework-agnostic tokens.
@@ -33,12 +35,26 @@ tokens  →  css  →  vue  →  docs
 
 - `packages/tokens` — DTCG-spec JSON. **Source of truth.** Every other package downstream of tokens must derive from these, not redefine.
 - `packages/css` — Tailwind v4 preset and `@theme` exports generated from tokens. Also ships the
-  styling toolkit consumed by `vue`: `cn()` (`@auxiliary/css/utils`) and per-component recipes
-  with typed variants (`@auxiliary/css/recipes`).
+  styling toolkit consumed by `vue`: `cn()` (`@auxiliary/css/utils`), per-component recipes
+  with typed variants (`@auxiliary/css/recipes`), and framework-agnostic formatters
+  (`@auxiliary/css/format` — lat/long·MGRS, units, locale-aware numbers).
 - `packages/vue` — Vue 3 components built on Reka UI, styled via the css preset.
 - `packages/icons` — icon set, consumable by `vue` and downstream surfaces.
 - `packages/figma-sync` — one-way push of tokens → Figma Variables. Code → Figma, never the reverse (see Principle 1 below).
 - `apps/docs` — VitePress documentation site, runs at `http://localhost:5173`.
+
+### Theme & register axes
+
+Two orthogonal token-mode layers re-resolve semantic tokens at runtime:
+
+- **`[data-theme]`** controls **color** — `light` · `dark` · `sunlight` · `darknight` (the last two
+  operational: glare-hardened / scotopic low-blue).
+- **`[data-register]`** controls **everything non-color** (control-height/density, radius, motion) —
+  `expressive` (default) vs `operational` (opt-in: denser, tighter, calmer). `<Register>`
+  (`@auxiliary/vue`) just sets the attribute.
+
+They compose freely and never overlap (a build + CSS gate asserts it). Components consume the resolved
+CSS vars and don't know which theme/register is active. See `apps/docs/foundations/registers.md`.
 
 ### Load-bearing principles (from README)
 
@@ -99,6 +115,9 @@ These are conventions in `packages/vue`, not optional style:
 2. **Every component gets an a11y test.** Tests live in `src/primitives/__tests__/*.test.ts`
    and run axe via the shared runner in `src/test-utils/a11y.ts` (`configureAxe`), which disables
    page-level rules (`region`, `html-has-lang`, …) that false-positive on isolated mounts.
+3. **`level` vs `variant` are distinct axes.** `level` = operational severity
+   (`alarm|warning|caution|advisory|nominal`, the reserved status ladder); `variant` = design
+   treatment. Don't conflate them, and don't reuse a status hue for a non-status purpose.
 
 ## License
 
