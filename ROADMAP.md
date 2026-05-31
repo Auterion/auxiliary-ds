@@ -328,8 +328,8 @@ load and on degraded/offline connections.
 | **6.1 Audit & decide** | 6a, 6d-audit, 6b/6c needs-inventory, **6g design** | Per-component states matrix + a11y-depth audit; gap analysis vs Reka/shadcn *filtered to Auterion needs*; icon-coverage audit; prioritized primitive backlog; **2 locked decisions** (register model; blocks home) | M |
 | **6.2 Spine** ✅ | 6f, 6g build, 6h | **Delivered.** Visual-language + registers + voice/lexicon foundation docs; `[data-register]` token layer (control-height/radius/motion flex expressive↔operational) wired into recipes; orthogonality build-assert + CSS gate; `<Register>` wrapper; operational lexicon anchored to the status ladder + unit/coord conventions | L |
 | **6.3 Defense layer** ✅ | 6i | **Delivered.** ✅ **`GuardedAction`** — hold/double/confirm guard for irreversible commands (arm/RTL/release), keyboard-equivalent + tap-proof, reduced-motion-safe progress, composes Button without modifying it. ✅ **`CoordinateValue`** + **`@auxiliary/css/format`** — lat/long (DD·DMS·DDM) + **MGRS** coordinate formatting (framework-agnostic `formatLatLon`, graceful degradation), sibling to `TelemetryValue`. ✅ **Unit systems + locale** — `formatQuantity`/`convertQuantity`/`formatNumber` (metric/aviation-imperial: ft·kn·fpm·°F, angle/mils, affine °C↔°F), `<UnitSystemProvider>` + `useUnitSystem()` deployment context (package's first provide/inject), wired into `TelemetryValue` (`quantity`/`system`/`locale`, opt-in locale, default output unchanged). ✅ **Alert model** — `useAlertModel()` headless state machine (prioritization, ack, latching [alarm/warning], escalation, inhibit/suppress, audible-cue hooks) + `<AlertManager>` (prioritized ack-able banner stack) + `<AlertAnnunciator>` (highest+count); composes `AlertBanner`/`StatusBadge` (single polite live region; `AlertBanner` gains an additive `live` opt-out, `StatusBadge` untouched). ✅ **Sunlight/night redesign + gates** — redesigned the operational palettes (sunlight hardened for glare: deeper borders/fills; darknight fixed a luminance-scrambled severity ramp → monotonic **brightness ladder**, visible red.400 alarm → extinguished nominal, off-cyan advisory, all low-blue) and added token-layer gates certifying it: focus-ring + border/input ≥ 3:1 (1.4.11), darknight all-token blue-cap, monotonic luminance ladder, OKLab severity ΔE. ✅ **Conformance posture** — `foundations/conformance.md` collects the 508 / WCAG 2.2 AA / MIL-STD-1472 posture into one honest page (each row backed by a CI gate or component pattern; MIL-STD-1472 / DO-178C rows marked *design-conformant, pending expert review* — not self-certified; app-level criteria flagged as consumer responsibilities). | XL |
-| **6.4 Compose** | 6b, 6c, 6j | Block catalog (marketing/app/operational); page templates (dashboard, GCS, mission-planning, list+detail, auth, offline/degraded); motion language + keyboard/SR depth per component | XL |
-| **6.5 Data-viz** | 6e | Token-driven, 4-theme- + CVD-safe viz palettes; chart set (time-series, gauges, sparklines, map-linked); streaming-perf budgets (10–60 Hz). Likely a new `@auxiliary/viz` package | XL |
+| **6.4 Compose** 📋 | 6b, 6c, 6j | Block catalog (marketing/app/operational); page templates (dashboard, GCS, mission-planning, list+detail, auth, offline/degraded); motion language + keyboard/SR depth per component. **Planned & sliced — see §6.4 below.** | XL |
+| **6.5 Data-viz** 📋 | 6e | Token-driven, 4-theme- + CVD-safe viz palettes; chart set (time-series, gauges, sparklines, map-linked); streaming-perf budgets (10–60 Hz). Likely a new `@auxiliary/viz` package. **Planned & sliced — see §6.5 below.** | XL |
 
 ### Load-bearing constraint for 6.3 (decided)
 
@@ -664,6 +664,168 @@ Each component's docs will state which register(s) it serves and how it adapts.
   `prefers-reduced-motion` (an a11y override that always wins, independent of register).
 - **Two poles, no neutral middle** — `expressive` (default) + `operational` (opt-in). The four-rung
   `density` scale remains available for explicit per-surface use; the registers map onto two rungs.
+
+---
+
+## §6.4 — Compose: blocks, templates, interaction depth (plan)
+
+**Status: PLANNED.** Buckets tracks **6b** (blocks), **6c** (page templates), **6j** (motion + a11y
+depth). Depends on 6.2 (spine — register + visual language, delivered) and consumes the 6.1 backlog's
+compose-routed items. Runs in parallel with 6.5. The ~28-primitive library is the *vocabulary*; 6.4 is
+where it becomes *surfaces*. This is an XL phase — it ships as a sequence of small PRs (one slice each),
+not a big bang.
+
+### What already exists — extend, don't invent
+
+The demo (`apps/demo/src/App.vue`) already composes most operational patterns *informally*. These are
+the real starting points:
+
+- **Fleet data table** (`App.vue:877`) — sticky header, row-select, `StatusBadge` + `TelemetryValue` cells.
+- **Telemetry dashboard grid** (`App.vue:286`) — `TelemetryValue` grid with labels/trends.
+- **Vehicle status card** + **pre-flight checklist** (`App.vue:806`) — `Card` + `Separator` + `Accordion`.
+- **Alert feed** (`App.vue:305`) — stacked `AlertBanner` severities, now superseded by the 6.3 `AlertManager`.
+- **Form composition** with the operational register (`App.vue:474`); **tabbed telemetry/waypoints/logs** (`App.vue:745`).
+
+What's missing is **layout scaffolding** (no app-shell / sidebar / topbar — layout is ad-hoc Tailwind
+today) and any **blocks/templates surface in the docs** (all 34 pages are single-primitive). 6.4
+formalizes the informal and fills the layout gap.
+
+### Decision to make (flag, don't pre-ship): where do blocks live?
+
+Per 6b and Principle 3 (restraint), do **not** ship a `@auxiliary/blocks` package speculatively.
+**Recommendation: docs-first.** Blocks and templates land as **copy-able examples in a new `apps/docs`
+"Patterns" + "Templates" section** (`apps/docs/patterns/`, `apps/docs/templates/`), composed from
+`@auxiliary/vue` primitives, each shown as live demo + source. Promote to a package **only when a real
+consumer needs to `import` them** — at which point the docs examples are the package's seed. Keeps the
+library a vocabulary, not a kitchen sink, and avoids owning a versioned surface nobody consumes yet.
+*(Final call belongs in slice 1; this is the lean.)*
+
+### The operational layout model (the spine of the operational templates)
+
+The benchmark research converges on one stable model (Lattice, NASA Open MCT, Esri Calcite shell,
+every mature C2 tool) — `auterion-design-guidance-research.md` §04. Don't reinvent it; execute it precisely:
+
+```
+┌ STATUS BAR — mission · vehicle status · time ───────────────────┐
+├──────────┬─────────────────────────────────┬───────────────────┤
+│  FLEET   │      PRIMARY MAP / VIEW          │  INSPECTOR        │
+│  PANEL   │   (3D terrain + entity layer)    │  (selected entity │
+│  UAS 1–N │                                  │   telemetry)      │
+├──────────┴─────────────────────────────────┴───────────────────┤
+│  TIMELINE — mission elapsed · waypoint progress · alerts         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+Information-hierarchy rules that constrain the blocks: **alarm always in the periphery** (flashing
+border on the fleet entry, visible while the eye is on the inspector); **numbers before graphics**
+(`124.3 m` beside any gauge); **labels always present** (no icon-only controls at Level 3+); **state
+changes animated-but-immediate** (0–80 ms); **destructive actions require a gesture** (already shipped
+as 6.3 `GuardedAction` — templates compose it, don't re-solve it). The map surface itself is **out of
+scope** (no mapping engine in the DS) — templates ship a labelled placeholder slot.
+
+### Candidate: `EntityIcon` (bridges 6.4 ↔ 6d)
+
+The research names a single entity grammar — icon (vehicle type) + status halo
+(nominal/caution/alarm) + callsign in mono + adjacent altitude/heading readouts — to be a **token set +
+one `EntityIcon` component** consumed by both the map layer and the fleet panel. It's the smallest unit
+the operational templates repeat. Flag it here; build it in whichever phase reaches it first (its
+iconography half is 6d, its composition half is 6.4).
+
+### Slices (one PR each)
+
+| # | Slice | Tracks | Ships | Size |
+|---|---|---|---|---|
+| 1 | **Blocks home decision + Patterns scaffold** | 6b | Decide docs-vs-package (above); stand up `apps/docs/patterns/` + nav, with the existing demo compositions migrated in as the first documented blocks (fleet table, telemetry grid, status card, checklist). | S |
+| 2 | **App-shell layout block** | 6b/6c | The Level-2/3 frame: top bar + collapsible sidebar + content region, panel-based (no full-page scroll), keyboard-reachable. CSS-recipe-driven; decide whether a thin `<AppShell>`/`<Sidebar>` ergonomic wrapper is warranted (lean: recipe + docs first, component only if repetition demands). | M |
+| 3 | **Motion language doc** | 6j | Foundations page tying the `--duration-*`/easing tokens to a purpose model (micro ≤150 ms; flight-critical 0–80 ms; expressive earns motion). Reconciles register motion vs the `prefers-reduced-motion` reset (a11y always wins). Doc-only; no token churn. | S |
+| 4 | **Marketing block set** | 6b | The expressive-register blocks from the guidance doc, carrying operational grammar: `MarketingStatBar` (instrument-readout proof points), `MarketingQuote` (mission-log attribution), `MarketingValueGrid`, `MarketingPillars`, hero, CTA, footer. Docs examples. | M |
+| 5 | **App block set** | 6b | Command palette (composes Combobox + DropdownMenu — also closes backlog primitive #6-adjacent), filter bar, data-table-with-toolbar (Table + Toolbar — backlog #18), detail drawer, notifications center (composes `AlertManager`), empty/onboarding states. | L |
+| 6 | **Operational block set** | 6b | The layout-model panels: status bar, fleet panel (alarm-in-periphery), inspector panel, mission timeline, alert/event feed, map+overlay *placeholder*. Composes `GuardedAction`, `AlertManager`, `TelemetryValue`, `CoordinateValue`. | L |
+| 7 | **Generic page templates** | 6c | Dashboard, list+detail (master/detail), multi-step wizard, settings, auth, empty/first-run, error/404. Each a copy-able `apps/docs/templates/` page. | M |
+| 8 | **Operational page templates** | 6c | GCS layout (assembles slice-6 panels into the model above), mission-planning view, fleet/asset overview, post-flight review. **Air-gap / offline / degraded-connectivity are template *states*, not edge cases** — each template ships its degraded variant. | L |
+| 9 | **Per-component interaction depth** | 6j | Audit keyboard model + focus management + SR narration per primitive *beyond axe's static checks*; close the cross-cutting a11y depth items from §6.1 (#10 non-color cues, #11 contractual accessible-name, #13/#14 done, #19 deepen tests). Interaction states under load / degraded connection. | M |
+
+Pagination + Toolbar (backlog #18) land inside slices 5/2 as they're needed, not as standalone PRs.
+Backlog primitives still genuinely missing (Command palette, Resizable/Splitter, Tree) are pulled in
+only when a slice above needs them — restraint over parity.
+
+### Acceptance (6.4)
+
+A documented blocks + templates catalog covers **marketing, app, and operational** surfaces; the
+operational templates execute the layout model with air-gap/degraded states as first-class; a motion
+language is documented and reconciled with the reduced-motion contract; every primitive has audited
+keyboard/focus/SR depth beyond axe with no unfilled interaction-state gaps.
+
+---
+
+## §6.5 — Data-viz: a token-driven, theme- & CVD-safe viz layer (plan)
+
+**Status: PLANNED.** Track **6e**. Independent of 6.4 (can run parallel). Today there is **no viz token
+layer** — `@auxiliary/tokens` ships `primitive` (OKLCH ramps), `register`, and `semantic` only; the
+four themes + the reserved `alarm→…→nominal` severity ladder are the *only* color systems. 6.5 adds the
+viz layer and a small, opinionated chart set. XL; ships as slices.
+
+### Decision to make (spike first, then flag): charting approach + package
+
+The roadmap explicitly defers this to a spike. Evaluate against criteria that matter for *this* system:
+
+- **Streaming performance** — 10–60 Hz telemetry without reflow/jank (the dominant operational case).
+- **Air-gap** — zero runtime CDN (Principle/`@auxiliary/css` air-gap gate); everything bundled.
+- **Token-drivability** — colors/type/density bind to Auxiliary tokens, never the lib's own theme.
+- **Bundle + tree-shaking**, **SSR-safety** (docs build), **a11y** (keyboard, SR table fallback).
+
+Candidate shapes: **headless + SVG** (great for sparklines/gauges/bars/distributions, token-native,
+SSR-safe, but hand-rolled axes); **uPlot** (tiny canvas lib built for high-rate time-series — the
+streaming win); **visx/D3** (maximal flexibility, heavier, more glue); **ECharts/Chart.js** (batteries
+included, heavy, theme-fights-tokens). **Lean:** token-driven **SVG for static/small charts** +
+**uPlot for high-rate time-series**, both behind a thin Auxiliary-API wrapper so the engine is an
+implementation detail. **New `@auxiliary/viz` package** (recommended — viz is a distinct dependency
+surface that shouldn't bloat `@auxiliary/vue`; gate the decision on the spike's bundle findings).
+Slice 1 is the spike + the written decision record (mirrors §6g's format).
+
+### Viz token layer
+
+Categorical / sequential / diverging palettes **derived from the OKLCH primitive ramps**
+(`packages/tokens/src/primitive`), never ad-hoc, that survive **all four themes** (sunlight glare,
+darknight scotopic/low-blue) **and** CVD (deutan/protan/tritan). Two hard constraints from the system's
+DNA: **luminance hierarchy over saturation** (every series distinguishable in grayscale — the same rule
+the darknight ladder already enforces), and **the severity ladder stays reserved** (no categorical
+series may borrow `alarm`-red or `caution`-amber — those mean something). This extends the existing
+operational-invariant gate set with a viz-palette gate: pairwise ΔE under each theme + CVD simulation,
+and "no categorical hue collides with a status level."
+
+### Chart set (token-driven, restrained)
+
+Only what GCS/telemetry/analytics surfaces actually need (Principle 3): **time-series** (streaming,
+downsampled, tabular-nums readout), **gauges/dials** (with the numeric value beside the graphic per the
+"numbers before graphics" rule), **sparklines** (inline trend, pairs with `TelemetryValue`), **bars**,
+**distributions/histograms**, and **map-linked** viz hooks (consumes the 6.4 `EntityIcon`/placeholder
+slot; the DS owns the overlay grammar, not a map engine). Not a charting-library parity list.
+
+### Streaming-performance budgets
+
+A documented budget + a perf gate: sustained **10–60 Hz** updates with **no layout reflow** on value
+change (fixed-width `tabular-nums`, transform/canvas updates not DOM reflow), **downsampling** above the
+pixel-density threshold, and a frame-budget assertion in the test harness so regressions are caught like
+contrast regressions are.
+
+### Slices (one PR each)
+
+| # | Slice | Ships | Size |
+|---|---|---|---|
+| 1 | **Spike + decision record** | Prototype streaming time-series in 2–3 candidate engines against the criteria above; write the §6.5 decision record (engine(s), package y/n). Throwaway code; durable decision. | M |
+| 2 | **`@auxiliary/viz` scaffold + viz token layer** | Stand up the package (if decided) wired into Turbo/CI/changesets; add categorical/sequential/diverging tokens derived from primitives + the viz-palette CVD/theme gate. | M |
+| 3 | **Sparkline + gauge** | The two that pair directly with `TelemetryValue`; token-driven, tabular-nums readout, SSR-safe. | M |
+| 4 | **Streaming time-series + perf budget** | The high-rate chart on the chosen engine + the no-reflow/Hz perf gate. | L |
+| 5 | **Bars + distributions** | The static analytics set; rounds out the catalog. | M |
+| 6 | **Map-linked hooks + docs** | Overlay/entity viz grammar against the 6.4 placeholder slot; viz foundations + per-chart docs pages. | M |
+
+### Acceptance (6.5)
+
+A token-driven viz layer exists whose palettes survive all four themes **and** CVD (gated, not
+asserted by eye); a restrained chart set (time-series, gauges, sparklines, bars, distributions,
+map-linked) renders from tokens with tabular-nums readouts; streaming holds the 10–60 Hz no-reflow
+budget under a CI perf gate; the engine choice is a documented, reversible decision, not an accident.
 
 ---
 
