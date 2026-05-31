@@ -45,9 +45,9 @@ export const guardedAction = tv({
     // to Button so guarded controls line up with ordinary ones and tighten under
     // [data-register="operational"].
     size: {
-      sm: { root: 'h-[var(--control-height-sm)] px-3 text-sm' },
-      md: { root: 'h-[var(--control-height-md)] px-4 text-sm' },
-      lg: { root: 'h-[var(--control-height-lg)] px-6 text-base' },
+      sm: { root: 'h-[max(var(--control-height-sm),var(--target-floor))] px-3 text-sm' },
+      md: { root: 'h-[max(var(--control-height-md),var(--target-floor))] px-4 text-sm' },
+      lg: { root: 'h-[max(var(--control-height-lg),var(--target-floor))] px-6 text-base' },
     },
     // While armed/holding, lift the ring so the "this is live" state reads.
     armed: {

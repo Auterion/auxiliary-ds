@@ -9,6 +9,21 @@ const THEMES = ['light', 'dark', 'sunlight', 'darknight'];
 // (no attribute, no override block) so only `operational` ships a token file.
 const REGISTERS = ['expressive', 'operational'];
 
+// Input-modality axis (ROADMAP § Input modality & touch): a coarse pointer
+// floors interactive target sizes to --target-min (44px, MIL-STD-1472 / WCAG
+// 2.5.5 AAA). Modelled as a single `--target-floor` toggle (0px → 44px) that
+// recipes consume via `max(--control-height-*, --target-floor)`, so it composes
+// *over* register density at any tree depth and wins by construction. Detection
+// is the media query (default); `[data-input]` is the authoring override
+// (kiosks/field tablets force coarse; a known desk forces fine). Static CSS —
+// not token-derived — so it's emitted verbatim after the theme/register blocks.
+const INPUT_MODALITY_CSS = `@media (pointer: coarse) {
+  :root { --target-floor: var(--target-min); }
+}
+[data-input="coarse"] { --target-floor: var(--target-min); }
+[data-input="fine"] { --target-floor: 0px; }
+`;
+
 const toSrgb = converter('rgb');
 const isTheme = (t) => THEMES.includes(t.path[0]);
 const isRegister = (t) => REGISTERS.includes(t.path[0]);
@@ -69,6 +84,9 @@ StyleDictionary.registerFormat({
       out += '}\n';
       if (register !== regs.at(-1)) out += '\n';
     }
+
+    // Input-modality (coarse-pointer) layer — after theme + register so it wins.
+    out += '\n' + INPUT_MODALITY_CSS;
     return out;
   },
 });
@@ -106,6 +124,9 @@ StyleDictionary.registerFormat({
       out += renderVars(byRegister[register], true) + '\n';
       out += '}\n\n';
     }
+
+    // Input-modality (coarse-pointer) layer — after theme + register so it wins.
+    out += INPUT_MODALITY_CSS;
     return out;
   },
 });
