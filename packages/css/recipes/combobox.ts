@@ -25,9 +25,9 @@ export const combobox = tv({
     // Register-flex anchor height via --control-height-* (ROADMAP §6g) — keeps
     // the anchor aligned with Input/Select rungs across registers.
     size: {
-      sm: { anchor: 'h-[var(--control-height-sm)] px-2.5 text-sm' },
-      md: { anchor: 'h-[var(--control-height-md)] px-3 text-sm' },
-      lg: { anchor: 'h-[var(--control-height-lg)] px-3.5 text-base' },
+      sm: { anchor: 'h-[max(var(--control-height-sm),var(--target-floor))] px-2.5 text-sm' },
+      md: { anchor: 'h-[max(var(--control-height-md),var(--target-floor))] px-3 text-sm' },
+      lg: { anchor: 'h-[max(var(--control-height-lg),var(--target-floor))] px-3.5 text-base' },
     },
     invalid: {
       true: { anchor: 'border-destructive focus-within:ring-destructive' },

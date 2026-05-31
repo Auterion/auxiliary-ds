@@ -8,9 +8,9 @@ export const input = tv({
     // §6g): operational density shrinks fields automatically, no hand-rolled
     // classes.
     size: {
-      sm: 'h-[var(--control-height-sm)] px-2.5 text-sm',
-      md: 'h-[var(--control-height-md)] px-3 text-sm',
-      lg: 'h-[var(--control-height-lg)] px-3.5 text-base',
+      sm: 'h-[max(var(--control-height-sm),var(--target-floor))] px-2.5 text-sm',
+      md: 'h-[max(var(--control-height-md),var(--target-floor))] px-3 text-sm',
+      lg: 'h-[max(var(--control-height-lg),var(--target-floor))] px-3.5 text-base',
     },
     // Validation: pairs with aria-invalid on the element (set in the component).
     // The red border is the at-rest cue; the focus ring turns destructive too.

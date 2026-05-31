@@ -18,10 +18,13 @@ export const button = tv({
     // Control height is register-flex (ROADMAP §6g): the rungs resolve from
     // --control-height-* (32/36/40 expressive → 28/32/36 operational) instead
     // of fixed h-8/9/10, so [data-register="operational"] tightens controls.
+    // The max(…, --target-floor) wraps the touch floor (ROADMAP § Input modality
+    // & touch): --target-floor is 0 normally and 44px under a coarse pointer, so
+    // the control never falls below a 44px touch target — winning over register.
     size: {
-      sm: 'h-[var(--control-height-sm)] px-3 text-sm',
-      md: 'h-[var(--control-height-md)] px-4 text-sm',
-      lg: 'h-[var(--control-height-lg)] px-6 text-base',
+      sm: 'h-[max(var(--control-height-sm),var(--target-floor))] px-3 text-sm',
+      md: 'h-[max(var(--control-height-md),var(--target-floor))] px-4 text-sm',
+      lg: 'h-[max(var(--control-height-lg),var(--target-floor))] px-6 text-base',
     },
     loading: {
       true: 'opacity-80 pointer-events-none',

@@ -16,9 +16,9 @@ export const select = tv({
     // Shared size vocabulary (see sizes.ts) — flexes the trigger only. Height is
     // register-flex via --control-height-* (ROADMAP §6g).
     size: {
-      sm: { trigger: 'h-[var(--control-height-sm)] px-2.5 text-sm' },
-      md: { trigger: 'h-[var(--control-height-md)] px-3 text-sm' },
-      lg: { trigger: 'h-[var(--control-height-lg)] px-3.5 text-base' },
+      sm: { trigger: 'h-[max(var(--control-height-sm),var(--target-floor))] px-2.5 text-sm' },
+      md: { trigger: 'h-[max(var(--control-height-md),var(--target-floor))] px-3 text-sm' },
+      lg: { trigger: 'h-[max(var(--control-height-lg),var(--target-floor))] px-3.5 text-base' },
     },
     invalid: {
       true: { trigger: 'border-destructive focus-visible:ring-destructive' },
