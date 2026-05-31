@@ -20,6 +20,9 @@ pnpm-debug.log*
 .env.local
 .env.*.local
 
+# Claude Code — personal/local context (not shared)
+.claude.local.md
+
 # VitePress
 **/.vitepress/cache/
 **/.vitepress/dist/

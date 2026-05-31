@@ -68,7 +68,7 @@ describe('Select', () => {
       },
     });
     const wrapper = mount(cmp);
-    expect(wrapper.find('button').classes()).toContain('h-[var(--control-height-lg)]');
+    expect(wrapper.find('button').classes()).toContain('h-[max(var(--control-height-lg),var(--target-floor))]');
     wrapper.unmount();
   });
 
