@@ -490,9 +490,17 @@ restraint).
 | Toolbar | medium | S | Roving-tabindex action bars (map/console controls); fixes a11y of ad-hoc button clusters |
 | Resizable / Splitter | medium | M | Multi-pane operator consoles (map + telemetry + log) |
 | Tree | medium | L | Hierarchies (mission plans, layer/asset trees) — narrower than Table; defer unless a surface needs it |
+| **UsageMeter** | medium | S | Labeled progress with `current / max` or `current / ∞` — seats, vehicles, assets, license counts (AuterionSuite settings/usage). Thin layer over `Progress`. Routes to §6.4 compose. |
+| **CopyField** | medium | S | Read-only value + copy-to-clipboard affordance — serial numbers, IDs, tokens (AuterionOS device info). Routes to §6.4 compose. |
+| **EditableField** | medium | S | Inline value with pencil-to-edit → input → confirm/cancel — account name, notification email (AuterionSuite settings). Routes to §6.4 compose. |
+| **FileUpload** | medium | M | File picker/drop with progress + inline error — `.auterionos` install, imagery upload (AuterionOS); error surfaced via `AlertBanner`. Routes to §6.4 compose. |
 
 > Landed since the audit (see git history): **Combobox**, **Table**, and **NumberField** primitives
 > now exist in `packages/vue`. Keep this table as the original prioritization record.
+>
+> Added from the product inventory (`.claude/docs/auterion-product-inventory.md`): **UsageMeter**,
+> **CopyField**, **EditableField**, **FileUpload** — confirmed in live AuterionSuite/AuterionOS screens,
+> all small compose-layer primitives routed to §6.4.
 
 ### Prioritized backlog
 
@@ -667,6 +675,59 @@ Each component's docs will state which register(s) it serves and how it adapts.
 
 ---
 
+## § Input modality & touch (decision record)
+
+**Status: DECIDED, build PLANNED.** Mission Control runs on rugged **touch tablets and controllers** in
+the field, not just desktops — yet the codebase has no `pointer:coarse` / `hover:none` anywhere, and the
+`operational` register makes controls *denser* (28px), which is exactly backwards for touch. `conformance.md`
+already marks WCAG 2.5.8 (Target Size) "Partial." Input modality is therefore promoted to a **first-class
+axis**, modelled the same way as theme and register. (Kept **unlettered** — `6h` is already the
+voice/lexicon track.)
+
+### The decision
+
+Treat **input modality** as a device fact resolved by media query, with an authoring override — mirroring
+how `[data-theme]` layers over `prefers-color-scheme`:
+
+```css
+@media (pointer: coarse) { :root { /* touch floor applied */ } }   /* default: detect the device   */
+[data-input="coarse"] { /* touch floor applied */ }                /* override: known field tablet */
+[data-input="fine"]   { /* touch floor lifted  */ }                /* override: known desk/mouse   */
+```
+
+Authoring sets the attribute only for known kiosks/field tablets; everything else auto-adapts. This is a
+**token-layer addition**, same machinery as `[data-register]` (`REGISTERS`/`isRegister()` in
+`packages/tokens/build.mjs`; emitted CSS blocks; recipes already consume the CSS vars) — not a per-component
+prop. **Rejected:** a `touch` register variant (conflates density, a *design* choice, with input modality,
+a *device* fact — they compose independently); per-component `touch` props (churn ×N, no subtree default).
+
+### The touch floor (≥44px) and the composition rule
+
+- A `--target-min` token sets the touch-target floor to **44px** (MIL-STD-1472 / WCAG 2.5.5 AAA) — the
+  value of the existing `editorial` rung in `density.tokens.json`, so no new magic number.
+- Under coarse pointer, `--control-height-*` and interactive hit-area padding are **floored** to
+  `--target-min`.
+- **Composition rule (the load-bearing one):** the **touch floor wins over register density**. Operational
+  28px is floored *up* to 44px on a coarse pointer — density never shrinks a touch target below the floor.
+  Theme is unaffected (color), register still governs radius/motion/spacing rhythm.
+
+### Gate
+
+Extend the operational-invariant gate set (the `register-orthogonality.test.ts` pattern, whose
+`NON_COLOR_PREFIXES` already locks `--control-height-`/`--radius-`/`--duration-`/`--spacing`): assert that
+**no interactive control resolves below `--target-min` under coarse pointer**, in every theme×register
+combination. Catches a dense operational recipe regressing a field-tablet target like a contrast regression.
+
+### Routing & sequencing
+
+A **6.2-spine extension** (token layer + recipes + gate), built as one slice in `packages/tokens` +
+`packages/css`, with a foundations page `apps/docs/foundations/input-and-touch.md` (input modality, touch
+targets, responsive/mobile-first methodology — fills the doc gap the audit found; lets `conformance.md`'s
+2.5.8 row move toward *Supported*). It is a **prerequisite for §6.4**: the operational blocks must be
+touch-safe by construction, so this lands before §6.4 slice 6 (and ideally before slice 2's app-shell).
+
+---
+
 ## §6.4 — Compose: blocks, templates, interaction depth (plan)
 
 **Status: PLANNED.** Buckets tracks **6b** (blocks), **6c** (page templates), **6j** (motion + a11y
@@ -721,17 +782,26 @@ border on the fleet entry, visible while the eye is on the inspector); **numbers
 (`124.3 m` beside any gauge); **labels always present** (no icon-only controls at Level 3+); **state
 changes animated-but-immediate** (0–80 ms); **destructive actions require a gesture** (already shipped
 as 6.3 `GuardedAction` — templates compose it, don't re-solve it). The map surface itself is **out of
-scope** (no mapping engine in the DS) — templates ship a labelled placeholder slot.
+scope** (no mapping engine in the DS) — templates ship a labelled placeholder slot. *(Parked: the real
+basemap is satellite/terrain imagery, not flat tiles — overlay grammar, EntityIcon halos, and labels must
+stay legible over high-variance imagery; full treatment deferred — see `auterion-product-inventory.md` §3.)*
 
 ### Candidate: `EntityIcon` (bridges 6.4 ↔ 6d)
 
 The research names a single entity grammar — icon (vehicle type) + status halo
 (nominal/caution/alarm) + callsign in mono + adjacent altitude/heading readouts — to be a **token set +
 one `EntityIcon` component** consumed by both the map layer and the fleet panel. It's the smallest unit
-the operational templates repeat. Flag it here; build it in whichever phase reaches it first (its
-iconography half is 6d, its composition half is 6.4).
+the operational templates repeat. **Owner: slice 6** (the operational block set, where the fleet panel and
+map-overlay first need it); its iconography half coordinates with 6d. Confirmed in Mission Control's map
+view (`auterion-product-inventory.md` §2).
 
 ### Slices (one PR each)
+
+**Each slice opens with a just-in-time product-repo scan** (`auterion-product-inventory.md` §4): read the
+real Mission Control / Suite / OS component for its API and states, then distil to the restrained DS
+vocabulary — don't port product code. **The `§ Input modality & touch` token layer is a prerequisite**:
+operational blocks consume `--target-min` and must be touch-safe by construction, so it lands before
+slice 6 (ideally before slice 2's app-shell).
 
 | # | Slice | Tracks | Ships | Size |
 |---|---|---|---|---|
@@ -744,6 +814,7 @@ iconography half is 6d, its composition half is 6.4).
 | 7 | **Generic page templates** | 6c | Dashboard, list+detail (master/detail), multi-step wizard, settings, auth, empty/first-run, error/404. Each a copy-able `apps/docs/templates/` page. | M |
 | 8 | **Operational page templates** | 6c | GCS layout (assembles slice-6 panels into the model above), mission-planning view, fleet/asset overview, post-flight review. **Air-gap / offline / degraded-connectivity are template *states*, not edge cases** — each template ships its degraded variant. | L |
 | 9 | **Per-component interaction depth** | 6j | Audit keyboard model + focus management + SR narration per primitive *beyond axe's static checks*; close the cross-cutting a11y depth items from §6.1 (#10 non-color cues, #11 contractual accessible-name, #13/#14 done, #19 deepen tests). Interaction states under load / degraded connection. | M |
+| 10 | **Mission-critical instruments** (maximal scope) | 6b | The L4 bespoke widgets observed in Mission Control: **attitude/compass indicator** (artificial horizon + heading rose) and the **payload action cluster** (large round STRIKE/TRACK/zoom/record — STRIKE & TRACK composed from `GuardedAction`). DS owns the **widget/chrome**; the data pipeline (video, telemetry transport) stays product-owned (`auterion-product-inventory.md` §3). Depends on slice 6 + the touch axis. | L |
 
 Pagination + Toolbar (backlog #18) land inside slices 5/2 as they're needed, not as standalone PRs.
 Backlog primitives still genuinely missing (Command palette, Resizable/Splitter, Tree) are pulled in
@@ -764,6 +835,11 @@ keyboard/focus/SR depth beyond axe with no unfilled interaction-state gaps.
 layer** — `@auxiliary/tokens` ships `primitive` (OKLCH ramps), `register`, and `semantic` only; the
 four themes + the reserved `alarm→…→nominal` severity ladder are the *only* color systems. 6.5 adds the
 viz layer and a small, opinionated chart set. XL; ships as slices.
+
+The chart set is **confirmed by real product use** (`auterion-product-inventory.md` §2): battery/voltage
+donut gauges and CPU/RAM dials in Mission Control & AuterionOS; sparkline stat cards and the weather/
+flight-trend line charts in AuterionSuite — which reinforces the priority and the shapes below. Like 6.4,
+**each slice opens with a just-in-time scan** of the relevant product repo for the real chart's behaviour.
 
 ### Decision to make (spike first, then flag): charting approach + package
 
@@ -792,7 +868,9 @@ DNA: **luminance hierarchy over saturation** (every series distinguishable in gr
 the darknight ladder already enforces), and **the severity ladder stays reserved** (no categorical
 series may borrow `alarm`-red or `caution`-amber — those mean something). This extends the existing
 operational-invariant gate set with a viz-palette gate: pairwise ΔE under each theme + CVD simulation,
-and "no categorical hue collides with a status level."
+and "no categorical hue collides with a status level." *(Parked: for map-linked series the background is
+satellite/terrain imagery, not a flat fill — those series will need scrims/outlines to survive
+high-variance backdrops; addressed in the map-linked slice, see `auterion-product-inventory.md` §3.)*
 
 ### Chart set (token-driven, restrained)
 
