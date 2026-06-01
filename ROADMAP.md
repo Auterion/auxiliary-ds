@@ -524,6 +524,10 @@ new primitives (6.4 compose). None touch the 6.3 opt-in alert model.
     contrast across all Badge variants.
 11. Make **accessible-name pairing contractual** (or add a `label` prop) for Checkbox, Switch,
     RadioGroupItem, Avatar; bind `aria-label` across Avatar image + fallback.
+    → **Partly shipped (slice 9):** `label` prop on **Checkbox** + **Switch** sets `aria-label`
+    (opt-in, for when there's no associated `<Label>`), with tests. RadioGroupItem + Avatar remain.
+    Verified along the way: #10 Checkbox-checked is a *glyph* (shape cue, not color-only — fine) and
+    #14 SelectSeparator is a Reka false-positive (already `aria-hidden`).
 12. Tighten `Input.type` to a union; export typed `Props`/`Variants` for Input, Textarea,
     StatusBadge, DropdownMenu, Popover.
 13. Add **active/pressed** feedback to Button recipe and AlertBanner action/dismiss buttons.
