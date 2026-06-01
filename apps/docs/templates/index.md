@@ -9,8 +9,9 @@ Treat **air-gap / offline / degraded connectivity as a template *state***, not a
 | Template | What it is |
 |---|---|
 | [GCS layout](/templates/gcs) | The ground-control-station screen — status bar, fleet, map, inspector, timeline + alerts, with a degraded-link state |
-
-*Coming (§6.4 slice 8): mission-planning view, fleet/asset overview, post-flight review.*
+| [Mission planning](/templates/mission-planning) | Route layout — map + path overlay, waypoint list, mission params |
+| [Fleet overview](/templates/fleet-overview) | Whole-fleet glance — status roll-up + a card per vehicle |
+| [Post-flight review](/templates/post-flight) | After-action — headline metrics, altitude profile, event log |
 
 ## Generic
 
