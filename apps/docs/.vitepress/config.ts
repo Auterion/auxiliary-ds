@@ -137,6 +137,7 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/patterns/' },
             { text: 'App shell', link: '/patterns/app-shell' },
+            { text: 'App blocks', link: '/patterns/app-blocks' },
             { text: 'Operational console', link: '/patterns/operational-console' },
             { text: 'Fleet table', link: '/patterns/fleet-table' },
             { text: 'Telemetry grid', link: '/patterns/telemetry-grid' },
