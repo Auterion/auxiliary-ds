@@ -23,6 +23,7 @@ export default defineConfig({
     nav: [
       { text: 'Foundations', link: '/foundations/colors' },
       { text: 'Components', link: '/components/' },
+      { text: 'Patterns', link: '/patterns/' },
       {
         text: 'pre-1.0',
         items: [
@@ -126,6 +127,16 @@ export default defineConfig({
           { text: 'Register', link: '/components/register' },
           { text: 'Separator', link: '/components/separator' },
           { text: 'Tabs', link: '/components/tabs' },
+        ],
+      },
+      {
+        text: 'Patterns',
+        items: [
+          { text: 'Overview', link: '/patterns/' },
+          { text: 'Fleet table', link: '/patterns/fleet-table' },
+          { text: 'Telemetry grid', link: '/patterns/telemetry-grid' },
+          { text: 'Vehicle status card', link: '/patterns/vehicle-status-card' },
+          { text: 'Pre-flight checklist', link: '/patterns/preflight-checklist' },
         ],
       },
     ],
