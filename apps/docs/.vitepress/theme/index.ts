@@ -2,6 +2,7 @@ import DefaultTheme from 'vitepress/theme';
 import type { Theme } from 'vitepress';
 import { h } from 'vue';
 import * as Aux from '@auxiliary/vue';
+import { Sparkline, Gauge, TimeSeries } from '@auxiliary/viz';
 import { Icon } from '@auxiliary/icons';
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
 import TokenRow from './components/TokenRow.vue';
@@ -27,6 +28,11 @@ const theme: Theme = {
     app.component('Icon', Icon);
     app.component('TokenRow', TokenRow);
     app.component('PropsTable', PropsTable);
+    // Data-viz charts (@auxiliary/viz). TimeSeries inits uPlot on the client only;
+    // its SSR render is the bare container, so global registration is SSR-safe.
+    app.component('Sparkline', Sparkline);
+    app.component('Gauge', Gauge);
+    app.component('TimeSeries', TimeSeries);
   },
 };
 
