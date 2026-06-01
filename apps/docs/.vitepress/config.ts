@@ -152,6 +152,11 @@ export default defineConfig({
           text: 'Templates',
           items: [
             { text: 'Overview', link: '/templates/' },
+            { text: 'Dashboard', link: '/templates/dashboard' },
+            { text: 'List + detail', link: '/templates/list-detail' },
+            { text: 'Settings', link: '/templates/settings' },
+            { text: 'Auth', link: '/templates/auth' },
+            { text: 'Error / 404', link: '/templates/error' },
             { text: 'GCS layout', link: '/templates/gcs' },
           ],
         },

@@ -14,4 +14,12 @@ Treat **air-gap / offline / degraded connectivity as a template *state***, not a
 
 ## Generic
 
-*Coming (§6.4 slice 7): dashboard, list + detail, multi-step wizard, settings, auth, empty/first-run, error/404.*
+| Template | What it is |
+|---|---|
+| [Dashboard](/templates/dashboard) | Overview — stat cards with trend sparklines, a primary chart, status rollup |
+| [List + detail](/templates/list-detail) | Master/detail split — selectable list driving a detail panel |
+| [Settings](/templates/settings) | Grouped account/usage/feature sections |
+| [Auth](/templates/auth) | Centered sign-in card — the task is the whole page |
+| [Error / 404](/templates/error) | The dead-end screen — say what happened, offer the way back |
+
+*Coming: multi-step wizard, empty/first-run (see the [empty state](/patterns/app-blocks)).*
