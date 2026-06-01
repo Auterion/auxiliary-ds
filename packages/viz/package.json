@@ -1,9 +1,10 @@
 {
   "name": "@auxiliary/viz",
   "version": "0.0.0",
-  "description": "Auxiliary data-visualization layer: token-driven, theme- and CVD-safe viz palettes and (forthcoming) chart set.",
+  "description": "Auxiliary data-visualization layer: token-driven, theme- and CVD-safe viz palettes and charts.",
   "license": "UNLICENSED",
   "type": "module",
+  "sideEffects": false,
   "files": [
     "dist"
   ],
@@ -13,18 +14,35 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./Sparkline": {
+      "types": "./dist/Sparkline.vue.d.ts",
+      "import": "./dist/Sparkline.vue.js"
+    },
+    "./Gauge": {
+      "types": "./dist/Gauge.vue.d.ts",
+      "import": "./dist/Gauge.vue.js"
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "vite build && vue-tsc -p tsconfig.build.json",
     "lint": "eslint . --max-warnings 0",
-    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "typecheck": "vue-tsc -p tsconfig.build.json --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
     "@auxiliary/tokens": "workspace:*"
   },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
   "devDependencies": {
-    "vitest": "^4.1.7"
+    "@vitejs/plugin-vue": "^5.2.0",
+    "@vue/test-utils": "^2.4.10",
+    "happy-dom": "^20.9.0",
+    "vite": "^6.0.0",
+    "vitest": "^4.1.7",
+    "vue": "^3.5.0",
+    "vue-tsc": "^2.2.0"
   }
 }
