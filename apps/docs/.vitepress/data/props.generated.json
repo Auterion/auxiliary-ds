@@ -1831,6 +1831,13 @@
         "default": null,
         "required": false,
         "description": "Marks the control invalid: sets aria-invalid + destructive border/ring."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Accessible name for the control. Use when there's no associated `<Label>` — a checkbox has no visible text of its own, so without this (or a `<Label for>`, or an `aria-label`) it ships nameless. Sets `aria-label`."
       }
     ],
     "events": [
@@ -1928,6 +1935,13 @@
         "default": null,
         "required": false,
         "description": "Marks the control invalid: sets aria-invalid + destructive border/ring."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Accessible name for the control. Use when there's no associated `<Label>` — a switch has no visible text of its own, so without this (or a `<Label for>`, or an `aria-label`) it ships nameless. Sets `aria-label`."
       }
     ],
     "events": [
