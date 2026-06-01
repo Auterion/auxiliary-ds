@@ -1,0 +1,30 @@
+{
+  "name": "@auxiliary/viz",
+  "version": "0.0.0",
+  "description": "Auxiliary data-visualization layer: token-driven, theme- and CVD-safe viz palettes and (forthcoming) chart set.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@auxiliary/tokens": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.7"
+  }
+}
