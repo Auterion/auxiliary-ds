@@ -151,6 +151,8 @@ export default defineConfig({
             { text: 'Palette', link: '/data-viz/' },
             { text: 'Sparkline', link: '/data-viz/sparkline' },
             { text: 'Gauge', link: '/data-viz/gauge' },
+            { text: 'Bars', link: '/data-viz/bars' },
+            { text: 'Distribution', link: '/data-viz/distribution' },
             { text: 'Time series', link: '/data-viz/time-series' },
           ],
         },

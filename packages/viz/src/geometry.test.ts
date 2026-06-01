@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { gaugeGeometry, sparklinePath } from './geometry';
+import { barRects, gaugeGeometry, histogram, sparklinePath } from './geometry';
 
 describe('sparklinePath', () => {
   it('returns one point per value, spread across the width', () => {
@@ -52,5 +52,44 @@ describe('gaugeGeometry', () => {
     const geo = gaugeGeometry(50, { size: 100, thickness: 10 });
     expect(geo.center).toBe(50);
     expect(geo.radius).toBe(45);
+  });
+});
+
+describe('barRects', () => {
+  it('emits one rect per value, baseline-aligned, tallest at the max', () => {
+    const geo = barRects([1, 2, 4], { width: 120, height: 100, padding: 0, gap: 0 });
+    expect(geo.rects).toHaveLength(3);
+    expect(geo.max).toBe(4);
+    // tallest bar (value 4) fills the inner height; bottoms align at the baseline
+    expect(geo.rects[2]!.height).toBeGreaterThan(geo.rects[0]!.height);
+    const baseline = geo.rects[2]!.y + geo.rects[2]!.height;
+    for (const r of geo.rects) expect(r.y + r.height).toBeCloseTo(baseline, 1);
+  });
+
+  it('respects an explicit max and clamps negatives to zero height', () => {
+    const geo = barRects([5, -3], { max: 10, height: 100, padding: 0 });
+    expect(geo.rects[1]!.height).toBe(0);
+  });
+
+  it('handles empty input', () => {
+    expect(barRects([]).rects).toEqual([]);
+  });
+});
+
+describe('histogram', () => {
+  it('bins samples and reports the modal count', () => {
+    const h = histogram([0, 0, 0, 1, 9, 10], 10);
+    expect(h.counts).toHaveLength(10);
+    expect(h.counts.reduce((a, b) => a + b, 0)).toBe(6); // every sample counted
+    expect(h.max).toBe(3); // the 0-bin holds three samples
+  });
+
+  it('puts the maximum sample in the last bin (no overflow)', () => {
+    const h = histogram([0, 5, 10], 5);
+    expect(h.counts[h.counts.length - 1]).toBe(1);
+  });
+
+  it('handles empty input', () => {
+    expect(histogram([], 8)).toEqual({ bins: [], counts: [], max: 0 });
   });
 });

@@ -23,6 +23,14 @@
       "types": "./dist/Gauge.vue.d.ts",
       "import": "./dist/Gauge.vue.js"
     },
+    "./Bars": {
+      "types": "./dist/Bars.vue.d.ts",
+      "import": "./dist/Bars.vue.js"
+    },
+    "./Distribution": {
+      "types": "./dist/Distribution.vue.d.ts",
+      "import": "./dist/Distribution.vue.js"
+    },
     "./TimeSeries": {
       "types": "./dist/TimeSeries.vue.d.ts",
       "import": "./dist/TimeSeries.vue.js"

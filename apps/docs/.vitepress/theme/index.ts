@@ -2,7 +2,7 @@ import DefaultTheme from 'vitepress/theme';
 import type { Theme } from 'vitepress';
 import { h } from 'vue';
 import * as Aux from '@auxiliary/vue';
-import { Sparkline, Gauge, TimeSeries } from '@auxiliary/viz';
+import { Sparkline, Gauge, Bars, Distribution, TimeSeries } from '@auxiliary/viz';
 import { Icon } from '@auxiliary/icons';
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
 import TokenRow from './components/TokenRow.vue';
@@ -32,6 +32,8 @@ const theme: Theme = {
     // its SSR render is the bare container, so global registration is SSR-safe.
     app.component('Sparkline', Sparkline);
     app.component('Gauge', Gauge);
+    app.component('Bars', Bars);
+    app.component('Distribution', Distribution);
     app.component('TimeSeries', TimeSeries);
   },
 };

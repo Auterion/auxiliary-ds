@@ -12,4 +12,6 @@ export * from './streaming';
 
 export { default as Sparkline } from './Sparkline.vue';
 export { default as Gauge } from './Gauge.vue';
+export { default as Bars } from './Bars.vue';
+export { default as Distribution } from './Distribution.vue';
 export { default as TimeSeries } from './TimeSeries.vue';
