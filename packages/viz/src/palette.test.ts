@@ -8,7 +8,7 @@ import {
   sequentialVars,
   seriesColor,
   seriesVar,
-} from '../src/index';
+} from './index';
 
 describe('@auxiliary/viz palette surface', () => {
   it('exposes non-empty scales', () => {

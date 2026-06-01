@@ -15,6 +15,10 @@
  */
 import { tokens } from '@auxiliary/tokens';
 
+export { default as Sparkline } from './Sparkline.vue';
+export { default as Gauge } from './Gauge.vue';
+export * from './geometry';
+
 type Scale = Record<string, string>;
 
 /** Scale entries in numeric key order (`1, 2, …`), not object insertion order. */
