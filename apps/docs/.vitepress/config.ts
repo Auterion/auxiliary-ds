@@ -49,6 +49,7 @@ export default defineConfig({
             { text: 'Typography', link: '/foundations/typography' },
             { text: 'Spacing', link: '/foundations/spacing' },
             { text: 'Radii', link: '/foundations/radii' },
+            { text: 'Motion', link: '/foundations/motion' },
             { text: 'Layering & breakpoints', link: '/foundations/layering' },
             { text: 'Input & touch', link: '/foundations/input-and-touch' },
             { text: 'Conformance', link: '/foundations/conformance' },
