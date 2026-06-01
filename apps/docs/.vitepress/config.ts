@@ -24,6 +24,7 @@ export default defineConfig({
       { text: 'Foundations', link: '/foundations/colors' },
       { text: 'Components', link: '/components/' },
       { text: 'Patterns', link: '/patterns/' },
+      { text: 'Data viz', link: '/data-viz/' },
       {
         text: 'pre-1.0',
         items: [
@@ -140,6 +141,17 @@ export default defineConfig({
             { text: 'Telemetry grid', link: '/patterns/telemetry-grid' },
             { text: 'Vehicle status card', link: '/patterns/vehicle-status-card' },
             { text: 'Pre-flight checklist', link: '/patterns/preflight-checklist' },
+          ],
+        },
+      ],
+      '/data-viz/': [
+        {
+          text: 'Data viz',
+          items: [
+            { text: 'Palette', link: '/data-viz/' },
+            { text: 'Sparkline', link: '/data-viz/sparkline' },
+            { text: 'Gauge', link: '/data-viz/gauge' },
+            { text: 'Time series', link: '/data-viz/time-series' },
           ],
         },
       ],
