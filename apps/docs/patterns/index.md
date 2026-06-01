@@ -22,6 +22,7 @@ This is the first cut — the operational/data blocks the demo already composes.
 | [App blocks](/patterns/app-blocks) | `Dialog` · `DropdownMenu` · `Popover` · `Table` · `Input` · `Badge` | App-surface pieces — command palette, filter bar, data-table toolbar, drawer, notifications, empty state |
 | [Marketing blocks](/patterns/marketing-blocks) | `Button` · `Icon` · mono type · layout | Expressive brand surfaces — hero, stat bar, pillars, value grid, quote, CTA |
 | [Operational console](/patterns/operational-console) | `StatusBadge` · `TelemetryValue` · `Gauge` · `AlertManager` · `CoordinateValue` · entity grammar | The GCS blocks — status bar, fleet panel, inspector, alert feed, map overlay |
+| [Mission-critical instruments](/patterns/mission-critical-instruments) | `GuardedAction` · `Slider` · `Button` · SVG | L4 widgets — attitude indicator, heading compass, guarded payload cluster |
 | [Fleet table](/patterns/fleet-table) | `Table` · `Checkbox` · `StatusBadge` · `TelemetryValue` | Fleets, mission logs, alert history — rows of vehicles/assets with status + telemetry |
 | [Telemetry grid](/patterns/telemetry-grid) | `TelemetryValue` | A glanceable block of live sensor readouts |
 | [Vehicle status card](/patterns/vehicle-status-card) | `Card` · `StatusBadge` · `TelemetryValue` · `Separator` · `Button` | A compact at-a-glance summary of one vehicle/asset |

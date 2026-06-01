@@ -141,6 +141,7 @@ export default defineConfig({
             { text: 'App blocks', link: '/patterns/app-blocks' },
             { text: 'Marketing blocks', link: '/patterns/marketing-blocks' },
             { text: 'Operational console', link: '/patterns/operational-console' },
+            { text: 'Mission-critical instruments', link: '/patterns/mission-critical-instruments' },
             { text: 'Fleet table', link: '/patterns/fleet-table' },
             { text: 'Telemetry grid', link: '/patterns/telemetry-grid' },
             { text: 'Vehicle status card', link: '/patterns/vehicle-status-card' },
