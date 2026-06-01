@@ -24,6 +24,7 @@ export default defineConfig({
       { text: 'Foundations', link: '/foundations/colors' },
       { text: 'Components', link: '/components/' },
       { text: 'Patterns', link: '/patterns/' },
+      { text: 'Templates', link: '/templates/' },
       { text: 'Data viz', link: '/data-viz/' },
       {
         text: 'pre-1.0',
@@ -143,6 +144,15 @@ export default defineConfig({
             { text: 'Telemetry grid', link: '/patterns/telemetry-grid' },
             { text: 'Vehicle status card', link: '/patterns/vehicle-status-card' },
             { text: 'Pre-flight checklist', link: '/patterns/preflight-checklist' },
+          ],
+        },
+      ],
+      '/templates/': [
+        {
+          text: 'Templates',
+          items: [
+            { text: 'Overview', link: '/templates/' },
+            { text: 'GCS layout', link: '/templates/gcs' },
           ],
         },
       ],
