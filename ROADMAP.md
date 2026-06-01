@@ -998,6 +998,61 @@ scaffold). Recorded so the choice is reversible, not asserted.
 
 ---
 
+## Phase 7 — Refinement
+
+Phase 6 took the system from *correct* to *broad*. Phase 7 makes it *sharp*. Active arcs (chosen):
+
+1. **Visual design pass** — a critical audit of components/patterns/templates as rendered, then a prioritized
+   polish backlog (spacing rhythm, type-scale application, state polish, cross-surface cohesion, contrast).
+3. **Harden & extract components** — pull repeated composition out of patterns/templates into named,
+   tested primitives; tighten APIs.
+
+Deferred for later: (2) interaction/motion depth, (4) real-surface validation against the product repos.
+
+**Prioritized ahead of the audit — § Brand & identity assets (below).** A design system whose premise is
+"Claude can design on-brand interfaces" cannot ship without brand assets; this jumped the queue at the
+user's call.
+
+## § Brand & identity assets (decision record)
+
+**Status: scaffolded, awaiting master artwork.** Built as `@auxiliary/brand` on branch `feat/brand-assets`.
+
+**The gap.** The system had tokens, components, patterns, and templates but *no brand layer*: no marks, no
+wordmark, no lockups, no usage rules, nothing machine-consumable. Brand was referenced conceptually
+(marketing "logo wall," "on-brand imagery forbidden in operational") but undeliverable. There was also no
+Auterion brand *color* (`primary` resolves to neutral `zinc`) and no mark even on the docs site.
+
+**Decided shape:**
+
+- **Its own package, `@auxiliary/brand`** (parallel to `icons`: `tokens → brand → vue/docs`). *Not* folded
+  into `icons` — marks carry different licensing and usage rules (you can't freely recolor a logo); the
+  restraint principle says don't conflate the axes.
+- **Multi-product inventory** — Auterion is multi-product, so this is a brand *system*: org mark
+  (`auterion`) + a mark per product (`mission-control`, `suite`, `os`), each across four **kinds**
+  (mark · wordmark · lockup-horizontal · lockup-stacked) and three **tones** (color · mono · inverse).
+- **Manifest-driven (the keystone).** `brand.manifest.json` is the machine-readable source of truth for
+  *which mark to use where* — per logo: clearspace, min-size, cleared themes, tone-by-theme, forbidden
+  contexts. This is what makes the layer *designable-against* by an agent, not just a folder of files.
+  Exposed typed via `resolveLogo()` / `getLogo()` / `toneForTheme()`.
+- **Masters → generated registry, drift-gated.** Mirrors the icon-registry pattern: master SVGs live in
+  `assets/`; `scripts/sync.mjs` inlines them into `src/registry.generated.ts` so consumers ship no raw SVGs.
+  CI re-runs sync and fails on drift (to wire up alongside the icon-registry gate).
+- **`<Logo>` component** — `id` · `kind` · `tone` (`auto` = single-color master via `currentColor`, so it's
+  theme-legible with no hydration dance) · `title` · `decorative`. Pending slots render a labelled
+  placeholder, so gaps are visible and **nothing fake ever ships** (the user provides masters).
+
+**Follow-ups (tracked, not yet built):**
+
+- **App-icon / favicon export** — `scripts/export-icons.mjs` (favicon `.svg`/`.ico`, PWA + maskable,
+  apple-touch-icon, desktop app icons, OG-image template) per target. Manifest already declares the outputs.
+- **Auterion brand color** — a tokens-level addition (primitive brand hue + semantic `brand`/`brand-foreground`),
+  so `primary` can stop being neutral. The brand package references color tokens; never redefines them.
+- **Master artwork** — the org + 3 product marks in all kinds × tones, dropped into
+  `packages/brand/assets/` (naming contract in its README), then `sync` + commit.
+- **Over-imagery legibility** — marks/labels/viz over satellite/terrain need a scrim/halo; folds into the
+  parked operational-map work.
+- **Docs/site mark** — once the master lands, replace the text `siteTitle` with the real lockup.
+
 ## Cross-cutting
 
 - **Fix `CLAUDE.md`** — it still claims "only `README.md` exists." Update it to describe the real
