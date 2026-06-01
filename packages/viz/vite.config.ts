@@ -10,7 +10,7 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['vue', '@auxiliary/tokens'],
+      external: ['vue', '@auxiliary/tokens', 'uplot', 'uplot/dist/uPlot.min.css'],
       output: {
         // One chunk per source module (mirrors src/) so a downstream bundler can
         // drop unused charts even when imported from the barrel ("sideEffects": false).

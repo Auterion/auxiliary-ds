@@ -22,6 +22,10 @@
     "./Gauge": {
       "types": "./dist/Gauge.vue.d.ts",
       "import": "./dist/Gauge.vue.js"
+    },
+    "./TimeSeries": {
+      "types": "./dist/TimeSeries.vue.d.ts",
+      "import": "./dist/TimeSeries.vue.js"
     }
   },
   "scripts": {
@@ -31,7 +35,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@auxiliary/tokens": "workspace:*"
+    "@auxiliary/tokens": "workspace:*",
+    "uplot": "^1.6.32"
   },
   "peerDependencies": {
     "vue": "^3.5.0"
