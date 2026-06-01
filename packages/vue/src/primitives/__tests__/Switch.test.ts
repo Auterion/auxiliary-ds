@@ -50,6 +50,13 @@ describe('Switch', () => {
     expect(root.attributes('invalid')).toBeUndefined();
   });
 
+  it('sets an accessible name from the `label` prop (aria-label), consumed not leaked', () => {
+    const wrapper = mount(Switch, { props: { label: 'Enable notifications' } });
+    const root = wrapper.find('[role="switch"]');
+    expect(root.attributes('aria-label')).toBe('Enable notifications');
+    expect(root.attributes('label')).toBeUndefined();
+  });
+
   it('forwards the name prop for form association', () => {
     const wrapper = mount(Switch, { props: { name: 'notifications', modelValue: true } });
     // Reka renders a hidden input carrying the name/value for native form submission.
