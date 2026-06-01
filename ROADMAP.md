@@ -841,9 +841,12 @@ donut gauges and CPU/RAM dials in Mission Control & AuterionOS; sparkline stat c
 flight-trend line charts in AuterionSuite — which reinforces the priority and the shapes below. Like 6.4,
 **each slice opens with a just-in-time scan** of the relevant product repo for the real chart's behaviour.
 
-### Decision to make (spike first, then flag): charting approach + package
+### Charting approach + package — RESOLVED
 
-The roadmap explicitly defers this to a spike. Evaluate against criteria that matter for *this* system:
+**Decided in slice 1 — see the `§ Data-viz charting engine` decision record below.** Outcome: token-driven
+**SVG** for static/small charts + **uPlot** for high-rate streaming, behind one thin API in a new
+**`@auxiliary/viz`** package. The rationale captured here informed it; the candidates were evaluated
+against the criteria that matter for *this* system:
 
 - **Streaming performance** — 10–60 Hz telemetry without reflow/jank (the dominant operational case).
 - **Air-gap** — zero runtime CDN (Principle/`@auxiliary/css` air-gap gate); everything bundled.
@@ -891,7 +894,7 @@ contrast regressions are.
 
 | # | Slice | Ships | Size |
 |---|---|---|---|
-| 1 | **Spike + decision record** | Prototype streaming time-series in 2–3 candidate engines against the criteria above; write the §6.5 decision record (engine(s), package y/n). Throwaway code; durable decision. | M |
+| 1 | **Spike + decision record** | ✅ **Delivered** — engine decision made (SVG + uPlot, new `@auxiliary/viz`) grounded in a product-charting scan; see the `§ Data-viz charting engine` decision record. Empirical 60 Hz validation deferred to slice 4. | M |
 | 2 | **`@auxiliary/viz` scaffold + viz token layer** | Stand up the package (if decided) wired into Turbo/CI/changesets; add categorical/sequential/diverging tokens derived from primitives + the viz-palette CVD/theme gate. | M |
 | 3 | **Sparkline + gauge** | The two that pair directly with `TelemetryValue`; token-driven, tabular-nums readout, SSR-safe. | M |
 | 4 | **Streaming time-series + perf budget** | The high-rate chart on the chosen engine + the no-reflow/Hz perf gate. | L |
@@ -904,6 +907,70 @@ A token-driven viz layer exists whose palettes survive all four themes **and** C
 asserted by eye); a restrained chart set (time-series, gauges, sparklines, bars, distributions,
 map-linked) renders from tokens with tabular-nums readouts; streaming holds the 10–60 Hz no-reflow
 budget under a CI perf gate; the engine choice is a documented, reversible decision, not an accident.
+
+---
+
+## § Data-viz charting engine (decision record)
+
+**Status: DECIDED (§6.5 slice 1 — the spike).** The empirical 60 Hz perf validation is deferred to slice 4;
+this record is the place to revisit if uPlot misses the budget there.
+
+### The decision
+
+Two engines behind **one thin Auxiliary API**, so the engine is an implementation detail consumers never
+import directly:
+
+- **Token-driven SVG** for static / small / bounded-cardinality charts — sparklines, gauges/dials, bars,
+  distributions. Binds to our CSS-var tokens natively, SSR-clean, zero runtime dependency.
+- **uPlot** for high-rate **streaming time-series** (the 10–60 Hz operational case) — tiny (~50 KB, zero
+  deps), canvas, purpose-built for live time-series; mounted client-only.
+
+Ships as a **new `@auxiliary/viz` package**, *not* folded into `@auxiliary/vue`: viz carries a distinct
+dependency (uPlot), and keeping it separate leaves `@auxiliary/vue` dependency-light for consumers who
+don't chart.
+
+### What the products use (the scan)
+
+| Surface | Charting today |
+|---|---|
+| AuterionOS web UI (`vehicle-webapp-ui`) | **Chart.js** + `vue-chartjs` |
+| Cloud Suite (`suite/client`) | **ECharts** + **D3** |
+| Mission Control | bespoke/native (gauges, video, map are custom) |
+
+The products **diverge** — there's no shared charting standard to inherit. That *is* the gap 6.5 fills, and
+it means the DS picks on its own criteria rather than matching any one product (Principle 4 — don't bake a
+product's lib choice into the system). Consumers keep their existing charts; the DS offers a token-true
+alternative.
+
+### Candidates
+
+| Engine | Streaming 10–60 Hz | Token-drivable | Bundle | SSR | Vue | Verdict |
+|---|---|---|---|---|---|---|
+| **Headless SVG** | ✗ DOM reflow at rate | ✓✓ native CSS vars | ~0 (hand-rolled) | ✓ | ✓ | **chosen — static/small** |
+| **uPlot** | ✓✓ canvas, built for it | ✓ via opts (reads CSS vars) | ~50 KB, 0 deps | client-only (guarded) | ✓ thin wrapper | **chosen — streaming** |
+| D3 | ~ SVG reflow | ✓ | modular | ✓ | ✓ | overkill as a default; bespoke only |
+| Chart.js | ~ re-render (ok ≲30 Hz) | ✗ own theme | ~70 KB | client-only | ✓ | product-used (OS); theme fights tokens |
+| ECharts | ✓ canvas, but heavy | ✗ own theme | ~1 MB | client-only | ✓ | product-used (Suite); too heavy |
+| visx | — | ✓ | modular | ✓ | **✗ React-only** | disqualified (Vue-first) |
+
+### Why this split
+
+- **No single engine wins both axes.** Token-true static charts want SVG (CSS vars bind directly,
+  SSR-clean, zero bytes); high-rate streaming wants canvas (no per-frame DOM reflow). One thin API over two
+  engines beats compromising on either.
+- **Token-drivability is non-negotiable** — the viz palette layer is the whole point of 6.5, which is
+  exactly why ECharts/Chart.js (own theme systems) lose despite product familiarity.
+- **Air-gap**: both bundle cleanly; neither needs a runtime CDN (the `@auxiliary/css` air-gap gate extends
+  to viz).
+- **Restraint**: SVG covers most charts a GCS/analytics surface needs; uPlot is pulled in *only* for the
+  genuinely high-rate time-series.
+
+### Honest scope
+
+This is a *reasoned* decision grounded in the engines' documented design + the product scan — **not** a
+fresh benchmark (the harness can't run a meaningful 60 Hz test). Empirical validation is **slice 4**
+(streaming time-series + the no-reflow/Hz perf gate); bundle/SSR confirmation lands in **slice 2** (package
+scaffold). Recorded so the choice is reversible, not asserted.
 
 ---
 
