@@ -19,6 +19,7 @@ This is the first cut — the operational/data blocks the demo already composes.
 | Pattern | Composes | Use for |
 |---|---|---|
 | [App shell](/patterns/app-shell) | `Icon` · `DropdownMenu` · `Avatar` · `Badge` · layout | The top-bar + collapsible-sidebar + content frame every Level-2/3 surface sits in |
+| [Operational console](/patterns/operational-console) | `StatusBadge` · `TelemetryValue` · `Gauge` · `AlertManager` · `CoordinateValue` · entity grammar | The GCS blocks — status bar, fleet panel, inspector, alert feed, map overlay |
 | [Fleet table](/patterns/fleet-table) | `Table` · `Checkbox` · `StatusBadge` · `TelemetryValue` | Fleets, mission logs, alert history — rows of vehicles/assets with status + telemetry |
 | [Telemetry grid](/patterns/telemetry-grid) | `TelemetryValue` | A glanceable block of live sensor readouts |
 | [Vehicle status card](/patterns/vehicle-status-card) | `Card` · `StatusBadge` · `TelemetryValue` · `Separator` · `Button` | A compact at-a-glance summary of one vehicle/asset |
