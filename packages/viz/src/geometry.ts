@@ -68,6 +68,94 @@ export function sparklinePath(values: number[], options: SparklineOptions = {}):
   return { width, height, viewBox, line, area, points, last };
 }
 
+export interface BarRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  value: number;
+}
+
+export interface BarsOptions {
+  width?: number;
+  height?: number;
+  /** Gap between bars as a fraction of the slot (0–1). Default 0.2. */
+  gap?: number;
+  /** Y-axis maximum. Defaults to the largest value (so the tallest bar fills). */
+  max?: number;
+  padding?: number;
+}
+
+export interface BarsGeometry {
+  width: number;
+  height: number;
+  viewBox: string;
+  rects: BarRect[];
+  max: number;
+}
+
+/** Lay out a value series as vertical bars filling the box, baseline at the bottom. */
+export function barRects(values: number[], options: BarsOptions = {}): BarsGeometry {
+  const width = options.width ?? 240;
+  const height = options.height ?? 120;
+  const gap = options.gap ?? 0.2;
+  const padding = options.padding ?? 2;
+  const viewBox = `0 0 ${width} ${height}`;
+  const n = values.length;
+  if (n === 0) return { width, height, viewBox, rects: [], max: 0 };
+
+  const max = options.max ?? Math.max(0, ...values);
+  const innerW = Math.max(0, width - padding * 2);
+  const innerH = Math.max(0, height - padding * 2);
+  const slot = innerW / n;
+  const barW = slot * (1 - gap);
+
+  const rects: BarRect[] = values.map((value, i) => {
+    const h = max === 0 ? 0 : innerH * (Math.max(0, value) / max);
+    return {
+      x: round(padding + i * slot + (slot - barW) / 2),
+      y: round(padding + innerH - h),
+      width: round(barW),
+      height: round(h),
+      value,
+    };
+  });
+  return { width, height, viewBox, rects, max };
+}
+
+export interface HistogramBin {
+  x0: number;
+  x1: number;
+  count: number;
+}
+
+export interface Histogram {
+  bins: HistogramBin[];
+  counts: number[];
+  max: number;
+}
+
+/** Bin raw samples into `bins` equal-width buckets over [min, max]. */
+export function histogram(values: number[], bins = 10): Histogram {
+  if (values.length === 0 || bins < 1) return { bins: [], counts: [], max: 0 };
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = max - min || 1;
+  const counts = new Array<number>(bins).fill(0);
+  for (const v of values) {
+    let idx = Math.floor(((v - min) / span) * bins);
+    if (idx >= bins) idx = bins - 1;
+    if (idx < 0) idx = 0;
+    counts[idx]!++;
+  }
+  const out: HistogramBin[] = counts.map((count, i) => ({
+    x0: min + (span * i) / bins,
+    x1: min + (span * (i + 1)) / bins,
+    count,
+  }));
+  return { bins: out, counts, max: Math.max(...counts) };
+}
+
 export interface GaugeOptions {
   min?: number;
   max?: number;
