@@ -16,6 +16,7 @@
     "predev": "node scripts/gen-props.mjs"
   },
   "dependencies": {
+    "@auxiliary/brand": "workspace:*",
     "@auxiliary/css": "workspace:*",
     "@auxiliary/icons": "workspace:*",
     "@auxiliary/tokens": "workspace:*",
