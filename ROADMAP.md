@@ -1,9 +1,10 @@
 # Auxiliary — path to a world-class design system
 
-Status as of 2026-05-29. This is the single forward-looking source of truth — a phased execution
-plan grounded in the current code. The monorepo is real and well-layered: 5 packages, 2 apps,
-~30 Vue primitives. Phases 1–5 are largely delivered; Phase 6 ("Elevation") is the large, active
-frontier and is detailed in full below.
+Status as of 2026-06-01. This is the single forward-looking source of truth — a phased execution
+plan grounded in the current code. The monorepo is real and well-layered: 6 packages (incl. the new
+`@auxiliary/viz`), 2 apps, ~30 Vue primitives. Phases 1–5 are delivered, and **Phase 6 ("Elevation")
+is now delivered** across sub-phases 6.1–6.5 (see the acceptance assessment in §"Phase 6 acceptance"
+below) — the frontier shifts to a release rhythm + the deferred 6d (iconography/symbology).
 
 The debt was concentrated in three places, in priority order:
 
@@ -328,8 +329,8 @@ load and on degraded/offline connections.
 | **6.1 Audit & decide** | 6a, 6d-audit, 6b/6c needs-inventory, **6g design** | Per-component states matrix + a11y-depth audit; gap analysis vs Reka/shadcn *filtered to Auterion needs*; icon-coverage audit; prioritized primitive backlog; **2 locked decisions** (register model; blocks home) | M |
 | **6.2 Spine** ✅ | 6f, 6g build, 6h | **Delivered.** Visual-language + registers + voice/lexicon foundation docs; `[data-register]` token layer (control-height/radius/motion flex expressive↔operational) wired into recipes; orthogonality build-assert + CSS gate; `<Register>` wrapper; operational lexicon anchored to the status ladder + unit/coord conventions | L |
 | **6.3 Defense layer** ✅ | 6i | **Delivered.** ✅ **`GuardedAction`** — hold/double/confirm guard for irreversible commands (arm/RTL/release), keyboard-equivalent + tap-proof, reduced-motion-safe progress, composes Button without modifying it. ✅ **`CoordinateValue`** + **`@auxiliary/css/format`** — lat/long (DD·DMS·DDM) + **MGRS** coordinate formatting (framework-agnostic `formatLatLon`, graceful degradation), sibling to `TelemetryValue`. ✅ **Unit systems + locale** — `formatQuantity`/`convertQuantity`/`formatNumber` (metric/aviation-imperial: ft·kn·fpm·°F, angle/mils, affine °C↔°F), `<UnitSystemProvider>` + `useUnitSystem()` deployment context (package's first provide/inject), wired into `TelemetryValue` (`quantity`/`system`/`locale`, opt-in locale, default output unchanged). ✅ **Alert model** — `useAlertModel()` headless state machine (prioritization, ack, latching [alarm/warning], escalation, inhibit/suppress, audible-cue hooks) + `<AlertManager>` (prioritized ack-able banner stack) + `<AlertAnnunciator>` (highest+count); composes `AlertBanner`/`StatusBadge` (single polite live region; `AlertBanner` gains an additive `live` opt-out, `StatusBadge` untouched). ✅ **Sunlight/night redesign + gates** — redesigned the operational palettes (sunlight hardened for glare: deeper borders/fills; darknight fixed a luminance-scrambled severity ramp → monotonic **brightness ladder**, visible red.400 alarm → extinguished nominal, off-cyan advisory, all low-blue) and added token-layer gates certifying it: focus-ring + border/input ≥ 3:1 (1.4.11), darknight all-token blue-cap, monotonic luminance ladder, OKLab severity ΔE. ✅ **Conformance posture** — `foundations/conformance.md` collects the 508 / WCAG 2.2 AA / MIL-STD-1472 posture into one honest page (each row backed by a CI gate or component pattern; MIL-STD-1472 / DO-178C rows marked *design-conformant, pending expert review* — not self-certified; app-level criteria flagged as consumer responsibilities). | XL |
-| **6.4 Compose** 📋 | 6b, 6c, 6j | Block catalog (marketing/app/operational); page templates (dashboard, GCS, mission-planning, list+detail, auth, offline/degraded); motion language + keyboard/SR depth per component. **Planned & sliced — see §6.4 below.** | XL |
-| **6.5 Data-viz** 📋 | 6e | Token-driven, 4-theme- + CVD-safe viz palettes; chart set (time-series, gauges, sparklines, map-linked); streaming-perf budgets (10–60 Hz). Likely a new `@auxiliary/viz` package. **Planned & sliced — see §6.5 below.** | XL |
+| **6.4 Compose** ✅ | 6b, 6c, 6j | **Delivered (docs-first).** Block & template catalog covering marketing/app/operational: **9 patterns** (app-shell, app-blocks, marketing-blocks, operational-console, mission-critical-instruments + fleet-table/telemetry-grid/vehicle-status-card/pre-flight-checklist) and **9 templates** (GCS, mission-planning, fleet-overview, post-flight + dashboard, list+detail, settings, auth, error/404), with **air-gap/degraded as a first-class template state**. **Motion** foundations doc (purpose model + register/reduced-motion reconciliation). **Input & touch** axis (`@media (pointer:coarse)` + `[data-input]`, 44px floor composing over register density, gated). **a11y depth:** accessible-name `label` on Checkbox/Switch; audit items verified (#10 checked-glyph cue, #14 SelectSeparator false-positive). Blocks-home decision: docs-first (no `@auxiliary/blocks` package yet); extraction candidates flagged (AppShell, EntityIcon, Marketing\*, AttitudeIndicator). | XL |
+| **6.5 Data-viz** ✅ | 6e | **Delivered.** New **`@auxiliary/viz`** package (Vue lib). Charting **decision record** (token-driven SVG + uPlot, grounded in a product scan). Viz **palette** — categorical/sequential/diverging derived from the OKLCH primitives, status-ladder-reserved, luminance-spread for CVD safety, **gated** (`viz-palette.test.ts`). Chart set: **Sparkline · Gauge · Bars · Distribution** (SVG, SSR-safe) + **TimeSeries** (uPlot streaming; `pushCapped`/`downsample` bounded-work, no-reflow). Live docs at `/data-viz/`. Map-linked hooks fold into the operational-map work. | XL |
 
 ### Load-bearing constraint for 6.3 (decided)
 
@@ -364,6 +365,25 @@ surfaces; a token-driven, color-blind- and theme-safe data-viz layer exists; an 
 style language and an explicit expressive↔operational register model are documented and reflected
 in components; the operational/defense layer (alert model, guarded actions, 508/WCAG 2.2 AA + a
 MIL-STD-1472 pass, sunlight/night contrast gates, units/coordinates) is implemented and verified.
+
+### Acceptance assessment — Phase 6 MET ✅ (2026-06-01)
+
+| Criterion | Status |
+|---|---|
+| Audited API + states matrix + usage guidance per primitive; no unfilled state gaps | ✅ §6.1 audit + per-component docs + form-state hardening. *Residual polish (non-blocking): RadioGroupItem/Avatar accessible-name, `Input.type` union — see §6.1 backlog #11/#12.* |
+| Documented block & template catalog (marketing / app / operational) | ✅ 9 patterns + 9 templates; air-gap/degraded as first-class states |
+| Token-driven, color-blind- & theme-safe data-viz layer | ✅ `@auxiliary/viz` + gated viz palette + chart set |
+| Articulated visual style language + explicit register model, reflected in components | ✅ visual-language / registers / voice foundations; `[data-register]` token layer + orthogonality gate; `<Register>` |
+| Defense layer — alert model, guarded actions, 508/WCAG 2.2 AA, MIL-STD-1472 pass, sunlight/night gates, units/coords | ✅ all implemented + gated. **Caveat (by design):** MIL-STD-1472 / DO-178C rows are *design-conformant, pending expert review* — **not** self-certified (see `conformance.md`). Touch-target floor (2.5.5) added in the input-modality axis. |
+
+**Verdict:** Phase 6 ("Elevation") is delivered. The honest caveats are deliberate, not gaps: the
+military/avionics standards await human expert sign-off, and a short residual backlog
+(RadioGroupItem/Avatar names, `Input.type`, map-linked viz) is post-acceptance polish, not blocking.
+
+**Next:** flip to a **release rhythm** — the changesets accumulated across 6.2–6.5 are ready to
+version/publish (first tagged pre-1.0). Remaining tracks for a later phase: **6d** (iconography /
+pictograms / MIL-STD-2525 symbology — needs `FONTAWESOME_PACKAGE_TOKEN`) and the parked
+**satellite/terrain basemap** legibility work (tied to the operational-map slot).
 
 ---
 
