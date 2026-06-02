@@ -36,6 +36,7 @@ packages/tokens/dist/
 # Playwright
 test-results/
 playwright-report/
+.playwright-mcp/
 
 # Vitest coverage
 **/coverage/
