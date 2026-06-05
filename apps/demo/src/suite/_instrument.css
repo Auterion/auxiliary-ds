@@ -50,15 +50,11 @@
 .ix-edge-advisory { border-left-color: var(--advisory); }
 .ix-edge-nominal { border-left-color: var(--nominal); }
 
-/* ── Active/selected marker: a quiet 1px brand inset ring (non-status). ──────
- * Decoupled from the severity rail above — a selected row keeps its ix-edge-*
- * status color AND gets the ring, so selection never masks severity. Uses
- * outline (not box-shadow) so it composes with the ix-lift hover shadow, and
- * outline-offset pulls it inside to follow the element's border-radius. */
-.ix-active {
-  outline: 1px solid var(--brand);
-  outline-offset: -1px;
-}
+/* ── Active/selected marker: bg fill only (non-status). ──────────────────────
+ * No left rail, no ring — selection reads purely through bg-secondary fill +
+ * the icon tinting to brand. Decoupled from ix-edge-* severity rails, so a
+ * selected alarm row keeps its red edge and the fill together. */
+.ix-active {}
 
 /* ── Data-viz backdrop: faint baseline grid behind charts. ─────────────── */
 .ix-grid {
