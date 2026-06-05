@@ -11,7 +11,7 @@
  *      ring-ring, bg-alarm etc. auto-generate. Same vocabulary as
  *      shadcn-ui / shadcn-vue — Auxiliary tokens drop in directly.
  *   4. Base typography (Inter Variable + Geist Mono, self-hosted/vendored,
- *      tabular-nums + ss02 for mission-ID disambiguation)
+ *      tabular-nums + Inter stylistic/character variants for legibility)
  *
  * Air-gap-first: fonts are vendored into ./fonts/ and shipped in this package
  * (no runtime CDN). See scripts/sync-fonts.mjs. A test gate
@@ -63,6 +63,13 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
+  /* Non-status brand/interaction accent — the Auterion identity color, distinct
+   * from the status ladder. Use for selected/active nav, brand marks, links and
+   * primary affordances; never to signal severity. darknight resolves it to a
+   * low-blue amber to keep night-vision intact. */
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
 
@@ -102,6 +109,56 @@
   --default-transition-duration: var(--duration-base);
 }
 
+/* -------------------------------------------------------------------------- *
+ * Type scale — Auterion Design System (Figma "Medium" ramp, node 788:24).
+ *
+ * Inter Variable. The signature is twofold: line-height tightens as size grows
+ * (1.4 body -> 1.0 display), and letter-spacing goes increasingly negative
+ * (-2% small -> -4% display). Encoded as the Tailwind v4 text scale so every
+ * text-xs..9xl utility carries Figma's paired line-height + tracking.
+ * -------------------------------------------------------------------------- */
+@theme {
+  --text-xs: 0.75rem;            /* 12 */
+  --text-xs--line-height: 1.4;
+  --text-xs--letter-spacing: -0.02em;
+  --text-sm: 0.875rem;          /* 14 */
+  --text-sm--line-height: 1.4;
+  --text-sm--letter-spacing: -0.02em;
+  --text-base: 1rem;            /* 16 */
+  --text-base--line-height: 1.4;
+  --text-base--letter-spacing: -0.02em;
+  --text-lg: 1.125rem;          /* 18 */
+  --text-lg--line-height: 1.4;
+  --text-lg--letter-spacing: -0.02em;
+  --text-xl: 1.25rem;           /* 20 */
+  --text-xl--line-height: 1.4;
+  --text-xl--letter-spacing: -0.03em;
+  --text-2xl: 1.5rem;           /* 24 */
+  --text-2xl--line-height: 1.25;
+  --text-2xl--letter-spacing: -0.03em;
+  --text-3xl: 1.875rem;         /* 30 */
+  --text-3xl--line-height: 1.25;
+  --text-3xl--letter-spacing: -0.04em;
+  --text-4xl: 2.5rem;           /* 40 (Figma 4-5xl) */
+  --text-4xl--line-height: 1.15;
+  --text-4xl--letter-spacing: -0.04em;
+  --text-5xl: 3rem;             /* 48 */
+  --text-5xl--line-height: 1.15;
+  --text-5xl--letter-spacing: -0.04em;
+  --text-6xl: 3.75rem;          /* 60 */
+  --text-6xl--line-height: 1.1;
+  --text-6xl--letter-spacing: -0.04em;
+  --text-7xl: 5rem;             /* 80 */
+  --text-7xl--line-height: 1;
+  --text-7xl--letter-spacing: -0.04em;
+  --text-8xl: 6rem;             /* 96 */
+  --text-8xl--line-height: 1;
+  --text-8xl--letter-spacing: -0.04em;
+  --text-9xl: 8rem;             /* 128 */
+  --text-9xl--line-height: 1;
+  --text-9xl--letter-spacing: -0.04em;
+}
+
 @layer base {
   :root {
     color-scheme: light dark;
@@ -110,9 +167,24 @@
   html {
     font-family: var(--font-sans);
     font-optical-sizing: auto;
-    font-feature-settings: "cv01", "cv10", "ss02", "ss03", "calt", "liga";
+    /* ss03 = round quotes & commas (non-square punctuation); dropped ss08. */
+    font-feature-settings: "ss01", "ss03", "ss07", "cv02", "cv03", "cv04", "cv06", "cv09", "cv12", "cv13", "calt", "liga";
+    /* Auterion type settings (Figma 788:24): tight body line-height + the real
+     * -2% body tracking. The text-* scale carries the tighter per-size tracking
+     * (-3/-4%) at larger sizes; this is the baseline for non-utility text. */
+    line-height: 1.4;
+    letter-spacing: -0.02em;
     background-color: var(--background);
     color: var(--foreground);
+  }
+
+  /* Mono is tabular/telemetry — never inherit the sans negative tracking. */
+  .font-mono,
+  code,
+  kbd,
+  samp,
+  pre {
+    letter-spacing: normal;
   }
 
   /* shadcn convention: default every element's border-color to the semantic

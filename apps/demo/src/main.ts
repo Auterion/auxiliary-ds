@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
-import App from './App.vue';
+import Shell from './Shell.vue';
 import '@auxiliary/css/theme.css';
+import './suite/_instrument.css';
 
-createApp(App).mount('#app');
+createApp(Shell).mount('#app');

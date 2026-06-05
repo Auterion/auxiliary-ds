@@ -56,6 +56,14 @@
       "$type": "color",
       "$value": "{color.primitive.amber.300}"
     },
+    "brand": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.500}"
+    },
+    "brand-foreground": {
+      "$type": "color",
+      "$value": "{color.primitive.black}"
+    },
     "destructive": {
       "$type": "color",
       "$value": "{color.primitive.red.400}"

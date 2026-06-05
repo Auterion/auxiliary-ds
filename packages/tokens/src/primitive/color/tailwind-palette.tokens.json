@@ -4,6 +4,20 @@
       "white": { "$type": "color", "$value": "oklch(1 0 0)" },
       "black": { "$type": "color", "$value": "oklch(0 0 0)" },
 
+      "mono": {
+        "50":  { "$type": "color", "$value": "oklch(0.985 0.003 252)" },
+        "100": { "$type": "color", "$value": "oklch(0.967 0.004 252)" },
+        "200": { "$type": "color", "$value": "oklch(0.92 0.006 252)" },
+        "300": { "$type": "color", "$value": "oklch(0.871 0.009 252)" },
+        "400": { "$type": "color", "$value": "oklch(0.705 0.013 252)" },
+        "500": { "$type": "color", "$value": "oklch(0.552 0.0148 252)" },
+        "600": { "$type": "color", "$value": "oklch(0.442 0.015 252)" },
+        "700": { "$type": "color", "$value": "oklch(0.37 0.013 252)" },
+        "800": { "$type": "color", "$value": "oklch(0.274 0.008 252)" },
+        "900": { "$type": "color", "$value": "oklch(0.21 0.005 252)" },
+        "950": { "$type": "color", "$value": "oklch(0.141 0.003 252)" }
+      },
+
       "slate": {
         "50":  { "$type": "color", "$value": "oklch(0.984 0.003 247.858)" },
         "100": { "$type": "color", "$value": "oklch(0.968 0.007 247.896)" },
