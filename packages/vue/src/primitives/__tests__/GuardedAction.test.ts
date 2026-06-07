@@ -110,6 +110,28 @@ describe('GuardedAction', () => {
     });
   });
 
+  describe('cancelText / instructionText overrides', () => {
+    it('uses cancelText on the cancel button in confirm mode', async () => {
+      const wrapper = mount(GuardedAction, {
+        props: { mode: 'confirm', cancelText: 'Abort' },
+        slots: { default: 'Release' },
+      });
+      await wrapper.get('button').trigger('click');
+      const buttons = wrapper.findAll('button');
+      expect(buttons.some((b) => b.text() === 'Abort')).toBe(true);
+      expect(buttons.some((b) => b.text() === 'Cancel')).toBe(false);
+    });
+
+    it('uses instructionText when provided instead of the mode-derived default', () => {
+      const wrapper = mount(GuardedAction, {
+        props: { instructionText: 'Press and hold to ARM' },
+        slots: { default: 'Arm' },
+      });
+      const instruction = wrapper.find('.sr-only:last-of-type');
+      expect(instruction.text()).toBe('Press and hold to ARM');
+    });
+  });
+
   describe('disabled / loading', () => {
     it('blocks every guard path when disabled', async () => {
       const wrapper = mount(GuardedAction, { props: { disabled: true, holdMs: 500 } });

@@ -4,7 +4,7 @@ import { Button, Badge, StatusBadge } from '@auxiliary/vue';
 import { Icon } from '@auxiliary/icons';
 import Sparkline from '../suite/Sparkline.vue';
 
-type Direction = 'mono' | 'amber' | 'blue';
+type Direction = 'mono' | 'blue';
 type Background = 'neutral' | 'cadet';
 
 const dir = ref<Direction>('blue');
@@ -12,47 +12,43 @@ const bg = ref<Background>('neutral');
 const theme = ref<'dark' | 'light'>('light');
 watch(theme, t => { if (t === 'light') bg.value = 'neutral'; });
 
-const AMBER = 'oklch(0.769 0.188 70.08)';
-const AMBER_FG = 'oklch(0.128 0.028 70.08)';
-// Ultramarine #2D33E0 — from shared palette, darker + more saturated than blue.600
-const BLUE = 'oklch(0.45 0.28 264)';
-const BLUE_FG = '#ffffff';
+const BLUE = 'var(--color-primitive-auterion-blue-DEFAULT)';
+const BLUE_FG = 'var(--color-primitive-white)';
 
 const accentStyle = computed(() => {
-  if (dir.value === 'amber') return `--brand: ${AMBER}; --brand-foreground: ${AMBER_FG}; --ring: ${AMBER};`;
   if (dir.value === 'blue')  return `--brand: ${BLUE};  --brand-foreground: ${BLUE_FG};  --ring: ${BLUE};`;
   return '';
 });
 
-// Space Cadet (#171744) — deep indigo-navy from the shared palette
-// Override semantic surface tokens while keeping the dark-theme foreground/status tokens intact
+// Space Cadet — deep indigo-navy brand ground.
+// cadet scale: see color.primitive.cadet in tailwind-palette.tokens.json
 const bgStyle = computed(() => {
   if (bg.value !== 'cadet') return '';
   return [
-    '--background: #171744',
-    '--card: #1d1f55',
-    '--card-foreground: oklch(0.96 0.005 264)',
-    '--popover: #1d1f55',
-    '--popover-foreground: oklch(0.96 0.005 264)',
-    '--secondary: #252860',
-    '--secondary-foreground: oklch(0.96 0.005 264)',
-    '--muted: #1d1f55',
-    '--muted-foreground: oklch(0.56 0.035 220)',
-    '--accent: #252860',
-    '--accent-foreground: oklch(0.96 0.005 264)',
-    '--border: #2c3070',
-    '--input: #2c3070',
+    '--background: var(--color-primitive-auterion-blue-night)',      // oklch(0.165 0.014 265) ≈ #171744
+    '--card: var(--color-primitive-auterion-blue-shade)',            // oklch(0.205 0.017 265) ≈ #1d1f55
+    '--card-foreground: var(--color-primitive-auterion-blue-50)',    // oklch(0.972 0.012 264) ≈ #f0f4ff
+    '--popover: var(--color-primitive-auterion-blue-shade)',
+    '--popover-foreground: var(--color-primitive-auterion-blue-50)',
+    '--secondary: var(--color-primitive-auterion-blue-surface)',     // oklch(0.255 0.020 265) ≈ #252860
+    '--secondary-foreground: var(--color-primitive-auterion-blue-50)',
+    '--muted: var(--color-primitive-auterion-blue-shade)',
+    '--muted-foreground: var(--color-primitive-cadet-600)',
+    '--accent: var(--color-primitive-auterion-blue-surface)',
+    '--accent-foreground: var(--color-primitive-auterion-blue-50)',
+    '--border: var(--color-primitive-auterion-blue-edge)',           // oklch(0.315 0.024 265) ≈ #2c3070
+    '--input: var(--color-primitive-auterion-blue-edge)',
   ].join('; ');
 });
 
 // Proposed Auterion palette from shared reference
 const proposedPalette = [
-  { name: 'Ultramarine', hex: '#2D33E0', oklch: 'oklch(0.45 0.28 264)', fg: '#ffffff', role: 'Brand accent' },
+  { name: 'Ultramarine', hex: '#2D33E0', oklch: 'oklch(0.500 0.235 264)', fg: '#ffffff', role: 'Brand accent — auterion-blue.DEFAULT' },
   { name: 'Space Cadet', hex: '#171744', oklch: 'oklch(0.18 0.08 264)', fg: '#ffffff', role: 'Dark ground' },
   { name: 'Night', hex: '#191C1C', oklch: 'oklch(0.17 0 0)', fg: '#ffffff', role: 'Near-black surface' },
-  { name: 'Cadet Grey', hex: '#919A9B', oklch: 'oklch(0.63 0.01 200)', fg: '#ffffff', role: 'Mid neutral' },
-  { name: 'Platinum', hex: '#D3DFE2', oklch: 'oklch(0.88 0.015 200)', fg: '#191C1C', role: 'Light surface' },
-  { name: 'Seasalt', hex: '#F5F7F7', oklch: 'oklch(0.97 0.005 200)', fg: '#191C1C', role: 'Near-white' },
+  { name: 'Cadet Grey', hex: '#919A9B', oklch: 'oklch(0.63 0.01 200)', fg: '#ffffff', role: 'Neutral mid — cadet.500' },
+  { name: 'Platinum', hex: '#D3DFE2', oklch: 'oklch(0.88 0.015 200)', fg: '#191C1C', role: 'Light surface — cadet.300' },
+  { name: 'Seasalt', hex: '#F5F7F7', oklch: 'oklch(0.97 0.005 200)', fg: '#191C1C', role: 'Near-white — cadet.50' },
   { name: 'Azure', hex: '#E3F7FF', oklch: 'oklch(0.97 0.025 205)', fg: '#171744', role: 'Tinted light' },
   { name: 'Aquamarine', hex: '#3BE494', oklch: 'oklch(0.83 0.17 155)', fg: '#16352B', role: '? secondary / advisory conflict' },
 ];
@@ -78,8 +74,8 @@ const statusLevels = [
 ];
 
 const typeScale = [
-  { cls: 'text-10xl font-semibold', label: 'Inter / 128 semibold', sample: 'Auterion',                   font: 'sans' as const },
-  { cls: 'text-8xl  font-semibold', label: 'Inter / 80 semibold',  sample: 'Autonomous Systems',         font: 'sans' as const },
+  { cls: 'text-10xl font-medium', label: 'Inter / 128 medium', sample: 'Auterion',                   font: 'sans' as const },
+  { cls: 'text-8xl  font-medium', label: 'Inter / 80 medium',  sample: 'Autonomous Systems',         font: 'sans' as const },
   { cls: 'text-6xl  font-medium',   label: 'Inter / 60 medium',    sample: 'Pushing boundaries',         font: 'sans' as const },
   { cls: 'text-4xl  font-medium',   label: 'Inter / 40 medium',    sample: 'Mission-ready at scale',     font: 'sans' as const },
   { cls: 'text-3xl  font-normal',   label: 'Inter / 30 regular',   sample: 'Fleet operations & telemetry', font: 'sans' as const },
@@ -131,7 +127,7 @@ const typeScale = [
           <div class="flex items-center gap-0.5">
             <span class="mr-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">Accent</span>
             <button
-              v-for="d in ([{k:'mono',l:'Mono'},{k:'amber',l:'Amber'},{k:'blue',l:'Ultramarine'}] as const)"
+              v-for="d in ([{k:'mono',l:'Mono'},{k:'blue',l:'Ultramarine'}] as const)"
               :key="d.k"
               class="rounded-sm px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.08em] transition-colors"
               :class="dir === d.k ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'"
@@ -195,7 +191,7 @@ const typeScale = [
       <!-- ── 01 IDENTITY ── -->
       <section>
         <p class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">01 — Identity</p>
-        <h2 class="mt-2 section-h2 text-[2rem] font-semibold">Color system</h2>
+        <h2 class="mt-2 section-h2 text-[2rem] font-medium">Color system</h2>
         <p class="mt-2 text-[14px] text-muted-foreground max-w-xl">
           The palette is a signal vocabulary, not a mood palette. Ground → Surface → Content → Accent. Status colors are reserved for operational severity.
         </p>
@@ -217,7 +213,7 @@ const typeScale = [
             <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground mb-2">Brand accent</p>
             <div class="flex h-20 items-center justify-center rounded-sm" style="background: var(--brand)">
               <span class="font-mono text-[11px] font-medium uppercase tracking-wide" style="color: var(--brand-foreground)">
-                {{ dir === 'amber' ? 'amber.500' : dir === 'blue' ? 'Ultramarine' : 'mono.50' }}
+                {{ dir === 'blue' ? 'Ultramarine' : 'mono.50' }}
               </span>
             </div>
           </div>
@@ -225,7 +221,7 @@ const typeScale = [
             <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground mb-2">On brand</p>
             <div class="flex h-20 items-center justify-center rounded-sm" style="background: var(--brand-foreground)">
               <span class="font-mono text-[11px] font-medium uppercase tracking-wide" style="color: var(--brand)">
-                {{ dir === 'amber' ? 'stone.950' : 'white' }}
+                white
               </span>
             </div>
           </div>
@@ -259,7 +255,7 @@ const typeScale = [
               <div class="px-3 py-1.5 bg-card border-b border-border">
                 <span class="font-mono text-[10px] text-muted-foreground">Dark ground: Space Cadet #171744</span>
               </div>
-              <div class="p-6 flex items-center justify-between" style="background: #171744;">
+              <div class="p-6 flex items-center justify-between" style="background: var(--color-primitive-auterion-blue-night);">
                 <div>
                   <p class="font-mono text-[10px] uppercase tracking-[0.12em] mb-2" :style="`color: ${BLUE}`">Auterion · 2026</p>
                   <p class="font-mono text-[22px] font-medium leading-tight text-white">The operating system<br>for autonomous robotics</p>
@@ -290,7 +286,7 @@ const typeScale = [
       <!-- ── 02 TYPOGRAPHY ── -->
       <section>
         <p class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">02 — Typography</p>
-        <h2 class="mt-2 section-h2 text-[2rem] font-semibold">Type scale</h2>
+        <h2 class="mt-2 section-h2 text-[2rem] font-medium">Type scale</h2>
         <p class="mt-2 text-[14px] text-muted-foreground max-w-xl">
           Inter Variable throughout — display, headings, and body. Geist Mono reserved for telemetry data and code.
         </p>
@@ -306,7 +302,7 @@ const typeScale = [
       <!-- ── 03 COMPONENTS ── -->
       <section>
         <p class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">03 — Components</p>
-        <h2 class="mt-2 section-h2 text-[2rem] font-semibold">Interactive elements</h2>
+        <h2 class="mt-2 section-h2 text-[2rem] font-medium">Interactive elements</h2>
         <p class="mt-2 text-[14px] text-muted-foreground max-w-xl">
           Brand accent surfaces in interactive controls — buttons, active states, focus rings. Geist Mono reserved for telemetry and data labels.
         </p>
@@ -374,7 +370,7 @@ const typeScale = [
       <!-- ── 04 HERO DIRECTIONS ── -->
       <section>
         <p class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">04 — Hero</p>
-        <h2 class="mt-2 section-h2 text-[2rem] font-semibold">Above the fold</h2>
+        <h2 class="mt-2 section-h2 text-[2rem] font-medium">Above the fold</h2>
         <p class="mt-2 text-[14px] text-muted-foreground max-w-xl">
           Two structural directions for the hero section. Toggle the accent above to see color impact on each.
         </p>
@@ -454,11 +450,11 @@ const typeScale = [
             <div class="border-b border-border px-4 py-2.5 bg-card flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="font-mono text-[11px] text-muted-foreground">Hero D — Light theme</span>
-                <span class="rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em]" style="background: oklch(0.546 0.245 262.881); color: white;">Blue direction</span>
+                <span class="rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em]" style="background: var(--color-primitive-auterion-blue-DEFAULT); color: white;">Blue direction</span>
               </div>
               <span class="font-mono text-[10px] text-muted-foreground/60">White ground · Blue CTA · Fleet data right</span>
             </div>
-            <div data-theme="light" class="relative bg-background text-foreground overflow-hidden" style="--brand: oklch(0.546 0.245 262.881); --brand-foreground: white; --ring: oklch(0.546 0.245 262.881);">
+            <div data-theme="light" class="relative bg-background text-foreground overflow-hidden" style="--brand: var(--color-primitive-auterion-blue-DEFAULT); --brand-foreground: white; --ring: var(--color-primitive-auterion-blue-DEFAULT);">
               <!-- hairline grid, right half only -->
               <svg class="absolute right-0 top-0 h-full w-1/2 pointer-events-none" aria-hidden preserveAspectRatio="none">
                 <defs>
@@ -468,9 +464,9 @@ const typeScale = [
                 </defs>
                 <rect width="100%" height="100%" fill="url(#light-grid)"/>
                 <!-- mission trace -->
-                <path d="M 20 240 C 80 190 120 150 200 110 S 340 60 420 20" fill="none" stroke="oklch(0.546 0.245 262.881)" stroke-width="1.5" stroke-dasharray="3 9" opacity="0.4"/>
-                <circle cx="200" cy="110" r="4" fill="oklch(0.546 0.245 262.881)" opacity="0.7"/>
-                <circle cx="200" cy="110" r="14" fill="none" stroke="oklch(0.546 0.245 262.881)" stroke-width="1" opacity="0.25"/>
+                <path d="M 20 240 C 80 190 120 150 200 110 S 340 60 420 20" fill="none" stroke="var(--color-primitive-auterion-blue-DEFAULT)" stroke-width="1.5" stroke-dasharray="3 9" opacity="0.4"/>
+                <circle cx="200" cy="110" r="4" fill="var(--color-primitive-auterion-blue-DEFAULT)" opacity="0.7"/>
+                <circle cx="200" cy="110" r="14" fill="none" stroke="var(--color-primitive-auterion-blue-DEFAULT)" stroke-width="1" opacity="0.25"/>
                 <text x="218" y="106" font-family="monospace" font-size="9" fill="oklch(0.65 0 0)">47°22'N 8°32'E / ALT 128m</text>
               </svg>
 
@@ -478,24 +474,22 @@ const typeScale = [
                 <!-- left: headline -->
                 <div class="p-10 flex flex-col justify-center">
                   <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-6">01</p>
-                  <h1 class="font-sans text-[52px] font-semibold leading-[0.93] tracking-[-0.025em]">
+                  <h1 class="font-sans text-[52px] font-medium leading-[0.93] tracking-[-0.025em]">
                     The operating<br>system for<br>autonomous<br>robotics
                   </h1>
                   <p class="mt-5 text-[15px] leading-relaxed text-muted-foreground max-w-sm">
                     One platform to build, deploy and command intelligent drones at scale.
                   </p>
                   <div class="mt-8 flex items-center gap-4">
-                    <button class="inline-flex items-center gap-2 rounded-sm px-5 py-2.5 font-mono text-[13px] font-medium transition-opacity hover:opacity-90" style="background: oklch(0.546 0.245 262.881); color: white;">
-                      Get started <Icon name="arrow-right" size="xs"/>
-                    </button>
-                    <button class="font-mono text-[13px] text-muted-foreground hover:text-foreground transition-colors">Watch the demo →</button>
+                    <Button size="sm">Get started <Icon name="arrow-right" size="xs"/></Button>
+                    <Button variant="secondary" size="sm">Watch the demo</Button>
                   </div>
                 </div>
                 <!-- right: fleet status -->
                 <div class="border-l border-border/40 p-8 flex flex-col justify-center gap-1 font-mono text-[11px]">
                   <div class="flex items-center justify-between pb-2 mb-1 border-b border-border/30">
                     <span class="uppercase tracking-[0.1em] text-[9px] text-muted-foreground">Fleet · Live</span>
-                    <span class="h-1.5 w-1.5 rounded-full" style="background: oklch(0.546 0.245 262.881);"/>
+                    <span class="h-1.5 w-1.5 rounded-full" style="background: var(--color-primitive-auterion-blue-DEFAULT);"/>
                   </div>
                   <div v-for="r in [['Skyhook-01','nominal','86%'],['Falcon-02','advisory','64%'],['Raven-03','warning','18%'],['Osprey-05','nominal','92%']]"
                     :key="r[0]" class="flex items-center gap-2 py-1.5 border-b border-border/20">
@@ -578,7 +572,7 @@ const typeScale = [
           Combine the Ground toggle (Neutral / Space Cadet) with each accent to compare all combinations.
           <span v-if="bg === 'cadet' && dir === 'blue'" class="ml-2 px-1.5 py-0.5 rounded-sm font-mono text-[10px] uppercase tracking-[0.1em]" style="background: var(--brand); color: var(--brand-foreground)">Live: Space Cadet + Ultramarine</span>
         </p>
-        <div class="mt-6 grid gap-4 sm:grid-cols-3">
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
           <div class="border p-5 space-y-2"
             :class="dir === 'mono' ? 'border-foreground bg-card' : 'border-border bg-card/40'">
             <p class="font-mono text-[12px] font-medium uppercase tracking-[0.1em]"
@@ -598,32 +592,14 @@ const typeScale = [
             </ul>
           </div>
           <div class="border p-5 space-y-2"
-            :class="dir === 'amber' ? 'border-foreground bg-card' : 'border-border bg-card/40'">
-            <p class="font-mono text-[12px] font-medium uppercase tracking-[0.1em]"
-              :class="dir === 'amber' ? 'text-foreground' : 'text-muted-foreground'">
-              B — Amber
-            </p>
-            <p class="text-[13px] leading-relaxed text-muted-foreground">Amber as the sole chromatic accent. Aerospace precedent: cockpit panel illumination, NVIS-compatible displays, AMC darknight identity. No SaaS associations.</p>
-            <ul class="space-y-1 mt-3">
-              <li v-for="s in ['Aerospace-native — no SaaS association','Warm enough to read as human, not corporate','Unifies product + marketing under one accent']" :key="s"
-                class="flex items-start gap-2 text-[13px] text-muted-foreground">
-                <span class="mt-0.5">+</span> {{ s }}
-              </li>
-              <li v-for="s in ['Amber can read as caution — must not conflict with warning status','Warm on cool Space Cadet ground is a tension to manage']" :key="s"
-                class="flex items-start gap-2 text-[13px] text-muted-foreground/50">
-                <span class="mt-0.5">−</span> {{ s }}
-              </li>
-            </ul>
-          </div>
-          <div class="border p-5 space-y-2"
             :class="dir === 'blue' ? 'border-foreground bg-card' : 'border-border bg-card/40'">
             <p class="font-mono text-[12px] font-medium uppercase tracking-[0.1em]"
               :class="dir === 'blue' ? 'text-foreground' : 'text-muted-foreground'">
-              C — Ultramarine
+              B — Ultramarine
             </p>
-            <p class="text-[13px] leading-relaxed text-muted-foreground">Electric indigo-blue (#2D33E0) from the shared palette. Not IBM blue — this is bolder, more saturated, closer to Unit8's identity. On Space Cadet ground it reads as a harmonic continuation of the same hue family. Best combination: Space Cadet + Ultramarine.</p>
+            <p class="text-[13px] leading-relaxed text-muted-foreground">Electric indigo-blue from the auterion-blue token scale. Not IBM blue — bolder, more saturated. On Space Cadet ground it reads as a harmonic continuation of the same hue family. Best combination: Space Cadet + Ultramarine.</p>
             <ul class="space-y-1 mt-3">
-              <li v-for="s in ['Works on light and dark','Highest CTA contrast — unambiguous','Unit8/Anduril energy — not SaaS-standard blue','Space Cadet ground amplifies it: same hue family']" :key="s"
+              <li v-for="s in ['Works on light and dark','Highest CTA contrast — unambiguous','Distinct from Anduril/Helsing — not SaaS-standard blue','Space Cadet ground amplifies it: same hue family']" :key="s"
                 class="flex items-start gap-2 text-[13px] text-muted-foreground">
                 <span class="mt-0.5">+</span> {{ s }}
               </li>
@@ -651,7 +627,7 @@ const typeScale = [
       <!-- ── 06 VOICE ── -->
       <section class="border-t border-border/60 pt-12">
         <p class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">06 — Voice</p>
-        <h2 class="mt-2 section-h2 text-[2rem] font-semibold">In use</h2>
+        <h2 class="mt-2 section-h2 text-[2rem] font-medium">In use</h2>
         <p class="mt-2 text-[14px] text-muted-foreground max-w-xl">
           The system speaking for itself — type, color, and data working together.
         </p>
@@ -702,14 +678,15 @@ const typeScale = [
 
         <!-- second moment: large quote -->
         <div class="mt-6 relative overflow-hidden rounded-sm border border-border/40 p-10 lg:p-14"
-          :style="dir === 'blue' ? 'background: oklch(0.45 0.28 264)' : ''">
+          :style="dir === 'blue' ? 'background: var(--color-primitive-auterion-blue-DEFAULT)' : ''">
           <p class="relative z-10 max-w-3xl"
-            :class="dir === 'blue' ? 'text-white/90' : ''"
+            :style="dir === 'blue' ? 'color: var(--color-primitive-white); opacity: 0.9' : ''"
             style="font-family: 'Inter Variable', Inter, system-ui; font-variation-settings: 'opsz' 32; font-size: clamp(1.25rem, 2.5vw, 1.875rem); font-weight: 500; line-height: 1.3; letter-spacing: -0.025em;">
             "From AuterionOS on the flight controller to Mission Control on the tablet, one token set, one type ramp, one truth."
           </p>
           <p class="mt-6 font-mono text-[11px]"
-            :class="dir === 'blue' ? 'text-white/50' : 'text-muted-foreground'">
+            :style="dir === 'blue' ? 'color: var(--color-primitive-white); opacity: 0.5' : ''"
+            :class="dir !== 'blue' ? 'text-muted-foreground' : ''">
             — Design principle #1: code is the source of truth
           </p>
         </div>
@@ -764,7 +741,7 @@ const typeScale = [
   font-family: 'Inter Variable', Inter, system-ui, sans-serif;
   font-variation-settings: 'opsz' 48;
   font-size: clamp(3rem, 7.5vw, 6rem);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 0.93;
   letter-spacing: -0.04em;
 }

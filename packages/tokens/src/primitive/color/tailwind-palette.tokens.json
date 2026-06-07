@@ -329,6 +329,21 @@
         "shade":   { "$type": "color", "$value": "oklch(0.205 0.017 265)" },
         "surface": { "$type": "color", "$value": "oklch(0.255 0.020 265)" },
         "edge":    { "$type": "color", "$value": "oklch(0.315 0.024 265)" }
+      },
+
+      "cadet": {
+        "$description": "Auterion brand neutral — cyan-grey at ~200° hue. Fills the gap between achromatic grays and the ultramarine accent. Used for muted text on Space Cadet ground, editorial surfaces, and secondary type. Low chroma keeps it clearly distinct from advisory cyan (~185-215° at 0.14+ chroma).",
+        "50":  { "$type": "color", "$value": "oklch(0.97  0.005 200)" },
+        "100": { "$type": "color", "$value": "oklch(0.95  0.008 200)" },
+        "200": { "$type": "color", "$value": "oklch(0.91  0.012 200)" },
+        "300": { "$type": "color", "$value": "oklch(0.88  0.015 200)" },
+        "400": { "$type": "color", "$value": "oklch(0.75  0.015 200)" },
+        "500": { "$type": "color", "$value": "oklch(0.63  0.010 200)" },
+        "600": { "$type": "color", "$value": "oklch(0.60  0.035 200)" },
+        "700": { "$type": "color", "$value": "oklch(0.48  0.012 200)" },
+        "800": { "$type": "color", "$value": "oklch(0.38  0.010 200)" },
+        "900": { "$type": "color", "$value": "oklch(0.28  0.008 200)" },
+        "950": { "$type": "color", "$value": "oklch(0.20  0.006 200)" }
       }
     }
   }

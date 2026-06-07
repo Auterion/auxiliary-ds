@@ -20,6 +20,10 @@ const props = defineProps<
     invalid?: boolean;
     /** Trailing unit label (e.g. "m", "kts", "MHz") — decorative, shown after the value. */
     unit?: string;
+    /** Accessible label for the decrement button. Override to match the field's operational context (e.g. "Minus"). Default: "Decrease". */
+    decrementLabel?: string;
+    /** Accessible label for the increment button. Override to match the field's operational context (e.g. "Plus"). Default: "Increase". */
+    incrementLabel?: string;
     class?: HTMLAttributes['class'];
   }
 >();
@@ -37,7 +41,7 @@ const rootClass = computed(() => cn(styles.value.root(), props.class));
 
 <template>
   <NumberFieldRoot v-bind="forwarded" :class="rootClass">
-    <NumberFieldDecrement :class="styles.button()" aria-label="Decrease">
+    <NumberFieldDecrement :class="styles.button()" :aria-label="decrementLabel ?? 'Decrease'">
       <svg
         width="16"
         height="16"
@@ -57,7 +61,7 @@ const rootClass = computed(() => cn(styles.value.root(), props.class));
 
     <span v-if="unit" :class="styles.unit()" aria-hidden="true">{{ unit }}</span>
 
-    <NumberFieldIncrement :class="styles.button()" aria-label="Increase">
+    <NumberFieldIncrement :class="styles.button()" :aria-label="incrementLabel ?? 'Increase'">
       <svg
         width="16"
         height="16"

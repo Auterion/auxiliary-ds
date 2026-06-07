@@ -95,8 +95,10 @@ watchEffect(() => {
 
 // --- Color palette construction (driven by @auxiliary/tokens) ---
 const PALETTE_STEPS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] as const;
-// The grayscale spine + the status hues the operational palette actually draws from.
+// Brand scale first, then grayscale spine + status hues the operational palette draws from.
 const RAMP_FAMILIES = [
+  'auterion-blue',
+  'cadet',
   'zinc', 'neutral', 'red', 'orange', 'amber', 'yellow',
   'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue',
 ] as const;
@@ -105,6 +107,12 @@ const primitiveRamps = RAMP_FAMILIES.map((family) => {
   const ramp = primitive[family] ?? {};
   return { family, steps: PALETTE_STEPS.map((step) => ({ step, value: ramp[step] ?? 'transparent' })) };
 });
+// Named aliases unique to auterion-blue (brand stops not on the 50-950 ramp).
+const AUTERION_BLUE_ALIASES = ['DEFAULT', 'light', 'dark', 'tint', 'night', 'shade', 'surface', 'edge'] as const;
+const auterionBlueAliases = AUTERION_BLUE_ALIASES.map((alias) => ({
+  alias,
+  value: (primitive['auterion-blue'] ?? {})[alias] ?? 'transparent',
+}));
 
 // Reverse-lookup: which primitive step a resolved semantic value came from.
 const primitiveByValue = new Map<string, string>();
@@ -113,8 +121,26 @@ for (const [family, ramp] of Object.entries(tokens.color.primitive)) {
   else for (const [step, value] of Object.entries(ramp)) primitiveByValue.set(value, `${family}.${step}`);
 }
 const SEMANTIC_ROLES = [
-  'background', 'foreground', 'primary', 'secondary', 'muted', 'accent',
-  'border', 'ring', 'alarm', 'warning', 'caution', 'advisory', 'nominal',
+  // Surface
+  'background', 'foreground',
+  'card', 'card-foreground',
+  'popover', 'popover-foreground',
+  // Interactive
+  'primary', 'primary-foreground',
+  'secondary', 'secondary-foreground',
+  'muted', 'muted-foreground',
+  'accent', 'accent-foreground',
+  // Brand
+  'brand', 'brand-foreground',
+  // Utility
+  'border', 'input', 'ring',
+  'destructive', 'destructive-foreground',
+  // Status ladder
+  'alarm', 'alarm-foreground',
+  'warning', 'warning-foreground',
+  'caution', 'caution-foreground',
+  'advisory', 'advisory-foreground',
+  'nominal', 'nominal-foreground',
 ] as const;
 const activeThemeName = computed<'light' | 'dark' | 'sunlight' | 'darknight'>(() => {
   if (theme.value !== 'system') return theme.value;
@@ -1051,6 +1077,27 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
                 :style="{ backgroundColor: sw.value }"
                 :title="`${ramp.family}.${sw.step} — ${sw.value}`"
               />
+            </div>
+          </div>
+        </div>
+
+        <!-- auterion-blue named aliases (brand stops not on the 50-950 ramp) -->
+        <div class="mt-3">
+          <div class="flex items-center gap-2">
+            <span class="w-24 shrink-0 font-mono text-[10px] text-muted-foreground/60">auterion-blue</span>
+            <div class="flex flex-1 gap-0.5">
+              <div
+                v-for="a in auterionBlueAliases"
+                :key="a.alias"
+                class="flex flex-col items-center gap-0.5"
+              >
+                <div
+                  class="h-7 w-full min-w-[36px] rounded-sm border border-border/40"
+                  :style="{ backgroundColor: a.value }"
+                  :title="`auterion-blue.${a.alias} — ${a.value}`"
+                />
+                <span class="font-mono text-[9px] text-muted-foreground">{{ a.alias }}</span>
+              </div>
             </div>
           </div>
         </div>

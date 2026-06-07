@@ -13,13 +13,13 @@ import { Icon } from '@auxiliary/icons';
 // The brand token (--brand) maps to auterion-blue.DEFAULT in all themes.
 // Dark mode backgrounds and surfaces use the night/shade/surface/edge slots.
 const blueRamp = [
-  { shade: 'night',   val: 'oklch(0.17 0.06 265)',  label: 'Night',   note: 'Dark mode background'   },
-  { shade: 'shade',   val: 'oklch(0.21 0.07 265)',  label: 'Shade',   note: 'Dark mode card'          },
-  { shade: 'surface', val: 'oklch(0.25 0.08 265)',  label: 'Surface', note: 'Dark mode secondary'     },
-  { shade: 'edge',    val: 'oklch(0.30 0.09 265)',  label: 'Edge',    note: 'Dark mode border'        },
-  { shade: 'DEFAULT', val: 'oklch(0.46 0.285 265)', label: 'Brand',   note: 'var(--brand)'            },
-  { shade: 'light',   val: 'oklch(0.62 0.22 264)',  label: 'Light',   note: 'Focus ring / tint'       },
-  { shade: 'tint',    val: 'oklch(0.96 0.018 264)', label: 'Tint',    note: 'Light mode hover surface'},
+  { shade: 'night',   val: 'var(--color-primitive-auterion-blue-night)',   label: 'Night',   note: 'Dark mode background'    },
+  { shade: 'shade',   val: 'var(--color-primitive-auterion-blue-shade)',   label: 'Shade',   note: 'Dark mode card'           },
+  { shade: 'surface', val: 'var(--color-primitive-auterion-blue-surface)', label: 'Surface', note: 'Dark mode secondary'      },
+  { shade: 'edge',    val: 'var(--color-primitive-auterion-blue-edge)',    label: 'Edge',    note: 'Dark mode border'         },
+  { shade: 'DEFAULT', val: 'var(--color-primitive-auterion-blue-DEFAULT)', label: 'Brand',   note: 'var(--brand)'             },
+  { shade: 'light',   val: 'var(--color-primitive-auterion-blue-light)',   label: 'Light',   note: 'Focus ring / tint'        },
+  { shade: 'tint',    val: 'var(--color-primitive-auterion-blue-tint)',    label: 'Tint',    note: 'Light mode hover surface' },
 ] as const;
 
 const statusLevels = [
