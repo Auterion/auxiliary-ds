@@ -25,7 +25,7 @@ const actions = [
 
     <!-- OSD: telemetry burn-in + reticle -->
     <div class="pointer-events-none absolute inset-x-0 top-16 flex justify-center">
-      <p class="ix-label flex items-center gap-2 tabular-nums !text-white/85" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8)">
+      <p class="ix-label flex items-center gap-2 tabular-nums !text-[13px] !text-white/85" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8)">
         <span>FPS {{ m.fps }}</span><span class="opacity-40">/</span>
         <span>Z {{ m.zoom.toFixed(1) }}</span><span class="opacity-40">/</span>
         <span>{{ tracking ? 'TRACK ACTIVE' : 'TRACK INACTIVE' }}</span>
@@ -131,7 +131,7 @@ const actions = [
         <button class="amc-glass flex h-11 w-11 items-center justify-center rounded-full"><Icon name="house" size="sm" /></button>
         <button class="amc-glass flex h-11 w-11 items-center justify-center rounded-full"><Icon name="gear" size="sm" /></button>
       </div>
-      <div class="amc-glass relative h-[150px] w-[230px] overflow-hidden rounded-xl p-1">
+      <div class="amc-glass relative h-[140px] w-[200px] overflow-hidden rounded-xl p-1">
         <div class="map-mini h-full w-full rounded-lg" />
         <svg viewBox="0 0 230 150" class="absolute inset-1 h-[calc(100%-8px)] w-[calc(100%-8px)]" aria-hidden="true">
           <path d="M30 120 C 80 90, 90 60, 150 50 S 210 30, 220 20" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-dasharray="2 5" />
@@ -155,8 +155,8 @@ const actions = [
       </div>
 
       <!-- compass rose -->
-      <div class="amc-glass flex h-[136px] w-[136px] items-center justify-center rounded-full">
-        <svg viewBox="-60 -60 120 120" class="h-[120px] w-[120px]">
+      <div class="amc-glass flex h-[108px] w-[108px] items-center justify-center rounded-full">
+        <svg viewBox="-60 -60 120 120" class="h-[96px] w-[96px]">
           <circle r="54" fill="none" stroke="color-mix(in oklab, var(--foreground) 14%, transparent)" stroke-width="1" />
           <g stroke="color-mix(in oklab, var(--foreground) 40%, transparent)" stroke-width="1">
             <line v-for="t in 12" :key="t" :transform="`rotate(${t * 30})`" x1="0" y1="-54" x2="0" y2="-48" />

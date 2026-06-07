@@ -47,7 +47,7 @@ function rssiLabel(rssi: number | null): string {
     class="suite-root flex h-dvh w-full overflow-hidden bg-background text-foreground"
   >
     <!-- ╭─ Console rail ──────────────────────────────────────────╮ -->
-    <aside class="flex w-60 shrink-0 flex-col border-r border-border bg-background">
+    <aside class="flex w-60 shrink-0 flex-col border-r border-border bg-card">
       <!-- System mark + org -->
       <div class="flex items-center gap-2.5 border-b border-border px-4 py-3.5">
         <div
@@ -395,7 +395,7 @@ v-for="row in [
               <div>
                 <div class="mb-1 flex items-baseline justify-between">
                   <span class="ix-label">REQUESTS</span>
-                  <TelemetryValue :value="24" unit="/s" size="md" />
+                  <TelemetryValue :value="24" unit="/s" :precision="0" size="md" />
                 </div>
                 <div class="ix-grid rounded-md">
                   <Sparkline :data="selected.metrics.requests" variant="bar" stroke="color-mix(in oklab, var(--foreground) 80%, transparent)" :height="40" />

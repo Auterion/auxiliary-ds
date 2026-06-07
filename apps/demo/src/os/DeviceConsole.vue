@@ -113,7 +113,7 @@ const sectionTitle = computed(() => NAV.find((n) => n.key === section.value)?.la
 <template>
   <div :data-theme="theme" data-register="operational" class="os-root flex h-dvh w-full overflow-hidden bg-background text-foreground">
     <!-- ╭─ Console rail ──────────────────────────────────────────╮ -->
-    <aside class="flex w-60 shrink-0 flex-col border-r border-border bg-background">
+    <aside class="flex w-60 shrink-0 flex-col border-r border-border bg-card">
       <!-- Device mark + identity -->
       <div class="flex items-center gap-2.5 border-b border-border px-4 py-3.5">
         <div
@@ -255,11 +255,12 @@ v-for="t in (['dark','light'] as const)" :key="t" type="button"
               </div>
               <div class="relative mx-auto mt-3 h-[104px] w-[104px]">
                 <svg viewBox="0 0 100 100" class="h-full w-full -rotate-90">
-                  <circle cx="50" cy="50" r="42" fill="none" stroke="var(--secondary)" stroke-width="9" />
-                  <circle cx="50" cy="50" r="42" fill="none" :stroke="gaugeColor(v.level)" stroke-width="9" stroke-linecap="round" :stroke-dasharray="`${(v.value / 100) * C} ${C}`" />
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="color-mix(in oklab, var(--foreground) 8%, transparent)" stroke-width="5" />
+                  <circle cx="50" cy="50" r="42" fill="none" :stroke="gaugeColor(v.level)" stroke-width="5" stroke-linecap="round" :stroke-dasharray="`${(v.value / 100) * C} ${C}`" />
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <TelemetryValue :value="v.value" :unit="v.unit" size="md" :level="v.level === 'caution' ? 'caution' : null" />
+                  <span class="font-mono text-[22px] font-semibold tabular-nums leading-none" :style="v.level !== 'nominal' ? `color: var(--${v.level})` : ''">{{ v.value }}</span>
+                  <span class="mt-0.5 font-mono text-[11px] tabular-nums text-muted-foreground">{{ v.unit }}</span>
                 </div>
               </div>
               <div class="ix-grid mt-2 h-7 rounded-md" style="color: var(--foreground)">
@@ -285,7 +286,7 @@ v-for="n in nodes" :key="n.id" :x1="center.x" :y1="center.y" :x2="n.x" :y2="n.y"
               </svg>
               <!-- center: Skynode -->
               <div class="absolute flex flex-col items-center gap-1" :style="{ left: `${center.x / 720 * 100}%`, top: `${center.y / 392 * 100}%`, transform: 'translate(-50%,-50%)' }">
-                <div class="flex h-16 w-16 items-center justify-center rounded-2xl border border-border" style="background: linear-gradient(150deg, color-mix(in oklab, var(--foreground) 12%, var(--card)), var(--card))">
+                <div class="flex h-16 w-16 items-center justify-center rounded-xl border border-border" style="background: linear-gradient(150deg, color-mix(in oklab, var(--foreground) 12%, var(--card)), var(--card))">
                   <Icon name="drone" size="lg" />
                 </div>
                 <span class="ix-label rounded-md bg-secondary px-2 py-0.5 text-foreground">SKYNODE</span>

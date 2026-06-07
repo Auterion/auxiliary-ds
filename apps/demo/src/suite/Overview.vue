@@ -21,10 +21,10 @@ function seriesGen(seed: number, n: number, base: number, amp: number) {
 }
 
 const stats = [
-  { label: 'Flights · 30d', value: 695, unit: '', delta: '+75%', up: true, spark: seriesGen(3, 30, 12, 8) },
-  { label: 'Flight hours', value: 1284, unit: 'h', delta: '+12%', up: true, spark: seriesGen(9, 30, 30, 10) },
-  { label: 'Avg mission', value: 18.4, unit: 'min', delta: '−4%', up: false, spark: seriesGen(15, 30, 18, 6) },
-  { label: 'Missions today', value: 14, unit: '', delta: '+3', up: true, spark: seriesGen(21, 30, 8, 7) },
+  { label: 'Flights · 30d', value: 695, unit: '', precision: 0, delta: '+75%', up: true, spark: seriesGen(3, 30, 12, 8) },
+  { label: 'Flight hours', value: 1284, unit: 'h', precision: 0, delta: '+12%', up: true, spark: seriesGen(9, 30, 30, 10) },
+  { label: 'Avg mission', value: 18.4, unit: 'min', precision: 1, delta: '−4%', up: false, spark: seriesGen(15, 30, 18, 6) },
+  { label: 'Missions today', value: 14, unit: '', precision: 0, delta: '+3', up: true, spark: seriesGen(21, 30, 8, 7) },
 ];
 
 const flightTrend = seriesGen(42, 30, 16, 9);
@@ -119,7 +119,7 @@ v-for="t in (['dark','light'] as const)" :key="t" type="button"
                 <Icon :name="s.up ? 'arrow-up' : 'arrow-down'" size="xs" />{{ s.delta }}
               </span>
             </div>
-            <TelemetryValue :value="s.value" :unit="s.unit" size="lg" />
+            <TelemetryValue :value="s.value" :unit="s.unit" :precision="s.precision" size="lg" />
             <div class="ix-grid -mx-1 h-7 rounded-md" style="color: var(--foreground)">
               <Sparkline :data="s.spark" :height="28" stroke="color-mix(in oklab, var(--foreground) 80%, transparent)" />
             </div>
@@ -133,7 +133,7 @@ v-for="t in (['dark','light'] as const)" :key="t" type="button"
               <span class="ix-label">FLIGHT ACTIVITY</span>
               <span class="ix-label-sm hidden text-muted-foreground/70 sm:inline">SORTIES PER DAY · ALL SITES</span>
               <span class="ml-auto flex items-baseline gap-1.5">
-                <TelemetryValue :value="695" unit="" size="md" />
+                <TelemetryValue :value="695" unit="" :precision="0" size="md" />
                 <span class="ix-label-sm">30D TOTAL</span>
               </span>
             </div>
@@ -188,7 +188,7 @@ v-for="seg in donut" :key="seg.level"
               <span class="text-muted-foreground"> {{ a.text }}</span>
             </p>
             <span class="font-mono text-[11px] tabular-nums text-muted-foreground">{{ a.time }}</span>
-            <StatusBadge :level="a.level" size="sm" dot :label="a.level" />
+            <StatusBadge :level="a.level" size="sm" :label="a.level" />
           </div>
         </section>
       </div>

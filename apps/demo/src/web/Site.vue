@@ -8,18 +8,20 @@ import Solutions from './pages/Solutions.vue';
 import Defense from './pages/Defense.vue';
 import Developers from './pages/Developers.vue';
 import Company from './pages/Company.vue';
+import Brand from './pages/Brand.vue';
 
-type Page = 'home' | 'products' | 'solutions' | 'defense' | 'developers' | 'company';
-const theme = ref<'dark' | 'light'>('dark');
+type Page = 'home' | 'products' | 'solutions' | 'defense' | 'developers' | 'company' | 'brand';
+const theme = ref<'dark' | 'light'>('light');
 const page = ref<Page>('home');
 
-const PAGES = { home: Home, products: Products, solutions: Solutions, defense: Defense, developers: Developers, company: Company };
+const PAGES = { home: Home, products: Products, solutions: Solutions, defense: Defense, developers: Developers, company: Company, brand: Brand };
 const NAV: { key: Page; label: string }[] = [
   { key: 'products', label: 'Products' },
   { key: 'solutions', label: 'Solutions' },
   { key: 'defense', label: 'Defense' },
   { key: 'developers', label: 'Developers' },
   { key: 'company', label: 'Company' },
+  { key: 'brand', label: 'Brand' },
 ];
 
 function go(p: Page) {
@@ -38,34 +40,46 @@ const footerCols = [
 
 <template>
   <div :data-theme="theme" class="web-root web-scroll h-dvh overflow-auto bg-background text-foreground">
-    <!-- nav -->
-    <header class="sticky top-0 z-30 border-b border-border/70 bg-background/80 backdrop-blur-xl">
-      <div class="mx-auto flex h-16 max-w-6xl items-center gap-6 px-6">
-        <button class="flex items-center gap-2 font-semibold tracking-tight" @click="go('home')">
-          <span class="flex h-7 w-7 items-center justify-center rounded-lg" style="background: var(--foreground); color: var(--background)"><Icon name="drone" size="sm" /></span>
-          Auterion
+
+    <!-- NAV — white, brand-blue active + CTA -->
+    <header class="site-nav sticky top-0 z-30 bg-background border-b border-border py-3 px-6">
+      <div class="mx-auto flex h-10 max-w-7xl items-center gap-8">
+
+        <!-- wordmark -->
+        <button class="flex items-center gap-2 shrink-0 focus-visible:outline-none" @click="go('home')">
+          <span style="color: var(--brand)">
+            <Icon name="drone" size="sm" />
+          </span>
+          <span class="font-mono text-[13px] font-semibold uppercase tracking-[0.12em] text-foreground">Auterion</span>
         </button>
-        <nav class="hidden items-center gap-1 md:flex">
+
+        <!-- nav links -->
+        <nav class="hidden items-center md:flex">
           <button
             v-for="l in NAV"
             :key="l.key"
-            class="rounded-lg px-3 py-1.5 text-[14px] transition-colors"
-            :class="page === l.key ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'"
+            class="px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.1em] transition-colors focus-visible:outline-none"
+            :class="page === l.key ? '' : 'text-muted-foreground hover:text-foreground'"
+            :style="page === l.key ? 'color: var(--brand); font-weight: 500' : ''"
             @click="go(l.key)"
-          >
-            {{ l.label }}
-          </button>
+          >{{ l.label }}</button>
         </nav>
-        <div class="ml-auto flex items-center gap-2">
-          <div class="flex items-center gap-0.5 rounded-lg border border-border bg-card p-0.5">
+
+        <div class="ml-auto flex items-center gap-3">
+          <!-- theme toggle -->
+          <div class="flex items-center border border-border">
             <button
-v-for="t in (['dark','light'] as const)" :key="t" type="button"
-              class="rounded-md px-2 py-1 text-[12px] capitalize transition-colors"
-              :class="theme === t ? 'bg-secondary text-foreground' : 'text-muted-foreground'"
+              v-for="t in (['light','dark'] as const)" :key="t" type="button"
+              class="px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.08em] transition-colors"
+              :class="theme === t ? 'bg-muted text-foreground font-medium' : 'text-muted-foreground'"
               @click="theme = t">{{ t }}</button>
           </div>
-          <button class="hidden text-[14px] text-muted-foreground transition-colors hover:text-foreground sm:block">Sign in</button>
-          <Button size="sm">Get started</Button>
+          <button class="hidden font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:text-foreground sm:block">Sign in</button>
+          <button
+            class="px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.1em] font-medium text-white transition-all hover:opacity-90 focus-visible:outline-none"
+            style="background: var(--brand)"
+            @click="go('products')"
+          >Get started</button>
         </div>
       </div>
     </header>
@@ -74,27 +88,39 @@ v-for="t in (['dark','light'] as const)" :key="t" type="button"
       <component :is="PAGES[page]" />
     </main>
 
-    <!-- footer -->
-    <footer class="border-t border-border/60 bg-card/30">
-      <div class="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-12 md:grid-cols-5">
+    <!-- FOOTER — clean white -->
+    <footer class="bg-background border-t border-border">
+      <div class="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-6 py-16 md:grid-cols-5">
         <div class="col-span-2 md:col-span-1">
-          <button class="flex items-center gap-2 font-semibold" @click="go('home')">
-            <span class="flex h-7 w-7 items-center justify-center rounded-lg" style="background: var(--foreground); color: var(--background)"><Icon name="drone" size="sm" /></span>
-            Auterion
+          <button class="flex items-center gap-2 focus-visible:outline-none" @click="go('home')">
+            <span style="color: var(--brand)">
+              <Icon name="drone" size="sm" />
+            </span>
+            <span class="font-mono text-[13px] font-semibold uppercase tracking-[0.12em] text-foreground">Auterion</span>
           </button>
-          <p class="mt-3 text-[13px] text-muted-foreground">The open software platform for autonomous robotics.</p>
+          <p class="mt-4 font-mono text-[12px] leading-relaxed text-muted-foreground">
+            The open software platform<br>for autonomous vehicles.
+          </p>
+          <div class="mt-6 flex items-center gap-1.5">
+            <span class="h-1.5 w-1.5 rounded-full" style="background: var(--nominal)" />
+            <span class="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">All systems nominal</span>
+          </div>
         </div>
         <div v-for="col in footerCols" :key="col.h">
-          <p class="text-[13px] font-semibold">{{ col.h }}</p>
-          <ul class="mt-3 space-y-2">
-            <li v-for="it in col.items" :key="it"><a class="text-[13px] text-muted-foreground transition-colors hover:text-foreground">{{ it }}</a></li>
+          <p class="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">{{ col.h }}</p>
+          <ul class="mt-4 space-y-2.5">
+            <li v-for="it in col.items" :key="it">
+              <a class="font-mono text-[13px] text-foreground transition-opacity hover:text-muted-foreground cursor-pointer">{{ it }}</a>
+            </li>
           </ul>
         </div>
       </div>
-      <div class="border-t border-border/60">
-        <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-5 text-[12px] text-muted-foreground">
-          <span>© 2026 Auterion AG. All rights reserved.</span>
-          <span class="flex gap-4"><a class="hover:text-foreground">Privacy</a><a class="hover:text-foreground">Terms</a><a class="hover:text-foreground">Cookies</a></span>
+      <div class="border-t border-border">
+        <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-5">
+          <span class="font-mono text-[11px] text-muted-foreground">© 2026 Auterion AG · Zürich · Switzerland</span>
+          <span class="flex gap-5">
+            <a v-for="l in ['Privacy','Terms','Security','Status']" :key="l" class="font-mono text-[11px] text-muted-foreground transition-colors hover:text-foreground cursor-pointer">{{ l }}</a>
+          </span>
         </div>
       </div>
     </footer>
@@ -103,7 +129,15 @@ v-for="t in (['dark','light'] as const)" :key="t" type="button"
 
 <style scoped>
 .web-root {
-  background-image: radial-gradient(color-mix(in oklab, var(--foreground) 4%, transparent) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-image: none;
+}
+
+/* Inter Variable for all page headings — overrides font-mono utility on h1/h2/h3.
+ * :deep() targets child component elements. Specificity beats .font-mono (class). */
+:deep(h1),
+:deep(h2),
+:deep(h3) {
+  font-family: 'Inter Variable', var(--font-sans);
+  letter-spacing: -0.03em;
 }
 </style>

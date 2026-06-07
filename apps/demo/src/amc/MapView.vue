@@ -41,8 +41,22 @@ const rungs = [20, 10, -10, -20];
       <circle :cx="vehicle.x" :cy="vehicle.y" r="320" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-dasharray="6 8" opacity="0.4" />
       <path :d="pathD" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-dasharray="2 7" stroke-linecap="round" opacity="0.95" />
       <g v-for="(p, i) in path" :key="i">
-        <circle :cx="p[0]" :cy="p[1]" r="9" fill="color-mix(in oklab, var(--card) 82%, transparent)" stroke="var(--brand)" stroke-width="1.5" :opacity="i < m.wp ? 1 : 0.55" />
-        <text :x="p[0]" :y="p[1] + 3.5" text-anchor="middle" font-size="10" font-family="ui-monospace, monospace" fill="var(--foreground)">{{ i + 1 }}</text>
+        <circle
+          :cx="p[0]" :cy="p[1]"
+          :r="i === m.wp ? 14 : 9"
+          :fill="i === m.wp ? 'var(--brand)' : i < m.wp ? 'color-mix(in oklab, var(--foreground) 50%, transparent)' : 'color-mix(in oklab, var(--card) 82%, transparent)'"
+          :stroke="i === m.wp ? 'var(--brand)' : i < m.wp ? 'var(--foreground)' : 'var(--muted-foreground)'"
+          :stroke-width="i === m.wp ? 2 : 1.5"
+          :opacity="i > m.wp ? 0.5 : 1"
+        />
+        <text
+          :x="p[0]" :y="p[1] + 4"
+          text-anchor="middle"
+          :font-size="i === m.wp ? 11 : 9"
+          font-family="ui-monospace, monospace"
+          :fill="i === m.wp ? 'var(--brand-foreground)' : i < m.wp ? 'var(--foreground)' : 'var(--muted-foreground)'"
+          :opacity="i > m.wp ? 0.5 : 1"
+        >{{ i + 1 }}</text>
       </g>
       <g :transform="`translate(${home[0]}, ${home[1]})`">
         <circle r="13" fill="color-mix(in oklab, var(--card) 85%, transparent)" stroke="var(--nominal)" stroke-width="1.5" />

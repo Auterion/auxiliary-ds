@@ -304,6 +304,17 @@
         "800": { "$type": "color", "$value": "oklch(0.455 0.188 13.697)" },
         "900": { "$type": "color", "$value": "oklch(0.41 0.159 10.272)" },
         "950": { "$type": "color", "$value": "oklch(0.271 0.105 12.094)" }
+      },
+
+      "auterion-blue": {
+        "DEFAULT": { "$type": "color", "$value": "oklch(0.46 0.285 265)" },
+        "light":   { "$type": "color", "$value": "oklch(0.62 0.22 264)" },
+        "dark":    { "$type": "color", "$value": "oklch(0.34 0.22 265)" },
+        "tint":    { "$type": "color", "$value": "oklch(0.96 0.018 264)" },
+        "night":   { "$type": "color", "$value": "oklch(0.17 0.06 265)" },
+        "shade":   { "$type": "color", "$value": "oklch(0.21 0.07 265)" },
+        "surface": { "$type": "color", "$value": "oklch(0.25 0.08 265)" },
+        "edge":    { "$type": "color", "$value": "oklch(0.30 0.09 265)" }
       }
     }
   }

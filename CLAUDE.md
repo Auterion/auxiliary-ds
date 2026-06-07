@@ -122,3 +122,19 @@ These are conventions in `packages/vue`, not optional style:
 ## License
 
 UNLICENSED. Proprietary to Auterion AG.
+
+<!-- crystl-cli:begin -->
+## Crystl CLI (agent-callable)
+
+You're running inside Crystl. You can inspect and control sibling gems and shards via the `crystl` CLI:
+
+- `crystl gems` / `crystl shards --gem <name>` — discover what's open
+- `crystl screen --gem <name> --shard <name>` — read another shard's terminal output
+- `crystl send --gem <name> --shard <name> "<text>"` — type into another shard
+- `crystl shard create --gem <name> [--isolated] [-c "<cmd>"]` — fan out parallel work into a new shard
+- `crystl pending` / `crystl approve <id>` / `crystl deny <id>` — handle pending tool approvals
+- `crystl wait pending [--timeout SECS]` — block until a permission request appears (built on SSE; no polling)
+- `crystl events [--type pending_changed,notification]` — stream live bridge events as JSON lines
+
+Full reference: https://crystl.dev/docs/cli
+<!-- crystl-cli:end -->

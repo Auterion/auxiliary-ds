@@ -4,12 +4,14 @@ import SuiteApp from './suite/SuiteApp.vue';
 import MissionControl from './amc/MissionControl.vue';
 import DeviceConsole from './os/DeviceConsole.vue';
 import Site from './web/Site.vue';
+import Brand from './brand/Brand.vue';
 import Gallery from './App.vue';
 
-type View = 'suite' | 'amc' | 'os' | 'web' | 'gallery';
-const view = ref<View>('suite');
+type View = 'suite' | 'amc' | 'os' | 'web' | 'brand' | 'gallery';
+const view = ref<View>('brand');
 
 const PAGES: { key: View; label: string }[] = [
+  { key: 'brand', label: 'Brand' },
   { key: 'web', label: 'auterion.com' },
   { key: 'suite', label: 'Suite' },
   { key: 'amc', label: 'Mission Control' },
@@ -19,7 +21,8 @@ const PAGES: { key: View; label: string }[] = [
 </script>
 
 <template>
-  <SuiteApp v-if="view === 'suite'" />
+  <Brand v-if="view === 'brand'" />
+  <SuiteApp v-else-if="view === 'suite'" />
   <MissionControl v-else-if="view === 'amc'" />
   <DeviceConsole v-else-if="view === 'os'" />
   <Site v-else-if="view === 'web'" />

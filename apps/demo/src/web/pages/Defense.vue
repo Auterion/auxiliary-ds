@@ -1,92 +1,240 @@
+/* Hallmark · macrostructure: Swiss-Minimal · tone: clean-professional · anchor: white+blue-accent */
 <script setup lang="ts">
-import { Button, Badge } from '@auxiliary/vue';
-import { Icon } from '@auxiliary/icons';
+import { inject } from 'vue';
 import WebHero from '../WebHero.vue';
+import { Button } from '@auxiliary/vue';
+import { Icon } from '@auxiliary/icons';
+
+const navigate = inject<(p: string) => void>('navigate', () => {});
+
+const trustItems = [
+  { label: '30+ allied nations' },
+  { label: 'AES-256 encryption' },
+  { label: 'NDAA compliant' },
+  { label: '0 cloud required' },
+];
 
 const capabilities = [
-  { icon: 'lock', name: 'Contested environments', blurb: 'Operate through GPS denial, jamming and lost links with on-board autonomy and resilient mesh datalinks.' },
-  { icon: 'drone', name: 'On-device AI', blurb: 'Detection, tracking and re-identification run at the edge — no cloud dependency in the field.' },
-  { icon: 'bars', name: 'Secure datalink', blurb: 'End-to-end encrypted C2 and video, with spectrum agility and anti-tamper key management.' },
-  { icon: 'circle-check', name: 'NDAA & Blue UAS', blurb: 'Trusted supply chain and compliant hardware, cleared for government and allied operations.' },
+  {
+    icon: 'bars' as const,
+    title: 'Contested Environments',
+    description: 'Full autonomy under GPS denial, jamming, and lost-link conditions. On-board intelligence keeps missions on task when connectivity drops.',
+  },
+  {
+    icon: 'gear' as const,
+    title: 'On-device AI',
+    description: 'Detection, tracking, and re-identification execute entirely at the edge — no cloud dependency, no round-trip latency, no single point of failure.',
+  },
+  {
+    icon: 'lock' as const,
+    title: 'Secure Datalink',
+    description: 'AES-256 end-to-end C2 and video. Spectrum-agile mesh with anti-tamper key management and zero-trust node authentication.',
+  },
+  {
+    icon: 'circle-info' as const,
+    title: 'Open Architecture',
+    description: 'Standards-based interfaces (STANAG 4586, MAVLink) enable fast integration with existing force assets and allied systems.',
+  },
 ] as const;
-const stats = [
-  { value: '30+', label: 'Allied nations' },
-  { value: '24/7', label: 'Mission readiness' },
-  { value: 'AES-256', label: 'Link encryption' },
-  { value: '0', label: 'Cloud required' },
+
+const nodes = [
+  { id: 'hq',    x: 80,  y: 100, label: 'HQ',     primary: true },
+  { id: 'gs1',   x: 260, y: 60,  label: 'GCS-1' },
+  { id: 'gs2',   x: 260, y: 160, label: 'GCS-2' },
+  { id: 'uav1',  x: 420, y: 40,  label: 'UAV-1' },
+  { id: 'uav2',  x: 420, y: 110, label: 'UAV-2' },
+  { id: 'ugv1',  x: 420, y: 180, label: 'UGV-1' },
 ];
+
+const edges: [string, string][] = [
+  ['hq', 'gs1'],
+  ['hq', 'gs2'],
+  ['gs1', 'uav1'],
+  ['gs1', 'uav2'],
+  ['gs2', 'ugv1'],
+];
+
+function nodePos(id: string) {
+  return nodes.find(n => n.id === id)!;
+}
 </script>
 
 <template>
-  <div>
+  <div class="overflow-x-clip">
+
+    <!-- 1. HERO -->
     <WebHero
-      eyebrow="Defense & national security"
-      title="Autonomy for the modern battlespace"
-      subtitle="A hardened, open software core for uncrewed systems — built to operate where connectivity is contested and the mission cannot fail."
-      primary="Request a briefing"
-      secondary="Download capability brief"
+      eyebrow="Defense"
+      title="Autonomy for allied forces."
+      subtitle="NDAA-compliant. On-device AI. Zero cloud dependency."
+      primary="Request briefing"
+      secondary="View documentation"
+      @primary="navigate('company')"
+      @secondary="navigate('developers')"
     />
 
-    <section class="mx-auto max-w-6xl px-6 py-20">
-      <div class="grid gap-4 sm:grid-cols-2">
-        <div v-for="c in capabilities" :key="c.name" class="rounded-2xl border border-border bg-card p-6">
-          <div class="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-secondary"><Icon :name="c.icon" size="md" /></div>
-          <h3 class="mt-4 text-[17px] font-semibold">{{ c.name }}</h3>
-          <p class="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{{ c.blurb }}</p>
-        </div>
+    <!-- 2. TRUST INDICATORS -->
+    <section class="border-b border-border" style="background: var(--background)">
+      <div class="mx-auto max-w-5xl px-6 py-14">
+        <ul class="grid grid-cols-2 gap-x-10 gap-y-5 sm:grid-cols-4">
+          <li
+            v-for="item in trustItems"
+            :key="item.label"
+            class="flex items-center gap-3 text-[14px] font-medium"
+            style="color: var(--foreground)"
+          >
+            <Icon name="circle-check" size="sm" style="color: var(--brand); flex-shrink: 0" />
+            {{ item.label }}
+          </li>
+        </ul>
       </div>
     </section>
 
-    <!-- deployment map -->
-    <section class="border-y border-border/60 bg-card/40">
-      <div class="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 lg:grid-cols-[0.9fr_1.1fr]">
-        <div>
-          <Badge variant="secondary" size="sm">Deployed worldwide</Badge>
-          <h2 class="mt-3 text-3xl font-semibold tracking-tight">Trusted by allied forces</h2>
-          <p class="mt-4 text-[16px] leading-relaxed text-muted-foreground">
-            From reconnaissance to force protection, Auterion-powered platforms are in service across
-            land, sea and air — interoperable with the systems units already rely on.
-          </p>
-          <Button variant="secondary" size="md" class="mt-6 gap-2">Partner programs <Icon name="arrow-right" size="xs" /></Button>
-        </div>
-        <div class="relative overflow-hidden rounded-2xl border border-border bg-card p-1.5">
-          <div class="def-map relative h-80 w-full overflow-hidden rounded-xl">
-            <svg viewBox="0 0 560 320" class="absolute inset-0 h-full w-full" aria-hidden="true">
-              <g fill="none" stroke="color-mix(in oklab, var(--foreground) 12%, transparent)" stroke-width="1">
-                <path d="M0 70 H560 M0 140 H560 M0 210 H560 M0 280 H560 M140 0 V320 M280 0 V320 M420 0 V320" />
-              </g>
-              <g v-for="(p, i) in [[90,210],[200,120],[300,180],[360,90],[470,150],[150,260]]" :key="i">
-                <circle :cx="p[0]" :cy="p[1]" r="4" fill="var(--foreground)" />
-                <circle :cx="p[0]" :cy="p[1]" r="12" fill="none" stroke="var(--foreground)" stroke-width="1" opacity="0.35" />
-              </g>
-              <path d="M90 210 L200 120 L300 180 L360 90 L470 150" fill="none" stroke="var(--foreground)" stroke-width="1.5" stroke-dasharray="2 6" opacity="0.6" />
-            </svg>
-            <span class="absolute bottom-3 left-3 rounded-md border border-border bg-card/80 px-2 py-1 font-mono text-[11px] text-muted-foreground backdrop-blur">6 theaters · classified detail withheld</span>
+    <!-- 3. CAPABILITIES -->
+    <section class="border-b border-border" style="background: var(--background)">
+      <div class="mx-auto max-w-5xl px-6 py-20">
+        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Capabilities</p>
+        <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+          Built for the <span style="color: var(--brand)">mission.</span>
+        </h2>
+        <p class="mt-4 max-w-xl text-[15px] leading-relaxed" style="color: var(--muted-foreground)">
+          Four core capabilities that make Auterion the platform of choice for autonomous defense operations.
+        </p>
+
+        <div class="mt-10 grid gap-5 sm:grid-cols-2">
+          <div
+            v-for="cap in capabilities"
+            :key="cap.title"
+            class="rounded-xl border border-border bg-card p-6 hover:shadow-md transition-shadow"
+          >
+            <div
+              class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg"
+              style="background: color-mix(in oklch, var(--brand) 8%, transparent)"
+            >
+              <Icon :name="cap.icon" size="sm" style="color: var(--brand)" />
+            </div>
+            <div class="mb-px border-b-2" style="border-color: var(--brand); width: 2rem; margin-bottom: 0.75rem" />
+            <h3 class="text-[16px] font-semibold" style="color: var(--foreground)">{{ cap.title }}</h3>
+            <p class="mt-2 text-[14px] leading-relaxed" style="color: var(--muted-foreground)">{{ cap.description }}</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="border-b border-border/60">
-      <div class="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-14 lg:grid-cols-4">
-        <div v-for="s in stats" :key="s.label">
-          <p class="text-3xl font-semibold tracking-tight tabular-nums lg:text-4xl">{{ s.value }}</p>
-          <p class="mt-1 text-[14px] text-muted-foreground">{{ s.label }}</p>
+    <!-- 4. DEPLOYMENT DIAGRAM -->
+    <section class="border-b border-border" style="background: var(--background)">
+      <div class="mx-auto max-w-5xl px-6 py-20">
+        <div class="grid items-center gap-14 lg:grid-cols-2">
+          <div>
+            <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Architecture</p>
+            <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+              Connected from HQ<br>to the <span style="color: var(--brand)">last node.</span>
+            </h2>
+            <p class="mt-4 text-[15px] leading-relaxed" style="color: var(--muted-foreground)">
+              A unified command architecture linking headquarters, ground control stations, and autonomous vehicles — all encrypted, all sovereign.
+            </p>
+          </div>
+
+          <!-- Network diagram SVG -->
+          <div class="rounded-xl border border-border bg-card p-6">
+            <svg viewBox="0 0 500 230" class="w-full" role="img" aria-label="Deployment network: HQ to vehicles via ground control stations">
+
+              <!-- Connecting edges -->
+              <g v-for="[a, b] in edges" :key="`${a}-${b}`">
+                <line
+                  :x1="nodePos(a).x" :y1="nodePos(a).y"
+                  :x2="nodePos(b).x" :y2="nodePos(b).y"
+                  stroke-width="1.5"
+                  style="stroke: var(--brand)"
+                  opacity="0.35"
+                  stroke-dasharray="4 3"
+                />
+              </g>
+
+              <!-- Nodes -->
+              <g v-for="n in nodes" :key="n.id">
+                <!-- Outer ring for primary node -->
+                <circle
+                  v-if="n.primary"
+                  :cx="n.x" :cy="n.y" r="22"
+                  fill="none"
+                  style="stroke: var(--brand)"
+                  stroke-width="1"
+                  opacity="0.2"
+                />
+                <!-- Node circle -->
+                <circle
+                  :cx="n.x" :cy="n.y"
+                  :r="n.primary ? 16 : 11"
+                  :style="n.primary
+                    ? 'fill: var(--brand)'
+                    : 'fill: var(--card); stroke: var(--brand); stroke-width: 1.5'"
+                  :opacity="n.primary ? '1' : '0.85'"
+                />
+                <!-- Label -->
+                <text
+                  :x="n.x"
+                  :y="n.primary ? n.y + 38 : n.y + 26"
+                  text-anchor="middle"
+                  font-family="ui-monospace, monospace"
+                  font-size="9"
+                  :style="n.primary ? 'fill: var(--brand)' : 'fill: var(--muted-foreground)'"
+                  font-weight="600"
+                  letter-spacing="0.05em"
+                >{{ n.label }}</text>
+                <!-- Icon text for primary -->
+                <text
+                  v-if="n.primary"
+                  :x="n.x" :y="n.y + 4"
+                  text-anchor="middle"
+                  font-family="ui-monospace, monospace"
+                  font-size="9"
+                  fill="white"
+                  font-weight="700"
+                >HQ</text>
+              </g>
+            </svg>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="mx-auto max-w-6xl px-6 py-20 text-center">
-      <h2 class="text-3xl font-semibold tracking-tight lg:text-4xl">Bring autonomy to your force</h2>
-      <p class="mx-auto mt-3 max-w-lg text-[16px] text-muted-foreground">Speak with our defense team about integration, compliance and field trials.</p>
-      <div class="mt-7 flex justify-center gap-3">
-        <Button size="lg" class="gap-2">Request a briefing <Icon name="arrow-right" size="xs" /></Button>
-        <Button variant="secondary" size="lg">Contact defense sales</Button>
+    <!-- 5. STATS DARK SECTION -->
+    <section style="background: #0d1117">
+      <div class="mx-auto max-w-5xl px-6 py-20">
+        <div class="grid grid-cols-3 gap-10 text-center">
+          <div>
+            <p class="text-5xl font-semibold tabular-nums tracking-tight" style="color: var(--brand)">30+</p>
+            <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">Allied nations</p>
+          </div>
+          <div>
+            <p class="text-5xl font-semibold tabular-nums tracking-tight" style="color: #e5e7eb">AES-256</p>
+            <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">Encryption standard</p>
+          </div>
+          <div>
+            <p class="text-5xl font-semibold tabular-nums tracking-tight" style="color: #e5e7eb">0</p>
+            <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">Cloud required</p>
+          </div>
+        </div>
       </div>
     </section>
+
+    <!-- 6. CTA -->
+    <section class="border-t border-border" style="background: var(--background)">
+      <div class="mx-auto max-w-5xl px-6 py-24 text-center">
+        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Get started</p>
+        <h2 class="mt-4 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+          Ready to deploy?
+        </h2>
+        <p class="mx-auto mt-4 max-w-md text-[15px] leading-relaxed" style="color: var(--muted-foreground)">
+          Defense programs are invite-only. Contact our team to discuss requirements and your operational environment.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Button size="lg" @click="navigate('company')">Request briefing</Button>
+          <Button size="lg" variant="ghost" @click="navigate('developers')">View documentation</Button>
+        </div>
+      </div>
+    </section>
+
   </div>
 </template>
-
-<style scoped>
-.def-map { background: linear-gradient(160deg, color-mix(in oklab, var(--foreground) 6%, var(--card)), var(--card)); }
-</style>
