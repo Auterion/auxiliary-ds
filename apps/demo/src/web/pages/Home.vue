@@ -1,14 +1,174 @@
+/* Hallmark · macrostructure: Swiss-Minimal · tone: clean-professional · anchor: white+blue-accent */
+<script setup lang="ts">
+import { inject } from 'vue';
+import { Button } from '@auxiliary/vue';
+import { Icon, type IconName } from '@auxiliary/icons';
+import WebHero from '../WebHero.vue';
 
-/Users/yasendimov/Documents/GitHub/Auterion/auxiliary-ds/apps/demo/src/web/pages/Home.vue
+const navigate = inject<(p: string) => void>('navigate', () => {});
 
-The file has been rewritten with the Swiss-minimal direction. Key changes from the previous version:
+const logos = ['GovTech', 'NATO', 'Quantum Systems', 'Nokia', 'Skydio', 'US DoD'];
 
-- All section backgrounds use `var(--background)` (near-white). The only dark section is the stats row using `#0d1117`.
-- Blue (`var(--brand)`) appears only on: the words "operating system" in the H1, eyebrow labels, CTA buttons, numbered step circles, product tag labels, and one stat value. Nowhere else.
-- The mission-trace GCS panel and arc motifs are gone. The hero right side is a clean line-art SVG wireframe showing three drone nodes connected to a cloud node with dashed lines.
-- Typography: `font-weight: 600` (semibold) throughout — not 700/bold. `letter-spacing: -0.02em` for headings. Clamp-based fluid sizes.
-- Cards use `var(--card)`, `var(--border)`, `rounded-xl`, `p-6`, `hover:shadow-md`.
-- No partner strips, defense capability matrices, or military-tone copy. Tone is clean professional.
-- Logos row uses greyscale text placeholders at low opacity.
-- How-it-works uses numbered circles with a brand-color border and number — no filled background, just a ring.
-- CTA section is white-background, centered, two buttons side by side.
+const products: { name: string; icon: IconName; blurb: string; to: string }[] = [
+  { name: 'Auterion Suite', icon: 'bars', blurb: 'Fleet, operations and analytics for your entire program — in the cloud.', to: 'products' },
+  { name: 'Mission Control', icon: 'drone', blurb: 'Field-proven ground control. Map, gimbal and mission, on any tablet.', to: 'products' },
+  { name: 'AuterionOS', icon: 'gear', blurb: 'The open operating system powering autonomous vehicles at the edge.', to: 'developers' },
+  { name: 'Skynode', icon: 'lock', blurb: 'Flight-control compute and connectivity that runs the whole stack.', to: 'products' },
+];
+
+const steps = [
+  { n: '01', title: 'Build', blurb: 'Write apps against the open SDK and simulate every mission before it flies.' },
+  { n: '02', title: 'Deploy', blurb: 'Ship over-the-air to any Skynode-powered vehicle, across any airframe.' },
+  { n: '03', title: 'Command', blurb: 'Run the whole fleet from the cloud — live telemetry, missions and analytics.' },
+];
+
+const stats = [
+  { value: '2M+', label: 'Flight hours', brand: true },
+  { value: '10,000+', label: 'Vehicles deployed', brand: false },
+  { value: '60+', label: 'Countries', brand: false },
+  { value: '99.9%', label: 'Fleet uptime', brand: false },
+];
+</script>
+
+<template>
+  <div class="overflow-x-clip" style="background: var(--background)">
+
+    <!-- 1. HERO -->
+    <WebHero
+      eyebrow="AuterionOS 4.2 is now available"
+      title="The operating system for autonomous robotics."
+      subtitle="One software platform to build, deploy and command intelligent drones at scale — from the flight controller to the fleet."
+      primary="Get started"
+      secondary="Watch the demo"
+      @primary="navigate('products')"
+      @secondary="navigate('developers')"
+    />
+
+    <!-- 2. TRUST STRIP -->
+    <section class="border-b border-border" style="background: var(--background)">
+      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-6 py-10">
+        <span
+          v-for="l in logos"
+          :key="l"
+          class="text-[15px] font-medium text-muted-foreground/50"
+        >{{ l }}</span>
+      </div>
+    </section>
+
+    <!-- 3. PRODUCTS -->
+    <section class="mx-auto max-w-6xl px-6 py-20">
+      <div class="mb-10 max-w-xl">
+        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">The platform</p>
+        <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+          One stack, <span style="color: var(--brand)">silicon to fleet.</span>
+        </h2>
+        <p class="mt-4 text-[16px] leading-relaxed text-muted-foreground">
+          Every layer is built to work together — and open enough to build on.
+        </p>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <button
+          v-for="p in products"
+          :key="p.name"
+          class="group rounded-xl border border-border bg-card p-6 text-left transition-all hover:shadow-md"
+          @click="navigate(p.to)"
+        >
+          <div class="mb-4 flex items-center gap-3">
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-lg"
+              style="background: color-mix(in oklab, var(--brand) 8%, white)"
+            >
+              <Icon :name="p.icon" size="sm" style="color: var(--brand)" />
+            </div>
+          </div>
+          <h3 class="flex items-center gap-1.5 text-[16px] font-semibold tracking-[-0.01em]" style="color: var(--foreground)">
+            {{ p.name }}
+            <Icon
+              name="arrow-right"
+              size="xs"
+              class="text-muted-foreground opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-0.5"
+            />
+          </h3>
+          <p class="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{{ p.blurb }}</p>
+        </button>
+      </div>
+    </section>
+
+    <!-- 4. HOW IT WORKS -->
+    <section class="border-t border-border" style="background: var(--background)">
+      <div class="mx-auto max-w-6xl px-6 py-20">
+        <div class="mb-12 max-w-xl">
+          <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">How it works</p>
+          <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+            From idea to <span style="color: var(--brand)">autonomy.</span>
+          </h2>
+        </div>
+
+        <div class="grid gap-10 sm:grid-cols-3">
+          <div v-for="s in steps" :key="s.n">
+            <div
+              class="flex h-11 w-11 items-center justify-center rounded-full font-mono text-[13px] font-medium"
+              style="border: 1.5px solid var(--brand); color: var(--brand)"
+            >{{ s.n }}</div>
+            <h3 class="mt-5 text-[18px] font-semibold tracking-[-0.01em]" style="color: var(--foreground)">{{ s.title }}</h3>
+            <p class="mt-2 text-[14px] leading-relaxed text-muted-foreground">{{ s.blurb }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. STATS (dark) -->
+    <section style="background: #0d1117">
+      <div class="mx-auto max-w-6xl px-6 py-20">
+        <div class="grid grid-cols-2 gap-10 text-center lg:grid-cols-4">
+          <div v-for="s in stats" :key="s.label">
+            <p
+              class="text-5xl font-semibold tabular-nums tracking-tight"
+              :style="s.brand ? 'color: var(--brand)' : 'color: #e5e7eb'"
+            >{{ s.value }}</p>
+            <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">{{ s.label }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. CTA -->
+    <section class="border-t border-border" style="background: var(--background)">
+      <div class="mx-auto max-w-2xl px-6 py-24 text-center">
+        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Get started</p>
+        <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+          Build the autonomous future.
+        </h2>
+        <p class="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-muted-foreground">
+          Trusted across defense, enterprise and public safety. See what one stack can do for your fleet.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <button
+            class="cta-btn inline-flex items-center gap-2 rounded-lg px-6 py-3 text-[14px] font-semibold"
+            style="background: var(--brand); color: var(--brand-foreground)"
+            @click="navigate('products')"
+          >
+            Get started
+            <Icon name="arrow-right" size="xs" />
+          </button>
+          <Button variant="ghost" size="md" class="gap-2 text-[14px]" @click="navigate('developers')">
+            Read the docs
+          </Button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</template>
+
+<style scoped>
+.cta-btn:hover {
+  background: color-mix(in oklab, var(--brand) 88%, black) !important;
+}
+
+.cta-btn:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+</style>
