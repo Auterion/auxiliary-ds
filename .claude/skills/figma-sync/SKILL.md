@@ -1,8 +1,3 @@
----
-name: figma-sync
-description: Push Auxiliary design tokens into Figma Variables, one-way (code → Figma), via the Figma MCP. Use when asked to sync/update tokens in Figma, build the Figma Variable collections, or refresh the Figma token library from @auxiliary/tokens. Requires the Figma MCP connected and a target Figma design file URL.
----
-
 # figma-sync — push Auxiliary tokens into Figma Variables
 
 One-way sync: `@auxiliary/tokens` → Figma Variables. Code is the source of truth; never read

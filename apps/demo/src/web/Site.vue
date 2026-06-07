@@ -4,19 +4,23 @@ import { Button } from '@auxiliary/vue';
 import { Icon } from '@auxiliary/icons';
 import Home from './pages/Home.vue';
 import Products from './pages/Products.vue';
+import Skynode from './pages/Skynode.vue';
+import Fleet from './pages/Fleet.vue';
 import Solutions from './pages/Solutions.vue';
 import Defense from './pages/Defense.vue';
 import Developers from './pages/Developers.vue';
 import Company from './pages/Company.vue';
 import Brand from './pages/Brand.vue';
 
-type Page = 'home' | 'products' | 'solutions' | 'defense' | 'developers' | 'company' | 'brand';
+type Page = 'home' | 'products' | 'skynode' | 'fleet' | 'solutions' | 'defense' | 'developers' | 'company' | 'brand';
 const theme = ref<'dark' | 'light'>('light');
 const page = ref<Page>('home');
 
-const PAGES = { home: Home, products: Products, solutions: Solutions, defense: Defense, developers: Developers, company: Company, brand: Brand };
+const PAGES = { home: Home, products: Products, skynode: Skynode, fleet: Fleet, solutions: Solutions, defense: Defense, developers: Developers, company: Company, brand: Brand };
 const NAV: { key: Page; label: string }[] = [
   { key: 'products', label: 'Products' },
+  { key: 'skynode', label: 'Skynode' },
+  { key: 'fleet', label: 'Fleet' },
   { key: 'solutions', label: 'Solutions' },
   { key: 'defense', label: 'Defense' },
   { key: 'developers', label: 'Developers' },
@@ -98,7 +102,7 @@ const footerCols = [
             </span>
             <span class="font-mono text-[13px] font-semibold uppercase tracking-[0.12em] text-foreground">Auterion</span>
           </button>
-          <p class="mt-4 font-mono text-[12px] leading-relaxed text-muted-foreground">
+          <p class="mt-4 text-[14px] leading-relaxed text-muted-foreground">
             The open software platform<br>for autonomous vehicles.
           </p>
           <div class="mt-6 flex items-center gap-1.5">
@@ -110,16 +114,16 @@ const footerCols = [
           <p class="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">{{ col.h }}</p>
           <ul class="mt-4 space-y-2.5">
             <li v-for="it in col.items" :key="it">
-              <a class="font-mono text-[13px] text-foreground transition-opacity hover:text-muted-foreground cursor-pointer">{{ it }}</a>
+              <a class="text-[14px] text-foreground transition-opacity hover:text-muted-foreground cursor-pointer">{{ it }}</a>
             </li>
           </ul>
         </div>
       </div>
       <div class="border-t border-border">
         <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-5">
-          <span class="font-mono text-[11px] text-muted-foreground">© 2026 Auterion AG · Zürich · Switzerland</span>
+          <span class="text-[12px] text-muted-foreground">© 2026 Auterion AG · Zürich · Switzerland</span>
           <span class="flex gap-5">
-            <a v-for="l in ['Privacy','Terms','Security','Status']" :key="l" class="font-mono text-[11px] text-muted-foreground transition-colors hover:text-foreground cursor-pointer">{{ l }}</a>
+            <a v-for="l in ['Privacy','Terms','Security','Status']" :key="l" class="text-[12px] text-muted-foreground transition-colors hover:text-foreground cursor-pointer">{{ l }}</a>
           </span>
         </div>
       </div>
@@ -132,12 +136,18 @@ const footerCols = [
   background-image: none;
 }
 
-/* Inter Variable for all page headings — overrides font-mono utility on h1/h2/h3.
- * :deep() targets child component elements. Specificity beats .font-mono (class). */
+/* Inter Variable for headings and all content paragraphs.
+ * :deep() specificity beats .font-mono (class), so eyebrow labels become Inter too.
+ * <pre>, <code>, <div class="font-mono">, <button> — untouched. */
 :deep(h1),
 :deep(h2),
 :deep(h3) {
   font-family: 'Inter Variable', var(--font-sans);
   letter-spacing: -0.03em;
+}
+
+:deep(p) {
+  font-family: 'Inter Variable', var(--font-sans);
+  font-optical-sizing: auto;
 }
 </style>

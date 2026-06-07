@@ -307,14 +307,28 @@
       },
 
       "auterion-blue": {
-        "DEFAULT": { "$type": "color", "$value": "oklch(0.46 0.285 265)" },
-        "light":   { "$type": "color", "$value": "oklch(0.62 0.22 264)" },
-        "dark":    { "$type": "color", "$value": "oklch(0.34 0.22 265)" },
-        "tint":    { "$type": "color", "$value": "oklch(0.96 0.018 264)" },
-        "night":   { "$type": "color", "$value": "oklch(0.17 0.06 265)" },
-        "shade":   { "$type": "color", "$value": "oklch(0.21 0.07 265)" },
-        "surface": { "$type": "color", "$value": "oklch(0.25 0.08 265)" },
-        "edge":    { "$type": "color", "$value": "oklch(0.30 0.09 265)" }
+        "$description": "Ultramarine — the Auterion brand hue (~264deg). 50-950 is a perceptually-even oklch ramp for brand/marketing work; 600 is the canonical brand anchor (== DEFAULT), tuned to read on both white and near-black. Chroma peaks mid-ramp and tapers at both ends to stay in sRGB gamut. light/dark/tint are brand aliases; night/shade/surface/edge are LOW-chroma dark-UI neutrals (a blue whisper, not a wash) so dark surfaces stay monochrome while brand/ring carry the blue.",
+        "50":  { "$type": "color", "$value": "oklch(0.972 0.012 264)" },
+        "100": { "$type": "color", "$value": "oklch(0.940 0.028 264)" },
+        "200": { "$type": "color", "$value": "oklch(0.892 0.055 264)" },
+        "300": { "$type": "color", "$value": "oklch(0.820 0.105 264)" },
+        "400": { "$type": "color", "$value": "oklch(0.710 0.170 264)" },
+        "500": { "$type": "color", "$value": "oklch(0.600 0.225 264)" },
+        "600": { "$type": "color", "$value": "oklch(0.500 0.235 264)" },
+        "700": { "$type": "color", "$value": "oklch(0.420 0.205 265)" },
+        "800": { "$type": "color", "$value": "oklch(0.345 0.160 265)" },
+        "900": { "$type": "color", "$value": "oklch(0.270 0.110 265)" },
+        "950": { "$type": "color", "$value": "oklch(0.200 0.070 265)" },
+
+        "DEFAULT": { "$type": "color", "$value": "oklch(0.500 0.235 264)" },
+        "light":   { "$type": "color", "$value": "oklch(0.620 0.205 264)" },
+        "dark":    { "$type": "color", "$value": "oklch(0.400 0.205 265)" },
+        "tint":    { "$type": "color", "$value": "oklch(0.972 0.012 264)" },
+
+        "night":   { "$type": "color", "$value": "oklch(0.165 0.014 265)" },
+        "shade":   { "$type": "color", "$value": "oklch(0.205 0.017 265)" },
+        "surface": { "$type": "color", "$value": "oklch(0.255 0.020 265)" },
+        "edge":    { "$type": "color", "$value": "oklch(0.315 0.024 265)" }
       }
     }
   }

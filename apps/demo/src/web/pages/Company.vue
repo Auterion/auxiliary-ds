@@ -55,7 +55,7 @@ const news = [
       <div class="mx-auto max-w-6xl px-6 py-20">
         <div class="grid grid-cols-2 gap-10 text-center lg:grid-cols-4">
           <div v-for="s in stats" :key="s.label">
-            <p class="text-5xl font-semibold tabular-nums tracking-tight" style="color: var(--brand)">{{ s.value }}</p>
+            <p class="text-5xl font-medium tabular-nums tracking-tight" style="color: var(--brand)">{{ s.value }}</p>
             <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">{{ s.label }}</p>
           </div>
         </div>
@@ -67,7 +67,7 @@ const news = [
       <div class="mx-auto max-w-6xl px-6 py-20">
         <div class="mb-10 max-w-xl">
           <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">What we believe</p>
-          <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+          <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
             Principles that <span style="color: var(--brand)">guide the work.</span>
           </h2>
         </div>
@@ -75,7 +75,7 @@ const news = [
         <div class="grid gap-5 md:grid-cols-3">
           <div v-for="v in values" :key="v.name" class="rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md">
             <div class="mb-4 border-b-2" style="border-color: var(--brand); width: 2rem" />
-            <h3 class="text-[17px] font-semibold tracking-[-0.01em]" style="color: var(--foreground)">{{ v.name }}</h3>
+            <h3 class="text-[17px] font-medium" style="color: var(--foreground)">{{ v.name }}</h3>
             <p class="mt-2 text-[14px] leading-relaxed text-muted-foreground">{{ v.blurb }}</p>
           </div>
         </div>
@@ -86,7 +86,7 @@ const news = [
     <section class="border-b border-border" style="background: var(--background)">
       <div class="mx-auto max-w-6xl px-6 py-20">
         <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Leadership</p>
-        <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
           The team behind the stack.
         </h2>
 
@@ -109,7 +109,7 @@ const news = [
         <div class="mb-10 flex items-end justify-between">
           <div>
             <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Newsroom</p>
-            <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+            <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
               Latest from Auterion.
             </h2>
           </div>
@@ -119,7 +119,7 @@ const news = [
         <div class="grid gap-5 md:grid-cols-3">
           <a v-for="n in news" :key="n.title" class="group flex flex-col rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md">
             <span class="self-start rounded-full border border-border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{{ n.tag }}</span>
-            <h3 class="mt-4 flex-1 text-[16px] font-semibold leading-snug tracking-[-0.01em]" style="color: var(--foreground)">{{ n.title }}</h3>
+            <h3 class="mt-4 flex-1 text-[16px] font-medium leading-snug" style="color: var(--foreground)">{{ n.title }}</h3>
             <p class="mt-5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{{ n.date }}</p>
           </a>
         </div>
@@ -130,7 +130,7 @@ const news = [
     <section class="border-t border-border" style="background: var(--background)">
       <div class="mx-auto max-w-2xl px-6 py-24 text-center">
         <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Careers</p>
-        <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
           Come build the future of autonomy.
         </h2>
         <p class="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-muted-foreground">

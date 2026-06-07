@@ -94,7 +94,7 @@ function nodePos(id: string) {
     <section class="border-b border-border" style="background: var(--background)">
       <div class="mx-auto max-w-5xl px-6 py-20">
         <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Capabilities</p>
-        <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
           Built for the <span style="color: var(--brand)">mission.</span>
         </h2>
         <p class="mt-4 max-w-xl text-[15px] leading-relaxed" style="color: var(--muted-foreground)">
@@ -114,7 +114,7 @@ function nodePos(id: string) {
               <Icon :name="cap.icon" size="sm" style="color: var(--brand)" />
             </div>
             <div class="mb-px border-b-2" style="border-color: var(--brand); width: 2rem; margin-bottom: 0.75rem" />
-            <h3 class="text-[16px] font-semibold" style="color: var(--foreground)">{{ cap.title }}</h3>
+            <h3 class="text-[16px] font-medium" style="color: var(--foreground)">{{ cap.title }}</h3>
             <p class="mt-2 text-[14px] leading-relaxed" style="color: var(--muted-foreground)">{{ cap.description }}</p>
           </div>
         </div>
@@ -127,7 +127,7 @@ function nodePos(id: string) {
         <div class="grid items-center gap-14 lg:grid-cols-2">
           <div>
             <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Architecture</p>
-            <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+            <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
               Connected from HQ<br>to the <span style="color: var(--brand)">last node.</span>
             </h2>
             <p class="mt-4 text-[15px] leading-relaxed" style="color: var(--muted-foreground)">
@@ -204,15 +204,15 @@ function nodePos(id: string) {
       <div class="mx-auto max-w-5xl px-6 py-20">
         <div class="grid grid-cols-3 gap-10 text-center">
           <div>
-            <p class="text-5xl font-semibold tabular-nums tracking-tight" style="color: var(--brand)">30+</p>
+            <p class="text-5xl font-medium tabular-nums tracking-tight" style="color: var(--brand)">30+</p>
             <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">Allied nations</p>
           </div>
           <div>
-            <p class="text-5xl font-semibold tabular-nums tracking-tight" style="color: #e5e7eb">AES-256</p>
+            <p class="text-5xl font-medium tabular-nums tracking-tight" style="color: #e5e7eb">AES-256</p>
             <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">Encryption standard</p>
           </div>
           <div>
-            <p class="text-5xl font-semibold tabular-nums tracking-tight" style="color: #e5e7eb">0</p>
+            <p class="text-5xl font-medium tabular-nums tracking-tight" style="color: #e5e7eb">0</p>
             <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">Cloud required</p>
           </div>
         </div>
@@ -223,7 +223,7 @@ function nodePos(id: string) {
     <section class="border-t border-border" style="background: var(--background)">
       <div class="mx-auto max-w-5xl px-6 py-24 text-center">
         <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Get started</p>
-        <h2 class="mt-4 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+        <h2 class="mt-4 text-4xl font-medium" style="color: var(--foreground)">
           Ready to deploy?
         </h2>
         <p class="mx-auto mt-4 max-w-md text-[15px] leading-relaxed" style="color: var(--muted-foreground)">

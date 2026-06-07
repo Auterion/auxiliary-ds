@@ -59,7 +59,7 @@ const comparison: { feature: string; oss: boolean; auterion: boolean }[] = [
     <section class="mx-auto max-w-6xl px-6 py-20">
       <div class="mb-10">
         <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">The platform</p>
-        <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
           Four products. <span style="color: var(--brand)">One stack.</span>
         </h2>
       </div>
@@ -80,7 +80,7 @@ const comparison: { feature: string; oss: boolean; auterion: boolean }[] = [
             <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{{ p.tag }}</span>
           </div>
 
-          <h3 class="text-[18px] font-semibold tracking-[-0.01em]" style="color: var(--foreground)">{{ p.name }}</h3>
+          <h3 class="text-[18px] font-medium" style="color: var(--foreground)">{{ p.name }}</h3>
           <p class="mt-2 text-[14px] leading-relaxed text-muted-foreground">{{ p.desc }}</p>
 
           <ul class="mt-5 space-y-2.5">
@@ -102,7 +102,7 @@ const comparison: { feature: string; oss: boolean; auterion: boolean }[] = [
       <div class="mx-auto max-w-4xl px-6 py-20">
         <div class="mb-10">
           <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Open source vs. Auterion</p>
-          <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+          <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
             Built on open. <span style="color: var(--brand)">Ready for scale.</span>
           </h2>
         </div>
@@ -154,7 +154,7 @@ const comparison: { feature: string; oss: boolean; auterion: boolean }[] = [
     <section class="border-t border-border" style="background: var(--background)">
       <div class="mx-auto max-w-2xl px-6 py-24 text-center">
         <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Get started</p>
-        <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
           See the whole platform in action.
         </h2>
         <p class="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-muted-foreground">

@@ -51,7 +51,7 @@ const docs = [
         <div class="grid items-center gap-12 lg:grid-cols-2">
           <div>
             <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Fleet API</p>
-            <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+            <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
               A few lines from <span style="color: var(--brand)">idea to autonomy.</span>
             </h2>
             <p class="mt-4 text-[16px] leading-relaxed text-muted-foreground">
@@ -94,7 +94,7 @@ const docs = [
       <div class="mx-auto max-w-6xl px-6 py-20">
         <div class="mb-10 max-w-xl">
           <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Toolkit</p>
-          <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+          <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
             Everything you need <span style="color: var(--brand)">to build.</span>
           </h2>
         </div>
@@ -107,7 +107,7 @@ const docs = [
             >
               <Icon :name="f.icon" size="sm" style="color: var(--brand)" />
             </div>
-            <h3 class="text-[15px] font-semibold tracking-[-0.01em]" style="color: var(--foreground)">{{ f.name }}</h3>
+            <h3 class="text-[15px] font-medium" style="color: var(--foreground)">{{ f.name }}</h3>
             <p class="mt-2 text-[13px] leading-relaxed text-muted-foreground">{{ f.blurb }}</p>
           </div>
         </div>
@@ -124,7 +124,7 @@ const docs = [
             class="group flex items-start justify-between gap-3 rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md"
           >
             <div>
-              <p class="text-[15px] font-semibold tracking-[-0.01em]" style="color: var(--foreground)">{{ d.t }}</p>
+              <p class="text-[15px] font-medium" style="color: var(--foreground)">{{ d.t }}</p>
               <p class="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{{ d.s }}</p>
             </div>
             <Icon
@@ -142,7 +142,7 @@ const docs = [
     <section class="border-t border-border" style="background: var(--background)">
       <div class="mx-auto max-w-2xl px-6 py-24 text-center">
         <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Start building</p>
-        <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]" style="color: var(--foreground)">
+        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
           Ship your first flight app.
         </h2>
         <p class="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-muted-foreground">

@@ -39,3 +39,7 @@ playwright-report/
 
 # Vitest coverage
 **/coverage/
+
+# Crystl quest scratch (DECISIONS.md is committed; these are per-quest working files)
+QUEST-LOG.md
+HANDOFF.md

@@ -33,7 +33,7 @@ const industries: { name: string; icon: IconName; blurb: string; to?: string }[]
     <section class="mx-auto max-w-6xl px-6 py-20">
       <div class="mb-10">
         <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Industries</p>
-        <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]">
+        <h2 class="mt-3 text-4xl font-medium">
           Every sector. <span style="color: var(--brand)">One platform.</span>
         </h2>
       </div>
@@ -54,7 +54,7 @@ const industries: { name: string; icon: IconName; blurb: string; to?: string }[]
             </div>
           </div>
 
-          <h3 class="flex items-center gap-1.5 text-[15px] font-semibold tracking-[-0.01em]">
+          <h3 class="flex items-center gap-1.5 text-[15px] font-medium">
             {{ ind.name }}
             <Icon
               name="arrow-right"
@@ -75,7 +75,7 @@ const industries: { name: string; icon: IconName; blurb: string; to?: string }[]
           <!-- Left: headline + text + stats -->
           <div>
             <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Case study · Energy &amp; utilities</p>
-            <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]">
+            <h2 class="mt-3 text-4xl font-medium">
               Inspecting 40,000 km of grid,<br><span style="color: var(--brand)">autonomously.</span>
             </h2>
             <p class="mt-4 text-[16px] leading-relaxed text-muted-foreground">
@@ -188,7 +188,7 @@ const industries: { name: string; icon: IconName; blurb: string; to?: string }[]
     <section class="border-t border-border" style="background: var(--background)">
       <div class="mx-auto max-w-2xl px-6 py-20 text-center">
         <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Get started</p>
-        <h2 class="mt-3 text-4xl font-semibold tracking-[-0.02em] leading-[1.15]">
+        <h2 class="mt-3 text-4xl font-medium">
           Find your solution.
         </h2>
         <p class="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-muted-foreground">
