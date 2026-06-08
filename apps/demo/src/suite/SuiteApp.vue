@@ -12,6 +12,16 @@ import { VEHICLES, NAV, FLEET_SUMMARY, type Vehicle } from './data';
 
 const theme = ref<'dark' | 'light'>('dark');
 const register = ref<'operational' | 'expressive'>('operational');
+
+// Brand-accent identity — orthogonal to theme/register. `ultramarine` is the
+// chromatic auterion-blue brand; `mono` aliases brand to the foreground so it
+// flips with light/dark on its own. Inline override wins over [data-theme].
+const accent = ref<'ultramarine' | 'mono'>('ultramarine');
+const accentVars = computed(() =>
+  accent.value === 'mono'
+    ? '--brand: var(--foreground); --brand-foreground: var(--background); --ring: var(--foreground)'
+    : undefined,
+);
 const activeNav = ref('overview');
 const selectedId = ref('1');
 const search = ref('');
@@ -44,6 +54,7 @@ function rssiLabel(rssi: number | null): string {
   <div
     :data-theme="theme"
     :data-register="register"
+    :style="accentVars"
     class="suite-root flex h-dvh w-full overflow-hidden bg-background text-foreground"
   >
     <!-- ╭─ Console rail ──────────────────────────────────────────╮ -->
@@ -170,6 +181,26 @@ function rssiLabel(rssi: number | null): string {
               class="w-36 bg-transparent text-[13px] text-foreground outline-none placeholder:text-muted-foreground"
             />
           </label>
+
+          <!-- brand-accent quick toggle (mono vs ultramarine) -->
+          <div class="hidden items-center gap-0.5 rounded-lg border border-border bg-card p-0.5 md:flex">
+            <button
+              type="button"
+              class="rounded-md px-2 py-1 text-[12px] transition-colors"
+              :class="accent === 'mono' ? 'bg-secondary text-foreground' : 'text-muted-foreground'"
+              @click="accent = 'mono'"
+            >
+              Mono
+            </button>
+            <button
+              type="button"
+              class="rounded-md px-2 py-1 text-[12px] transition-colors"
+              :class="accent === 'ultramarine' ? 'bg-secondary text-foreground' : 'text-muted-foreground'"
+              @click="accent = 'ultramarine'"
+            >
+              Ultra
+            </button>
+          </div>
 
           <!-- theme quick toggle -->
           <div class="flex items-center gap-0.5 rounded-lg border border-border bg-card p-0.5">

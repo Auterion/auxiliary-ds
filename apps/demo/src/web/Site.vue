@@ -1,26 +1,39 @@
 <script setup lang="ts">
-import { provide, ref } from 'vue';
-import { Button } from '@auxiliary/vue';
+import { computed, provide, ref } from 'vue';
 import { Icon } from '@auxiliary/icons';
 import Home from './pages/Home.vue';
 import Products from './pages/Products.vue';
 import Skynode from './pages/Skynode.vue';
 import Fleet from './pages/Fleet.vue';
+import Insure from './pages/Insure.vue';
 import Solutions from './pages/Solutions.vue';
 import Defense from './pages/Defense.vue';
 import Developers from './pages/Developers.vue';
 import Company from './pages/Company.vue';
 import Brand from './pages/Brand.vue';
 
-type Page = 'home' | 'products' | 'skynode' | 'fleet' | 'solutions' | 'defense' | 'developers' | 'company' | 'brand';
+type Page = 'home' | 'products' | 'skynode' | 'fleet' | 'insure' | 'solutions' | 'defense' | 'developers' | 'company' | 'brand';
 const theme = ref<'dark' | 'light'>('light');
 const page = ref<Page>('home');
 
-const PAGES = { home: Home, products: Products, skynode: Skynode, fleet: Fleet, solutions: Solutions, defense: Defense, developers: Developers, company: Company, brand: Brand };
+// Brand-accent identity — orthogonal to the light/dark color theme.
+// `ultramarine` is the chromatic auterion-blue brand (the [data-theme] default);
+// `mono` makes the brand achromatic by aliasing it to the foreground, so it flips
+// correctly between light/dark on its own. Applied as an inline token override on
+// the web root (inline wins over the [data-theme] declaration).
+const accent = ref<'ultramarine' | 'mono'>('ultramarine');
+const accentVars = computed(() =>
+  accent.value === 'mono'
+    ? '--brand: var(--foreground); --brand-foreground: var(--background); --ring: var(--foreground)'
+    : undefined,
+);
+
+const PAGES = { home: Home, products: Products, skynode: Skynode, fleet: Fleet, insure: Insure, solutions: Solutions, defense: Defense, developers: Developers, company: Company, brand: Brand };
 const NAV: { key: Page; label: string }[] = [
   { key: 'products', label: 'Products' },
   { key: 'skynode', label: 'Skynode' },
   { key: 'fleet', label: 'Fleet' },
+  { key: 'insure', label: 'Insure' },
   { key: 'solutions', label: 'Solutions' },
   { key: 'defense', label: 'Defense' },
   { key: 'developers', label: 'Developers' },
@@ -43,7 +56,7 @@ const footerCols = [
 </script>
 
 <template>
-  <div :data-theme="theme" class="web-root web-scroll h-dvh overflow-auto bg-background text-foreground">
+  <div :data-theme="theme" :style="accentVars" class="web-root web-scroll h-dvh overflow-auto bg-background text-foreground">
 
     <!-- NAV — white, brand-blue active + CTA -->
     <header class="site-nav sticky top-0 z-30 bg-background border-b border-border py-3 px-6">
@@ -70,6 +83,14 @@ const footerCols = [
         </nav>
 
         <div class="ml-auto flex items-center gap-3">
+          <!-- brand-accent toggle (mono vs ultramarine) -->
+          <div class="hidden items-center border border-border sm:flex">
+            <button
+              v-for="a in (['mono','ultramarine'] as const)" :key="a" type="button"
+              class="px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.08em] transition-colors"
+              :class="accent === a ? 'bg-muted text-foreground font-medium' : 'text-muted-foreground'"
+              @click="accent = a">{{ a === 'ultramarine' ? 'ultra' : a }}</button>
+          </div>
           <!-- theme toggle -->
           <div class="flex items-center border border-border">
             <button
@@ -80,8 +101,8 @@ const footerCols = [
           </div>
           <button class="hidden font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:text-foreground sm:block">Sign in</button>
           <button
-            class="px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.1em] font-medium text-white transition-all hover:opacity-90 focus-visible:outline-none"
-            style="background: var(--brand)"
+            class="px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.1em] font-medium transition-all hover:opacity-90 focus-visible:outline-none"
+            style="background: var(--brand); color: var(--brand-foreground)"
             @click="go('products')"
           >Get started</button>
         </div>

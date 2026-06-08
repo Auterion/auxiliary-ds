@@ -1,13 +1,23 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import {
-  StatusBadge, TelemetryValue, Switch, Button, Badge,
+  StatusBadge, Switch, Button, Badge,
 } from '@auxiliary/vue';
 import { Icon } from '@auxiliary/icons';
 import Sparkline from '../suite/Sparkline.vue';
 
 const theme = ref<'dark' | 'light'>('dark');
 const section = ref('overview');
+
+// Brand-accent identity — orthogonal to the light/dark theme. `ultramarine` is the
+// chromatic auterion-blue brand; `mono` aliases brand to the foreground so it flips
+// with light/dark on its own. Inline override wins over [data-theme].
+const accent = ref<'ultramarine' | 'mono'>('ultramarine');
+const accentVars = computed(() =>
+  accent.value === 'mono'
+    ? '--brand: var(--foreground); --brand-foreground: var(--background); --ring: var(--foreground)'
+    : undefined,
+);
 
 const NAV = [
   { key: 'overview', label: 'Overview', icon: 'house' },
@@ -111,7 +121,7 @@ const sectionTitle = computed(() => NAV.find((n) => n.key === section.value)?.la
 </script>
 
 <template>
-  <div :data-theme="theme" data-register="operational" class="os-root flex h-dvh w-full overflow-hidden bg-background text-foreground">
+  <div :data-theme="theme" data-register="operational" :style="accentVars" class="os-root flex h-dvh w-full overflow-hidden bg-background text-foreground">
     <!-- ╭─ Console rail ──────────────────────────────────────────╮ -->
     <aside class="flex w-60 shrink-0 flex-col border-r border-border bg-card">
       <!-- Device mark + identity -->
@@ -180,9 +190,17 @@ const sectionTitle = computed(() => NAV.find((n) => n.key === section.value)?.la
         <StatusBadge level="nominal" size="sm" dot class="ml-1">Connected</StatusBadge>
         <span class="font-mono text-[12px] tabular-nums text-muted-foreground">AuterionOS v4.2.1 · uptime 6d 04:12</span>
         <div class="ml-auto flex items-center gap-2">
+          <!-- brand-accent toggle (mono vs ultramarine) -->
+          <div class="hidden items-center gap-0.5 rounded-lg border border-border bg-card p-0.5 md:flex">
+            <button
+              v-for="a in (['mono','ultramarine'] as const)" :key="a" type="button"
+              class="rounded-md px-2.5 py-1 text-[12px] transition-colors"
+              :class="accent === a ? 'bg-secondary text-foreground' : 'text-muted-foreground'"
+              @click="accent = a">{{ a === 'ultramarine' ? 'Ultra' : 'Mono' }}</button>
+          </div>
           <div class="flex items-center gap-0.5 rounded-lg border border-border bg-card p-0.5">
             <button
-v-for="t in (['dark','light'] as const)" :key="t" type="button"
+              v-for="t in (['dark','light'] as const)" :key="t" type="button"
               class="rounded-md px-2.5 py-1 text-[12px] capitalize transition-colors"
               :class="theme === t ? 'bg-secondary text-foreground' : 'text-muted-foreground'"
               @click="theme = t">{{ t }}</button>
