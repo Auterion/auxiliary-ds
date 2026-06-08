@@ -236,12 +236,22 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Display / marketing headline voice — tuned toward a Neue-Haas-Grotesk feel:
+   * the Inter "Display" optical cut (opsz 32, pinned so it reads display at any
+   * size), medium weight, tight tracking, and a CLEAN feature set — we drop the
+   * operational square/disambiguation alternates (ss01/ss03/ss07/ss08/cv*) the
+   * html base applies, keeping only calt + liga so the letterforms read as a
+   * clean neo-grotesque. --font-display leads with "Inter Display" (the family
+   * Figma uses); on web it falls through to Inter Variable + the pinned opsz. */
   .font-display {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-size: var(--text-6xl);        /* fluid display size (clamp) */
     font-weight: 500;                  /* medium — house display weight */
     line-height: var(--leading-display);
     letter-spacing: -0.045em;
+    font-optical-sizing: auto;
+    font-variation-settings: "opsz" 32;
+    font-feature-settings: "calt", "liga";
   }
 
   .font-mono {

@@ -109,6 +109,53 @@ for (const [name, effects] of Object.entries(SHADOWS)) {
   s.effects = effects;
 }
 
+// Text styles for typography roles (Variables can't model composite type).
+// Resilient: each style loads its font with fallbacks, and font/binding failures
+// are recorded — never thrown — so one missing font can't roll back the whole push.
+// Title-case a single hyphenated segment ("body-lg" → "Body Large"); preserve
+// "/" as Figma style-group separators ("product/body-lg" → "Product/Body Large").
+const NICE_SEG = { 'body-lg': 'Body Large' };
+const titleSeg = (seg) => NICE_SEG[seg] ?? seg.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+const niceName = (n) => n.split('/').map(titleSeg).join('/');
+const localTextStyles = await figma.getLocalTextStylesAsync();
+const tsByName = new Map(localTextStyles.map((s) => [s.name, s]));
+const textStyleResults = [];
+for (const ts of TEXTSTYLES) {
+  const styleName = 'Type/' + niceName(ts.name);
+  // Resolve a loadable font. Try the target style and its no-space variant
+  // ("Semi Bold"→"SemiBold") since families differ — e.g. "Inter" ships
+  // "Semi Bold" but "Inter Display" ships "SemiBold". Fall back to Regular last.
+  const styleVariants = [ts.fontStyle, ts.fontStyle.replace(/\s+/g, '')].filter((v, i, a) => a.indexOf(v) === i);
+  let fontName = null;
+  for (const family of ts.fontFamilyCandidates) {
+    for (const style of styleVariants) {
+      try { await figma.loadFontAsync({ family, style }); fontName = { family, style }; break; } catch (e) {}
+    }
+    if (fontName) break;
+  }
+  if (!fontName) {
+    for (const family of ts.fontFamilyCandidates) {
+      try { await figma.loadFontAsync({ family, style: 'Regular' }); fontName = { family, style: 'Regular' }; break; } catch (e) {}
+    }
+  }
+  if (!fontName) {
+    textStyleResults.push({ name: styleName, ok: false, reason: 'font unavailable: ' + ts.fontFamilyCandidates.join(' / ') });
+    continue;
+  }
+  let s = tsByName.get(styleName);
+  if (!s) { s = figma.createTextStyle(); s.name = styleName; tsByName.set(styleName, s); }
+  s.fontName = fontName;
+  s.fontSize = ts.fontSize;
+  s.lineHeight = ts.lineHeightPercent != null ? { unit: 'PERCENT', value: ts.lineHeightPercent } : { unit: 'AUTO' };
+  s.letterSpacing = { unit: 'PERCENT', value: ts.letterSpacingPercent || 0 };
+  // Bind font size to its Primitives variable where the role aliased one.
+  if (ts.fontSizeVar) {
+    const v = byQualified.get(ts.fontSizeVar);
+    if (v) { try { s.setBoundVariable('fontSize', v); } catch (e) {} }
+  }
+  textStyleResults.push({ name: styleName, ok: true, font: fontName.family + ' ' + fontName.style });
+}
+
 return {
   collections: DATA.collections.map((c) => ({
     name: c.name,
@@ -117,5 +164,6 @@ return {
   })),
   valuesSet,
   effectStyles: Object.keys(SHADOWS),
+  textStyles: textStyleResults,
 };
 `;

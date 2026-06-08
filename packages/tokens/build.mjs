@@ -27,6 +27,11 @@ const INPUT_MODALITY_CSS = `@media (pointer: coarse) {
 const toSrgb = converter('rgb');
 const isTheme = (t) => THEMES.includes(t.path[0]);
 const isRegister = (t) => REGISTERS.includes(t.path[0]);
+// Composite typography roles ($type "typography") are not a single CSS value —
+// they decompose into the existing text/leading/tracking/font utilities, and ship
+// to Figma as Text Styles (like shadow → Effect Styles). Excluded from the flat
+// CSS var/Tailwind exports; surfaced in DTCG json + figma-native textStyles.
+const isTypography = (t) => t.$type === 'typography';
 // Register override blocks, emitted only for registers that actually have tokens.
 const registersWithTokens = (allTokens) =>
   REGISTERS.filter((name) => allTokens.some((t) => t.path[0] === name));
@@ -45,7 +50,9 @@ const renderVars = (tokens, stripPrefix, indent = '  ') =>
 StyleDictionary.registerFormat({
   name: 'css/auxiliary-tailwind-themes',
   format: async ({ dictionary }) => {
-    const primitives = dictionary.allTokens.filter((t) => !isTheme(t) && !isRegister(t));
+    const primitives = dictionary.allTokens.filter(
+      (t) => !isTheme(t) && !isRegister(t) && !isTypography(t),
+    );
     const byTheme = Object.fromEntries(
       THEMES.map((name) => [name, dictionary.allTokens.filter((t) => t.path[0] === name)])
     );
@@ -94,7 +101,9 @@ StyleDictionary.registerFormat({
 StyleDictionary.registerFormat({
   name: 'css/auxiliary-vars',
   format: async ({ dictionary }) => {
-    const primitives = dictionary.allTokens.filter((t) => !isTheme(t) && !isRegister(t));
+    const primitives = dictionary.allTokens.filter(
+      (t) => !isTheme(t) && !isRegister(t) && !isTypography(t),
+    );
     const byTheme = Object.fromEntries(
       THEMES.map((name) => [name, dictionary.allTokens.filter((t) => t.path[0] === name)])
     );
@@ -234,6 +243,31 @@ const toDtcgValue = (token) => {
       if (layers.every(Boolean)) return layers.length === 1 ? layers[0] : layers;
       return raw;
     }
+    case 'typography': {
+      // Composite (spec §9.7): { fontFamily, fontSize, fontWeight, lineHeight,
+      // letterSpacing }. Aliases pass through as {path} strings; literal
+      // dimensions (fontSize/letterSpacing) become { value, unit }; lineHeight /
+      // fontWeight stay numbers. `raw` here is the original (unresolved) object.
+      const obj = raw && typeof raw === 'object' ? raw : {};
+      const dim = (v) => {
+        if (typeof v === 'string' && v.startsWith('{') && v.endsWith('}')) return v;
+        if (typeof v === 'number') return { value: v, unit: 'px' };
+        const m = String(v).match(DIM_RE);
+        return m ? { value: parseFloat(m[1]), unit: m[2] ?? 'px' } : v;
+      };
+      const num = (v) => {
+        if (typeof v === 'string' && v.startsWith('{') && v.endsWith('}')) return v;
+        const n = Number(v);
+        return Number.isNaN(n) ? v : n;
+      };
+      return {
+        fontFamily: obj.fontFamily,
+        fontSize: dim(obj.fontSize),
+        fontWeight: num(obj.fontWeight),
+        lineHeight: num(obj.lineHeight),
+        letterSpacing: dim(obj.letterSpacing),
+      };
+    }
     case 'fontFamily':
     case 'fontWeight':
     case 'number':
@@ -285,11 +319,61 @@ StyleDictionary.registerFormat({
  * Styles via figma-sync; easings stay documentation).
  */
 const FIGMA_PRIMITIVES = 'Primitives';
-const FIGMA_SKIP = new Set(['shadow', 'cubicBezier']);
+// shadow + cubicBezier aren't variables (shadow → Effect Styles; easings → docs).
+// typography is a composite → Text Styles, not a variable (handled separately below).
+const FIGMA_SKIP = new Set(['shadow', 'cubicBezier', 'typography']);
 const figmaType = (type) =>
   type === 'color' ? 'COLOR' : type === 'fontFamily' ? 'STRING' : 'FLOAT';
 // `{color.primitive.red.700}` → `Primitives/color/primitive/red/700`
 const aliasToVarRef = (ref) => `${FIGMA_PRIMITIVES}/${ref.replace(/[{}]/g, '').split('.').join('/')}`;
+
+// Map a resolved fontWeight number → the Figma font style name we'll try first.
+const WEIGHT_STYLE = { 400: 'Regular', 500: 'Medium', 600: 'Semi Bold', 700: 'Bold' };
+// Map a resolved fontFamily stack → ordered Figma family candidates to load.
+// (Token stacks lead with the CSS variable-font name; Figma usually installs the
+// base family, so try both.)
+const figmaFamilyCandidates = (stack) => {
+  const arr = Array.isArray(stack) ? stack : [stack];
+  const joined = arr.join(' ');
+  // Inter Display is a distinct Figma family (the opsz=display cut); match it
+  // before the generic Inter case so heading roles get the display optical design.
+  if (/Inter Display/i.test(joined)) return ['Inter Display', 'Inter Variable'];
+  if (/Inter/i.test(joined)) return ['Inter', 'Inter Variable'];
+  if (/Geist Mono/i.test(joined)) return ['Geist Mono', 'Geist'];
+  return [arr[0]];
+};
+const dimValue = (v) => {
+  if (typeof v === 'number') return v;
+  const m = String(v).match(DIM_RE);
+  return m ? parseFloat(m[1]) : null;
+};
+
+// Derive Figma Text Styles from the composite `type/*` typography roles. Values
+// are resolved (concrete numbers); fontSize keeps a binding ref to its Primitives
+// variable when the role aliased one, so the plugin can bind it.
+const toTextStyles = (allTokens) =>
+  allTokens
+    .filter((t) => t.$type === 'typography')
+    .map((t) => {
+      const v = t.$value; // resolved
+      const orig = t.original?.$value ?? {}; // aliases (for variable binding)
+      const lh = Number(v.lineHeight);
+      const ls = dimValue(v.letterSpacing) ?? 0; // em
+      const weight = Number(v.fontWeight);
+      const bindRef = (val) =>
+        typeof val === 'string' && val.startsWith('{') && val.endsWith('}')
+          ? aliasToVarRef(val)
+          : null;
+      return {
+        name: t.path.slice(1).join('/'),
+        fontFamilyCandidates: figmaFamilyCandidates(v.fontFamily),
+        fontStyle: WEIGHT_STYLE[weight] ?? 'Regular',
+        fontSize: dimValue(v.fontSize),
+        lineHeightPercent: Number.isFinite(lh) ? Math.round(lh * 1000) / 10 : null,
+        letterSpacingPercent: Math.round(ls * 1000) / 10, // em → % of font size
+        fontSizeVar: bindRef(orig.fontSize),
+      };
+    });
 
 const toFigmaValue = (token) => {
   const raw = token.original?.$value ?? token.$value;
@@ -338,6 +422,7 @@ StyleDictionary.registerFormat({
             { name: FIGMA_PRIMITIVES, modes: ['Base'], variables: primitiveVars },
             { name: 'Semantic', modes: THEMES, variables: [...roles.values()] },
           ],
+          textStyles: toTextStyles(dictionary.allTokens),
         },
         null,
         2,
