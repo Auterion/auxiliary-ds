@@ -222,6 +222,47 @@
     font-weight: 500;
   }
 
+  /* -------------------------------------------------------------------------- *
+   * Operational register — type seam (additive; does NOT flex the type SCALE).
+   *
+   * The locked Phase-6.2 decision "type scale does not flex" stands: this rule
+   * touches NO font-size / line-height. It adds glyph DISAMBIGUATION + a label
+   * weight nudge for the instrument-panel context only, the same way [data-theme]
+   * re-resolves color — authored by hand because OpenType feature strings are
+   * composite (not DTCG scalar) values, so they can't live in operational.tokens.json.
+   *
+   * font-feature-settings does NOT cascade-merge — it fully REPLACES — so this
+   * MUST restate the entire html base set and then ADD the disambiguators:
+   *   cv05 = tailed lowercase l, cv08 = serif uppercase I, cv11 = single-story a
+   * so capital-I, lowercase-l and digit-1 read as three distinct shapes in
+   * alphanumeric asset names / call-signs (e.g. `Il1`).
+   *
+   * Slashed zero is delivered TWO ways on purpose. `zero` in the feature string
+   * rides font-feature-settings, which inherits independently — so it survives on
+   * descendants carrying the Tailwind `tabular-nums` utility (font-variant-numeric:
+   * tabular-nums), which would otherwise RESET an inherited `slashed-zero` value
+   * (font-variant-numeric is a shorthand). The font-variant-numeric line below is
+   * the belt-and-suspenders fallback for any element that sets neither. Net: every
+   * 0 in an operational subtree is slashed, including telemetry on `tabular-nums`.
+   * (Inter v4 numbering — matches the base set already in theme.css:180.) */
+  [data-register="operational"] {
+    font-feature-settings:
+      "ss01", "ss03", "ss07", "ss08",
+      "cv02", "cv03", "cv04", "cv06", "cv09", "cv12", "cv13",
+      "cv05", "cv08", "cv11",
+      "zero", "calt", "liga";
+    font-variant-numeric: slashed-zero;
+  }
+
+  /* Operational label/caption weight: nudge small labels from regular (400) to
+   * the established 500 house weight so they hold glance-weight on dense, dark
+   * mission-control surfaces (sunlight/darknight). Reuses --font-weight-medium
+   * (verified emitted at dist/tailwind-v4.css:344) — no new weight. Scoped to
+   * the label/caption tier only; body stays 400 so long-form reading isn't heavy. */
+  [data-register="operational"] :is(label, .caption, figcaption, legend) {
+    font-weight: var(--font-weight-medium);
+  }
+
   /* shadcn convention: default every element's border-color to the semantic
    * --border token, so plain `border` / `border-t` / `border-l` etc. just
    * work without having to add `border-border` everywhere. */
@@ -231,9 +272,18 @@
     border-color: var(--border);
   }
 
-  /* `tabular` helper for mission IDs, coordinates, telemetry readouts */
+  /* `tabular` helper for mission IDs, coordinates, telemetry readouts.
+   * slashed-zero disambiguates 0 from O/o for coords / asset IDs / call-signs —
+   * the aviation/MIL convention (slashed zero on flight strips). Uses the
+   * semantic numeric property (maps to Inter's `zero` + `tnum` features) so it
+   * composes with — and does not clobber — the inherited html font-feature-settings
+   * base set. The base set intentionally has no `zero`, so this is the single
+   * cleanest numeric-legibility win and applies wherever .tabular is already used.
+   * .tabular is the deliberately utilitarian, identifier-only home for an always-on
+   * slash (reaching for it already opts into machine-readout legibility); expressive
+   * prose keeps a plain 0, while the operational register slashes every 0 via `zero`. */
   .tabular {
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: slashed-zero tabular-nums;
   }
 
   /* Display / marketing headline voice — tuned toward a Neue-Haas-Grotesk feel:
@@ -252,6 +302,31 @@
     font-optical-sizing: auto;
     font-variation-settings: "opsz" 32;
     font-feature-settings: "calt", "liga";
+  }
+
+  /* Caps micro-label / eyebrow utility — section headers, status pills, axis &
+   * unit labels (ARMED, RTL, ALT, AGL, GPS). This is the ONE place tracking goes
+   * POSITIVE: the house baseline is negative (-0.02em → -0.05em) which is correct
+   * for mixed-case display but CRAMPS all-caps. --tracking-caps (+0.05em) is the
+   * documented caps exception; `case` aligns punctuation ( -, –, (), · ) to cap
+   * height for clean ID/label runs. Intended as the reusable home for the ad-hoc
+   * `uppercase tracking-wide` repeated across several recipes (migration is a
+   * deliberate follow-up) — note its +0.05em is wider than those recipes'
+   * `tracking-wide` (+0.02em), a caps-spacing correction, not a drop-in no-op.
+   * The `case` feature is the genuinely caps-specific reason for a dedicated class.
+   * Usable in either register. */
+  .caps {
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    font-feature-settings: "ss01", "ss03", "ss07", "ss08", "cv02", "cv03", "cv04", "cv06", "cv09", "cv12", "cv13", "case", "calt", "liga";
+  }
+
+  /* font-feature-settings fully REPLACES, so a .caps element inside an operational
+   * region would otherwise drop the register's disambiguators. Re-add them (cv08 =
+   * serif I is the one that matters under uppercase) so operational .caps keeps the
+   * I/l/1 guarantee, while expressive .caps stays on the cleaner letterforms. */
+  [data-register="operational"] .caps {
+    font-feature-settings: "ss01", "ss03", "ss07", "ss08", "cv02", "cv03", "cv04", "cv06", "cv09", "cv12", "cv13", "cv05", "cv08", "cv11", "case", "calt", "liga";
   }
 
   .font-mono {

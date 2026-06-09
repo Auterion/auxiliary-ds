@@ -166,7 +166,7 @@ const STATUS_LABELS: Record<(typeof STATUSES)[number], string> = {
 const BUTTON_VARIANTS = ['primary', 'secondary', 'ghost', 'danger'] as const;
 const BUTTON_SIZES = ['sm', 'md', 'lg'] as const;
 
-// Sample mission ID showing ss02 / cv01 disambiguation
+// Sample mission ID — packed with I/O/1/l/0 collisions (mono face + operational disambiguation)
 const MISSION_ID = 'MSN-IO1l0-2026-05-27';
 
 // Form state for the composition example
@@ -553,8 +553,9 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
       <section>
         <h2 class="mb-1 text-lg font-medium">Typography</h2>
         <p class="mb-5 text-sm text-muted-foreground">
-          Inter Variable with <code class="font-mono">ss02</code> +
-          <code class="font-mono">cv01</code> for I/l/1 + O/0 disambiguation. Geist Mono
+          Inter Variable — square / straight punctuation globally;
+          <code class="font-mono">I/l/1</code> disambiguation and slashed zero switch on in the
+          <code class="font-mono">operational</code> register. Geist Mono
           + tabular for identifiers, coordinates, telemetry.
         </p>
         <div class="space-y-3 rounded-md border border-border bg-card p-5">

@@ -6,7 +6,7 @@ Tailwind v4 preset and framework-agnostic styling recipes for Auxiliary.
 
 Scaffold only. Step 4 of the build plan lands:
 
-- `theme.css` — imports `@auxiliary/tokens` and declares the `@theme` block, plus Inter Variable / Geist Mono font setup and the `tabular-nums` + `ss02` body defaults.
+- `theme.css` — imports `@auxiliary/tokens` and declares the `@theme` block, plus Inter Variable / Geist Mono font setup, the square-punctuation base feature set, and the slashed-zero `.tabular` default. `I/l/1` disambiguation is scoped to the operational register.
 - `preset.css` — Tailwind v4 preset entry with custom utilities and variants (focus ring, 44px min-target hook for future Mission-Critical surfaces).
 - `recipes/` — `tailwind-variants` recipes for each primitive, framework-agnostic so future React / Svelte packages can consume the same source of variant truth.
 

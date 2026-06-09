@@ -61,7 +61,8 @@
     "wide":    { "$type": "dimension", "$value": "0.02em" },
     "body":    { "$type": "dimension", "$value": "-0.02em" },
     "subhead": { "$type": "dimension", "$value": "-0.03em" },
-    "display": { "$type": "dimension", "$value": "-0.04em" }
+    "display": { "$type": "dimension", "$value": "-0.04em" },
+    "caps":    { "$type": "dimension", "$value": "0.05em" }
   },
 
   "type": {

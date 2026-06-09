@@ -36,10 +36,11 @@ The primary voice. Inter Variable with optical sizing axis `opsz 14..32` so larg
 The body voice runs with these OpenType features turned on globally via [`@auxiliary/css/theme.css`](https://github.com/Auterion/auxiliary-ds/tree/main/packages/css):
 
 ```css
-font-feature-settings: 'cv01' 'cv10' 'ss02' 'ss03' 'calt' 'liga';
+font-feature-settings: "ss01", "ss03", "ss07", "ss08",
+  "cv02", "cv03", "cv04", "cv06", "cv09", "cv12", "cv13", "calt", "liga";
 ```
 
-That gives you disambiguated `I/l/1` and `O/0` for any text — not just identifiers. The `ss02` stylistic set is the load-bearing one for aerospace: see the [identifier section](#identifiers-tabular-numerals) below.
+Globally that buys the **square / straight-punctuation register** — geometric dots, straight quotes and commas, squared punctuation: the engineered, IBM-/Swiss-leaning voice that rhymes with the mark's faceted geometry. Strong `I/l/1` glyph disambiguation in the sans is deliberately **not** global — it's an [operational-register feature](./registers#type-in-the-operational-register) (the safety context that actually needs it), while the always-unambiguous path for identifiers stays the mono face below.
 
 ## Mono — Geist Mono
 
@@ -68,15 +69,43 @@ The job here is unambiguous disambiguation. Geist Mono was designed for code edi
 
 ## Identifiers, tabular numerals
 
-Mission IDs in the wild contain combinations that humans cannot reliably distinguish in default fonts. The combination of Geist Mono + `tabular-nums` + Inter's `ss02` stylistic set kills three common failure modes:
+Mission IDs in the wild contain combinations that humans cannot reliably distinguish in default fonts. Two layers handle them: the **mono face** (always unambiguous, by design) and the **operational register** (which switches on Inter's disambiguation glyphs in the sans). Default expressive Inter keeps the cleaner mixed-case letterforms.
 
-| Concern | Default Inter | Inter + `ss02` | Geist Mono |
+| Concern | Default Inter (expressive) | Inter · operational | Geist Mono |
 | --- | --- | --- | --- |
-| `I` vs `l` vs `1` | I l 1 | <span style="font-variation-settings: 'ss02' 1;">I l 1</span> | <span style="font-family: var(--font-mono);">I l 1</span> |
-| `O` vs `0` | O 0 | <span style="font-variation-settings: 'ss02' 1;">O 0</span> | <span style="font-family: var(--font-mono);">O 0</span> |
-| `5` vs `S` | 5 S | <span style="font-variation-settings: 'ss02' 1;">5 S</span> | <span style="font-family: var(--font-mono);">5 S</span> |
+| `I` vs `l` vs `1` | I l 1 | <span data-register="operational">I l 1</span> | <span style="font-family: var(--font-mono);">I l 1</span> |
+| `O` vs `0` | O 0 | <span data-register="operational">O 0</span> | <span style="font-family: var(--font-mono);">O 0</span> |
+| `5` vs `S` | 5 S | 5 S | <span style="font-family: var(--font-mono);">5 S</span> |
 
-In Mission Control surfaces, all identifiers go to the mono treatment by default. The body voice picks up `ss02` everywhere so prose that incidentally contains an ID still reads unambiguously.
+In Mission Control surfaces, identifiers go to the mono treatment by default. The **operational register** additionally disambiguates `I/l/1` and slashes the zero in the sans (`cv05`/`cv08`/`cv11` + slashed-zero), so an ID that surfaces in operational chrome — a label, a status badge — still reads unambiguously without switching faces. `5`/`S` stays a mono-only fix.
+
+## Numeric & label legibility
+
+Two register-aware refinements for operational readouts — both additive, neither touches the type scale.
+
+**Slashed zero on tabular.** The `.tabular` helper (mission IDs, coordinates, telemetry) now runs `font-variant-numeric: slashed-zero tabular-nums` — the aviation/flight-strip convention — so a glanced `0` can never be read as `O`. It rides the semantic numeric property, composing with the global feature set rather than replacing it.
+
+<div class="aux-type-spec">
+  <div class="row">
+    <span class="label">.tabular</span>
+    <span class="sample tabular" style="font-size:16px;">ALT 00420 m · BAT 100% · 47.3769, 8.5417</span>
+  </div>
+</div>
+
+**Caps micro-labels.** `.caps` is the one place tracking goes *positive* — `--tracking-caps` (+0.05em). The house baseline is negative, which is right for mixed-case display but cramps all-caps eyebrows, axis labels and status pills; `.caps` also enables `case` so punctuation aligns to cap height.
+
+<div class="aux-type-spec">
+  <div class="row">
+    <span class="label">plain uppercase</span>
+    <span class="sample" style="font-size:14px;text-transform:uppercase;letter-spacing:-0.02em;">Armed · RTL · AGL · GPS-fix</span>
+  </div>
+  <div class="row">
+    <span class="label">.caps</span>
+    <span class="sample caps" style="font-size:14px;">Armed · RTL · AGL · GPS-fix</span>
+  </div>
+</div>
+
+`I/l/1` disambiguation and the 500 label-weight bump are scoped to the [operational register](./registers#type-in-the-operational-register) — glyph shape and weight only, never scale.
 
 ## Usage
 
