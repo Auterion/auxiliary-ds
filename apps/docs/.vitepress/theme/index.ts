@@ -16,6 +16,11 @@ const theme: Theme = {
   extends: DefaultTheme,
   Layout: () =>
     h(DefaultTheme.Layout, null, {
+      // The Auterion org mark sits before the "Auxiliary" site title. Rendered via
+      // <Logo> (currentColor), so it inherits the navbar text color and stays legible
+      // across all four themes without a per-theme image swap.
+      'nav-bar-title-before': () =>
+        h(Logo, { id: 'auterion', kind: 'mark', decorative: true, class: 'aux-nav-mark' }),
       'nav-bar-content-after': () => h(ThemeSwitcher),
     }),
   enhanceApp({ app }) {

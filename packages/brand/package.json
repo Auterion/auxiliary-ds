@@ -29,6 +29,7 @@
   "scripts": {
     "build": "vite build && vue-tsc -p tsconfig.build.json",
     "sync": "node scripts/sync.mjs",
+    "export:icons": "node scripts/export-icons.mjs",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "vue-tsc -p tsconfig.build.json --noEmit",
     "test": "vitest run"

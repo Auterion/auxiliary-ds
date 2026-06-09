@@ -10,11 +10,13 @@ parallel to icons in the dependency graph. It's kept separate from functional ic
 because marks carry different licensing and usage rules — you can recolor an icon freely; you
 cannot recolor a logo.
 
-::: warning Awaiting artwork
-The package is scaffolded and the usage manifest is authoritative, but the master SVGs aren't
-in the repo yet. Every `<Logo>` below therefore renders a **labelled placeholder** — that's by
-design, so the missing slot is visible and nothing fake ships. Drop masters into
-`packages/brand/assets/` and run `pnpm --filter @auxiliary/brand sync`.
+::: info Partial artwork
+The **Auterion org mark and horizontal lockup** have landed (mono/inverse, single-color
+`currentColor` masters — they drive the navbar mark and the site favicons). The **product
+marks** (`mission-control`, `suite`, `os`) and the `wordmark` / `lockup-stacked` kinds are
+still pending, so those `<Logo>` slots render a **labelled placeholder** — by design, so the
+gap is visible and nothing fake ships. Drop masters into `packages/brand/assets/` and run
+`pnpm --filter @auxiliary/brand sync`.
 :::
 
 ## The component
@@ -89,6 +91,9 @@ Note: the system's `primary` currently resolves to a neutral (`zinc`), not an Au
 
 ## App icons
 
-Favicons, PWA/maskable icons, the apple-touch-icon, desktop app icons, and an OG-image template
-all derive from each logo's mark. The manifest declares the required outputs per target
-(`auterion`, `mission-control`, `suite`, `os`); the export step lands once the master marks do.
+Favicons, PWA/maskable icons, the apple-touch-icon, and an OG-image template all derive from
+each logo's mark. The manifest declares the required outputs per target (`auterion`,
+`mission-control`, `suite`, `os`); `pnpm --filter @auxiliary/brand export:icons` rasterizes
+them (ImageMagick) into `packages/brand/exports/<id>/` for every target whose mark has landed.
+The Auterion set is generated and powers this site's favicons; the product targets follow their
+marks.

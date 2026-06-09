@@ -6,6 +6,16 @@ export default defineConfig({
   title: 'Auxiliary',
   description: 'Auterion design system. Vue, Tailwind v4, framework-agnostic tokens, aerospace-grade alarm hierarchy.',
 
+  // Favicons + social card from @auxiliary/brand (packages/brand/exports/auterion,
+  // copied into public/). favicon.svg is adaptive — dark ink in light UI, light in dark.
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+    ['link', { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
+    ['meta', { property: 'og:image', content: '/og-image.png' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+  ],
+
   // Use clean URLs in production (no .html suffix)
   cleanUrls: true,
 

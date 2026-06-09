@@ -4,13 +4,25 @@ import Logo from '../Logo.vue';
 
 describe('Logo', () => {
   it('renders a labelled placeholder for a known logo whose master is pending', () => {
-    const wrapper = mount(Logo, { props: { id: 'auterion', kind: 'mark' } });
+    // `wordmark` has no master yet (only `mark` + `lockup-horizontal` have landed).
+    const wrapper = mount(Logo, { props: { id: 'auterion', kind: 'wordmark' } });
     const root = wrapper.get('.aux-logo');
     expect(root.classes()).toContain('aux-logo--pending');
     expect(root.attributes('role')).toBe('img');
     expect(root.attributes('aria-label')).toBe('Auterion logo');
     expect(root.text()).toContain('Auterion');
-    expect(root.text()).toContain('mark');
+    expect(root.text()).toContain('wordmark');
+  });
+
+  it('renders the inlined SVG for a logo whose master has landed', () => {
+    const wrapper = mount(Logo, { props: { id: 'auterion', kind: 'mark' } });
+    const root = wrapper.get('.aux-logo');
+    expect(root.classes()).not.toContain('aux-logo--pending');
+    expect(root.attributes('role')).toBe('img');
+    expect(root.attributes('aria-label')).toBe('Auterion logo');
+    expect(root.html()).toContain('<svg');
+    // Single-color master drives any tone via currentColor — no baked hex.
+    expect(root.html()).toContain('currentColor');
   });
 
   it('honours an explicit accessible name', () => {
