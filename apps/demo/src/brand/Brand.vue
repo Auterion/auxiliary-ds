@@ -12,7 +12,7 @@ const bg = ref<Background>('neutral');
 const theme = ref<'dark' | 'light'>('light');
 watch(theme, t => { if (t === 'light') bg.value = 'neutral'; });
 
-const BLUE = 'var(--color-primitive-auterion-blue-DEFAULT)';
+const BLUE = 'var(--color-primitive-auterion-blue-700)';
 const BLUE_FG = 'var(--color-primitive-white)';
 
 const accentStyle = computed(() => {
@@ -25,25 +25,25 @@ const accentStyle = computed(() => {
 const bgStyle = computed(() => {
   if (bg.value !== 'cadet') return '';
   return [
-    '--background: var(--color-primitive-auterion-blue-night)',      // oklch(0.165 0.014 265) ≈ #171744
-    '--card: var(--color-primitive-auterion-blue-shade)',            // oklch(0.205 0.017 265) ≈ #1d1f55
-    '--card-foreground: var(--color-primitive-auterion-blue-50)',    // oklch(0.972 0.012 264) ≈ #f0f4ff
-    '--popover: var(--color-primitive-auterion-blue-shade)',
+    '--background: var(--color-primitive-ink-950)',                  // oklch(0.139 0.014 265) ≈ #06090f
+    '--card: var(--color-primitive-ink-900)',                        // oklch(0.210 0.018 265) ≈ #141821
+    '--card-foreground: var(--color-primitive-auterion-blue-50)',    // oklch(0.970 0.013 264) ≈ #f1f5fe
+    '--popover: var(--color-primitive-ink-900)',
     '--popover-foreground: var(--color-primitive-auterion-blue-50)',
-    '--secondary: var(--color-primitive-auterion-blue-surface)',     // oklch(0.255 0.020 265) ≈ #252860
+    '--secondary: var(--color-primitive-ink-800)',                   // oklch(0.274 0.022 265) ≈ #222732
     '--secondary-foreground: var(--color-primitive-auterion-blue-50)',
-    '--muted: var(--color-primitive-auterion-blue-shade)',
+    '--muted: var(--color-primitive-ink-900)',
     '--muted-foreground: var(--color-primitive-cadet-600)',
-    '--accent: var(--color-primitive-auterion-blue-surface)',
+    '--accent: var(--color-primitive-ink-800)',
     '--accent-foreground: var(--color-primitive-auterion-blue-50)',
-    '--border: var(--color-primitive-auterion-blue-edge)',           // oklch(0.315 0.024 265) ≈ #2c3070
-    '--input: var(--color-primitive-auterion-blue-edge)',
+    '--border: var(--color-primitive-ink-700)',                      // oklch(0.372 0.022 265) ≈ #3b404c
+    '--input: var(--color-primitive-ink-700)',
   ].join('; ');
 });
 
 // Proposed Auterion palette from shared reference
 const proposedPalette = [
-  { name: 'Ultramarine', hex: '#2D33E0', oklch: 'oklch(0.500 0.235 264)', fg: '#ffffff', role: 'Brand accent — auterion-blue.DEFAULT' },
+  { name: 'Ultramarine', hex: '#1248DF', oklch: 'oklch(0.482 0.235 264)', fg: '#ffffff', role: 'Brand accent — auterion-blue.700 (semantic brand)' },
   { name: 'Space Cadet', hex: '#171744', oklch: 'oklch(0.18 0.08 264)', fg: '#ffffff', role: 'Dark ground' },
   { name: 'Night', hex: '#191C1C', oklch: 'oklch(0.17 0 0)', fg: '#ffffff', role: 'Near-black surface' },
   { name: 'Cadet Grey', hex: '#919A9B', oklch: 'oklch(0.63 0.01 200)', fg: '#ffffff', role: 'Neutral mid — cadet.500' },
@@ -255,7 +255,7 @@ const typeScale = [
               <div class="px-3 py-1.5 bg-card border-b border-border">
                 <span class="font-mono text-[10px] text-muted-foreground">Dark ground: Space Cadet #171744</span>
               </div>
-              <div class="p-6 flex items-center justify-between" style="background: var(--color-primitive-auterion-blue-night);">
+              <div class="p-6 flex items-center justify-between" style="background: var(--color-primitive-ink-950);">
                 <div>
                   <p class="font-mono text-[10px] uppercase tracking-[0.12em] mb-2" :style="`color: ${BLUE}`">Auterion · 2026</p>
                   <p class="font-mono text-[22px] font-medium leading-tight text-white">The operating system<br>for autonomous robotics</p>
@@ -450,11 +450,11 @@ const typeScale = [
             <div class="border-b border-border px-4 py-2.5 bg-card flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="font-mono text-[11px] text-muted-foreground">Hero D — Light theme</span>
-                <span class="rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em]" style="background: var(--color-primitive-auterion-blue-DEFAULT); color: white;">Blue direction</span>
+                <span class="rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em]" style="background: var(--color-primitive-auterion-blue-700); color: white;">Blue direction</span>
               </div>
               <span class="font-mono text-[10px] text-muted-foreground/60">White ground · Blue CTA · Fleet data right</span>
             </div>
-            <div data-theme="light" class="relative bg-background text-foreground overflow-hidden" style="--brand: var(--color-primitive-auterion-blue-DEFAULT); --brand-foreground: white; --ring: var(--color-primitive-auterion-blue-DEFAULT);">
+            <div data-theme="light" class="relative bg-background text-foreground overflow-hidden" style="--brand: var(--color-primitive-auterion-blue-700); --brand-foreground: white; --ring: var(--color-primitive-auterion-blue-600);">
               <!-- hairline grid, right half only -->
               <svg class="absolute right-0 top-0 h-full w-1/2 pointer-events-none" aria-hidden preserveAspectRatio="none">
                 <defs>
@@ -464,9 +464,9 @@ const typeScale = [
                 </defs>
                 <rect width="100%" height="100%" fill="url(#light-grid)"/>
                 <!-- mission trace -->
-                <path d="M 20 240 C 80 190 120 150 200 110 S 340 60 420 20" fill="none" stroke="var(--color-primitive-auterion-blue-DEFAULT)" stroke-width="1.5" stroke-dasharray="3 9" opacity="0.4"/>
-                <circle cx="200" cy="110" r="4" fill="var(--color-primitive-auterion-blue-DEFAULT)" opacity="0.7"/>
-                <circle cx="200" cy="110" r="14" fill="none" stroke="var(--color-primitive-auterion-blue-DEFAULT)" stroke-width="1" opacity="0.25"/>
+                <path d="M 20 240 C 80 190 120 150 200 110 S 340 60 420 20" fill="none" stroke="var(--color-primitive-auterion-blue-700)" stroke-width="1.5" stroke-dasharray="3 9" opacity="0.4"/>
+                <circle cx="200" cy="110" r="4" fill="var(--color-primitive-auterion-blue-700)" opacity="0.7"/>
+                <circle cx="200" cy="110" r="14" fill="none" stroke="var(--color-primitive-auterion-blue-700)" stroke-width="1" opacity="0.25"/>
                 <text x="218" y="106" font-family="monospace" font-size="9" fill="oklch(0.65 0 0)">47°22'N 8°32'E / ALT 128m</text>
               </svg>
 
@@ -489,7 +489,7 @@ const typeScale = [
                 <div class="border-l border-border/40 p-8 flex flex-col justify-center gap-1 font-mono text-[11px]">
                   <div class="flex items-center justify-between pb-2 mb-1 border-b border-border/30">
                     <span class="uppercase tracking-[0.1em] text-[9px] text-muted-foreground">Fleet · Live</span>
-                    <span class="h-1.5 w-1.5 rounded-full" style="background: var(--color-primitive-auterion-blue-DEFAULT);"/>
+                    <span class="h-1.5 w-1.5 rounded-full" style="background: var(--color-primitive-auterion-blue-700);"/>
                   </div>
                   <div v-for="r in [['Skyhook-01','nominal','86%'],['Falcon-02','advisory','64%'],['Raven-03','warning','18%'],['Osprey-05','nominal','92%']]"
                     :key="r[0]" class="flex items-center gap-2 py-1.5 border-b border-border/20">
@@ -678,7 +678,7 @@ const typeScale = [
 
         <!-- second moment: large quote -->
         <div class="mt-6 relative overflow-hidden rounded-sm border border-border/40 p-10 lg:p-14"
-          :style="dir === 'blue' ? 'background: var(--color-primitive-auterion-blue-DEFAULT)' : ''">
+          :style="dir === 'blue' ? 'background: var(--color-primitive-auterion-blue-700)' : ''">
           <p class="relative z-10 max-w-3xl"
             :style="dir === 'blue' ? 'color: var(--color-primitive-white); opacity: 0.9' : ''"
             style="font-family: 'Inter Variable', Inter, system-ui; font-variation-settings: 'opsz' 32; font-size: clamp(1.25rem, 2.5vw, 1.875rem); font-weight: 500; line-height: 1.3; letter-spacing: -0.025em;">

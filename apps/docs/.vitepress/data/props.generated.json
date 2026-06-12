@@ -2414,6 +2414,20 @@
         "default": null,
         "required": false,
         "description": "Trailing unit label (e.g. \"m\", \"kts\", \"MHz\") — decorative, shown after the value."
+      },
+      {
+        "name": "decrementLabel",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Accessible label for the decrement button. Override to match the field's operational context (e.g. \"Minus\"). Default: \"Decrease\"."
+      },
+      {
+        "name": "incrementLabel",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Accessible label for the increment button. Override to match the field's operational context (e.g. \"Plus\"). Default: \"Increase\"."
       }
     ],
     "events": [
@@ -2822,6 +2836,20 @@
         "default": null,
         "required": false,
         "description": "Label shown once armed / holding (e.g. \"Hold to ARM\", \"Confirm ARM\")."
+      },
+      {
+        "name": "cancelText",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Label for the Cancel button in confirm mode. Override with the specific action context (e.g. \"Abort\"). Default: \"Cancel\"."
+      },
+      {
+        "name": "instructionText",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Screen-reader instruction text (aria-describedby). Overrides the mode-derived default so operators can write \"Press and hold to ARM\" instead of the generic phrase."
       },
       {
         "name": "disabled",

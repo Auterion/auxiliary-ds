@@ -10,15 +10,15 @@ import { contrastRatio, parseOklch } from './wcag';
  */
 
 const cadet600 = parseOklch('oklch(0.60 0.035 200)');
-const abNight = parseOklch('oklch(0.165 0.014 265)');
-const abShade = parseOklch('oklch(0.205 0.017 265)');
+const inkBackground = parseOklch('oklch(0.139 0.014 265)');
+const inkCard = parseOklch('oklch(0.210 0.018 265)');
 
 describe('Space Cadet: cadet.600 muted-foreground readability', () => {
-  it('clears 4.5:1 against auterion-blue.night (background)', () => {
-    expect(contrastRatio(cadet600, abNight)).toBeGreaterThanOrEqual(4.5);
+  it('clears 4.5:1 against ink.950 (background)', () => {
+    expect(contrastRatio(cadet600, inkBackground)).toBeGreaterThanOrEqual(4.5);
   });
 
-  it('clears 4.5:1 against auterion-blue.shade (card)', () => {
-    expect(contrastRatio(cadet600, abShade)).toBeGreaterThanOrEqual(4.5);
+  it('clears 4.5:1 against ink.900 (card)', () => {
+    expect(contrastRatio(cadet600, inkCard)).toBeGreaterThanOrEqual(4.5);
   });
 });

@@ -10,16 +10,16 @@ import { Button, Badge, StatusBadge } from '@auxiliary/vue';
 import { Icon } from '@auxiliary/icons';
 
 // Auterion blue family — color.primitive.auterion-blue.* in packages/tokens
-// The brand token (--brand) maps to auterion-blue.DEFAULT in all themes.
-// Dark mode backgrounds and surfaces use the night/shade/surface/edge slots.
+// The brand token (--brand) maps to auterion-blue.700; the focus ring to .600.
+// Dark mode backgrounds and surfaces come from the separate `ink` neutral ramp.
 const blueRamp = [
-  { shade: 'night',   val: 'var(--color-primitive-auterion-blue-night)',   label: 'Night',   note: 'Dark mode background'    },
-  { shade: 'shade',   val: 'var(--color-primitive-auterion-blue-shade)',   label: 'Shade',   note: 'Dark mode card'           },
-  { shade: 'surface', val: 'var(--color-primitive-auterion-blue-surface)', label: 'Surface', note: 'Dark mode secondary'      },
-  { shade: 'edge',    val: 'var(--color-primitive-auterion-blue-edge)',    label: 'Edge',    note: 'Dark mode border'         },
-  { shade: 'DEFAULT', val: 'var(--color-primitive-auterion-blue-DEFAULT)', label: 'Brand',   note: 'var(--brand)'             },
-  { shade: 'light',   val: 'var(--color-primitive-auterion-blue-light)',   label: 'Light',   note: 'Focus ring / tint'        },
-  { shade: 'tint',    val: 'var(--color-primitive-auterion-blue-tint)',    label: 'Tint',    note: 'Light mode hover surface' },
+  { shade: 'ink.950',  val: 'var(--color-primitive-ink-950)',           label: 'Ink 950',  note: 'Dark mode background'    },
+  { shade: 'ink.900',  val: 'var(--color-primitive-ink-900)',           label: 'Ink 900',  note: 'Dark mode card'           },
+  { shade: 'ink.800',  val: 'var(--color-primitive-ink-800)',           label: 'Ink 800',  note: 'Dark mode secondary'      },
+  { shade: 'ink.700',  val: 'var(--color-primitive-ink-700)',           label: 'Ink 700',  note: 'Dark mode border'         },
+  { shade: '700',      val: 'var(--color-primitive-auterion-blue-700)', label: 'Brand',    note: 'var(--brand)'             },
+  { shade: '600',      val: 'var(--color-primitive-auterion-blue-600)', label: 'Ring',     note: 'Focus ring · var(--ring)' },
+  { shade: '50',       val: 'var(--color-primitive-auterion-blue-50)',  label: 'Tint',     note: 'Light mode hover surface' },
 ] as const;
 
 const statusLevels = [
@@ -119,14 +119,14 @@ const logoFiles = [
           v-for="sw in blueRamp"
           :key="sw.shade"
           class="bp-ramp__swatch"
-          :class="sw.shade === 'DEFAULT' ? 'bp-ramp__swatch--brand' : ''"
+          :class="sw.shade === '700' ? 'bp-ramp__swatch--brand' : ''"
           :style="{ background: sw.val }"
         >
           <span
             class="bp-ramp__shade"
-            :style="{ color: ['night','shade','surface','edge'].includes(sw.shade) ? 'rgba(255,255,255,0.45)' : sw.shade === 'DEFAULT' ? 'rgba(255,255,255,0.9)' : 'oklch(0.282 0.091 267.935)' }"
+            :style="{ color: sw.shade.startsWith('ink') ? 'rgba(255,255,255,0.45)' : sw.shade === '700' ? 'rgba(255,255,255,0.9)' : 'oklch(0.282 0.091 267.935)' }"
           >{{ sw.label }}</span>
-          <span v-if="sw.shade === 'DEFAULT'" class="bp-ramp__brand-pill">Brand</span>
+          <span v-if="sw.shade === '700'" class="bp-ramp__brand-pill">Brand</span>
         </div>
       </div>
       <!-- Swatch notes -->
@@ -143,11 +143,11 @@ const logoFiles = [
         </div>
         <div class="bp-token-grid__item">
           <dt class="bp-meta-label">OKLCH</dt>
-          <dd><code class="bp-code">oklch(0.46 0.285 265)</code></dd>
+          <dd><code class="bp-code">oklch(0.482 0.235 264)</code></dd>
         </div>
         <div class="bp-token-grid__item">
           <dt class="bp-meta-label">Primitive</dt>
-          <dd><code class="bp-code">auterion-blue.DEFAULT</code></dd>
+          <dd><code class="bp-code">auterion-blue.700</code></dd>
         </div>
         <div class="bp-token-grid__item">
           <dt class="bp-meta-label">Usage</dt>

@@ -307,28 +307,18 @@
       },
 
       "auterion-blue": {
-        "$description": "Ultramarine — the Auterion brand hue (~264deg). 50-950 is a perceptually-even oklch ramp for brand/marketing work; 600 is the canonical brand anchor (== DEFAULT), tuned to read on both white and near-black. Chroma peaks mid-ramp and tapers at both ends to stay in sRGB gamut. light/dark/tint are brand aliases; night/shade/surface/edge are LOW-chroma dark-UI neutrals (a blue whisper, not a wash) so dark surfaces stay monochrome while brand/ring carry the blue.",
-        "50":  { "$type": "color", "$value": "oklch(0.972 0.012 264)" },
-        "100": { "$type": "color", "$value": "oklch(0.940 0.028 264)" },
-        "200": { "$type": "color", "$value": "oklch(0.892 0.055 264)" },
-        "300": { "$type": "color", "$value": "oklch(0.820 0.105 264)" },
-        "400": { "$type": "color", "$value": "oklch(0.710 0.170 264)" },
-        "500": { "$type": "color", "$value": "oklch(0.600 0.225 264)" },
-        "600": { "$type": "color", "$value": "oklch(0.500 0.235 264)" },
-        "700": { "$type": "color", "$value": "oklch(0.420 0.205 265)" },
-        "800": { "$type": "color", "$value": "oklch(0.345 0.160 265)" },
-        "900": { "$type": "color", "$value": "oklch(0.270 0.110 265)" },
-        "950": { "$type": "color", "$value": "oklch(0.200 0.070 265)" },
-
-        "DEFAULT": { "$type": "color", "$value": "oklch(0.500 0.235 264)" },
-        "light":   { "$type": "color", "$value": "oklch(0.620 0.205 264)" },
-        "dark":    { "$type": "color", "$value": "oklch(0.400 0.205 265)" },
-        "tint":    { "$type": "color", "$value": "oklch(0.972 0.012 264)" },
-
-        "night":   { "$type": "color", "$value": "oklch(0.165 0.014 265)" },
-        "shade":   { "$type": "color", "$value": "oklch(0.205 0.017 265)" },
-        "surface": { "$type": "color", "$value": "oklch(0.255 0.020 265)" },
-        "edge":    { "$type": "color", "$value": "oklch(0.315 0.024 265)" }
+        "$description": "Ultramarine — the Auterion brand hue (~264deg). A pure 50-950 oklch ramp, regularized onto the shared palette lightness spine so it aligns with every other color in a swatch grid. Hue held at 264; chroma peaks mid-ramp and tapers at both ends to stay in sRGB gamut. Brand resolves at the semantic layer (brand→700, ring→600) — this primitive carries no aliases. Dark-UI surfaces live in the separate low-chroma `ink` neutral.",
+        "50":  { "$type": "color", "$value": "oklch(0.970 0.013 264)" },
+        "100": { "$type": "color", "$value": "oklch(0.938 0.030 264)" },
+        "200": { "$type": "color", "$value": "oklch(0.884 0.058 264)" },
+        "300": { "$type": "color", "$value": "oklch(0.807 0.110 264)" },
+        "400": { "$type": "color", "$value": "oklch(0.709 0.170 264)" },
+        "500": { "$type": "color", "$value": "oklch(0.631 0.220 264)" },
+        "600": { "$type": "color", "$value": "oklch(0.548 0.245 264)" },
+        "700": { "$type": "color", "$value": "oklch(0.482 0.235 264)" },
+        "800": { "$type": "color", "$value": "oklch(0.422 0.195 264)" },
+        "900": { "$type": "color", "$value": "oklch(0.376 0.145 264)" },
+        "950": { "$type": "color", "$value": "oklch(0.277 0.090 264)" }
       },
 
       "cadet": {
@@ -344,6 +334,21 @@
         "800": { "$type": "color", "$value": "oklch(0.38  0.010 200)" },
         "900": { "$type": "color", "$value": "oklch(0.28  0.008 200)" },
         "950": { "$type": "color", "$value": "oklch(0.20  0.006 200)" }
+      },
+
+      "ink": {
+        "$description": "Ultramarine-tinted dark-UI neutral at ~265° hue. A full 50-950 ramp on the shared neutral lightness spine (matches mono/slate/etc.) with a faint blue-whisper chroma (0.004→0.022) — cohesive with the auterion-blue brand without reading as a color wash. Dark theme draws its surfaces from the dark steps (background→950, card→900, secondary→800, border→700).",
+        "50":  { "$type": "color", "$value": "oklch(0.985 0.004 265)" },
+        "100": { "$type": "color", "$value": "oklch(0.968 0.006 265)" },
+        "200": { "$type": "color", "$value": "oklch(0.924 0.010 265)" },
+        "300": { "$type": "color", "$value": "oklch(0.870 0.013 265)" },
+        "400": { "$type": "color", "$value": "oklch(0.706 0.016 265)" },
+        "500": { "$type": "color", "$value": "oklch(0.553 0.018 265)" },
+        "600": { "$type": "color", "$value": "oklch(0.443 0.020 265)" },
+        "700": { "$type": "color", "$value": "oklch(0.372 0.022 265)" },
+        "800": { "$type": "color", "$value": "oklch(0.274 0.022 265)" },
+        "900": { "$type": "color", "$value": "oklch(0.210 0.018 265)" },
+        "950": { "$type": "color", "$value": "oklch(0.139 0.014 265)" }
       }
     }
   }
