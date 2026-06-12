@@ -12,6 +12,20 @@ describe('NumberField', () => {
     expect(wrapper.find('[aria-label="Increase"]').exists()).toBe(true);
   });
 
+  // Regression: these props are consumed by the stepper buttons, but used to
+  // survive the delegated-props destructure and fall through NumberFieldRoot
+  // as junk DOM attributes (decrementlabel="…").
+  it('applies decrementLabel/incrementLabel as button names without leaking DOM attrs', () => {
+    const wrapper = mount(NumberField, {
+      props: { modelValue: 5, decrementLabel: 'Minus', incrementLabel: 'Plus' },
+    });
+    expect(wrapper.find('[aria-label="Minus"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-label="Plus"]').exists()).toBe(true);
+    const root = wrapper.get('[role="group"]');
+    expect(root.attributes('decrementlabel')).toBeUndefined();
+    expect(root.attributes('incrementlabel')).toBeUndefined();
+  });
+
   it('reflects the modelValue on the spinbutton', () => {
     const wrapper = mount(NumberField, { props: { modelValue: 408 } });
     const spin = wrapper.get('[role="spinbutton"]');

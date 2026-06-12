@@ -168,7 +168,7 @@ v-for="t in (['dark','light'] as const)" :key="t" type="button"
                   :level="m.level"
                   size="sm"
                   dot
-                  :label="m.state"
+                  :sr-label="m.state"
                   class="justify-self-start"
                 >{{ m.state }}</StatusBadge>
                 <span v-else class="ix-label justify-self-start rounded-md border border-border px-1.5 py-0.5">{{ m.state }}</span>
@@ -197,7 +197,7 @@ v-for="t in (['dark','light'] as const)" :key="t" type="button"
                     :level="selected.level"
                     size="sm"
                     dot
-                    :label="selected.state"
+                    :sr-label="selected.state"
                     class="shrink-0"
                   >{{ selected.state }}</StatusBadge>
                   <span v-else class="ix-label shrink-0 rounded-md border border-border px-1.5 py-0.5">{{ selected.state }}</span>
@@ -315,7 +315,7 @@ v-for="t in (['dark','light'] as const)" :key="t" type="button"
               <span class="hidden text-right font-mono text-[13px] tabular-nums md:inline">{{ f.distance }}<span class="ml-0.5 text-[11px] text-muted-foreground">km</span></span>
               <span class="hidden text-right font-mono text-[13px] tabular-nums md:inline">{{ f.alt }}<span class="ml-0.5 text-[11px] text-muted-foreground">m</span></span>
               <div class="shrink-0 justify-self-end text-right">
-                <StatusBadge :level="f.level" size="sm" dot :label="f.result">{{ f.result }}</StatusBadge>
+                <StatusBadge :level="f.level" size="sm" dot :sr-label="f.result">{{ f.result }}</StatusBadge>
               </div>
             </div>
           </section>

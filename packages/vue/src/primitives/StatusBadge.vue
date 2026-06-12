@@ -14,8 +14,12 @@ const props = withDefaults(
     /** Per-level glyph — the grayscale-distinct visual cue. On by default. */
     icon?: boolean;
     dot?: boolean;
-    /** Overrides the visually-hidden level label announced to assistive tech. */
-    label?: string;
+    /**
+     * Overrides the visually-hidden level label announced to assistive tech.
+     * Never rendered visibly (`label` is reserved for visible text across the
+     * system) — the visible content is the slot.
+     */
+    srLabel?: string;
     class?: HTMLAttributes['class'];
   }>(),
   {
@@ -23,7 +27,7 @@ const props = withDefaults(
     size: 'md',
     icon: true,
     dot: false,
-    label: undefined,
+    srLabel: undefined,
   },
 );
 
@@ -35,7 +39,7 @@ const classes = computed(() => cn(styles.value.base(), props.class));
 const iconClass = computed(() => styles.value.icon());
 const dotClass = computed(() => styles.value.dot());
 const glyph = computed(() => STATUS_GLYPHS[props.level]);
-const srLabel = computed(() => props.label ?? STATUS_LABELS[props.level]);
+const srLabel = computed(() => props.srLabel ?? STATUS_LABELS[props.level]);
 </script>
 
 <template>

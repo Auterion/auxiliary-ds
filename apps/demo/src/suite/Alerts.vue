@@ -203,7 +203,7 @@ function acknowledgeHero() {
               size="sm"
               :variant="a.acknowledged ? 'outline' : 'solid'"
               dot
-              :label="LEVEL_LABELS[a.level]"
+              :sr-label="LEVEL_LABELS[a.level]"
             />
             <div class="min-w-0 flex-1">
               <p class="truncate text-[13px]">

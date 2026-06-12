@@ -6,12 +6,17 @@ import { cn } from '@auxiliary/css/utils';
 const props = withDefaults(
   defineProps<{
     size?: Size;
-    label?: string;
+    /**
+     * Accessible name announced for the spinner (aria-label + sr-only text).
+     * Never rendered visibly (`label` is reserved for visible text across the
+     * system).
+     */
+    ariaLabel?: string;
     class?: HTMLAttributes['class'];
   }>(),
   {
     size: 'md',
-    label: 'Loading',
+    ariaLabel: 'Loading',
   },
 );
 
@@ -20,7 +25,7 @@ const rootClass = computed(() => cn(styles.value.root(), props.class));
 </script>
 
 <template>
-  <span :class="rootClass" role="status" :aria-label="label">
+  <span :class="rootClass" role="status" :aria-label="ariaLabel">
     <svg
       :class="styles.icon()"
       viewBox="0 0 24 24"
@@ -43,6 +48,6 @@ const rootClass = computed(() => cn(styles.value.root(), props.class));
         fill="none"
       />
     </svg>
-    <span class="sr-only">{{ label }}</span>
+    <span class="sr-only">{{ ariaLabel }}</span>
   </span>
 </template>

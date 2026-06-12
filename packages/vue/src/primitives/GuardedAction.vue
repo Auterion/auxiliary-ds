@@ -36,7 +36,7 @@ const props = withDefaults(
     /** Label shown once armed / holding (e.g. "Hold to ARM", "Confirm ARM"). */
     confirmLabel?: string;
     /** Label for the Cancel button in confirm mode. Override with the specific action context (e.g. "Abort"). Default: "Cancel". */
-    cancelText?: string;
+    cancelLabel?: string;
     /** Screen-reader instruction text (aria-describedby). Overrides the mode-derived default so operators can write "Press and hold to ARM" instead of the generic phrase. */
     instructionText?: string;
     disabled?: boolean;
@@ -262,7 +262,7 @@ const cancelBtn = button({ variant: 'secondary', size: 'sm' });
       <button type="button" :class="confirmBtn" @click="confirmFromRow">
         {{ confirmLabel ?? 'Confirm' }}
       </button>
-      <button type="button" :class="cancelBtn" @click="disarm">{{ cancelText ?? 'Cancel' }}</button>
+      <button type="button" :class="cancelBtn" @click="disarm">{{ cancelLabel ?? 'Cancel' }}</button>
     </span>
 
     <!-- AT-only: pollable progress during a hold -->

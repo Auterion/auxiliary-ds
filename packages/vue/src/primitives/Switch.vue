@@ -17,16 +17,17 @@ const props = defineProps<
     /**
      * Accessible name for the control. Use when there's no associated `<Label>`
      * — a switch has no visible text of its own, so without this (or a
-     * `<Label for>`, or an `aria-label`) it ships nameless. Sets `aria-label`.
+     * `<Label for>`) it ships nameless. Sets `aria-label`; renders nothing
+     * visible (`label` is reserved for visible text across the system).
      */
-    label?: string;
+    ariaLabel?: string;
     class?: HTMLAttributes['class'];
   }
 >();
 const emits = defineEmits<SwitchRootEmits>();
 
 const delegated = computed(() => {
-  const { class: _class, invalid: _invalid, label: _label, ...rest } = props;
+  const { class: _class, invalid: _invalid, ariaLabel: _ariaLabel, ...rest } = props;
   return rest;
 });
 const forwarded = useForwardPropsEmits(delegated, emits);
@@ -36,7 +37,7 @@ const rootClass = computed(() => cn(styles.value.root(), props.class));
 </script>
 
 <template>
-  <SwitchRoot v-bind="forwarded" :aria-invalid="invalid || undefined" :aria-label="label || undefined" :class="rootClass">
+  <SwitchRoot v-bind="forwarded" :aria-invalid="invalid || undefined" :aria-label="ariaLabel || undefined" :class="rootClass">
     <SwitchThumb :class="styles.thumb()" />
   </SwitchRoot>
 </template>

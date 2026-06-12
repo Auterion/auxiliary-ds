@@ -41,7 +41,7 @@ describe('Spinner', () => {
   });
 
   it('uses a custom label for both aria-label and sr-only text', () => {
-    const wrapper = mount(Spinner, { props: { label: 'Fetching telemetry' } });
+    const wrapper = mount(Spinner, { props: { ariaLabel: 'Fetching telemetry' } });
     expect(wrapper.find('[role="status"]').attributes('aria-label')).toBe('Fetching telemetry');
     expect(wrapper.find('.sr-only').text()).toBe('Fetching telemetry');
   });
@@ -52,7 +52,7 @@ describe('Spinner', () => {
   });
 
   it('has no axe violations', async () => {
-    const wrapper = mount(Spinner, { props: { size: 'lg', label: 'Loading data' } });
+    const wrapper = mount(Spinner, { props: { size: 'lg', ariaLabel: 'Loading data' } });
     const results = await axe(wrapper.element);
     expect(results).toHaveNoViolations();
   });

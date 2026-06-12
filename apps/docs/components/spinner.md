@@ -57,14 +57,14 @@ Button doesn't render its own spinner — `loading` only dims the button and blo
 ### Custom label
 
 <div class="auxiliary-demo vp-raw">
-  <Spinner size="lg" label="Fetching telemetry" />
+  <Spinner size="lg" aria-label="Fetching telemetry" />
 </div>
 
 ```vue
-<Spinner size="lg" label="Fetching telemetry" />
+<Spinner size="lg" aria-label="Fetching telemetry" />
 ```
 
-The `label` is announced to screen readers and is *not* visible on screen. Always set it to describe the specific operation ("Fetching telemetry", "Uploading log") rather than leaving the generic default.
+The `ariaLabel` is announced to screen readers and is *not* visible on screen. Always set it to describe the specific operation ("Fetching telemetry", "Uploading log") rather than leaving the generic default.
 
 ### On a colored surface
 
@@ -91,6 +91,6 @@ The track and the spinning arc both stroke with `currentColor` — the arc at fu
 ## Accessibility
 
 - The root renders as `<span role="status">`, the polite ARIA live role. When the spinner appears, assistive technology announces its label without interrupting the user.
-- The `label` (default `"Loading"`) is exposed twice for redundancy — as `aria-label` on the `role="status"` element and as visually-hidden `sr-only` text inside it. Set it to something specific; "Loading" alone rarely tells a screen-reader user *what* is loading.
+- The `ariaLabel` (default `"Loading"`) is exposed twice for redundancy — as `aria-label` on the `role="status"` element and as visually-hidden `sr-only` text inside it. Set it to something specific; "Loading" alone rarely tells a screen-reader user *what* is loading.
 - The `<svg>` is `aria-hidden="true"` — it's purely decorative, so the label text is the sole announcement and the shape is never read out as graphics.
 - The spinner animates continuously via `animate-spin`. For users with `prefers-reduced-motion`, ensure the surrounding page respects the global reduced-motion contract; never make the spinner the *only* signal that work is happening — pair it with text ("Saving…", "Connecting…") so the state is legible without motion.
