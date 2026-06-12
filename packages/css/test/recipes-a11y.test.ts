@@ -7,6 +7,8 @@ import { checkbox } from '../recipes/checkbox.js';
 import { switchControl } from '../recipes/switch.js';
 import { tabs } from '../recipes/tabs.js';
 import { guardedAction } from '../recipes/guarded-action.js';
+import { slider } from '../recipes/slider.js';
+import { progress } from '../recipes/progress.js';
 
 /**
  * Recipe-level a11y affordance gate. The token gates (packages/tokens/test)
@@ -28,6 +30,24 @@ describe('menu/listbox keyboard highlight paints the gated primary fill', () => 
     it(`${name} item`, () => {
       expect(classes).toContain('data-[highlighted]:bg-primary');
       expect(classes).toContain('data-[highlighted]:text-primary-foreground');
+    });
+  }
+});
+
+// Control tracks (the "empty" part of slider/progress/switch) convey meaning —
+// how much remains — so they must use `input` (the gated ≥3:1 control-boundary
+// color), not `muted`, which measures 1.0–1.2:1 against the surfaces and is
+// literally identical to `card` in dark.
+describe('control tracks use the gated input color, not muted', () => {
+  const tracks = {
+    'slider track': slider().track(),
+    'progress track': progress().root(),
+    'switch track': switchControl().root(),
+  };
+  for (const [name, classes] of Object.entries(tracks)) {
+    it(name, () => {
+      expect(classes).toContain('bg-input');
+      expect(classes).not.toContain('bg-muted');
     });
   }
 });
