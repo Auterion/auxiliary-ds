@@ -53,7 +53,6 @@ const proposedPalette = [
   { name: 'Aquamarine', hex: '#3BE494', oklch: 'oklch(0.83 0.17 155)', fg: '#16352B', role: '? secondary / advisory conflict' },
 ];
 
-const spark = [6, 8, 7, 11, 13, 12, 16, 14, 19, 22, 20, 26, 30, 28, 33, 38];
 const heroSpark = [8, 10, 9, 12, 14, 13, 16, 15, 18, 20, 19, 23, 26, 24, 28, 31];
 
 const monoRamp = [

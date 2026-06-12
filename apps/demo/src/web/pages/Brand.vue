@@ -2,7 +2,7 @@
   Hallmark · macrostructure: Manifesto · tone: technical-austere · anchor hue: blue
   pre-emit critique: P5 H5 E4 S4 R5 V4
   theme: custom (vibe: "precision aerospace light chromatic anchor" ·
-    paper: oklch(0.98 0.004 247) · accent: oklch(0.546 0.245 262.881) blue ·
+    paper: oklch(0.98 0.004 247) · accent: oklch(0.482 0.235 264) auterion-blue.700 ·
     Inter Variable display + Geist Mono data)
 -->
 <script setup lang="ts">
@@ -124,7 +124,7 @@ const logoFiles = [
         >
           <span
             class="bp-ramp__shade"
-            :style="{ color: sw.shade.startsWith('ink') ? 'rgba(255,255,255,0.45)' : sw.shade === '700' ? 'rgba(255,255,255,0.9)' : 'oklch(0.282 0.091 267.935)' }"
+            :style="{ color: sw.shade.startsWith('ink') ? 'rgba(255,255,255,0.45)' : sw.shade === '700' ? 'rgba(255,255,255,0.9)' : 'var(--color-primitive-auterion-blue-950)' }"
           >{{ sw.label }}</span>
           <span v-if="sw.shade === '700'" class="bp-ramp__brand-pill">Brand</span>
         </div>
@@ -382,7 +382,7 @@ const logoFiles = [
 /*
  * Hallmark · macrostructure: Manifesto · tone: technical-austere · anchor hue: blue
  * pre-emit critique: P5 H5 E4 S4 R5 V4
- * custom: Inter Variable display + Geist Mono data · paper near-white · brand oklch(0.546 0.245 262.881)
+ * custom: Inter Variable display + Geist Mono data · paper near-white · brand oklch(0.482 0.235 264) (auterion-blue.700)
  */
 
 .bp {
@@ -434,7 +434,7 @@ const logoFiles = [
   font-size: 26px;
   font-weight: 600;
   letter-spacing: -0.025em;
-  color: oklch(0.97 0.014 254.604);
+  color: var(--color-primitive-auterion-blue-50);
 }
 
 .bp-hero__sub {
@@ -513,7 +513,7 @@ const logoFiles = [
   min-width: 0;
 }
 
-.bp-h2--inv { color: oklch(0.97 0.014 254.604); }
+.bp-h2--inv { color: var(--color-primitive-auterion-blue-50); }
 
 .bp-lead {
   font-size: 15px;
@@ -712,7 +712,7 @@ const logoFiles = [
 .bp-type-scale__specimen--display {
   font-family: var(--font-display);
   letter-spacing: -0.025em;
-  color: oklch(0.97 0.014 254.604);
+  color: var(--color-primitive-auterion-blue-50);
 }
 
 .bp-type-scale__specimen--mono {
@@ -747,7 +747,7 @@ const logoFiles = [
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: oklch(0.97 0.014 254.604);
+  color: var(--color-primitive-auterion-blue-50);
   margin: 0;
 }
 

@@ -14,6 +14,8 @@ Packages (all under the `@auxiliary/*` scope):
 - `packages/css` — `@auxiliary/css`
 - `packages/vue` — `@auxiliary/vue`
 - `packages/icons` — `@auxiliary/icons`
+- `packages/viz` — `@auxiliary/viz` (data-visualization: palettes + Sparkline/Gauge/Bars/Distribution/TimeSeries)
+- `packages/brand` — `@auxiliary/brand` (logo/lockup components + brand manifest, generated registry)
 - `packages/figma-sync` — `@auxiliary/figma-sync` (tokens → Figma push; see its README)
 
 Apps:
@@ -21,7 +23,7 @@ Apps:
 - `apps/docs` — `@auxiliary/docs`, VitePress docs at `http://localhost:5173`
 - `apps/demo` — `@auxiliary/demo`, Vite playground at `http://localhost:5174`
 
-**Where things are headed:** `ROADMAP.md` is the single forward-looking source of truth (phased plan; active frontier is Phase 6 "Elevation"). Design grounding lives in `.claude/docs/` — incl. `auterion-product-inventory.md` (real Mission Control / Suite / OS surfaces to design against).
+**Where things are headed:** `ROADMAP.md` is the single forward-looking source of truth (phased plan; active frontier is Phase 7 "Refinement"). Design grounding lives in `.claude/docs/` — incl. `auterion-product-inventory.md` (real Mission Control / Suite / OS surfaces to design against).
 
 ## Architecture
 
@@ -32,6 +34,7 @@ Layered dependency flow (downstream packages depend on upstream ones):
 ```
 tokens  →  css  →  vue  →  docs
                 ↘  icons  ↗
+                ↘  viz, brand  ↗
          figma-sync (consumes tokens)
 ```
 
@@ -42,6 +45,8 @@ tokens  →  css  →  vue  →  docs
   (`@auxiliary/css/format` — lat/long·MGRS, units, locale-aware numbers).
 - `packages/vue` — Vue 3 components built on Reka UI, styled via the css preset.
 - `packages/icons` — icon set, consumable by `vue` and downstream surfaces.
+- `packages/viz` — token-driven, theme- & CVD-safe chart set (SVG + uPlot) and palette helpers.
+- `packages/brand` — Auterion logo/lockup components; `src/registry.generated.ts` is generated from `brand.manifest.json` + `assets/` and drift-gated by its test suite.
 - `packages/figma-sync` — one-way push of tokens → Figma Variables. Code → Figma, never the reverse (see Principle 1 below).
 - `apps/docs` — VitePress documentation site, runs at `http://localhost:5173`.
 
@@ -82,7 +87,7 @@ pnpm install
 pnpm build       # build across packages, respecting the dependency graph
 pnpm dev         # docs + demo + watch builds
 pnpm lint        # real gate: eslint --max-warnings 0 in every package
-pnpm test        # @auxiliary/vue runs Vitest + vitest-axe w/ coverage; other packages are stubs
+pnpm test        # real suites in tokens (contrast/orthogonality/parity gates), css (generated-CSS + recipe gates), vue (Vitest + vitest-axe w/ coverage), viz, brand (registry drift), figma-sync, docs (props drift + coverage); only icons and demo are stubs
 pnpm typecheck
 pnpm changeset   # add a changeset (required on every PR — see below)
 pnpm release     # build + changeset publish
@@ -103,8 +108,11 @@ CI (`.github/workflows/ci.yml`) enforces two things that are easy to miss:
 
 1. **The icon registry is generated and must be committed in sync.** `packages/icons/src/registry.ts` is produced from `packages/icons/src/config.ts` (and `packages/icons/inputs/*.svg`). After changing either, run `pnpm --filter @auxiliary/icons sync` and commit the regenerated `registry.ts` — CI fails if it drifts. Icons build on Font Awesome Pro Sharp plus a custom kit, so installing/syncing needs `FONTAWESOME_PACKAGE_TOKEN` in the environment.
 2. **Every PR needs a changeset.** CI runs `changeset status --since=origin/main`; add one with `pnpm changeset`.
+3. **More committed-generated artifacts with drift gates:** docs props (`apps/docs/.vitepress/data/props.generated.json`, regenerate with `node apps/docs/scripts/gen-props.mjs`) and the brand registry (`pnpm --filter @auxiliary/brand sync`) — both fail `pnpm test` when stale. CI also runs `pnpm pack:smoke` (publish-correctness of tokens/css/vue tarballs).
 
-`@auxiliary/figma-sync` builds a self-contained push program (`dist/push.figma.js`); its lint/test scripts are still stubs.
+`@auxiliary/figma-sync` builds a self-contained push program (`dist/push.figma.js`) with the token data inlined; its build hard-errors if `packages/tokens/dist` is older than the token sources.
+
+Note: root `turbo.json` deliberately keeps `test.dependsOn: ["^build"]` (upstream builds only, not the package's own) — every suite reads `src`, and adding own-`build` would force vite+vue-tsc ahead of each test loop.
 
 ## Component patterns (vue)
 

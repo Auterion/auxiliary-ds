@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Icon } from '@auxiliary/icons';
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   eyebrow?: string;
   title: string;
   subtitle?: string;

@@ -1,10 +1,11 @@
 # Auxiliary — path to a world-class design system
 
-Status as of 2026-06-01. This is the single forward-looking source of truth — a phased execution
-plan grounded in the current code. The monorepo is real and well-layered: 6 packages (incl. the new
-`@auxiliary/viz`), 2 apps, ~30 Vue primitives. Phases 1–5 are delivered, and **Phase 6 ("Elevation")
-is now delivered** across sub-phases 6.1–6.5 (see the acceptance assessment in §"Phase 6 acceptance"
-below) — the frontier shifts to a release rhythm + the deferred 6d (iconography/symbology).
+Status as of 2026-06-12. This is the single forward-looking source of truth — a phased execution
+plan grounded in the current code. The monorepo is real and well-layered: 7 packages (incl.
+`@auxiliary/viz` and `@auxiliary/brand`), 2 apps, ~36 Vue primitives. Phases 1–6 are delivered
+(see §"Phase 6 acceptance" below). **The active frontier is Phase 7 ("Refinement")** — visual
+design pass + harden/extract — with a release rhythm and the deferred 6d (iconography/symbology)
+still queued behind it.
 
 The debt was concentrated in three places, in priority order:
 
@@ -1015,7 +1016,9 @@ user's call.
 
 ## § Brand & identity assets (decision record)
 
-**Status: scaffolded, awaiting master artwork.** Built as `@auxiliary/brand` on branch `feat/brand-assets`.
+**Status: landed.** `@auxiliary/brand` is merged with the Auterion org mark + horizontal lockup tracked in
+`assets/` (mono masters), a drift-gated generated registry, and docs at `foundations/brand.md`. Product
+sub-brand marks remain pending master artwork.
 
 **The gap.** The system had tokens, components, patterns, and templates but *no brand layer*: no marks, no
 wordmark, no lockups, no usage rules, nothing machine-consumable. Brand was referenced conceptually
@@ -1055,8 +1058,6 @@ Auterion brand *color* (`primary` resolves to neutral `zinc`) and no mark even o
 
 ## Cross-cutting
 
-- **Fix `CLAUDE.md`** — it still claims "only `README.md` exists." Update it to describe the real
-  monorepo so future agents aren't misled. (Small, do it early.)
 - **Changesets** — CI already enforces a changeset per PR. Every phase's breaking changes (esp. the
   `intent` → `variant` rename) need one.
 - **Honor pre-1.0** — clean breaks over shims; no back-compat owed yet (README).

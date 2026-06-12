@@ -17,8 +17,11 @@ This is a pnpm + Turborepo monorepo.
 | `packages/css` | Tailwind v4 preset and `@theme` exports. |
 | `packages/vue` | Vue 3 components built on Reka UI. |
 | `packages/icons` | Icon set. |
+| `packages/viz` | Data-visualization: token-driven palettes + chart set. |
+| `packages/brand` | Auterion logo/lockup components + brand manifest. |
 | `packages/figma-sync` | Scripts that push tokens into Figma Variables. |
 | `apps/docs` | VitePress documentation site. |
+| `apps/demo` | Vite playground (demo surfaces across themes/registers). |
 
 ## Principles
 
@@ -51,9 +54,12 @@ auxiliary-ds/
 │   ├── css/         # Tailwind v4 preset
 │   ├── vue/         # Vue components
 │   ├── icons/       # icon set
+│   ├── viz/         # data-visualization charts
+│   ├── brand/       # logo/lockup components
 │   └── figma-sync/  # token → Figma scripts
 ├── apps/
-│   └── docs/        # VitePress docs site
+│   ├── docs/        # VitePress docs site
+│   └── demo/        # Vite playground
 └── turbo.json
 \`\`\`
 
