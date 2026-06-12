@@ -90,6 +90,24 @@ describe('alert-banner press states use currentColor, not page foreground', () =
   }
 });
 
+// GuardedAction's hold-progress is functional feedback on a safety-critical
+// control: it must be a SOLID currentColor bar (the variant's gated
+// -foreground), never an alpha blend — bg-current/25 measured 1.2–2.2:1
+// filled-vs-unfilled across all 16 variant×theme combinations. And the armed
+// state must not borrow the focus `ring` channel (one box-shadow slot).
+describe('guarded-action progress + armed state', () => {
+  it('fill is solid currentColor, no alpha modifier', () => {
+    const fill = guardedAction().fill();
+    expect(fill).toContain('bg-current');
+    expect(fill).not.toMatch(/bg-current\/\d/);
+  });
+  it('armed uses the outline channel, not the focus ring', () => {
+    const armedRoot = guardedAction({ armed: true }).root();
+    expect(armedRoot).toContain('outline-destructive');
+    expect(armedRoot.split(' ')).not.toContain('ring-2');
+  });
+});
+
 // Control tracks (the "empty" part of slider/progress/switch) convey meaning —
 // how much remains — so they must use `input` (the gated ≥3:1 control-boundary
 // color), not `muted`, which measures 1.0–1.2:1 against the surfaces and is
