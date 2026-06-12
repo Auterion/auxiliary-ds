@@ -3,10 +3,10 @@
 A small, rounded label styled by the `badge` recipe — four variants, two sizes. Use it for static metadata: version numbers, environment tags, counts, categories.
 
 <div class="auxiliary-demo vp-raw">
-  <Badge variant="default">default</Badge>
+  <Badge variant="neutral">neutral</Badge>
   <Badge variant="secondary">secondary</Badge>
   <Badge variant="outline">outline</Badge>
-  <Badge variant="accent">accent</Badge>
+  <Badge variant="primary">primary</Badge>
 </div>
 
 ## When to use
@@ -32,20 +32,20 @@ The component forwards `$attrs`, so `aria-*`, `data-*`, `id`, `title` etc. all l
 ### Variant matrix
 
 <div class="auxiliary-demo vp-raw">
-  <Badge variant="default">default</Badge>
+  <Badge variant="neutral">neutral</Badge>
   <Badge variant="secondary">secondary</Badge>
   <Badge variant="outline">outline</Badge>
-  <Badge variant="accent">accent</Badge>
+  <Badge variant="primary">primary</Badge>
 </div>
 
 ```vue
-<Badge variant="default">default</Badge>
+<Badge variant="neutral">neutral</Badge>
 <Badge variant="secondary">secondary</Badge>
 <Badge variant="outline">outline</Badge>
-<Badge variant="accent">accent</Badge>
+<Badge variant="primary">primary</Badge>
 ```
 
-`default` and `secondary` are the everyday neutrals — both carry a border, with `secondary` reading quieter on muted text. `outline` drops the fill entirely for the lightest weight. `accent` fills with the primary color and is the only variant that draws attention — save it for the one badge that matters in a row.
+`neutral` and `secondary` are the everyday neutrals — both carry a border, with `secondary` reading quieter on muted text. `outline` drops the fill entirely for the lightest weight. `primary` fills with the primary color and is the only variant that draws attention — save it for the one badge that matters in a row.
 
 ### Sizes
 
@@ -66,16 +66,16 @@ The component forwards `$attrs`, so `aria-*`, `data-*`, `id`, `title` etc. all l
 <div class="auxiliary-demo vp-raw">
   <Badge size="sm">v4.2.1</Badge>
   <Badge size="sm" variant="outline">beta</Badge>
-  <Badge size="sm" variant="accent">new</Badge>
+  <Badge size="sm" variant="primary">new</Badge>
 </div>
 
 ```vue
 <Badge size="sm">v4.2.1</Badge>
 <Badge size="sm" variant="outline">beta</Badge>
-<Badge size="sm" variant="accent">new</Badge>
+<Badge size="sm" variant="primary">new</Badge>
 ```
 
-A common pattern: a neutral version chip, a quiet outline tag for the build channel, and a single `accent` badge to flag what's new.
+A common pattern: a neutral version chip, a quiet outline tag for the build channel, and a single `primary` badge to flag what's new.
 
 ### In situ
 
@@ -86,7 +86,7 @@ A common pattern: a neutral version chip, a quiet outline tag for the build chan
   </div>
   <div style="display: flex; align-items: center; gap: 0.5rem;">
     <span style="font-size: 0.875rem;">Notifications</span>
-    <Badge size="sm" variant="accent">12</Badge>
+    <Badge size="sm" variant="primary">12</Badge>
   </div>
   <div style="display: flex; align-items: center; gap: 0.5rem;">
     <span style="font-size: 0.875rem;">Mission plan</span>
@@ -99,7 +99,7 @@ Badges annotate a neighbor — they rarely stand alone. The `sm` size keeps the 
 ## Accessibility
 
 - The badge renders as a `<span>` — screen readers read the slot content as inline text. The text *is* the meaning; never lean on the variant color to convey it. A red-ish chip with no readable label means nothing to a screen reader.
-- When a badge encodes status the surrounding text doesn't (`accent` for "new", `outline` for "draft"), make sure the word is in the slot, not just implied by color — this is WCAG 1.4.1 (use of color).
+- When a badge encodes status the surrounding text doesn't (`primary` for "new", `outline` for "draft"), make sure the word is in the slot, not just implied by color — this is WCAG 1.4.1 (use of color).
 - A count badge like `12` next to "Notifications" reads as "Notifications 12," which is usually fine. If the count needs explicit framing, add a `title` or `aria-label` (e.g. `aria-label="12 unread notifications"`) — it forwards through `$attrs`.
 - Badge is **not** interactive and has no focus ring. If you need a clickable chip, don't add a click handler to Badge — use a `<Button>` so keyboard and focus behavior come for free.
 
@@ -109,9 +109,9 @@ The badge recipe binds to these semantic tokens — change the underlying values
 
 | Variant | Background | Text | Border |
 | --- | --- | --- | --- |
-| `default` | `--muted` | `--foreground` | `--border` |
+| `neutral` | `--muted` | `--foreground` | `--border` |
 | `secondary` | `--card` | `--muted-foreground` | `--border` |
 | `outline` | transparent | `--muted-foreground` | `--border` |
-| `accent` | `--primary` | `--primary-foreground` | none |
+| `primary` | `--primary` | `--primary-foreground` | none |
 
 Plus `--radius` (corner radius) on every variant.

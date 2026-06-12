@@ -19,14 +19,14 @@ describe('Badge', () => {
 
   it('maps each variant to its class set', () => {
     const cases: Array<[string, string[]]> = [
-      ['default', ['bg-muted', 'text-foreground']],
+      ['neutral', ['bg-muted', 'text-foreground']],
       ['secondary', ['bg-card', 'text-muted-foreground']],
       ['outline', ['border', 'text-muted-foreground']],
-      ['accent', ['bg-primary', 'text-primary-foreground']],
+      ['primary', ['bg-primary', 'text-primary-foreground']],
     ];
     for (const [variant, expected] of cases) {
       const wrapper = mount(Badge, {
-        props: { variant: variant as 'default' | 'secondary' | 'outline' | 'accent' },
+        props: { variant: variant as 'neutral' | 'secondary' | 'outline' | 'primary' },
         slots: { default: variant },
       });
       for (const cls of expected) {
@@ -59,7 +59,7 @@ describe('Badge', () => {
   });
 
   it('has no axe violations', async () => {
-    const wrapper = mount(Badge, { props: { variant: 'accent' }, slots: { default: 'Live' } });
+    const wrapper = mount(Badge, { props: { variant: 'primary' }, slots: { default: 'Live' } });
     const results = await axe(wrapper.element);
     expect(results).toHaveNoViolations();
   });

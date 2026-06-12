@@ -978,10 +978,10 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             <div>
               <div class="mb-2 text-xs uppercase text-muted-foreground">Badges (generic — distinct from StatusBadge)</div>
               <div class="flex flex-wrap items-center gap-2">
-                <Badge variant="default">default</Badge>
+                <Badge variant="neutral">neutral</Badge>
                 <Badge variant="secondary">secondary</Badge>
                 <Badge variant="outline">outline</Badge>
-                <Badge variant="accent">accent</Badge>
+                <Badge variant="primary">primary</Badge>
                 <Badge size="sm">v4.2.1</Badge>
                 <Badge size="sm" variant="outline">beta</Badge>
               </div>

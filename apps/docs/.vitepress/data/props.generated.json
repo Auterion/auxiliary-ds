@@ -1683,8 +1683,8 @@
     "props": [
       {
         "name": "variant",
-        "type": "\"default\" | \"secondary\" | \"outline\" | \"accent\"",
-        "default": "default",
+        "type": "\"primary\" | \"secondary\" | \"neutral\" | \"outline\"",
+        "default": "neutral",
         "required": false,
         "description": ""
       },

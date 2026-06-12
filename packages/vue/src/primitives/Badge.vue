@@ -10,7 +10,7 @@ const props = withDefaults(
     class?: HTMLAttributes['class'];
   }>(),
   {
-    variant: 'default',
+    variant: 'neutral',
     size: 'md',
   },
 );
