@@ -1,7 +1,6 @@
 ---
 '@auxiliary/tokens': minor
 '@auxiliary/css': minor
-'@auxiliary/docs': patch
 ---
 
 Tune type + numeric legibility for the engineered, operational voice the Auterion
