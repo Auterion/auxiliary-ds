@@ -56,6 +56,9 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Pack smoke test (publish correctness)
+        run: pnpm pack:smoke
+
   changeset:
     name: Changeset present
     runs-on: ubuntu-latest

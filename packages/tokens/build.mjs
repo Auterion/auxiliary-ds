@@ -1,5 +1,12 @@
+import { rmSync } from 'node:fs';
 import StyleDictionary from 'style-dictionary';
 import { converter, formatHex, parse as parseColor } from 'culori';
+
+// Wipe dist entirely before building: cleanAllPlatforms() only removes the
+// declared destinations, so renamed outputs and stray files (e.g. editor /
+// macOS conflict copies) would otherwise survive — and `files: ["dist"]`
+// publishes everything in here.
+rmSync('dist', { recursive: true, force: true });
 
 const THEMES = ['light', 'dark', 'sunlight', 'darknight'];
 
@@ -140,21 +147,34 @@ StyleDictionary.registerFormat({
   },
 });
 
-StyleDictionary.registerFormat({
-  name: 'typescript/tokens-const',
-  format: async ({ dictionary }) => {
-    const tree = {};
-    for (const t of dictionary.allTokens) {
-      let node = tree;
-      for (let i = 0; i < t.path.length - 1; i++) {
-        const key = t.path[i];
-        node[key] ??= {};
-        node = node[key];
-      }
-      node[t.path[t.path.length - 1]] = t.$value;
+// The JS entry ships as plain JS + a declaration file (not a raw .ts source):
+// Node refuses type-stripping under node_modules, so a published .ts entry
+// breaks every non-bundler consumer. A JSON literal is valid TS type syntax,
+// so the .d.ts preserves the exact as-const literal types.
+const tokensTree = (dictionary) => {
+  const tree = {};
+  for (const t of dictionary.allTokens) {
+    let node = tree;
+    for (let i = 0; i < t.path.length - 1; i++) {
+      const key = t.path[i];
+      node[key] ??= {};
+      node = node[key];
     }
-    return `export const tokens = ${JSON.stringify(tree, null, 2)} as const;\n`;
-  },
+    node[t.path[t.path.length - 1]] = t.$value;
+  }
+  return tree;
+};
+
+StyleDictionary.registerFormat({
+  name: 'javascript/tokens-const',
+  format: async ({ dictionary }) =>
+    `export const tokens = ${JSON.stringify(tokensTree(dictionary), null, 2)};\n`,
+});
+
+StyleDictionary.registerFormat({
+  name: 'typescript/tokens-dts',
+  format: async ({ dictionary }) =>
+    `export declare const tokens: ${JSON.stringify(tokensTree(dictionary), null, 2)};\n`,
 });
 
 /**
@@ -493,10 +513,13 @@ const sd = new StyleDictionary({
       buildPath: 'dist/',
       files: [{ destination: 'tokens.css', format: 'css/auxiliary-vars' }],
     },
-    ts: {
+    js: {
       transformGroup: 'js',
       buildPath: 'dist/',
-      files: [{ destination: 'tokens.ts', format: 'typescript/tokens-const' }],
+      files: [
+        { destination: 'tokens.js', format: 'javascript/tokens-const' },
+        { destination: 'tokens.d.ts', format: 'typescript/tokens-dts' },
+      ],
     },
     dtcg: {
       transformGroup: 'js',
