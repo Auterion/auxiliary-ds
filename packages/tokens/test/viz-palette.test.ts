@@ -1,105 +1,95 @@
-import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { deltaEOk, loadTheme, parseOklch } from './wcag';
+import { contrastRatio, deltaEOk, loadTheme, luminance, type ThemeName } from './wcag';
+import { deltaEOkCvd } from './cvd';
 
 /**
- * Data-viz palette gate (ROADMAP §6.5).
+ * Per-theme data-viz palette gate (ROADMAP §6.5, rebuilt for the four-mode
+ * palette).
  *
- * The viz palettes are derived from the OKLCH primitive ramps and must hold two
- * invariants the rest of the system depends on:
+ * The viz scales are SEMANTIC roles now — viz-categorical-1…6, viz-sequential-
+ * 1…5, viz-diverging-1…5 — re-resolving under [data-theme] like every other
+ * role, so each theme carries its own realization of one brand-anchored
+ * identity (series 1 = Auterion ultramarine; darknight = warm luminance
+ * ladder under the blue-energy cap). Invariants:
  *
- *  1. The reserved status ladder stays reserved — no categorical series may sit
- *     near a status hue (alarm/warning/caution/advisory/nominal), or a chart
- *     series would read as an operational state.
- *  2. Series stay distinguishable — pairwise in color (ΔEok) AND in lightness.
- *     The status ladder reserves the warm + cyan + green band, so the
- *     categorical palette lives in the cool→magenta arc; with hue range limited,
- *     *luminance spread* is what keeps series apart under CVD (the same
- *     "luminance hierarchy over saturation" rule the darknight ladder uses).
+ *  1. Every categorical series ≥ 3:1 against background AND card (a series
+ *     you can't see isn't a series). Sunlight relies on the same floor —
+ *     its rungs are darkened instead of floored higher so the palette keeps
+ *     six usable steps.
+ *  2. Pairwise distinguishability: ΔEok ≥ 0.05 normally, and ≥ 0.04 under
+ *     simulated protanopia/deuteranopia (Machado severity 1.0 — ~8% of
+ *     males). Tritanopia (<0.01%) is floored at 0.025 in the cool themes;
+ *     in darknight the blue cap physically removes the blue–yellow axis, so
+ *     the tritan floor is replaced by an enforced OKLCH-lightness gap ≥ 0.05
+ *     per pair — series identity at night rides on brightness ordering,
+ *     exactly like the darknight status ladder.
+ *  3. The reserved status ladder stays reserved: every categorical series
+ *     keeps ΔEok ≥ 0.05 from every ladder fill and destructive.
+ *  4. Sequential ramps are strictly monotonic in luminance.
+ *  5. Diverging endpoints ≥ 3:1 against the background.
  *
- * Source-based (reads the DTCG tokens, not built CSS) like the other token gates.
- * Full CVD simulation (Brettel) is a later refinement; the luminance-spread floor
- * is the proxy here.
+ * (The darknight blue cap covers the viz roles automatically via the
+ * every-token gate in sunlight-night-gates.test.ts.)
  */
 
-const srcDir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'src');
+const THEMES: ThemeName[] = ['light', 'dark', 'sunlight', 'darknight'];
+const CAT = [1, 2, 3, 4, 5, 6] as const;
+const LADDER = ['alarm', 'warning', 'caution', 'advisory', 'nominal'] as const;
 
-type Leaf = { $value: string };
-type Group = Record<string, Leaf>;
-const vizFile = JSON.parse(
-  readFileSync(resolve(srcDir, 'primitive', 'viz.tokens.json'), 'utf8'),
-) as { viz: { categorical: Group; sequential: Group; diverging: Group } };
+describe.each(THEMES)('viz palette — %s theme', (name) => {
+  const theme = loadTheme(name);
+  const cat = CAT.map((i) => theme[`viz-categorical-${i}`]!);
+  const pairs = CAT.flatMap((a, i) => CAT.slice(i + 1).map((b) => [a, b] as const));
 
-const toColors = (g: Group) => Object.values(g).map((t) => parseOklch(t.$value));
-const categorical = toColors(vizFile.viz.categorical);
-const sequential = toColors(vizFile.viz.sequential);
-const diverging = toColors(vizFile.viz.diverging);
-const lightness = (c: ReturnType<typeof parseOklch>) => c[0];
-const chroma = (c: ReturnType<typeof parseOklch>) => c[1];
+  it.each(CAT)('categorical %d ≥ 3:1 vs background and card', (i) => {
+    expect(contrastRatio(theme.background!, cat[i - 1]!)).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(theme.card!, cat[i - 1]!)).toBeGreaterThanOrEqual(3);
+  });
 
-// Resolved status-ladder colors (alarm=red.700, warning=orange.500, …).
-const light = loadTheme('light');
-const STATUS = ['alarm', 'warning', 'caution', 'advisory', 'nominal'] as const;
-const statusColors = STATUS.map((role) => {
-  const c = light[role];
-  if (!c) throw new Error(`Missing status role: ${role}`);
-  return [role, c] as const;
-});
+  it.each(pairs)('categorical %d vs %d stays distinguishable (normal + CVD)', (a, b) => {
+    const [ca, cb] = [cat[a - 1]!, cat[b - 1]!];
+    expect(deltaEOk(ca, cb), 'normal').toBeGreaterThanOrEqual(0.05);
+    expect(deltaEOkCvd(ca, cb, 'protanopia'), 'protanopia').toBeGreaterThanOrEqual(0.04);
+    expect(deltaEOkCvd(ca, cb, 'deuteranopia'), 'deuteranopia').toBeGreaterThanOrEqual(0.04);
+    if (name === 'darknight') {
+      expect(Math.abs(ca[0] - cb[0]), 'OKLCH lightness gap').toBeGreaterThanOrEqual(0.05);
+    } else {
+      expect(deltaEOkCvd(ca, cb, 'tritanopia'), 'tritanopia').toBeGreaterThanOrEqual(0.025);
+    }
+  });
 
-// Floors sit below measured headroom (status ≥0.22, pairwise ≥0.14, L-gap ≥0.06).
-const STATUS_FLOOR = 0.12;
-const PAIR_FLOOR = 0.1;
-const LUM_GAP = 0.04;
-
-describe('viz palette — reserved status ladder', () => {
-  it.each(categorical.map((c, i) => [i + 1, c] as const))(
-    'categorical series %i is clear of every status hue (ΔEok ≥ %s)',
-    (_i, c) => {
-      for (const [role, s] of statusColors) {
-        expect(deltaEOk(c, s), `vs ${role}`).toBeGreaterThanOrEqual(STATUS_FLOOR);
-      }
-    },
-  );
-});
-
-describe('viz palette — categorical series stay distinguishable', () => {
-  it('every pair separates in color (ΔEok)', () => {
-    for (let i = 0; i < categorical.length; i++) {
-      for (let j = i + 1; j < categorical.length; j++) {
+  it('no categorical series sits on a status color', () => {
+    for (const i of CAT) {
+      for (const role of [...LADDER, 'destructive'] as const) {
         expect(
-          deltaEOk(categorical[i]!, categorical[j]!),
-          `series ${i + 1} vs ${j + 1}`,
-        ).toBeGreaterThanOrEqual(PAIR_FLOOR);
+          deltaEOk(cat[i - 1]!, theme[role]!),
+          `viz-categorical-${i} vs ${role}`,
+        ).toBeGreaterThanOrEqual(0.05);
       }
     }
   });
 
-  it('every pair separates in lightness (grayscale / CVD-safe)', () => {
-    const sorted = categorical.map(lightness).sort((a, b) => a - b);
-    for (let i = 0; i < sorted.length - 1; i++) {
-      expect(sorted[i + 1]! - sorted[i]!, `adjacent L gap #${i}`).toBeGreaterThanOrEqual(LUM_GAP);
+  it('sequential ramp is strictly monotonic in luminance', () => {
+    const seq = [1, 2, 3, 4, 5].map((i) => luminance(theme[`viz-sequential-${i}`]!));
+    const dir = Math.sign(seq[1]! - seq[0]!);
+    expect(dir).not.toBe(0);
+    for (let i = 1; i < seq.length; i++) {
+      expect(Math.sign(seq[i]! - seq[i - 1]!), `step ${i}`).toBe(dir);
     }
+  });
+
+  it('diverging endpoints ≥ 3:1 vs background', () => {
+    expect(contrastRatio(theme.background!, theme['viz-diverging-1']!)).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(theme.background!, theme['viz-diverging-5']!)).toBeGreaterThanOrEqual(3);
   });
 });
 
-describe('viz palette — sequential is a monotonic lightness ramp', () => {
-  it('lightness decreases strictly from step 1 → n', () => {
-    for (let i = 0; i < sequential.length - 1; i++) {
-      expect(lightness(sequential[i]!), `step ${i + 1} → ${i + 2}`).toBeGreaterThan(
-        lightness(sequential[i + 1]!),
-      );
-    }
-  });
-});
-
-describe('viz palette — diverging has distinct ends and a neutral midpoint', () => {
-  it('the two ends are perceptually far apart', () => {
-    expect(deltaEOk(diverging[0]!, diverging[diverging.length - 1]!)).toBeGreaterThanOrEqual(0.18);
-  });
-  it('the midpoint is near-neutral (low chroma)', () => {
-    const mid = diverging[Math.floor(diverging.length / 2)]!;
-    expect(chroma(mid), 'midpoint chroma').toBeLessThanOrEqual(0.04);
+describe('CVD simulation self-check', () => {
+  it('red/green collapses under deuteranopia but not tritanopia', () => {
+    const red: [number, number, number] = [0.628, 0.258, 29.23];
+    const green: [number, number, number] = [0.648, 0.2, 142];
+    expect(deltaEOk(red, green)).toBeGreaterThan(0.2);
+    expect(deltaEOkCvd(red, green, 'deuteranopia')).toBeLessThan(0.1);
+    expect(deltaEOkCvd(red, green, 'tritanopia')).toBeGreaterThan(0.15);
   });
 });

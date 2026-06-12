@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   blueEnergy,
   contrastRatio,
+  deltaEOk,
   loadTheme,
   pairRatio,
   parseOklch,
@@ -83,6 +84,42 @@ describe.each(THEMES)('contrast floors — %s theme', (themeName) => {
   // Dark used to fail this at 2.38/2.12 (red.800 on ink.950/ink.900).
   it.each(['background', 'card'] as const)('destructive vs %s >= 3:1 (SC 1.4.11)', (surface) => {
     expect(pairRatio(theme, surface, 'destructive')).toBeGreaterThanOrEqual(3.0);
+  });
+
+  // destructive (UI-action red) must stay DISTINGUISHABLE from alarm (status
+  // red) — a danger button next to an alarm badge has to read as two things.
+  // light/sunlight/darknight all aliased the identical primitive (ΔEok 0.000)
+  // before the theme review; this locks the separation everywhere.
+  it('destructive vs alarm ΔEok >= 0.04', () => {
+    expect(deltaEOk(theme.destructive!, theme.alarm!)).toBeGreaterThanOrEqual(0.04);
+  });
+
+  // brand was in no gate at all, and dark brand had silently sunk to 2.86:1
+  // vs background. brand is used as link/label ink, so it needs the text
+  // floor against the page, plus its own fill/foreground pair.
+  it('brand vs background >= 4.5:1 and brand/brand-foreground >= 4.5:1', () => {
+    expect(pairRatio(theme, 'background', 'brand')).toBeGreaterThanOrEqual(4.5);
+    expect(pairRatio(theme, 'brand', 'brand-foreground')).toBeGreaterThanOrEqual(4.5);
+  });
+
+  // The *-emphasis tier is on-surface status INK (StatusBadge outline text/
+  // border/glyph, status text on cards). Unlike the fills — which pair with
+  // their own -foreground — emphasis ink sits directly on page surfaces, so
+  // it carries the text floor against both.
+  const EMPHASIS = ['alarm', 'warning', 'caution', 'advisory', 'nominal'] as const;
+  it.each(EMPHASIS)('%s-emphasis >= 4.5:1 vs background and card', (level) => {
+    expect(pairRatio(theme, 'background', `${level}-emphasis`)).toBeGreaterThanOrEqual(4.5);
+    expect(pairRatio(theme, 'card', `${level}-emphasis`)).toBeGreaterThanOrEqual(4.5);
+  });
+  it('emphasis inks stay pairwise distinguishable (ΔEok >= 0.04)', () => {
+    for (let i = 0; i < EMPHASIS.length; i++) {
+      for (let j = i + 1; j < EMPHASIS.length; j++) {
+        expect(
+          deltaEOk(theme[`${EMPHASIS[i]}-emphasis`]!, theme[`${EMPHASIS[j]}-emphasis`]!),
+          `${EMPHASIS[i]} vs ${EMPHASIS[j]}`,
+        ).toBeGreaterThanOrEqual(0.04);
+      }
+    }
   });
 });
 

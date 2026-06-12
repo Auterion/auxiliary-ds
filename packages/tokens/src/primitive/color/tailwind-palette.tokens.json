@@ -347,8 +347,14 @@
         "600": { "$type": "color", "$value": "oklch(0.443 0.020 265)" },
         "700": { "$type": "color", "$value": "oklch(0.372 0.022 265)" },
         "800": { "$type": "color", "$value": "oklch(0.274 0.022 265)" },
+        "850": { "$type": "color", "$value": "oklch(0.242 0.020 265)" },
         "900": { "$type": "color", "$value": "oklch(0.210 0.018 265)" },
         "950": { "$type": "color", "$value": "oklch(0.139 0.014 265)" }
+      },
+      "scrim": {
+        "$description": "Modal-overlay scrims: black at fixed alpha, dark in EVERY theme. A surface-token scrim inverts or vanishes per theme (background/70 is white-on-white in sunlight; a foreground scrim floods darknight with light) — black dims uniformly and emits nothing, which is exactly right for the scotopic theme.",
+        "55": { "$type": "color", "$value": "oklch(0 0 0 / 0.55)" },
+        "70": { "$type": "color", "$value": "oklch(0 0 0 / 0.70)" }
       }
     }
   }
