@@ -5,13 +5,13 @@ import {
   onScopeDispose,
   type ComputedRef,
 } from 'vue';
-import { STATUS_RANK, type StatusKind } from '../primitives/status-glyphs';
+import { STATUS_RANK, type StatusLevel } from '../primitives/status-glyphs';
 
 /** What a consumer raises — the identity and current state of a *condition*. */
 export interface AlertSource {
   /** Stable identity of the condition (re-raising the same id updates, not duplicates). */
   id: string;
-  level: StatusKind;
+  level: StatusLevel;
   title?: string;
   message?: string;
   /** Category, for inhibit/suppress by group. */
@@ -19,20 +19,20 @@ export interface AlertSource {
   /** Latch this alert (stay active after clear until acknowledged). Defaults per level. */
   latch?: boolean;
   /** Auto-escalate to a higher level if still active + unacknowledged after `afterMs`. */
-  escalate?: { to: StatusKind; afterMs: number };
+  escalate?: { to: StatusLevel; afterMs: number };
 }
 
 /** A managed alert in the model. */
 export interface Alert {
   id: string;
-  level: StatusKind;
+  level: StatusLevel;
   /** Level as first raised, before any escalation. */
-  baseLevel: StatusKind;
+  baseLevel: StatusLevel;
   title?: string;
   message?: string;
   group?: string;
   latch: boolean;
-  escalate?: { to: StatusKind; afterMs: number };
+  escalate?: { to: StatusLevel; afterMs: number };
   /** Whether the underlying condition is currently asserted. */
   active: boolean;
   acknowledged: boolean;
@@ -47,7 +47,7 @@ export interface UseAlertModelOptions {
   /** Fired when an alert is acknowledged. */
   onAcknowledge?: (alert: Alert) => void;
   /** Decides which levels latch by default. Default: alarm + warning. */
-  defaultLatch?: (level: StatusKind) => boolean;
+  defaultLatch?: (level: StatusLevel) => boolean;
   /** Injectable clock for deterministic tests. Default: `Date.now`. */
   now?: () => number;
 }
@@ -58,7 +58,7 @@ export interface AlertModel {
   /** The single most urgent visible alert, or null. */
   highest: ComputedRef<Alert | null>;
   /** Count of visible alerts per level. */
-  counts: ComputedRef<Record<StatusKind, number>>;
+  counts: ComputedRef<Record<StatusLevel, number>>;
   /** Count of visible unacknowledged alerts. */
   unacknowledged: ComputedRef<number>;
   raise: (source: AlertSource) => void;
@@ -81,7 +81,7 @@ export function compareAlerts(a: Alert, b: Alert): number {
   );
 }
 
-const ALL_LEVELS: StatusKind[] = ['alarm', 'warning', 'caution', 'advisory', 'nominal'];
+const ALL_LEVELS: StatusLevel[] = ['alarm', 'warning', 'caution', 'advisory', 'nominal'];
 
 /**
  * Headless operational alert model — *alerting as a model, not a banner*.
@@ -95,7 +95,7 @@ export function useAlertModel(options: UseAlertModelOptions = {}): AlertModel {
   const timers = new Map<string, ReturnType<typeof setTimeout>>();
 
   const now = options.now ?? (() => Date.now());
-  const defaultLatch = options.defaultLatch ?? ((l: StatusKind) => l === 'alarm' || l === 'warning');
+  const defaultLatch = options.defaultLatch ?? ((l: StatusLevel) => l === 'alarm' || l === 'warning');
 
   function isInhibited(id: string): boolean {
     const a = store.get(id);
@@ -232,7 +232,7 @@ export function useAlertModel(options: UseAlertModelOptions = {}): AlertModel {
   );
   const highest = computed(() => alerts.value[0] ?? null);
   const counts = computed(() => {
-    const out: Record<StatusKind, number> = { alarm: 0, warning: 0, caution: 0, advisory: 0, nominal: 0 };
+    const out: Record<StatusLevel, number> = { alarm: 0, warning: 0, caution: 0, advisory: 0, nominal: 0 };
     for (const a of alerts.value) out[a.level] += 1;
     return out;
   });

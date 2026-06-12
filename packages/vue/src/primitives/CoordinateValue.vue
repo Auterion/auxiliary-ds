@@ -3,6 +3,7 @@ import { computed, type HTMLAttributes } from 'vue';
 import { coordinateValue, type Size } from '@auxiliary/css/recipes';
 import { formatLatLon, type CoordFormat } from '@auxiliary/css/format';
 import { cn } from '@auxiliary/css/utils';
+import type { StatusLevel } from './status-glyphs';
 
 const props = withDefaults(
   defineProps<{
@@ -23,7 +24,7 @@ const props = withDefaults(
     /** Visual size. */
     size?: Size;
     /** Status level — colors the value when set (e.g. red for an out-of-bounds fix). */
-    level?: 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal' | null;
+    level?: StatusLevel | null;
     class?: HTMLAttributes['class'];
   }>(),
   {

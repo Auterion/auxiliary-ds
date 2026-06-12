@@ -3,12 +3,13 @@ import { ProgressIndicator, ProgressRoot } from 'reka-ui';
 import { computed, type HTMLAttributes } from 'vue';
 import { progress } from '@auxiliary/css/recipes';
 import { cn } from '@auxiliary/css/utils';
+import type { StatusLevel } from './status-glyphs';
 
 const props = withDefaults(
   defineProps<{
     value?: number | null;
     max?: number;
-    level?: 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal' | null;
+    level?: StatusLevel | null;
     class?: HTMLAttributes['class'];
   }>(),
   {

@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { computed, type HTMLAttributes } from 'vue';
-import { statusBadge } from '@auxiliary/css/recipes';
+import { statusBadge, type StatusBadgeVariants } from '@auxiliary/css/recipes';
 import { cn } from '@auxiliary/css/utils';
-import { STATUS_GLYPHS, STATUS_LABELS, type StatusKind } from './status-glyphs';
-
-export type StatusLevel = StatusKind;
+import { STATUS_GLYPHS, STATUS_LABELS, type StatusLevel } from './status-glyphs';
 
 const props = withDefaults(
   defineProps<{
     level: StatusLevel;
-    variant?: 'solid' | 'outline';
-    size?: 'sm' | 'md';
+    variant?: StatusBadgeVariants['variant'];
+    size?: StatusBadgeVariants['size'];
     /** Per-level glyph — the grayscale-distinct visual cue. On by default. */
     icon?: boolean;
     dot?: boolean;

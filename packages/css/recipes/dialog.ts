@@ -1,4 +1,4 @@
-import { tv, type VariantProps } from 'tailwind-variants';
+import { tv } from 'tailwind-variants';
 
 export const dialog = tv({
   slots: {
@@ -12,5 +12,3 @@ export const dialog = tv({
     description: 'text-sm text-muted-foreground',
   },
 });
-
-export type DialogVariants = VariantProps<typeof dialog>;

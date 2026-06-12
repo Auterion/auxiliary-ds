@@ -1720,7 +1720,7 @@
       },
       {
         "name": "level",
-        "type": "\"alarm\" | \"warning\" | \"caution\" | \"advisory\" | \"nominal\" | null",
+        "type": "StatusLevel | null",
         "default": "null",
         "required": false,
         "description": ""
@@ -2465,7 +2465,7 @@
     "props": [
       {
         "name": "level",
-        "type": "StatusKind",
+        "type": "StatusLevel",
         "default": null,
         "required": true,
         "description": ""
@@ -2579,7 +2579,7 @@
       },
       {
         "name": "level",
-        "type": "\"alarm\" | \"warning\" | \"caution\" | \"advisory\" | \"nominal\" | null",
+        "type": "StatusLevel | null",
         "default": "null",
         "required": false,
         "description": "Status level — colors the value when set (e.g. red for alarm threshold)."
@@ -2593,7 +2593,7 @@
     "props": [
       {
         "name": "level",
-        "type": "StatusKind",
+        "type": "StatusLevel",
         "default": null,
         "required": true,
         "description": ""
@@ -2712,7 +2712,7 @@
       },
       {
         "name": "level",
-        "type": "\"alarm\" | \"warning\" | \"caution\" | \"advisory\" | \"nominal\" | null",
+        "type": "StatusLevel | null",
         "default": "null",
         "required": false,
         "description": "Status level — colors the value when set (e.g. red for an out-of-bounds fix)."

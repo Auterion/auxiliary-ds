@@ -2,13 +2,12 @@
 import { computed, type HTMLAttributes } from 'vue';
 import { alertBanner } from '@auxiliary/css/recipes';
 import { cn } from '@auxiliary/css/utils';
-import { STATUS_GLYPHS, STATUS_LABELS, type StatusKind } from './status-glyphs';
+import { STATUS_GLYPHS, STATUS_LABELS, type StatusLevel } from './status-glyphs';
 
-export type AlertLevel = StatusKind;
 
 const props = withDefaults(
   defineProps<{
-    level: AlertLevel;
+    level: StatusLevel;
     title?: string;
     description?: string;
     dismissible?: boolean;

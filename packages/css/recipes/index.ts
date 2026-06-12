@@ -1,4 +1,4 @@
-export { type Size, type SizeSm } from './sizes.js';
+export { type Size } from './sizes.js';
 
 // General primitives
 export { button, type ButtonVariants } from './button.js';
@@ -13,7 +13,7 @@ export { numberField, type NumberFieldVariants } from './number-field.js';
 export { slider } from './slider.js';
 
 // Overlays & menus
-export { dialog, type DialogVariants } from './dialog.js';
+export { dialog } from './dialog.js';
 export { popover } from './popover.js';
 export { tooltip } from './tooltip.js';
 export { dropdownMenu } from './dropdown-menu.js';

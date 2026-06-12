@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { axe } from '../../test-utils/a11y';
-import AlertBanner, { type AlertLevel } from '../AlertBanner.vue';
+import AlertBanner from '../AlertBanner.vue';
+import type { StatusLevel } from '../status-glyphs';
 
-const LEVELS: AlertLevel[] = ['alarm', 'warning', 'caution', 'advisory', 'nominal'];
+const LEVELS: StatusLevel[] = ['alarm', 'warning', 'caution', 'advisory', 'nominal'];
 
 describe('AlertBanner', () => {
   it('maps every level to its expected background, foreground and border color class', () => {
