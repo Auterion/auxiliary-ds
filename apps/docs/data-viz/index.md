@@ -4,14 +4,14 @@ A token-driven, theme- and color-blind-safe visualization layer (`@auxiliary/viz
 
 ## Why a separate palette
 
-Chart series can't borrow from the **status ladder** — `alarm`/`warning`/`caution`/`advisory`/`nominal` reserve red, orange, yellow, cyan, and green, and a data series in those hues would read as an operational state. So the categorical palette lives in the **cool→magenta arc**, and because that's a narrow hue range, series are kept apart by **lightness** (the same "luminance hierarchy over saturation" rule that makes them survive color-blindness). A [build gate](/foundations/conformance) enforces all of this — distance from the status hues, mutual separation, and luminance spread.
+The palette is **per-theme**: the same `--viz-*` variable re-resolves under `[data-theme]`, so each theme carries its own realization of one brand-anchored identity — series 1 is always Auterion ultramarine, and the sweep walks the cool→magenta arc plus a warm-neutral stone (the blue–yellow axis is what survives red-green color-blindness). **Darknight is the deliberate exception**: the blue-energy cap rules out the cool sweep entirely, so night charts switch to a warm scale whose series identity rides on an enforced **lightness ladder** — the same brightness-as-meaning rule as the darknight status ladder. Chart series never borrow from the **status ladder** (`alarm`…`nominal` reserve their hues; a series in those colors would read as an operational state). A [token gate](/foundations/conformance) enforces all of it per theme — contrast floors against background *and* card, mutual ΔE separation **including simulated protanopia/deuteranopia/tritanopia**, distance from every status fill, and monotonic sequential ramps.
 
 ## Categorical
 
 For unordered series (vehicles, channels, categories). Five series, distinct in hue *and* lightness.
 
 <div class="auxiliary-demo vp-raw" style="gap:0.75rem;">
-  <div v-for="n in 5" :key="n" style="display:flex; flex-direction:column; align-items:center; gap:0.375rem;">
+  <div v-for="n in 6" :key="n" style="display:flex; flex-direction:column; align-items:center; gap:0.375rem;">
     <div :style="{ width:'3.5rem', height:'3.5rem', borderRadius:'0.5rem', background:`var(--viz-categorical-${n})`, boxShadow:'inset 0 0 0 1px color-mix(in oklch, var(--foreground) 12%, transparent)' }"></div>
     <code style="font-size:0.75rem;">{{ n }}</code>
   </div>
@@ -38,7 +38,9 @@ For deviation around a midpoint (below ↔ baseline ↔ above). Distinct ends, a
 ```ts
 import { categorical, categoricalVars, seriesColor, seriesVar } from '@auxiliary/viz';
 
-categorical[0];        // resolved oklch — for canvas (uPlot) where CSS vars don't resolve
+categorical[0];        // LIGHT-theme resolved oklch — static/SSR fallback only
+// For canvas (uPlot), resolve at runtime against the host element instead:
+// resolveScale(hostEl, 'categorical') — honors scoped [data-theme]; pair with observeTheme()
 categoricalVars[0];    // "var(--viz-categorical-1)" — for SVG/DOM
 seriesColor(7);        // wraps past the palette length (resolved)
 seriesVar(7);          // wraps past the palette length (var ref)
