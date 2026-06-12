@@ -26,7 +26,7 @@ describe('StatusBadge', () => {
       props: { level: 'caution', variant: 'outline' },
       slots: { default: 'CHECK' },
     });
-    expect(wrapper.classes()).toContain('text-caution');
+    expect(wrapper.classes()).toContain('text-caution-emphasis');
     expect(wrapper.classes()).not.toContain('bg-caution');
   });
 

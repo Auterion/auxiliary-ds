@@ -37,12 +37,15 @@ export const statusBadge = tv({
     { level: 'caution', variant: 'solid', class: { base: 'bg-caution text-caution-foreground border border-caution', dot: 'bg-caution-foreground' } },
     { level: 'advisory', variant: 'solid', class: { base: 'bg-advisory text-advisory-foreground border border-advisory', dot: 'bg-advisory-foreground' } },
     { level: 'nominal', variant: 'solid', class: { base: 'bg-nominal text-nominal-foreground border border-nominal', dot: 'bg-nominal-foreground' } },
-    // Outline: bordered, level-colored dot.
-    { level: 'alarm', variant: 'outline', class: { base: 'border border-alarm text-alarm', dot: 'bg-alarm' } },
-    { level: 'warning', variant: 'outline', class: { base: 'border border-warning text-warning', dot: 'bg-warning' } },
-    { level: 'caution', variant: 'outline', class: { base: 'border border-caution text-caution', dot: 'bg-caution' } },
-    { level: 'advisory', variant: 'outline', class: { base: 'border border-advisory text-advisory', dot: 'bg-advisory' } },
-    { level: 'nominal', variant: 'outline', class: { base: 'border border-nominal text-nominal', dot: 'bg-nominal' } },
+    // Outline: bordered, level-colored dot — in the *-emphasis ON-SURFACE ink,
+    // not the fill hue. Fills are gated only against their own -foreground;
+    // as ink on page/card they fell to 1.4-2.9:1 (worst: darknight nominal
+    // 1.41:1). The emphasis tier is gated >= 4.5:1 vs background AND card.
+    { level: 'alarm', variant: 'outline', class: { base: 'border border-alarm-emphasis text-alarm-emphasis', dot: 'bg-alarm-emphasis' } },
+    { level: 'warning', variant: 'outline', class: { base: 'border border-warning-emphasis text-warning-emphasis', dot: 'bg-warning-emphasis' } },
+    { level: 'caution', variant: 'outline', class: { base: 'border border-caution-emphasis text-caution-emphasis', dot: 'bg-caution-emphasis' } },
+    { level: 'advisory', variant: 'outline', class: { base: 'border border-advisory-emphasis text-advisory-emphasis', dot: 'bg-advisory-emphasis' } },
+    { level: 'nominal', variant: 'outline', class: { base: 'border border-nominal-emphasis text-nominal-emphasis', dot: 'bg-nominal-emphasis' } },
   ],
   defaultVariants: {
     variant: 'solid',

@@ -49,7 +49,7 @@ describe('CoordinateValue', () => {
     for (const level of LEVELS) {
       const wrapper = mount(CoordinateValue, { props: { lat: LAT, lon: LON, level } });
       const valueSpan = wrapper.find('.font-mono');
-      expect(valueSpan.classes()).toContain(`text-${level}`);
+      expect(valueSpan.classes()).toContain(`text-${level}-emphasis`);
     }
   });
 

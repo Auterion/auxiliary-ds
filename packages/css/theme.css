@@ -99,6 +99,20 @@
   --color-advisory-foreground: var(--advisory-foreground);
   --color-nominal: var(--nominal);
   --color-nominal-foreground: var(--nominal-foreground);
+
+  /* On-surface status INK (StatusBadge outline text/border/glyph, status text
+   * on cards) — gated >= 4.5:1 vs background AND card in every theme. The
+   * status FILLS above are only gated against their own -foreground; never
+   * use a fill as ink. */
+  --color-alarm-emphasis: var(--alarm-emphasis);
+  --color-warning-emphasis: var(--warning-emphasis);
+  --color-caution-emphasis: var(--caution-emphasis);
+  --color-advisory-emphasis: var(--advisory-emphasis);
+  --color-nominal-emphasis: var(--nominal-emphasis);
+
+  /* Modal scrim — black at fixed alpha, dark in EVERY theme (a surface-derived
+   * scrim is white-on-white in sunlight; a foreground scrim floods darknight). */
+  --color-overlay: var(--overlay);
 }
 
 /* -------------------------------------------------------------------------- *

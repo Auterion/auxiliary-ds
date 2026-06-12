@@ -21,11 +21,11 @@ export const coordinateValue = tv({
       lg: { value: 'text-xl' },
     },
     level: {
-      alarm:    { value: 'text-alarm' },
-      warning:  { value: 'text-warning' },
-      caution:  { value: 'text-caution' },
-      advisory: { value: 'text-advisory' },
-      nominal:  { value: 'text-nominal' },
+      alarm:    { value: 'text-alarm-emphasis' },
+      warning:  { value: 'text-warning-emphasis' },
+      caution:  { value: 'text-caution-emphasis' },
+      advisory: { value: 'text-advisory-emphasis' },
+      nominal:  { value: 'text-nominal-emphasis' },
     },
   },
   defaultVariants: {
