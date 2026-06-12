@@ -9,6 +9,12 @@ import { tabs } from '../recipes/tabs.js';
 import { guardedAction } from '../recipes/guarded-action.js';
 import { slider } from '../recipes/slider.js';
 import { progress } from '../recipes/progress.js';
+import { skeleton } from '../recipes/skeleton.js';
+import { table } from '../recipes/table.js';
+import { popover } from '../recipes/popover.js';
+import { toast } from '../recipes/toast.js';
+import { card } from '../recipes/card.js';
+import { alertBanner } from '../recipes/alert-banner.js';
 
 /**
  * Recipe-level a11y affordance gate. The token gates (packages/tokens/test)
@@ -30,6 +36,56 @@ describe('menu/listbox keyboard highlight paints the gated primary fill', () => 
     it(`${name} item`, () => {
       expect(classes).toContain('data-[highlighted]:bg-primary');
       expect(classes).toContain('data-[highlighted]:text-primary-foreground');
+    });
+  }
+});
+
+// Loading indicators must be SEEN to convey "content is loading" — same gated
+// tier as the tracks below. bg-muted is identical to card in dark.
+describe('skeleton uses the gated input color, not muted', () => {
+  it('skeleton base', () => {
+    expect(skeleton()).toContain('bg-input');
+    expect(skeleton()).not.toContain('bg-muted');
+  });
+});
+
+// Row hover is meaning-bearing pointer feedback — accent is the designated
+// hover-tint role; muted/50 composited to 1.00:1 inside dark cards.
+describe('table row hover uses the accent hover role', () => {
+  it('table row', () => {
+    expect(table().row()).toContain('hover:bg-accent');
+    expect(table().row()).not.toContain('hover:bg-muted');
+  });
+});
+
+// Raised surfaces pair with their OWN foreground role, not the page's. The
+// values coincide in all four themes today, so a mispairing is invisible
+// until a theme diverges them — lock the pairing, not the coincidence.
+describe('raised surfaces pair with their own foreground role', () => {
+  const surfaces = {
+    'popover content': [popover().content(), 'text-popover-foreground'],
+    'select content': [select().content(), 'text-popover-foreground'],
+    'combobox content': [combobox().content(), 'text-popover-foreground'],
+    'dropdown-menu content': [dropdownMenu().content(), 'text-popover-foreground'],
+    'toast root': [toast().root(), 'text-popover-foreground'],
+    'card root': [card().root(), 'text-card-foreground'],
+  } as const;
+  for (const [name, [classes, expected]] of Object.entries(surfaces)) {
+    it(name, () => {
+      expect(classes).toContain(expected);
+      expect(classes.split(' ')).not.toContain('text-foreground');
+    });
+  }
+});
+
+// Buttons sitting ON a status fill must press with the fill's own ink
+// (currentColor = the level's -foreground), not the page foreground — a white
+// wash over a yellow caution fill is invisible and polarity-wrong in dark.
+describe('alert-banner press states use currentColor, not page foreground', () => {
+  for (const slot of ['action', 'dismiss'] as const) {
+    it(slot, () => {
+      expect(alertBanner()[slot]()).toContain('active:bg-current/10');
+      expect(alertBanner()[slot]()).not.toContain('active:bg-foreground/10');
     });
   }
 });

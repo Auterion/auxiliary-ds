@@ -55,7 +55,7 @@ const valuetext = computed(() => `${props.value}${props.unit ? ` ${props.unit}` 
     :style="{ position: 'relative', display: 'inline-flex', width: `${size}px`, height: `${size}px` }"
   >
     <svg :viewBox="geo.viewBox" :width="size" :height="size" fill="none">
-      <path :d="geo.track" :stroke-width="thickness" stroke-linecap="round" stroke="var(--border)" />
+      <path :d="geo.track" :stroke-width="thickness" stroke-linecap="round" stroke="var(--input)" />
       <path
         v-if="geo.value"
         :d="geo.value"

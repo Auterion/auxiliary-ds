@@ -32,15 +32,26 @@ const props = withDefaults(
 const host = shallowRef<HTMLDivElement | null>(null);
 let chart: uPlot | null = null;
 
-function cssVar(name: string, fallback: string): string {
-  if (typeof document === 'undefined') return fallback;
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+// Resolve a theme var against the HOST element (not documentElement), so a
+// scoped [data-theme] on any ancestor is honored. canvas strokeStyle can't
+// take 'currentColor', so when the var is missing (theme stylesheet not
+// loaded) fall back to the host's resolved text color — a real color that
+// tracks whatever theming IS present — and warn instead of guessing a hex.
+function cssVar(name: string): string {
+  if (typeof document === 'undefined' || !host.value) return '#888';
+  const styles = getComputedStyle(host.value);
+  const value = styles.getPropertyValue(name).trim();
+  if (value) return value;
+  if (import.meta.env?.DEV) {
+    console.warn(`[viz] ${name} is unset — is the Auxiliary theme stylesheet loaded?`);
+  }
+  return styles.color || '#888';
 }
 
 function buildOptions(): uPlot.Options {
   const ySeriesCount = Math.max(0, props.data.length - 1);
-  const axis = cssVar('--muted-foreground', '#888');
-  const grid = cssVar('--border', '#ccc');
+  const axis = cssVar('--muted-foreground');
+  const grid = cssVar('--border');
   return {
     width: props.width,
     height: props.height,

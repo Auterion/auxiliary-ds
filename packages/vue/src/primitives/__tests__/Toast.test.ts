@@ -109,7 +109,7 @@ describe('Toast', () => {
     const cls = root.className;
     expect(cls).toContain('rounded-md');
     expect(cls).toContain('bg-popover');
-    expect(cls).toContain('text-foreground');
+    expect(cls).toContain('text-popover-foreground');
     expect(cls).toContain('border-border');
   });
 

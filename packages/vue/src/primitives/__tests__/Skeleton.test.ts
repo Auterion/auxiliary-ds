@@ -20,7 +20,7 @@ describe('Skeleton', () => {
     expect(classes).toContain('block');
     expect(classes).toContain('animate-pulse');
     expect(classes).toContain('rounded');
-    expect(classes).toContain('bg-muted');
+    expect(classes).toContain('bg-input');
   });
 
   it('merges sizing utilities passed via class', () => {
@@ -30,7 +30,7 @@ describe('Skeleton', () => {
     expect(classes).toContain('w-32');
     // base classes are preserved alongside the consumer-provided ones
     expect(classes).toContain('animate-pulse');
-    expect(classes).toContain('bg-muted');
+    expect(classes).toContain('bg-input');
   });
 
   it('shows the placeholder (not the slot) while loading, which is the default', () => {

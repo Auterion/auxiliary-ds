@@ -10,7 +10,7 @@ export const accordion = tv({
     chevron:
       'ml-2 shrink-0 text-muted-foreground transition-transform duration-[var(--duration-base)]',
     content:
-      'overflow-hidden text-sm text-muted-foreground data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
+      'overflow-hidden text-sm text-foreground data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
     contentInner: 'pb-2 px-1',
   },
 });

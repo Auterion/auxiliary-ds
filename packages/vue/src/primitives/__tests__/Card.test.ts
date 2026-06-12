@@ -14,7 +14,7 @@ describe('Card', () => {
     expect(wrapper.element.tagName).toBe('DIV');
     expect(wrapper.text()).toContain('card body');
     expect(wrapper.classes()).toEqual(
-      expect.arrayContaining(['rounded-md', 'border', 'border-border', 'bg-card', 'text-foreground']),
+      expect.arrayContaining(['rounded-md', 'border', 'border-border', 'bg-card', 'text-card-foreground']),
     );
   });
 

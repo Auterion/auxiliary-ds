@@ -12,9 +12,9 @@ export const alertBanner = tv({
     root: 'flex items-start gap-3 rounded-md border px-4 py-3',
     icon: 'mt-0.5 shrink-0',
     action:
-      'shrink-0 rounded px-2 py-1 text-xs font-medium underline-offset-2 hover:underline active:bg-foreground/10 focus-visible:outline-none focus-visible:ring-2 ring-ring',
+      'shrink-0 rounded px-2 py-1 text-xs font-medium underline-offset-2 hover:underline active:bg-current/10 focus-visible:outline-none focus-visible:ring-2 ring-ring',
     dismiss:
-      'shrink-0 rounded p-1 opacity-70 hover:opacity-100 active:bg-foreground/10 focus-visible:outline-none focus-visible:ring-2 ring-ring',
+      'shrink-0 rounded p-1 opacity-70 hover:opacity-100 active:bg-current/10 focus-visible:outline-none focus-visible:ring-2 ring-ring',
   },
   variants: {
     level: {
