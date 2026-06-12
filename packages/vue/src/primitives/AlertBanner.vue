@@ -32,7 +32,8 @@ defineEmits<{
   (e: 'action'): void;
 }>();
 
-const bannerClass = computed(() => cn(alertBanner({ level: props.level }), props.class));
+const styles = computed(() => alertBanner({ level: props.level }));
+const bannerClass = computed(() => cn(styles.value.root(), props.class));
 
 // Per-level glyph (grayscale-distinct shape) + the level word, shared with
 // StatusBadge so the two stay in lockstep. The glyph is decorative; the sr-only
@@ -52,7 +53,7 @@ const srLabel = computed(() => STATUS_LABELS[props.level]);
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
-      class="mt-0.5 shrink-0"
+      :class="styles.icon()"
       aria-hidden="true"
     >
       <path :d="glyph" />
@@ -73,7 +74,7 @@ const srLabel = computed(() => STATUS_LABELS[props.level]);
     <button
       v-if="actionLabel"
       type="button"
-      class="shrink-0 rounded px-2 py-1 text-xs font-medium underline-offset-2 hover:underline active:bg-foreground/10 focus-visible:outline-none focus-visible:ring-2 ring-ring"
+      :class="styles.action()"
       @click="$emit('action')"
     >
       {{ actionLabel }}
@@ -83,7 +84,7 @@ const srLabel = computed(() => STATUS_LABELS[props.level]);
       v-if="dismissible"
       type="button"
       aria-label="Dismiss"
-      class="shrink-0 rounded p-1 opacity-70 hover:opacity-100 active:bg-foreground/10 focus-visible:outline-none focus-visible:ring-2 ring-ring"
+      :class="styles.dismiss()"
       @click="$emit('dismiss')"
     >
       <svg
