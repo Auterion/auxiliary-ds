@@ -14,7 +14,7 @@ export const table = tv({
     header: '[&_tr]:border-b [&_tr]:border-border',
     body: '[&_tr:last-child]:border-0',
     footer: 'border-t border-border bg-muted/50 font-medium',
-    row: 'border-b border-border transition-colors hover:bg-muted/50 data-[state=selected]:bg-accent',
+    row: 'border-b border-border transition-colors hover:bg-accent data-[state=selected]:bg-accent',
     head: 'h-10 px-3 text-left align-middle font-medium text-muted-foreground whitespace-nowrap',
     cell: 'px-3 py-2 align-middle text-foreground',
     caption: 'mt-3 text-sm text-muted-foreground',

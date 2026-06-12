@@ -1,6 +1,5 @@
 ---
 '@auxiliary/brand': minor
-'@auxiliary/docs': patch
 ---
 
 Land the first Auterion master artwork in the brand layer.

@@ -5,6 +5,3 @@
  * stop diverging arbitrarily across components.
  */
 export type Size = 'sm' | 'md' | 'lg';
-
-/** Recipes that top out at medium (badges, status pills). */
-export type SizeSm = Extract<Size, 'sm' | 'md'>;

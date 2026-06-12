@@ -8,9 +8,9 @@
  *
  * Kept in one place so the two components never drift apart.
  */
-export type StatusKind = 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal';
+export type StatusLevel = 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal';
 
-export const STATUS_GLYPHS: Record<StatusKind, string> = {
+export const STATUS_GLYPHS: Record<StatusLevel, string> = {
   alarm: 'M8 2 H16 L22 8 V16 L16 22 H8 L2 16 V8 Z M12 7 V13 M12 16.5 L12 16.5',
   warning: 'M12 2 L22 20 H2 Z M12 9 V14 M12 17 L12 17',
   caution: 'M12 2 L22 12 L12 22 L2 12 Z M12 8 V13 M12 16 L12 16',
@@ -19,7 +19,7 @@ export const STATUS_GLYPHS: Record<StatusKind, string> = {
 };
 
 /** Human-readable level for the always-rendered visually-hidden label (AT cue). */
-export const STATUS_LABELS: Record<StatusKind, string> = {
+export const STATUS_LABELS: Record<StatusLevel, string> = {
   alarm: 'Alarm',
   warning: 'Warning',
   caution: 'Caution',
@@ -32,7 +32,7 @@ export const STATUS_LABELS: Record<StatusKind, string> = {
  * The single ordering the alert model sorts by, kept here so it never drifts
  * from the ladder the glyphs/labels encode.
  */
-export const STATUS_RANK: Record<StatusKind, number> = {
+export const STATUS_RANK: Record<StatusLevel, number> = {
   alarm: 0,
   warning: 1,
   caution: 2,

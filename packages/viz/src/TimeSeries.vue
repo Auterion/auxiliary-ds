@@ -2,15 +2,18 @@
 import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
-import { categorical } from './palette';
+import { observeTheme, resolveScale } from './palette';
 
 /**
  * Streaming time-series on uPlot (canvas) — the high-rate operational case.
  * Updates flow through `uplot.setData` (canvas redraw), never DOM mutation, so
  * a 10–60 Hz feed doesn't reflow the page; pair with `downsample`/`pushCapped`
- * from this package to keep the data window bounded. Series colors come from the
- * viz palette; axis/grid follow the active theme (resolved once at mount —
- * re-mount to recolor after a theme switch, a known uPlot+CSS-var limitation).
+ * from this package to keep the data window bounded.
+ *
+ * Canvas can't resolve CSS vars, so series/axis/grid colors are resolved from
+ * the HOST element's computed style (scoped `[data-theme]` ancestors honored)
+ * and the chart re-initializes when a `data-theme` attribute changes anywhere
+ * above it — live theme switches recolor without a remount.
  *
  * Client-only: uPlot needs a 2D canvas context, so SSR / non-canvas test envs
  * render just the labelled container and skip init (graceful degradation).
@@ -31,16 +34,29 @@ const props = withDefaults(
 
 const host = shallowRef<HTMLDivElement | null>(null);
 let chart: uPlot | null = null;
+let stopThemeObserver: (() => void) | null = null;
 
-function cssVar(name: string, fallback: string): string {
-  if (typeof document === 'undefined') return fallback;
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+// Resolve a theme var against the HOST element (not documentElement), so a
+// scoped [data-theme] on any ancestor is honored. canvas strokeStyle can't
+// take 'currentColor', so when the var is missing (theme stylesheet not
+// loaded) fall back to the host's resolved text color — a real color that
+// tracks whatever theming IS present — and warn instead of guessing a hex.
+function cssVar(name: string): string {
+  if (typeof document === 'undefined' || !host.value) return '#888';
+  const styles = getComputedStyle(host.value);
+  const value = styles.getPropertyValue(name).trim();
+  if (value) return value;
+  if (import.meta.env?.DEV) {
+    console.warn(`[viz] ${name} is unset — is the Auxiliary theme stylesheet loaded?`);
+  }
+  return styles.color || '#888';
 }
 
 function buildOptions(): uPlot.Options {
   const ySeriesCount = Math.max(0, props.data.length - 1);
-  const axis = cssVar('--muted-foreground', '#888');
-  const grid = cssVar('--border', '#ccc');
+  const axis = cssVar('--muted-foreground');
+  const grid = cssVar('--border');
+  const palette = host.value ? resolveScale(host.value, 'categorical') : [];
   return {
     width: props.width,
     height: props.height,
@@ -55,7 +71,7 @@ function buildOptions(): uPlot.Options {
       {},
       ...Array.from({ length: ySeriesCount }, (_unused, i) => ({
         label: props.series[i] ?? `Series ${i + 1}`,
-        stroke: categorical[i % categorical.length]!,
+        stroke: palette[i % palette.length] ?? '#888',
         width: 1.5,
         points: { show: false },
       })),
@@ -63,11 +79,20 @@ function buildOptions(): uPlot.Options {
   };
 }
 
-onMounted(() => {
+function init() {
   const el = host.value;
   if (!el || typeof document === 'undefined') return;
   if (!document.createElement('canvas').getContext('2d')) return; // SSR / no-canvas: degrade
+  chart?.destroy();
   chart = new uPlot(buildOptions(), props.data, el);
+}
+
+onMounted(() => {
+  init();
+  if (host.value && chart) {
+    // Re-resolve colors when [data-theme] flips anywhere above the chart.
+    stopThemeObserver = observeTheme(host.value, init);
+  }
 });
 
 // Streaming: push new data through setData (canvas redraw) — no DOM reflow.
@@ -79,6 +104,8 @@ watch(
 watch([() => props.width, () => props.height], ([w, h]) => chart?.setSize({ width: w, height: h }));
 
 onBeforeUnmount(() => {
+  stopThemeObserver?.();
+  stopThemeObserver = null;
   chart?.destroy();
   chart = null;
 });

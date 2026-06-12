@@ -12,7 +12,7 @@ export const coordinateValue = tv({
     label: 'text-xs uppercase tracking-wide text-muted-foreground',
     valueRow: 'inline-flex items-baseline gap-1.5',
     value: 'font-mono tabular font-medium leading-tight text-foreground',
-    formatTag: 'font-mono text-[0.625rem] uppercase tracking-wide text-muted-foreground',
+    formatTag: 'font-mono text-2xs uppercase tracking-wide text-muted-foreground',
   },
   variants: {
     size: {
@@ -21,11 +21,11 @@ export const coordinateValue = tv({
       lg: { value: 'text-xl' },
     },
     level: {
-      alarm:    { value: 'text-alarm' },
-      warning:  { value: 'text-warning' },
-      caution:  { value: 'text-caution' },
-      advisory: { value: 'text-advisory' },
-      nominal:  { value: 'text-nominal' },
+      alarm:    { value: 'text-alarm-emphasis' },
+      warning:  { value: 'text-warning-emphasis' },
+      caution:  { value: 'text-caution-emphasis' },
+      advisory: { value: 'text-advisory-emphasis' },
+      nominal:  { value: 'text-nominal-emphasis' },
     },
   },
   defaultVariants: {

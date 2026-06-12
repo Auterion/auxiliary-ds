@@ -70,10 +70,10 @@ describe('Checkbox', () => {
   });
 
   it('sets an accessible name from the `label` prop (aria-label), consumed not leaked', () => {
-    const wrapper = mount(Checkbox, { props: { modelValue: false, label: 'Accept terms' } });
+    const wrapper = mount(Checkbox, { props: { modelValue: false, ariaLabel: 'Accept terms' } });
     const root = wrapper.get('[role="checkbox"]');
     expect(root.attributes('aria-label')).toBe('Accept terms');
-    expect(root.attributes('label')).toBeUndefined();
+    expect(root.attributes('arialabel')).toBeUndefined();
   });
 
   it('forwards aria-label to the checkbox root', () => {

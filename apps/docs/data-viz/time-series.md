@@ -85,12 +85,7 @@ const view = downsample(xs, ys, 800);     // cap to ~pixel density; keeps spikes
 
 ## Props
 
-| Prop | Type | Default | Notes |
-|---|---|---|---|
-| `data` | `[number[], ...number[][]]` | — | uPlot aligned data: x array, then one array per series. |
-| `series` | `string[]` | `[]` | Per-series names. |
-| `label` | `string` | — | Accessible name for the chart region. |
-| `width` / `height` | `number` | `360` / `140` | px. |
+<PropsTable name="TimeSeries" />
 
 ## Notes
 

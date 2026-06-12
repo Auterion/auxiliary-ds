@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { axe } from '../../test-utils/a11y';
 import StatusBadge from '../StatusBadge.vue';
 import AlertBanner from '../AlertBanner.vue';
-import { STATUS_GLYPHS, type StatusKind } from '../status-glyphs';
+import { STATUS_GLYPHS, type StatusLevel } from '../status-glyphs';
 
 /**
  * Non-color status-cue gate (ROADMAP cross-cutting: operational invariants).
@@ -17,7 +17,7 @@ import { STATUS_GLYPHS, type StatusKind } from '../status-glyphs';
  *   3. component-guaranteed — present even with an EMPTY slot / no title.
  */
 
-const LEVELS = Object.keys(STATUS_GLYPHS) as StatusKind[];
+const LEVELS = Object.keys(STATUS_GLYPHS) as StatusLevel[];
 
 describe('non-color status cue', () => {
   it('uses a distinct glyph shape per level (grayscale-distinguishable)', () => {

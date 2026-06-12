@@ -95,9 +95,12 @@ export { default as Textarea } from './primitives/Textarea.vue';
 export { default as NumberField } from './primitives/NumberField.vue';
 
 // Operational primitives — Auterion-specific (mission control, telemetry, alerts)
-export { default as StatusBadge, type StatusLevel } from './primitives/StatusBadge.vue';
+// StatusLevel is THE reserved severity ladder type (alarm|warning|caution|
+// advisory|nominal), shared by every level-bearing component.
+export { type StatusLevel } from './primitives/status-glyphs';
+export { default as StatusBadge } from './primitives/StatusBadge.vue';
 export { default as TelemetryValue } from './primitives/TelemetryValue.vue';
-export { default as AlertBanner, type AlertLevel } from './primitives/AlertBanner.vue';
+export { default as AlertBanner } from './primitives/AlertBanner.vue';
 
 // CoordinateValue — lat/long + MGRS coordinate readout (ROADMAP §6i / Phase 6.3).
 export { default as CoordinateValue } from './primitives/CoordinateValue.vue';

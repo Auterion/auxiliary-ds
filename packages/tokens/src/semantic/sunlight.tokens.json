@@ -58,7 +58,8 @@
     },
     "brand": {
       "$type": "color",
-      "$value": "{color.primitive.black}"
+      "$value": "{color.primitive.black}",
+      "$description": "brand := primary in this operational theme. De-branding is INTENTIONAL (calm, no marketing color under glare / at night) \u2014 keep this alias in lockstep with primary; it is a stated rule, not a value coincidence."
     },
     "brand-foreground": {
       "$type": "color",
@@ -66,7 +67,7 @@
     },
     "destructive": {
       "$type": "color",
-      "$value": "{color.primitive.red.700}"
+      "$value": "{color.primitive.red.900}"
     },
     "destructive-foreground": {
       "$type": "color",
@@ -86,7 +87,7 @@
     },
     "alarm": {
       "$type": "color",
-      "$value": "{color.primitive.red.700}"
+      "$value": "{color.primitive.red.800}"
     },
     "alarm-foreground": {
       "$type": "color",
@@ -102,7 +103,7 @@
     },
     "caution": {
       "$type": "color",
-      "$value": "{color.primitive.yellow.500}"
+      "$value": "{color.primitive.yellow.600}"
     },
     "caution-foreground": {
       "$type": "color",
@@ -123,6 +124,96 @@
     "nominal-foreground": {
       "$type": "color",
       "$value": "{color.primitive.white}"
+    },
+    "alarm-emphasis": {
+      "$type": "color",
+      "$value": "{color.primitive.red.800}",
+      "$description": "On-surface alarm ink (text/border/glyph on page or card) \u2014 gated >=4.5:1 vs background AND card. The alarm FILL is only gated against its own -foreground; never use the fill as ink."
+    },
+    "warning-emphasis": {
+      "$type": "color",
+      "$value": "{color.primitive.orange.700}"
+    },
+    "caution-emphasis": {
+      "$type": "color",
+      "$value": "{color.primitive.amber.700}"
+    },
+    "advisory-emphasis": {
+      "$type": "color",
+      "$value": "{color.primitive.cyan.800}"
+    },
+    "nominal-emphasis": {
+      "$type": "color",
+      "$value": "{color.primitive.green.800}"
+    },
+    "overlay": {
+      "$type": "color",
+      "$value": "{color.primitive.scrim.55}",
+      "$description": "Modal scrim \u2014 black at fixed alpha, dark in every theme (a surface-derived scrim is invisible in sunlight and floods darknight)."
+    },
+    "viz-categorical-1": {
+      "$type": "color",
+      "$value": "{color.primitive.auterion-blue.800}"
+    },
+    "viz-categorical-2": {
+      "$type": "color",
+      "$value": "{color.primitive.cadet.500}"
+    },
+    "viz-categorical-3": {
+      "$type": "color",
+      "$value": "{color.primitive.purple.950}"
+    },
+    "viz-categorical-4": {
+      "$type": "color",
+      "$value": "{color.primitive.stone.700}"
+    },
+    "viz-categorical-5": {
+      "$type": "color",
+      "$value": "{color.primitive.indigo.600}"
+    },
+    "viz-categorical-6": {
+      "$type": "color",
+      "$value": "{color.primitive.mono.950}"
+    },
+    "viz-sequential-1": {
+      "$type": "color",
+      "$value": "{color.primitive.auterion-blue.300}"
+    },
+    "viz-sequential-2": {
+      "$type": "color",
+      "$value": "{color.primitive.auterion-blue.500}"
+    },
+    "viz-sequential-3": {
+      "$type": "color",
+      "$value": "{color.primitive.auterion-blue.700}"
+    },
+    "viz-sequential-4": {
+      "$type": "color",
+      "$value": "{color.primitive.auterion-blue.900}"
+    },
+    "viz-sequential-5": {
+      "$type": "color",
+      "$value": "{color.primitive.auterion-blue.950}"
+    },
+    "viz-diverging-1": {
+      "$type": "color",
+      "$value": "{color.primitive.auterion-blue.800}"
+    },
+    "viz-diverging-2": {
+      "$type": "color",
+      "$value": "{color.primitive.auterion-blue.500}"
+    },
+    "viz-diverging-3": {
+      "$type": "color",
+      "$value": "{color.primitive.zinc.400}"
+    },
+    "viz-diverging-4": {
+      "$type": "color",
+      "$value": "{color.primitive.fuchsia.500}"
+    },
+    "viz-diverging-5": {
+      "$type": "color",
+      "$value": "{color.primitive.fuchsia.800}"
     }
   }
 }

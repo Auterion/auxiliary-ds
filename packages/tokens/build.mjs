@@ -1,5 +1,12 @@
+import { rmSync } from 'node:fs';
 import StyleDictionary from 'style-dictionary';
 import { converter, formatHex, parse as parseColor } from 'culori';
+
+// Wipe dist entirely before building: cleanAllPlatforms() only removes the
+// declared destinations, so renamed outputs and stray files (e.g. editor /
+// macOS conflict copies) would otherwise survive — and `files: ["dist"]`
+// publishes everything in here.
+rmSync('dist', { recursive: true, force: true });
 
 const THEMES = ['light', 'dark', 'sunlight', 'darknight'];
 
@@ -39,11 +46,44 @@ const registersWithTokens = (allTokens) =>
 const kebabSegment = (s) => String(s).replace(/_/g, '-');
 const cssName = (path) => path.map(kebabSegment).join('-');
 
+// Fluid type: a dimension token may declare a phone-width minimum via
+// $extensions["com.auterion.auxiliary"].fluid.min; $value stays the desktop
+// maximum (so JS/DTCG/Figma exports keep concrete sizes) and only the CSS
+// emission interpolates between them with clamp() across this viewport range.
+const FLUID_VP = { minPx: 360, maxPx: 1280 }; // small phone → breakpoint.xl
+const fluidMin = (t) => t.original?.$extensions?.['com.auterion.auxiliary']?.fluid?.min;
+const trimNum = (n, dp = 3) =>
+  String(Math.round(n * 10 ** dp) / 10 ** dp);
+const fluidClamp = (minRaw, maxRaw) => {
+  const min = parseFloat(minRaw);
+  const max = parseFloat(maxRaw);
+  const range = FLUID_VP.maxPx - FLUID_VP.minPx;
+  const slopeVw = ((max - min) / range) * 100;
+  const interceptPx = min - FLUID_VP.minPx * ((max - min) / range);
+  return `clamp(${trimNum(min / 16)}rem, ${trimNum(interceptPx / 16)}rem + ${trimNum(slopeVw)}vw, ${trimNum(max / 16)}rem)`;
+};
+
+// Tailwind v4 derives per-size line-height/letter-spacing from suffixed theme
+// vars (--text-3xl--line-height). The token source models them as sibling
+// groups (text-leading/*, text-tracking/*) because DTCG paths can't express
+// the double-dash suffix; this maps them back at CSS-emission time only.
+const SUFFIX_GROUPS = {
+  'text-leading': '--line-height',
+  'text-tracking': '--letter-spacing',
+};
+const cssVarName = (t, stripPrefix) => {
+  const path = stripPrefix ? t.path.slice(1) : t.path;
+  const suffix = SUFFIX_GROUPS[path[0]];
+  if (suffix) return `--text-${cssName(path.slice(1))}${suffix}`;
+  return `--${cssName(path)}`;
+};
+
 const renderVars = (tokens, stripPrefix, indent = '  ') =>
   tokens
     .map((t) => {
-      const path = stripPrefix ? t.path.slice(1) : t.path;
-      return `${indent}--${cssName(path)}: ${t.$value};`;
+      const min = fluidMin(t);
+      const value = min ? fluidClamp(min, t.$value) : t.$value;
+      return `${indent}${cssVarName(t, stripPrefix)}: ${value};`;
     })
     .join('\n');
 
@@ -140,21 +180,34 @@ StyleDictionary.registerFormat({
   },
 });
 
-StyleDictionary.registerFormat({
-  name: 'typescript/tokens-const',
-  format: async ({ dictionary }) => {
-    const tree = {};
-    for (const t of dictionary.allTokens) {
-      let node = tree;
-      for (let i = 0; i < t.path.length - 1; i++) {
-        const key = t.path[i];
-        node[key] ??= {};
-        node = node[key];
-      }
-      node[t.path[t.path.length - 1]] = t.$value;
+// The JS entry ships as plain JS + a declaration file (not a raw .ts source):
+// Node refuses type-stripping under node_modules, so a published .ts entry
+// breaks every non-bundler consumer. A JSON literal is valid TS type syntax,
+// so the .d.ts preserves the exact as-const literal types.
+const tokensTree = (dictionary) => {
+  const tree = {};
+  for (const t of dictionary.allTokens) {
+    let node = tree;
+    for (let i = 0; i < t.path.length - 1; i++) {
+      const key = t.path[i];
+      node[key] ??= {};
+      node = node[key];
     }
-    return `export const tokens = ${JSON.stringify(tree, null, 2)} as const;\n`;
-  },
+    node[t.path[t.path.length - 1]] = t.$value;
+  }
+  return tree;
+};
+
+StyleDictionary.registerFormat({
+  name: 'javascript/tokens-const',
+  format: async ({ dictionary }) =>
+    `export const tokens = ${JSON.stringify(tokensTree(dictionary), null, 2)};\n`,
+});
+
+StyleDictionary.registerFormat({
+  name: 'typescript/tokens-dts',
+  format: async ({ dictionary }) =>
+    `export declare const tokens: ${JSON.stringify(tokensTree(dictionary), null, 2)};\n`,
 });
 
 /**
@@ -396,8 +449,12 @@ const toFigmaValue = (token) => {
 StyleDictionary.registerFormat({
   name: 'json/figma-native',
   format: async ({ dictionary }) => {
+    // text-leading/text-tracking are CSS-only pairing vars for Tailwind's
+    // per-size suffix convention; Text Styles already carry lh/ls, so raw
+    // FLOAT variables for them would be junk in Figma.
     const primitives = dictionary.allTokens.filter(
-      (t) => !isTheme(t) && !isRegister(t) && !FIGMA_SKIP.has(t.$type),
+      (t) =>
+        !isTheme(t) && !isRegister(t) && !FIGMA_SKIP.has(t.$type) && !SUFFIX_GROUPS[t.path[0]],
     );
     const primitiveVars = primitives.map((t) => ({
       name: t.path.join('/'),
@@ -480,6 +537,116 @@ const assertRegisterOrthogonality = (dictionary) => {
   }
 };
 
+/**
+ * Build-time parity invariant: all four themes must define the identical role
+ * set (and each role the same $type everywhere). A role missing from one theme
+ * would silently fall through to the light value in the emitted CSS — e.g. a
+ * darknight theme missing `brand` would leak full-blue-energy light brand into
+ * the scotopic theme, invisible to the per-theme gates (they iterate only the
+ * keys a theme *has*).
+ */
+const assertThemeRoleParity = (dictionary) => {
+  const roleSets = new Map(THEMES.map((theme) => [theme, new Map()]));
+  for (const t of dictionary.allTokens) {
+    if (!isTheme(t)) continue;
+    roleSets.get(t.path[0]).set(t.path.slice(1).join('.'), t.$type);
+  }
+  const union = new Map();
+  for (const roles of roleSets.values()) {
+    for (const [role, type] of roles) if (!union.has(role)) union.set(role, type);
+  }
+  const offenders = [];
+  for (const [theme, roles] of roleSets) {
+    const missing = [...union.keys()].filter((r) => !roles.has(r));
+    if (missing.length) offenders.push(`  ${theme} missing: ${missing.join(', ')}`);
+    for (const [role, type] of roles) {
+      if (union.get(role) !== type) {
+        offenders.push(`  ${theme}.${role} is ${type} but ${union.get(role)} elsewhere`);
+      }
+    }
+  }
+  if (offenders.length > 0) {
+    throw new Error(
+      `Theme-role parity check failed — the four themes must define the same roles:\n` +
+        offenders.join('\n'),
+    );
+  }
+};
+
+/**
+ * Build-time source-shape validation: every token must carry a known $type and
+ * a $value whose shape matches it. Without this, an untyped token flows through
+ * as $type undefined → Figma FLOAT with null values, and an object $value on a
+ * scalar type emits `--x: [object Object]` into the CSS.
+ */
+const KNOWN_TYPES = new Set([
+  'color',
+  'dimension',
+  'duration',
+  'cubicBezier',
+  'shadow',
+  'typography',
+  'fontFamily',
+  'fontWeight',
+  'number',
+]);
+const TYPOGRAPHY_KEYS = ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing'];
+const assertSourceShapes = (dictionary) => {
+  const offenders = [];
+  const isAlias = (v) => typeof v === 'string' && v.startsWith('{') && v.endsWith('}');
+  for (const t of dictionary.allTokens) {
+    const type = t.original?.$type ?? t.$type;
+    const raw = t.original?.$value ?? t.$value;
+    if (!KNOWN_TYPES.has(type)) {
+      offenders.push(`  ${t.path.join('.')} has unknown $type ${JSON.stringify(type)}`);
+      continue;
+    }
+    if (isAlias(raw)) continue;
+    const bad = (why) => offenders.push(`  ${t.path.join('.')} = ${JSON.stringify(raw)} (${why})`);
+    switch (type) {
+      case 'color':
+        if (typeof raw !== 'string' || !parseColor(raw)) bad('unparseable color');
+        break;
+      case 'dimension':
+      case 'duration':
+        if (typeof raw !== 'number' && !(typeof raw === 'string' && DIM_RE.test(raw)))
+          bad(`malformed ${type}`);
+        break;
+      case 'number':
+      case 'fontWeight':
+        if (typeof raw !== 'number' || !Number.isFinite(raw)) bad(`non-finite ${type}`);
+        break;
+      case 'fontFamily':
+        if (typeof raw !== 'string' && !Array.isArray(raw)) bad('fontFamily must be string or array');
+        break;
+      case 'cubicBezier':
+        if (
+          !(typeof raw === 'string' && CB_RE.test(raw)) &&
+          !(Array.isArray(raw) && raw.length === 4 && raw.every((n) => typeof n === 'number'))
+        )
+          bad('malformed cubicBezier');
+        break;
+      case 'shadow':
+        if (typeof raw !== 'string') bad('shadow must be a CSS string');
+        break;
+      case 'typography': {
+        if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) {
+          bad('typography must be a composite object');
+        } else {
+          const missing = TYPOGRAPHY_KEYS.filter((k) => !(k in raw));
+          if (missing.length) bad(`typography missing ${missing.join(', ')}`);
+        }
+        break;
+      }
+    }
+  }
+  if (offenders.length > 0) {
+    throw new Error(
+      `Source-shape check failed — ${offenders.length} malformed token(s):\n` + offenders.join('\n'),
+    );
+  }
+};
+
 const sd = new StyleDictionary({
   source: ['src/**/*.tokens.json'],
   platforms: {
@@ -493,10 +660,13 @@ const sd = new StyleDictionary({
       buildPath: 'dist/',
       files: [{ destination: 'tokens.css', format: 'css/auxiliary-vars' }],
     },
-    ts: {
+    js: {
       transformGroup: 'js',
       buildPath: 'dist/',
-      files: [{ destination: 'tokens.ts', format: 'typescript/tokens-const' }],
+      files: [
+        { destination: 'tokens.js', format: 'javascript/tokens-const' },
+        { destination: 'tokens.d.ts', format: 'typescript/tokens-dts' },
+      ],
     },
     dtcg: {
       transformGroup: 'js',
@@ -511,10 +681,12 @@ const sd = new StyleDictionary({
   },
 });
 
-// Run the purity assertion against a hydrated dictionary, then build.
+// Run the invariant assertions against a hydrated dictionary, then build.
 const dict = await sd.getPlatformTokens('dtcg');
 assertPrimitivePurity(dict);
 assertRegisterOrthogonality(dict);
+assertThemeRoleParity(dict);
+assertSourceShapes(dict);
 
 await sd.cleanAllPlatforms();
 await sd.buildAllPlatforms();

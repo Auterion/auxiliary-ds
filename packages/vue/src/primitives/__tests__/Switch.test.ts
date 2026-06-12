@@ -51,10 +51,10 @@ describe('Switch', () => {
   });
 
   it('sets an accessible name from the `label` prop (aria-label), consumed not leaked', () => {
-    const wrapper = mount(Switch, { props: { label: 'Enable notifications' } });
+    const wrapper = mount(Switch, { props: { ariaLabel: 'Enable notifications' } });
     const root = wrapper.find('[role="switch"]');
     expect(root.attributes('aria-label')).toBe('Enable notifications');
-    expect(root.attributes('label')).toBeUndefined();
+    expect(root.attributes('arialabel')).toBeUndefined();
   });
 
   it('forwards the name prop for form association', () => {

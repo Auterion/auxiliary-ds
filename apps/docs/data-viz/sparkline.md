@@ -37,13 +37,7 @@ Default is the first viz series; override with any color or `var(--viz-categoric
 
 ## Props
 
-| Prop | Type | Default | Notes |
-|---|---|---|---|
-| `values` | `number[]` | — | The series. A flat or single-point series draws a centered line. |
-| `width` / `height` | `number` | `120` / `32` | SVG box. |
-| `area` | `boolean` | `false` | Fill under the line at low opacity. |
-| `color` | `string` | `var(--viz-categorical-1)` | Any CSS color or var. |
-| `label` | `string` | — | Accessible name. **Without it the sparkline is `aria-hidden`** — fine when an adjacent readout carries the value. |
+<PropsTable name="Sparkline" />
 
 ## Accessibility
 

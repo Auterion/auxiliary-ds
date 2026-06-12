@@ -3,6 +3,7 @@ import { computed, type HTMLAttributes } from 'vue';
 import { telemetryValue, type Size } from '@auxiliary/css/recipes';
 import { convertQuantity, formatNumber, type Quantity, type UnitSystem } from '@auxiliary/css/format';
 import { cn } from '@auxiliary/css/utils';
+import type { StatusLevel } from './status-glyphs';
 import { useUnitSystem } from '../composables/useUnitSystem';
 
 const props = withDefaults(
@@ -29,7 +30,7 @@ const props = withDefaults(
     /** Visual size. */
     size?: Size;
     /** Status level — colors the value when set (e.g. red for alarm threshold). */
-    level?: 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal' | null;
+    level?: StatusLevel | null;
     class?: HTMLAttributes['class'];
   }>(),
   {

@@ -136,8 +136,12 @@ async function shapeFromFile(filename) {
 
 async function main() {
   const config = await loadConfig();
+  // Escape hatch for working on custom icons without FA access. NEVER use it
+  // to commit the result: the partial registry would gut the FA entries and
+  // the CI drift gate would (rightly) fail.
+  const allowPartial = process.argv.includes('--allow-partial');
 
-  // Load each FA weight package — degrade gracefully if not installed/authed
+  // Load each FA weight package.
   const faModules = {};
   const missingWeights = [];
   for (const w of WEIGHTS) {
@@ -145,11 +149,18 @@ async function main() {
     if (mod) faModules[w] = mod;
     else missingWeights.push(w);
   }
-  if (missingWeights.length === WEIGHTS.length) {
-    console.warn(
-      '⚠ No @fortawesome/sharp-*-svg-icons packages installed. Generating registry from custom inputs only.\n' +
-        '  Set FONTAWESOME_PACKAGE_TOKEN and run `pnpm install` to enable FA-sourced icons.',
-    );
+  if (config.fa.length > 0 && missingWeights.length === WEIGHTS.length) {
+    const msg =
+      'No @fortawesome/sharp-*-svg-icons packages installed, but config.ts lists FA icons.\n' +
+      '  Proceeding would write a registry containing only custom icons — gutting the\n' +
+      '  committed one and producing a misleading "registry out of date" CI failure.\n' +
+      '  Set FONTAWESOME_PACKAGE_TOKEN and run `pnpm install`, or pass --allow-partial\n' +
+      '  to proceed anyway (local experiments only — do not commit the result).';
+    if (!allowPartial) {
+      console.error(`✗ ${msg}`);
+      process.exit(1);
+    }
+    console.warn(`⚠ ${msg}`);
   } else if (missingWeights.length > 0) {
     console.warn(`⚠ Missing FA weight packages: ${missingWeights.join(', ')}`);
   }
@@ -174,7 +185,12 @@ async function main() {
       viewBox ??= shape.viewBox;
     }
     if (Object.keys(weightsOut).length === 0) {
-      console.warn(`  · ${spec.name}: skipped — no FA weight packages resolved`);
+      const msg = `${spec.name}: no FA weight packages resolved for it`;
+      if (!allowPartial) {
+        console.error(`✗ ${msg} — registry would silently drop this icon (use --allow-partial to override).`);
+        process.exit(1);
+      }
+      console.warn(`  · ${msg}: skipped`);
       continue;
     }
     entries[spec.name] = { viewBox, weights: weightsOut };

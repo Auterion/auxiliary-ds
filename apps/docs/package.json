@@ -13,7 +13,8 @@
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run",
     "gen:props": "node scripts/gen-props.mjs",
-    "predev": "node scripts/gen-props.mjs"
+    "predev": "node scripts/gen-props.mjs",
+    "prebuild": "node scripts/gen-props.mjs"
   },
   "dependencies": {
     "@auxiliary/brand": "workspace:*",

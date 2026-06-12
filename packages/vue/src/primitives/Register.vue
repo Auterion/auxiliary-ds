@@ -18,7 +18,13 @@ import { type HTMLAttributes } from 'vue';
  */
 const props = withDefaults(
   defineProps<{
-    /** Which register this subtree resolves under. */
+    /**
+     * Which register this subtree resolves under. Defaults to `operational` —
+     * deliberately NOT the system default (`expressive`): wrapping a subtree in
+     * `<Register>` is the opt-in gesture, so the bare tag means "this is an
+     * operational console." Pass `register="expressive"` to nest an island that
+     * opts back out.
+     */
     register?: 'expressive' | 'operational';
     /** Element to render. Defaults to a plain block wrapper. */
     as?: string;

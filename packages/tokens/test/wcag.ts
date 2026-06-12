@@ -37,12 +37,16 @@ export function parseOklch(value: string): Oklch {
   const ref = value.trim().startsWith('{') ? deref(value) : value;
   const m = ref.match(/oklch\(([^)]+)\)/i);
   if (!m?.[1]) throw new Error(`Not an oklch value: ${ref}`);
-  const parts = m[1].trim().split(/\s+/).map(Number);
+  // Alpha (e.g. the scrim primitives' "oklch(0 0 0 / 0.55)") is dropped: the
+  // gates measure the un-composited color, which for a black scrim is the
+  // conservative bound (blue energy 0, luminance 0).
+  const parts = m[1].split('/')[0]!.trim().split(/\s+/).map(Number);
   if (parts.length < 3 || parts.some(Number.isNaN)) throw new Error(`Bad oklch: ${ref}`);
   return [parts[0], parts[1], parts[2]] as Oklch;
 }
 
-function oklchToLinear([L, C, h]: Oklch): [number, number, number] {
+/** oklch → gamut-clamped linear sRGB. Exported for the CVD simulation in cvd.ts. */
+export function oklchToLinear([L, C, h]: Oklch): [number, number, number] {
   const a = C * Math.cos((h * Math.PI) / 180);
   const b = C * Math.sin((h * Math.PI) / 180);
   const l_ = L + 0.3963377774 * a + 0.2158037573 * b;

@@ -168,7 +168,7 @@ const compliance = ['NDAA Section 848', 'Blue UAS framework', 'AES-256 storage',
             </ul>
 
             <Button
-              :variant="v.featured ? 'default' : 'ghost'"
+              :variant="v.featured ? 'primary' : 'ghost'"
               size="sm"
               class="mt-7 w-full gap-2 text-[13px]"
               @click="navigate('company')"

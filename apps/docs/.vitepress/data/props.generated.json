@@ -48,10 +48,10 @@
     "props": [
       {
         "name": "modelValue",
-        "type": "string | number",
+        "type": "string",
         "default": null,
         "required": false,
-        "description": ""
+        "description": "String-only model: a text input's value is a string, and the emit always round-trips one (a `string | number` model silently became a string after the first keystroke). For numeric values use `NumberField`, which owns parsing, stepping, and min/max."
       },
       {
         "name": "type",
@@ -129,7 +129,7 @@
         "type": "\"operational\" | \"expressive\"",
         "default": "operational",
         "required": false,
-        "description": "Which register this subtree resolves under."
+        "description": "Which register this subtree resolves under. Defaults to `operational` — deliberately NOT the system default (`expressive`): wrapping a subtree in `<Register>` is the opt-in gesture, so the bare tag means \"this is an operational console.\" Pass `register=\"expressive\"` to nest an island that opts back out."
       },
       {
         "name": "as",
@@ -1210,38 +1210,59 @@
     "file": "./primitives/Toast/Toast.vue",
     "props": [
       {
-        "name": "open",
-        "type": "boolean",
-        "default": null,
-        "required": false,
-        "description": ""
-      },
-      {
         "name": "defaultOpen",
         "type": "boolean",
         "default": null,
         "required": false,
-        "description": ""
+        "description": "The open state of the dialog when it is initially rendered. Use when you do not need to control its open state."
       },
       {
-        "name": "duration",
-        "type": "number",
+        "name": "forceMount",
+        "type": "boolean",
         "default": null,
         "required": false,
-        "description": ""
+        "description": "Used to force mounting when more control is needed. Useful when controlling animation with Vue animation libraries."
       },
       {
         "name": "type",
         "type": "\"foreground\" | \"background\"",
         "default": null,
         "required": false,
-        "description": ""
+        "description": "Control the sensitivity of the toast for accessibility purposes. For toasts that are the result of a user action, choose `foreground`. Toasts generated from background tasks should use `background`."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The controlled open state of the dialog. Can be bind as `v-model:open`."
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "Time in milliseconds that toast should remain visible for. Overrides value given to `ToastProvider`."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Change the default rendered element for the one passed as a child, merging their props and behavior. Read our [Composition](https://www.reka-ui.com/docs/guides/composition) guide for more details."
+      },
+      {
+        "name": "as",
+        "type": "AsTag | Component",
+        "default": null,
+        "required": false,
+        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
       }
     ],
     "events": [
       {
         "name": "update:open",
-        "type": "[open: boolean]",
+        "type": "[value: boolean]",
         "description": ""
       },
       {
@@ -1261,22 +1282,22 @@
       },
       {
         "name": "swipeStart",
-        "type": "[event: CustomEvent<any>]",
+        "type": "[event: SwipeEvent]",
         "description": ""
       },
       {
         "name": "swipeMove",
-        "type": "[event: CustomEvent<any>]",
+        "type": "[event: SwipeEvent]",
         "description": ""
       },
       {
         "name": "swipeCancel",
-        "type": "[event: CustomEvent<any>]",
+        "type": "[event: SwipeEvent]",
         "description": ""
       },
       {
         "name": "swipeEnd",
-        "type": "[event: CustomEvent<any>]",
+        "type": "[event: SwipeEvent]",
         "description": ""
       }
     ],
@@ -1662,8 +1683,8 @@
     "props": [
       {
         "name": "variant",
-        "type": "\"default\" | \"secondary\" | \"outline\" | \"accent\"",
-        "default": "default",
+        "type": "\"primary\" | \"secondary\" | \"neutral\" | \"outline\"",
+        "default": "neutral",
         "required": false,
         "description": ""
       },
@@ -1699,7 +1720,7 @@
       },
       {
         "name": "level",
-        "type": "\"alarm\" | \"warning\" | \"caution\" | \"advisory\" | \"nominal\" | null",
+        "type": "StatusLevel | null",
         "default": "null",
         "required": false,
         "description": ""
@@ -1719,11 +1740,11 @@
         "description": ""
       },
       {
-        "name": "label",
+        "name": "ariaLabel",
         "type": "string",
         "default": "Loading",
         "required": false,
-        "description": ""
+        "description": "Accessible name announced for the spinner (aria-label + sr-only text). Never rendered visibly (`label` is reserved for visible text across the system)."
       }
     ],
     "events": [],
@@ -1833,11 +1854,11 @@
         "description": "Marks the control invalid: sets aria-invalid + destructive border/ring."
       },
       {
-        "name": "label",
+        "name": "ariaLabel",
         "type": "string",
         "default": null,
         "required": false,
-        "description": "Accessible name for the control. Use when there's no associated `<Label>` — a checkbox has no visible text of its own, so without this (or a `<Label for>`, or an `aria-label`) it ships nameless. Sets `aria-label`."
+        "description": "Accessible name for the control. Use when there's no associated `<Label>` — a checkbox has no visible text of its own, so without this (or a `<Label for>`) it ships nameless. Sets `aria-label`; renders nothing visible (`label` is reserved for visible text across the system)."
       }
     ],
     "events": [
@@ -1937,11 +1958,11 @@
         "description": "Marks the control invalid: sets aria-invalid + destructive border/ring."
       },
       {
-        "name": "label",
+        "name": "ariaLabel",
         "type": "string",
         "default": null,
         "required": false,
-        "description": "Accessible name for the control. Use when there's no associated `<Label>` — a switch has no visible text of its own, so without this (or a `<Label for>`, or an `aria-label`) it ships nameless. Sets `aria-label`."
+        "description": "Accessible name for the control. Use when there's no associated `<Label>` — a switch has no visible text of its own, so without this (or a `<Label for>`) it ships nameless. Sets `aria-label`; renders nothing visible (`label` is reserved for visible text across the system)."
       }
     ],
     "events": [
@@ -2444,7 +2465,7 @@
     "props": [
       {
         "name": "level",
-        "type": "StatusKind",
+        "type": "StatusLevel",
         "default": null,
         "required": true,
         "description": ""
@@ -2478,11 +2499,11 @@
         "description": ""
       },
       {
-        "name": "label",
+        "name": "srLabel",
         "type": "string",
         "default": null,
         "required": false,
-        "description": "Overrides the visually-hidden level label announced to assistive tech."
+        "description": "Overrides the visually-hidden level label announced to assistive tech. Never rendered visibly (`label` is reserved for visible text across the system) — the visible content is the slot."
       }
     ],
     "events": [],
@@ -2558,7 +2579,7 @@
       },
       {
         "name": "level",
-        "type": "\"alarm\" | \"warning\" | \"caution\" | \"advisory\" | \"nominal\" | null",
+        "type": "StatusLevel | null",
         "default": "null",
         "required": false,
         "description": "Status level — colors the value when set (e.g. red for alarm threshold)."
@@ -2572,7 +2593,7 @@
     "props": [
       {
         "name": "level",
-        "type": "StatusKind",
+        "type": "StatusLevel",
         "default": null,
         "required": true,
         "description": ""
@@ -2691,7 +2712,7 @@
       },
       {
         "name": "level",
-        "type": "\"alarm\" | \"warning\" | \"caution\" | \"advisory\" | \"nominal\" | null",
+        "type": "StatusLevel | null",
         "default": "null",
         "required": false,
         "description": "Status level — colors the value when set (e.g. red for an out-of-bounds fix)."
@@ -2838,7 +2859,7 @@
         "description": "Label shown once armed / holding (e.g. \"Hold to ARM\", \"Confirm ARM\")."
       },
       {
-        "name": "cancelText",
+        "name": "cancelLabel",
         "type": "string",
         "default": null,
         "required": false,
@@ -2886,5 +2907,271 @@
     "slots": [
       "default"
     ]
+  },
+  "Sparkline": {
+    "file": "./Sparkline.vue",
+    "props": [
+      {
+        "name": "values",
+        "type": "number[]",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "default": "120",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "32",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "area",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Fill the area under the line at low opacity."
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "default": "var(--viz-categorical-1)",
+        "required": false,
+        "description": "Stroke/fill color — any CSS color or var. Defaults to the first viz series."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Gauge": {
+    "file": "./Gauge.vue",
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "default": "0",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "default": "100",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "default": "",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Accessible name, e.g. \"Battery\". The readout is announced via aria-valuetext."
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "default": "96",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "thickness",
+        "type": "number",
+        "default": "8",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "default": "var(--viz-categorical-1)",
+        "required": false,
+        "description": "Value-arc color — any CSS color or var. Defaults to the first viz series."
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Bars": {
+    "file": "./Bars.vue",
+    "props": [
+      {
+        "name": "values",
+        "type": "number[]",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "labels",
+        "type": "string[]",
+        "default": "[]",
+        "required": false,
+        "description": "Category labels, shown under the bars when provided."
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "default": "260",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "140",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "Y-axis max. Defaults to the largest value."
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "default": "var(--viz-categorical-1)",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "colorByIndex",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Color each bar from the categorical palette instead of one `color`."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Distribution": {
+    "file": "./Distribution.vue",
+    "props": [
+      {
+        "name": "values",
+        "type": "number[]",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "bins",
+        "type": "number",
+        "default": "12",
+        "required": false,
+        "description": "Number of equal-width bins."
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "default": "260",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "140",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "default": "var(--viz-sequential-3)",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "TimeSeries": {
+    "file": "./TimeSeries.vue",
+    "props": [
+      {
+        "name": "data",
+        "type": "AlignedData",
+        "default": null,
+        "required": true,
+        "description": "uPlot-aligned data: `[xValues, ...ySeries]`."
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "default": "360",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "140",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "series",
+        "type": "string[]",
+        "default": "[]",
+        "required": false,
+        "description": "Per-series labels (used for the series name / a11y)."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Accessible name for the chart region."
+      }
+    ],
+    "events": [],
+    "slots": []
   }
 }

@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const card = tv({
   slots: {
-    root: 'rounded-md border border-border bg-card text-foreground',
+    root: 'rounded-md border border-border bg-card text-card-foreground',
     header: 'flex flex-col gap-1 px-5 pt-5',
     title: 'text-base font-medium leading-tight',
     description: 'text-sm text-muted-foreground',

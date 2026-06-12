@@ -13,11 +13,15 @@ import { componentList } from '../scripts/gen-props.mjs';
  * family page). Adding a component without docs fails CI.
  */
 const here = dirname(fileURLToPath(import.meta.url));
-const componentsDir = resolve(here, '..', 'components');
+// vue components document under components/, viz charts under data-viz/.
+const pageDirs = [resolve(here, '..', 'components'), resolve(here, '..', 'data-viz')];
 
-const allPagesText = readdirSync(componentsDir)
-  .filter((f) => f.endsWith('.md'))
-  .map((f) => readFileSync(resolve(componentsDir, f), 'utf8'))
+const allPagesText = pageDirs
+  .flatMap((dir) =>
+    readdirSync(dir)
+      .filter((f) => f.endsWith('.md'))
+      .map((f) => readFileSync(resolve(dir, f), 'utf8')),
+  )
   .join('\n');
 
 describe('docs coverage', () => {

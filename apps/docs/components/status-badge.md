@@ -118,7 +118,7 @@ The `size="sm"` variant (20 px tall) is the right call for telemetry strips wher
 
 ## Accessibility
 
-- The badge renders as a `<span>` with the slot content read inline. A **visually-hidden level label is always rendered** (e.g. "Alarm", "Nominal") ahead of the slot, so the alarm tier is announced even when the slot text is empty or non-descriptive. Override it with `label` when the default English word isn't what you want screen readers to hear.
+- The badge renders as a `<span>` with the slot content read inline. A **visually-hidden level label is always rendered** (e.g. "Alarm", "Nominal") ahead of the slot, so the alarm tier is announced even when the slot text is empty or non-descriptive. Override it with `srLabel` when the default English word isn't what you want screen readers to hear.
 - **Color is never the only cue.** Beyond the hidden label, each level draws a grayscale-distinct glyph (octagon, triangle, diamond, info circle, check circle), so the severity is legible to color-blind users and in monochrome. This satisfies WCAG 1.4.1 (Use of Color) without relying on the consumer to add text — though descriptive slot text ("Battery 18%") is still the right call.
 - The decorative glyph (`<svg>`) and the dot are both `aria-hidden="true"` — the hidden label and slot text are what carry meaning to assistive tech.
 - For *time-critical* alarm states that need to interrupt the user (link lost, geofence breach), don't rely on the badge alone — pair it with a `<Toast>` or `<AlertBanner>` so the change announces itself via ARIA live regions.

@@ -188,7 +188,7 @@ v-for="seg in donut" :key="seg.level"
               <span class="text-muted-foreground"> {{ a.text }}</span>
             </p>
             <span class="font-mono text-[11px] tabular-nums text-muted-foreground">{{ a.time }}</span>
-            <StatusBadge :level="a.level" size="sm" :label="a.level" />
+            <StatusBadge :level="a.level" size="sm" :sr-label="a.level" />
           </div>
         </section>
       </div>

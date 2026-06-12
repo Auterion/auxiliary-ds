@@ -30,7 +30,7 @@ concept has exactly one name in both worlds.
 - **Errors** say *what* happened and *how to fix it*, never blame the user:
   *Altitude must be between 0 and 500 m* (not *Invalid input*).
 - **Empty states** tell the user what goes here and how to add the first item.
-- **Component overrides** — `NumberField` accepts `decrementLabel`/`incrementLabel` for its stepper buttons; `GuardedAction` accepts `cancelText` and `instructionText` to match the operational context. Defaults are generic English; override in product code with the specific action (*"Minus"*, *"Abort"*, *"Press and hold to ARM"*).
+- **Component overrides** — `NumberField` accepts `decrementLabel`/`incrementLabel` for its stepper buttons; `GuardedAction` accepts `cancelLabel` and `instructionText` to match the operational context. Defaults are generic English; override in product code with the specific action (*"Minus"*, *"Abort"*, *"Press and hold to ARM"*).
 
 ## Operational lexicon
 

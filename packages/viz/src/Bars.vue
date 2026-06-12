@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { barRects } from './geometry';
-import { categorical } from './palette';
+import { seriesVar } from './palette';
 
 /**
  * A categorical bar chart — values across labelled categories. Pure SVG
@@ -38,7 +38,7 @@ const geo = computed(() =>
   barRects(props.values, { width: props.width, height: props.height, max: props.max }),
 );
 const fillFor = (i: number): string =>
-  props.colorByIndex ? categorical[i % categorical.length]! : props.color;
+  props.colorByIndex ? seriesVar(i) : props.color;
 </script>
 
 <template>

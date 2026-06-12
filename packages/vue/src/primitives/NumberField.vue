@@ -30,7 +30,17 @@ const props = defineProps<
 const emits = defineEmits<NumberFieldRootEmits>();
 
 const delegated = computed(() => {
-  const { class: _class, size: _size, invalid: _invalid, unit: _unit, ...rest } = props;
+  // decrementLabel/incrementLabel are consumed by the stepper buttons below —
+  // strip them too, or they fall through NumberFieldRoot as DOM attributes.
+  const {
+    class: _class,
+    size: _size,
+    invalid: _invalid,
+    unit: _unit,
+    decrementLabel: _dec,
+    incrementLabel: _inc,
+    ...rest
+  } = props;
   return rest;
 });
 const forwarded = useForwardPropsEmits(delegated, emits);

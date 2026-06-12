@@ -110,10 +110,10 @@ describe('GuardedAction', () => {
     });
   });
 
-  describe('cancelText / instructionText overrides', () => {
-    it('uses cancelText on the cancel button in confirm mode', async () => {
+  describe('cancelLabel / instructionText overrides', () => {
+    it('uses cancelLabel on the cancel button in confirm mode', async () => {
       const wrapper = mount(GuardedAction, {
-        props: { mode: 'confirm', cancelText: 'Abort' },
+        props: { mode: 'confirm', cancelLabel: 'Abort' },
         slots: { default: 'Release' },
       });
       await wrapper.get('button').trigger('click');
