@@ -34,6 +34,29 @@ describe('focus ring is visible against the background (≥ 3:1)', () => {
   it.each(THEMES)('%s ring vs background ≥ 3:1', (name) => {
     expect(pairRatio(loadTheme(name), 'background', 'ring')).toBeGreaterThanOrEqual(RING_FLOOR);
   });
+
+  // The ring can be invisible against a solid primary fill (sunlight ring IS
+  // primary: black on black). Recipes therefore put a 2px ring-offset gap —
+  // rendered in `background` — between fill and ring, so what must hold is the
+  // GAP's visibility: background vs primary ≥ 3:1 in every theme. (Gap vs ring
+  // is the background/ring gate above; gap vs danger fill is the destructive
+  // gate in contrast.test.ts.)
+  it.each(THEMES)('%s background vs primary ≥ 3:1 (ring-offset gap)', (name) => {
+    expect(pairRatio(loadTheme(name), 'background', 'primary')).toBeGreaterThanOrEqual(3.0);
+  });
+});
+
+// --- 1b. Menu keyboard cursor (≥ 3:1, WCAG 1.4.11) ----------------------------
+// data-[highlighted] is the ONLY indicator of keyboard position in open menus/
+// listboxes (dropdown-menu, select, combobox). The recipes paint it bg-primary +
+// text-primary-foreground (the native-menu convention); this gates the fill
+// against the popover surface it sits on. The old bg-accent tint measured
+// 1.19–2.17:1 — invisible exactly where arrow-key users need it.
+describe('menu highlight (primary) is visible against the popover (≥ 3:1)', () => {
+  const THEMES: ThemeName[] = ['light', 'dark', 'sunlight', 'darknight'];
+  it.each(THEMES)('%s primary vs popover ≥ 3:1', (name) => {
+    expect(pairRatio(loadTheme(name), 'popover', 'primary')).toBeGreaterThanOrEqual(3.0);
+  });
 });
 
 // --- 2. Structural UI contrast (WCAG 1.4.11) ----------------------------------

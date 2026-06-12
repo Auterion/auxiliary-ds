@@ -8,7 +8,7 @@ export const select = tv({
     content:
       'z-[var(--z-dropdown)] min-w-[var(--reka-select-trigger-width)] overflow-hidden rounded-md border border-border bg-popover text-sm text-foreground shadow-md outline-none',
     viewport: 'p-1',
-    item: 'relative flex h-8 cursor-pointer select-none items-center rounded-sm pl-7 pr-2 text-sm outline-none data-[highlighted]:bg-accent data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed',
+    item: 'relative flex h-8 cursor-pointer select-none items-center rounded-sm pl-7 pr-2 text-sm outline-none data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed',
     itemIndicator: 'absolute left-2 flex items-center justify-center',
     separator: 'my-1 border-t border-border',
   },

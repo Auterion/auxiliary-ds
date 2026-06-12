@@ -16,7 +16,7 @@ export const combobox = tv({
     content:
       'z-[var(--z-dropdown)] max-h-72 min-w-[var(--reka-combobox-trigger-width)] overflow-hidden overflow-y-auto rounded-md border border-border bg-popover text-sm text-foreground shadow-md outline-none',
     viewport: 'p-1',
-    item: 'relative flex h-8 cursor-pointer select-none items-center rounded-sm pl-7 pr-2 text-sm outline-none data-[highlighted]:bg-accent data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed',
+    item: 'relative flex h-8 cursor-pointer select-none items-center rounded-sm pl-7 pr-2 text-sm outline-none data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed',
     itemIndicator: 'absolute left-2 flex items-center justify-center',
     empty: 'px-2 py-6 text-center text-sm text-muted-foreground',
     separator: 'my-1 border-t border-border',
