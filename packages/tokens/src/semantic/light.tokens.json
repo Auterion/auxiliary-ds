@@ -19,7 +19,7 @@
     "destructive":           { "$type": "color", "$value": "{color.primitive.red.700}" },
     "destructive-foreground":{ "$type": "color", "$value": "{color.primitive.white}" },
     "border":                { "$type": "color", "$value": "{color.primitive.auterion-blue.200}" },
-    "input":                 { "$type": "color", "$value": "{color.primitive.auterion-blue.200}" },
+    "input":                 { "$type": "color", "$value": "{color.primitive.ink.500}" },
     "ring":                  { "$type": "color", "$value": "{color.primitive.auterion-blue.600}" },
 
     "alarm":                 { "$type": "color", "$value": "{color.primitive.red.700}" },

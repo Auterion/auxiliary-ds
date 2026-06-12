@@ -36,15 +36,20 @@ describe('focus ring is visible against the background (≥ 3:1)', () => {
   });
 });
 
-// --- 2. Operational structure: border + input ≥ 3:1 (WCAG 1.4.11) -------------
-// Panels and fields must hold their geometry under glare (sunlight) and in the
-// dark (darknight). The redesigned operational palettes deepen these edges to
-// clear 3:1; light/dark keep subtle dividers and are intentionally not gated here.
-describe('operational themes: structural UI contrast (≥ 3:1)', () => {
-  it.each(['sunlight', 'darknight'] as ThemeName[])('%s border + input vs background ≥ 3:1', (name) => {
-    const theme = loadTheme(name);
-    expect(pairRatio(theme, 'background', 'border'), 'border').toBeGreaterThanOrEqual(3);
-    expect(pairRatio(theme, 'background', 'input'), 'input').toBeGreaterThanOrEqual(3);
+// --- 2. Structural UI contrast (WCAG 1.4.11) ----------------------------------
+// `input` is the ONLY boundary of text fields (border-input on bg-background in
+// every form recipe), so it must clear 3:1 in ALL themes — light/dark used to sit
+// at 1.30/1.34 and text fields effectively had no visible edge. `border` is
+// decorative structure (card edges, separators); it stays subtle in light/dark
+// and is gated only in the operational themes, where panels must hold their
+// geometry under glare (sunlight) and in the dark (darknight).
+describe('structural UI contrast (≥ 3:1)', () => {
+  const ALL: ThemeName[] = ['light', 'dark', 'sunlight', 'darknight'];
+  it.each(ALL)('%s input vs background ≥ 3:1', (name) => {
+    expect(pairRatio(loadTheme(name), 'background', 'input'), 'input').toBeGreaterThanOrEqual(3);
+  });
+  it.each(['sunlight', 'darknight'] as ThemeName[])('%s border vs background ≥ 3:1', (name) => {
+    expect(pairRatio(loadTheme(name), 'background', 'border'), 'border').toBeGreaterThanOrEqual(3);
   });
 });
 

@@ -75,6 +75,15 @@ describe.each(THEMES)('contrast floors — %s theme', (themeName) => {
   it.each(STATUS_PAIRS)(`status %s/%s >= ${floor.status}:1`, (bg, fg) => {
     expect(pairRatio(theme, bg, fg)).toBeGreaterThanOrEqual(floor.status);
   });
+
+  // destructive doubles as a *state indicator* — every form-control recipe
+  // paints border-destructive / ring-destructive for the invalid state — so
+  // beyond the fill/foreground pair above it must also be perceivable as a
+  // boundary against the surfaces it sits on (WCAG 2.2 SC 1.4.11, 3:1).
+  // Dark used to fail this at 2.38/2.12 (red.800 on ink.950/ink.900).
+  it.each(['background', 'card'] as const)('destructive vs %s >= 3:1 (SC 1.4.11)', (surface) => {
+    expect(pairRatio(theme, surface, 'destructive')).toBeGreaterThanOrEqual(3.0);
+  });
 });
 
 /**

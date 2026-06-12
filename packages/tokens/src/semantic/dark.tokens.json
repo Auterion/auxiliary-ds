@@ -16,10 +16,10 @@
     "accent-foreground":     { "$type": "color", "$value": "{color.primitive.mono.50}" },
     "brand":                 { "$type": "color", "$value": "{color.primitive.auterion-blue.700}" },
     "brand-foreground":      { "$type": "color", "$value": "{color.primitive.white}" },
-    "destructive":           { "$type": "color", "$value": "{color.primitive.red.800}" },
-    "destructive-foreground":{ "$type": "color", "$value": "{color.primitive.red.200}" },
+    "destructive":           { "$type": "color", "$value": "{color.primitive.red.600}" },
+    "destructive-foreground":{ "$type": "color", "$value": "{color.primitive.white}" },
     "border":                { "$type": "color", "$value": "{color.primitive.ink.700}" },
-    "input":                 { "$type": "color", "$value": "{color.primitive.ink.800}" },
+    "input":                 { "$type": "color", "$value": "{color.primitive.ink.500}" },
     "ring":                  { "$type": "color", "$value": "{color.primitive.auterion-blue.600}" },
 
     "alarm":                 { "$type": "color", "$value": "{color.primitive.red.700}" },
