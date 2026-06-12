@@ -4,7 +4,13 @@ import { cn } from '@auxiliary/css/utils';
 import { input, type InputVariants } from '@auxiliary/css/recipes';
 
 const props = defineProps<{
-  modelValue?: string | number;
+  /**
+   * String-only model: a text input's value is a string, and the emit always
+   * round-trips one (a `string | number` model silently became a string after
+   * the first keystroke). For numeric values use `NumberField`, which owns
+   * parsing, stepping, and min/max.
+   */
+  modelValue?: string;
   type?: string;
   placeholder?: string;
   disabled?: boolean;

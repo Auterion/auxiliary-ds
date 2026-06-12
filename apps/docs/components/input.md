@@ -10,7 +10,7 @@ A native `<input>` styled by the `input` recipe, with two-way binding through `v
 
 ## When to use
 
-- For free-form single-line text entry — names, search queries, numeric values, URLs.
+- For free-form single-line text entry — names, search queries, URLs.
 - Inside a form, paired with a `<Label>` (use `id` + `for` so clicking the label focuses the field).
 - Whenever you need a typed value back via `v-model` — the component emits `update:modelValue` on every keystroke.
 
@@ -20,6 +20,7 @@ A native `<input>` styled by the `input` recipe, with two-way binding through `v
 - For choosing from a fixed set of options — use `<Select>`, `<RadioGroup>`, or `<Checkbox>`. Typing a value that has to match a known list is a validation trap.
 - For on/off state — that's `<Switch>` or `<Checkbox>`, not a text field.
 - For ranged numeric selection where the bounds matter visually — `<Slider>` shows the range; a number input doesn't.
+- For numeric values — use `<NumberField>`, which owns parsing, stepping, and min/max. `Input`'s model is string-only.
 
 ## Examples
 
