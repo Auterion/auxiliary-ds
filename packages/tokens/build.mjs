@@ -500,6 +500,116 @@ const assertRegisterOrthogonality = (dictionary) => {
   }
 };
 
+/**
+ * Build-time parity invariant: all four themes must define the identical role
+ * set (and each role the same $type everywhere). A role missing from one theme
+ * would silently fall through to the light value in the emitted CSS — e.g. a
+ * darknight theme missing `brand` would leak full-blue-energy light brand into
+ * the scotopic theme, invisible to the per-theme gates (they iterate only the
+ * keys a theme *has*).
+ */
+const assertThemeRoleParity = (dictionary) => {
+  const roleSets = new Map(THEMES.map((theme) => [theme, new Map()]));
+  for (const t of dictionary.allTokens) {
+    if (!isTheme(t)) continue;
+    roleSets.get(t.path[0]).set(t.path.slice(1).join('.'), t.$type);
+  }
+  const union = new Map();
+  for (const roles of roleSets.values()) {
+    for (const [role, type] of roles) if (!union.has(role)) union.set(role, type);
+  }
+  const offenders = [];
+  for (const [theme, roles] of roleSets) {
+    const missing = [...union.keys()].filter((r) => !roles.has(r));
+    if (missing.length) offenders.push(`  ${theme} missing: ${missing.join(', ')}`);
+    for (const [role, type] of roles) {
+      if (union.get(role) !== type) {
+        offenders.push(`  ${theme}.${role} is ${type} but ${union.get(role)} elsewhere`);
+      }
+    }
+  }
+  if (offenders.length > 0) {
+    throw new Error(
+      `Theme-role parity check failed — the four themes must define the same roles:\n` +
+        offenders.join('\n'),
+    );
+  }
+};
+
+/**
+ * Build-time source-shape validation: every token must carry a known $type and
+ * a $value whose shape matches it. Without this, an untyped token flows through
+ * as $type undefined → Figma FLOAT with null values, and an object $value on a
+ * scalar type emits `--x: [object Object]` into the CSS.
+ */
+const KNOWN_TYPES = new Set([
+  'color',
+  'dimension',
+  'duration',
+  'cubicBezier',
+  'shadow',
+  'typography',
+  'fontFamily',
+  'fontWeight',
+  'number',
+]);
+const TYPOGRAPHY_KEYS = ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing'];
+const assertSourceShapes = (dictionary) => {
+  const offenders = [];
+  const isAlias = (v) => typeof v === 'string' && v.startsWith('{') && v.endsWith('}');
+  for (const t of dictionary.allTokens) {
+    const type = t.original?.$type ?? t.$type;
+    const raw = t.original?.$value ?? t.$value;
+    if (!KNOWN_TYPES.has(type)) {
+      offenders.push(`  ${t.path.join('.')} has unknown $type ${JSON.stringify(type)}`);
+      continue;
+    }
+    if (isAlias(raw)) continue;
+    const bad = (why) => offenders.push(`  ${t.path.join('.')} = ${JSON.stringify(raw)} (${why})`);
+    switch (type) {
+      case 'color':
+        if (typeof raw !== 'string' || !parseColor(raw)) bad('unparseable color');
+        break;
+      case 'dimension':
+      case 'duration':
+        if (typeof raw !== 'number' && !(typeof raw === 'string' && DIM_RE.test(raw)))
+          bad(`malformed ${type}`);
+        break;
+      case 'number':
+      case 'fontWeight':
+        if (typeof raw !== 'number' || !Number.isFinite(raw)) bad(`non-finite ${type}`);
+        break;
+      case 'fontFamily':
+        if (typeof raw !== 'string' && !Array.isArray(raw)) bad('fontFamily must be string or array');
+        break;
+      case 'cubicBezier':
+        if (
+          !(typeof raw === 'string' && CB_RE.test(raw)) &&
+          !(Array.isArray(raw) && raw.length === 4 && raw.every((n) => typeof n === 'number'))
+        )
+          bad('malformed cubicBezier');
+        break;
+      case 'shadow':
+        if (typeof raw !== 'string') bad('shadow must be a CSS string');
+        break;
+      case 'typography': {
+        if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) {
+          bad('typography must be a composite object');
+        } else {
+          const missing = TYPOGRAPHY_KEYS.filter((k) => !(k in raw));
+          if (missing.length) bad(`typography missing ${missing.join(', ')}`);
+        }
+        break;
+      }
+    }
+  }
+  if (offenders.length > 0) {
+    throw new Error(
+      `Source-shape check failed — ${offenders.length} malformed token(s):\n` + offenders.join('\n'),
+    );
+  }
+};
+
 const sd = new StyleDictionary({
   source: ['src/**/*.tokens.json'],
   platforms: {
@@ -534,10 +644,12 @@ const sd = new StyleDictionary({
   },
 });
 
-// Run the purity assertion against a hydrated dictionary, then build.
+// Run the invariant assertions against a hydrated dictionary, then build.
 const dict = await sd.getPlatformTokens('dtcg');
 assertPrimitivePurity(dict);
 assertRegisterOrthogonality(dict);
+assertThemeRoleParity(dict);
+assertSourceShapes(dict);
 
 await sd.cleanAllPlatforms();
 await sd.buildAllPlatforms();
