@@ -10,15 +10,11 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      // Keep deps external so tree-shaking is about which OF OUR components ship.
-      external: [
-        'vue',
-        'reka-ui',
-        '@auxiliary/css',
-        '@auxiliary/css/recipes',
-        '@auxiliary/css/utils',
-        '@auxiliary/tokens',
-      ],
+      // Keep deps external so tree-shaking is about which OF OUR components
+      // ship. The regex covers every @auxiliary subpath — enumerating them
+      // once missed @auxiliary/css/format, which silently vendored it (plus
+      // its mgrs dependency) into dist/.
+      external: ['vue', 'reka-ui', /^@auxiliary\//],
       output: {
         // One JS chunk per source module (mirrors src/) instead of a single
         // bundle. With "sideEffects": false this lets a downstream bundler drop

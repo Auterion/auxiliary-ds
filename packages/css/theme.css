@@ -15,7 +15,7 @@
  *
  * Air-gap-first: fonts are vendored into ./fonts/ and shipped in this package
  * (no runtime CDN). See scripts/sync-fonts.mjs. A test gate
- * (src/__tests__/no-external-deps.test.ts) fails CI if a runtime CDN ref
+ * (test/no-external-deps.test.ts) fails CI if a runtime CDN ref
  * reappears here.
  */
 
@@ -28,10 +28,19 @@
  * as CSS rules because Tailwind only scans the consuming app's own files
  * by default.
  *
- * The relative path resolves from this file's location (packages/css/) to
- * packages/vue/src/. Vite/Tailwind v4 evaluates @source relative to the
- * CSS file that contains it. */
+ * @source resolves relative to this file, and a glob that matches nothing is
+ * a SILENT no-op — so we list both layouts and the one that exists wins:
+ *   - ../vue/src/…  → pnpm workspace (this repo), where the sibling package
+ *     sits next to us with its sources;
+ *   - ../vue/dist/… → an npm install, where node_modules/@auxiliary/vue ships
+ *     only dist/ (files: ["dist"]) and the literal class strings survive in
+ *     the compiled render functions.
+ *
+ * pnpm's symlinked node_modules can defeat both relative paths; such apps
+ * should add `@source "../node_modules/@auxiliary/vue/dist/**\/*.js";`
+ * (path relative to their own CSS entry) alongside this import. */
 @source "../vue/src/**/*.{vue,ts}";
+@source "../vue/dist/**/*.js";
 @source "./recipes/**/*.ts";
 
 /* -------------------------------------------------------------------------- *
