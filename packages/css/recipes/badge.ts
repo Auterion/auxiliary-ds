@@ -10,7 +10,7 @@ export const badge = tv({
       accent:    'bg-primary text-primary-foreground',
     },
     size: {
-      sm: 'h-5 px-1.5 text-[10px]',
+      sm: 'h-5 px-1.5 text-2xs',
       md: 'h-6 px-2 text-xs',
     },
   },

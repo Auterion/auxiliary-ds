@@ -119,63 +119,15 @@
 }
 
 /* -------------------------------------------------------------------------- *
- * Type scale — Auterion Design System (Figma node 1388:223, Inter Variable ramp).
+ * Type scale — now fully token-derived (packages/tokens, typography.tokens.json).
  *
- * 3 weights (Regular/Medium/SemiBold) × 14 sizes. Two paired axes:
- * line-height tightens as size grows (1.4 body → 1.0 display), letter-spacing
- * goes increasingly negative (-0.02em small → -0.04em display). Encoded as
- * Tailwind v4 text-* utilities so every size step carries both automatically.
+ * The imported tailwind-v4.css carries the whole ramp: sizes (text.*, with the
+ * fluid 3xl–10xl clamp() encoded via each token's $extensions fluid.min) and
+ * the per-size --text-<step>--line-height / --letter-spacing pairs (the
+ * text-leading/* and text-tracking/* token groups). This file used to redefine
+ * the scale in a second @theme block, which silently overrode the tokens —
+ * don't reintroduce one.
  * -------------------------------------------------------------------------- */
-@theme {
-  --text-xs: 0.75rem;            /* 12px */
-  --text-xs--line-height: 1.4;
-  --text-xs--letter-spacing: -0.02em;
-  --text-sm: 0.875rem;           /* 14px */
-  --text-sm--line-height: 1.4;
-  --text-sm--letter-spacing: -0.02em;
-  --text-base: 1rem;             /* 16px */
-  --text-base--line-height: 1.4;
-  --text-base--letter-spacing: -0.02em;
-  --text-lg: 1.125rem;           /* 18px */
-  --text-lg--line-height: 1.4;
-  --text-lg--letter-spacing: -0.02em;
-  --text-xl: 1.25rem;            /* 20px */
-  --text-xl--line-height: 1.4;
-  --text-xl--letter-spacing: -0.03em;
-  --text-2xl: 1.5rem;            /* 24px */
-  --text-2xl--line-height: 1.25;
-  --text-2xl--letter-spacing: -0.03em;
-  /* Fluid display/heading scale (world-standard responsive type).
-   * Each clamp interpolates between a phone min (~360px viewport) and a
-   * desktop max (~1280px) so headings shrink gracefully on mobile while the
-   * desktop ceiling stays exactly the prior fixed value (non-breaking on wide
-   * screens). Body/UI sizes (xs–2xl) stay fixed — fluid body text hurts
-   * line-length consistency and is not the world standard. */
-  --text-3xl: clamp(1.625rem, 1.527rem + 0.435vw, 1.875rem);   /* 26 → 30px */
-  --text-3xl--line-height: 1.25;
-  --text-3xl--letter-spacing: -0.04em;
-  --text-4xl: clamp(1.875rem, 1.63rem + 1.087vw, 2.5rem);      /* 30 → 40px */
-  --text-4xl--line-height: 1.15;
-  --text-4xl--letter-spacing: -0.04em;
-  --text-5xl: clamp(2.125rem, 1.783rem + 1.522vw, 3rem);       /* 34 → 48px */
-  --text-5xl--line-height: 1.12;
-  --text-5xl--letter-spacing: -0.04em;
-  --text-6xl: clamp(2.5rem, 2.011rem + 2.174vw, 3.75rem);      /* 40 → 60px */
-  --text-6xl--line-height: 1.08;
-  --text-6xl--letter-spacing: -0.045em;
-  --text-7xl: clamp(2.875rem, 2.239rem + 2.826vw, 4.5rem);     /* 46 → 72px */
-  --text-7xl--line-height: 1.05;
-  --text-7xl--letter-spacing: -0.045em;
-  --text-8xl: clamp(3.25rem, 2.565rem + 3.043vw, 5rem);        /* 52 → 80px */
-  --text-8xl--line-height: 1;
-  --text-8xl--letter-spacing: -0.045em;
-  --text-9xl: clamp(3.75rem, 2.87rem + 3.913vw, 6rem);         /* 60 → 96px */
-  --text-9xl--line-height: 1;
-  --text-9xl--letter-spacing: -0.05em;
-  --text-10xl: clamp(4.5rem, 3.13rem + 6.087vw, 8rem);         /* 72 → 128px */
-  --text-10xl--line-height: 1;
-  --text-10xl--letter-spacing: -0.05em;
-}
 
 @layer base {
   :root {
@@ -307,7 +259,7 @@
     font-size: var(--text-6xl);        /* fluid display size (clamp) */
     font-weight: 500;                  /* medium — house display weight */
     line-height: var(--leading-display);
-    letter-spacing: -0.045em;
+    letter-spacing: var(--text-6xl--letter-spacing);
     font-optical-sizing: auto;
     font-variation-settings: "opsz" 32;
     font-feature-settings: "calt", "liga";

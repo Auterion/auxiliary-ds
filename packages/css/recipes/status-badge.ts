@@ -26,7 +26,7 @@ export const statusBadge = tv({
       outline: '',
     },
     size: {
-      sm: { base: 'h-5 px-2 text-[10px]', icon: 'h-3 w-3' },
+      sm: { base: 'h-5 px-2 text-2xs', icon: 'h-3 w-3' },
       md: { base: 'h-6 px-2.5 text-xs', icon: 'h-3.5 w-3.5' },
     },
   },

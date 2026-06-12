@@ -46,11 +46,44 @@ const registersWithTokens = (allTokens) =>
 const kebabSegment = (s) => String(s).replace(/_/g, '-');
 const cssName = (path) => path.map(kebabSegment).join('-');
 
+// Fluid type: a dimension token may declare a phone-width minimum via
+// $extensions["com.auterion.auxiliary"].fluid.min; $value stays the desktop
+// maximum (so JS/DTCG/Figma exports keep concrete sizes) and only the CSS
+// emission interpolates between them with clamp() across this viewport range.
+const FLUID_VP = { minPx: 360, maxPx: 1280 }; // small phone → breakpoint.xl
+const fluidMin = (t) => t.original?.$extensions?.['com.auterion.auxiliary']?.fluid?.min;
+const trimNum = (n, dp = 3) =>
+  String(Math.round(n * 10 ** dp) / 10 ** dp);
+const fluidClamp = (minRaw, maxRaw) => {
+  const min = parseFloat(minRaw);
+  const max = parseFloat(maxRaw);
+  const range = FLUID_VP.maxPx - FLUID_VP.minPx;
+  const slopeVw = ((max - min) / range) * 100;
+  const interceptPx = min - FLUID_VP.minPx * ((max - min) / range);
+  return `clamp(${trimNum(min / 16)}rem, ${trimNum(interceptPx / 16)}rem + ${trimNum(slopeVw)}vw, ${trimNum(max / 16)}rem)`;
+};
+
+// Tailwind v4 derives per-size line-height/letter-spacing from suffixed theme
+// vars (--text-3xl--line-height). The token source models them as sibling
+// groups (text-leading/*, text-tracking/*) because DTCG paths can't express
+// the double-dash suffix; this maps them back at CSS-emission time only.
+const SUFFIX_GROUPS = {
+  'text-leading': '--line-height',
+  'text-tracking': '--letter-spacing',
+};
+const cssVarName = (t, stripPrefix) => {
+  const path = stripPrefix ? t.path.slice(1) : t.path;
+  const suffix = SUFFIX_GROUPS[path[0]];
+  if (suffix) return `--text-${cssName(path.slice(1))}${suffix}`;
+  return `--${cssName(path)}`;
+};
+
 const renderVars = (tokens, stripPrefix, indent = '  ') =>
   tokens
     .map((t) => {
-      const path = stripPrefix ? t.path.slice(1) : t.path;
-      return `${indent}--${cssName(path)}: ${t.$value};`;
+      const min = fluidMin(t);
+      const value = min ? fluidClamp(min, t.$value) : t.$value;
+      return `${indent}${cssVarName(t, stripPrefix)}: ${value};`;
     })
     .join('\n');
 
@@ -416,8 +449,12 @@ const toFigmaValue = (token) => {
 StyleDictionary.registerFormat({
   name: 'json/figma-native',
   format: async ({ dictionary }) => {
+    // text-leading/text-tracking are CSS-only pairing vars for Tailwind's
+    // per-size suffix convention; Text Styles already carry lh/ls, so raw
+    // FLOAT variables for them would be junk in Figma.
     const primitives = dictionary.allTokens.filter(
-      (t) => !isTheme(t) && !isRegister(t) && !FIGMA_SKIP.has(t.$type),
+      (t) =>
+        !isTheme(t) && !isRegister(t) && !FIGMA_SKIP.has(t.$type) && !SUFFIX_GROUPS[t.path[0]],
     );
     const primitiveVars = primitives.map((t) => ({
       name: t.path.join('/'),

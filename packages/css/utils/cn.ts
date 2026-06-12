@@ -1,4 +1,16 @@
-import { twMerge } from 'tailwind-merge';
+import { extendTailwindMerge } from 'tailwind-merge';
+
+// tailwind-merge's config is static — it doesn't read the Tailwind theme — so
+// the scale steps Auxiliary adds beyond the stock ramp must be registered here
+// or twMerge misclassifies them as text *colors* and drops them on conflict
+// (e.g. cn('text-2xs', 'text-secondary-foreground') would lose the size).
+const twMerge = extendTailwindMerge({
+  extend: {
+    classGroups: {
+      'font-size': [{ text: ['2xs', '10xl'] }],
+    },
+  },
+});
 
 /**
  * A class value, in the shape clsx accepts: strings, falsy values (dropped),

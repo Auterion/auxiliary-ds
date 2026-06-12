@@ -48,7 +48,7 @@ describe('Badge', () => {
 
     const sm = mount(Badge, { props: { size: 'sm' }, slots: { default: 'sm' } });
     expect(sm.classes()).toContain('h-5');
-    expect(sm.classes()).toContain('text-[10px]');
+    expect(sm.classes()).toContain('text-2xs');
   });
 
   it('always carries the shared base classes', () => {
