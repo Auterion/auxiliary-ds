@@ -15,14 +15,15 @@ import ToastClose from '../Toast/ToastClose.vue';
  * Description / Action / Close. The toast renders into the ToastViewport, which
  * Reka portals to document.body; so when open we query the body, not the wrapper.
  *
- * happy-dom note: Reka's `defaultOpen` (uncontrolled) path does NOT mount the
- * toast li in happy-dom — it relies on timing/animation hooks that don't fire.
- * The *controlled* `open` prop renders deterministically, so the harness drives
- * `open` directly. The toast root is rendered as an <li data-state="open">.
+ * The harness only assigns `open`/`defaultOpen` to the vnode when they are set:
+ * Toast forwards via useForwardPropsEmits, which forwards every vnode-assigned
+ * prop — and an explicit `open: undefined` would resolve to a boolean-cast
+ * `false`, silently switching Reka into controlled-closed mode.
  */
 const Harness = defineComponent({
   props: {
     open: { type: Boolean, default: undefined },
+    defaultOpen: { type: Boolean, default: undefined },
     type: { type: String, default: undefined },
     duration: { type: Number, default: undefined },
     title: { type: String, default: 'Saved' },
@@ -39,7 +40,8 @@ const Harness = defineComponent({
           h(
             Toast,
             {
-              open: props.open,
+              ...(props.open !== undefined ? { open: props.open } : {}),
+              ...(props.defaultOpen !== undefined ? { defaultOpen: props.defaultOpen } : {}),
               type: props.type,
               duration: props.duration,
               'onUpdate:open': (v: boolean) => emit('update:open', v),
@@ -84,6 +86,19 @@ describe('Toast', () => {
     expect(toastRoot()).not.toBeNull();
     expect(document.body.textContent).toContain('Saved');
     expect(document.body.textContent).toContain('Your changes were saved.');
+  });
+
+  // Regression: the wrapper used to hand-bind `:open="open"`, so Vue's boolean
+  // casting turned an absent `open` into `false` and forced Reka into
+  // controlled-closed mode — uncontrolled toasts (default-open, duration-driven)
+  // could never display.
+  it('renders uncontrolled with default-open (no open prop bound)', async () => {
+    mount(Harness, { props: { defaultOpen: true }, attachTo: document.body });
+    await nextTick();
+    const root = toastRoot();
+    expect(root).not.toBeNull();
+    expect(root!.getAttribute('data-state')).toBe('open');
+    expect(document.body.textContent).toContain('Saved');
   });
 
   it('renders the toast root with data-state=open and the design-system surface classes', async () => {
@@ -167,6 +182,8 @@ describe('Toast', () => {
   // page-level axe scan of an open toast reports a violation. This is in Reka's
   // ToastViewport internals, not in @auxiliary/vue's Toast components, so it is
   // documented rather than asserted-as-passing.
+  // Upstream: https://github.com/unovue/reka-ui/issues/2486 (closed) — re-check on
+  // each reka-ui upgrade and unskip once the sentinels pass axe on our pinned version.
   it.skip('has no axe violations across the whole open-toast document', async () => {
     mount(Harness, { props: { open: true }, attachTo: document.body });
     await nextTick();

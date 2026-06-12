@@ -1210,38 +1210,59 @@
     "file": "./primitives/Toast/Toast.vue",
     "props": [
       {
-        "name": "open",
-        "type": "boolean",
-        "default": null,
-        "required": false,
-        "description": ""
-      },
-      {
         "name": "defaultOpen",
         "type": "boolean",
         "default": null,
         "required": false,
-        "description": ""
+        "description": "The open state of the dialog when it is initially rendered. Use when you do not need to control its open state."
       },
       {
-        "name": "duration",
-        "type": "number",
+        "name": "forceMount",
+        "type": "boolean",
         "default": null,
         "required": false,
-        "description": ""
+        "description": "Used to force mounting when more control is needed. Useful when controlling animation with Vue animation libraries."
       },
       {
         "name": "type",
         "type": "\"foreground\" | \"background\"",
         "default": null,
         "required": false,
-        "description": ""
+        "description": "Control the sensitivity of the toast for accessibility purposes. For toasts that are the result of a user action, choose `foreground`. Toasts generated from background tasks should use `background`."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "The controlled open state of the dialog. Can be bind as `v-model:open`."
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "Time in milliseconds that toast should remain visible for. Overrides value given to `ToastProvider`."
+      },
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "default": null,
+        "required": false,
+        "description": "Change the default rendered element for the one passed as a child, merging their props and behavior. Read our [Composition](https://www.reka-ui.com/docs/guides/composition) guide for more details."
+      },
+      {
+        "name": "as",
+        "type": "AsTag | Component",
+        "default": null,
+        "required": false,
+        "description": "The element or component this component should render as. Can be overwritten by `asChild`."
       }
     ],
     "events": [
       {
         "name": "update:open",
-        "type": "[open: boolean]",
+        "type": "[value: boolean]",
         "description": ""
       },
       {
@@ -1261,22 +1282,22 @@
       },
       {
         "name": "swipeStart",
-        "type": "[event: CustomEvent<any>]",
+        "type": "[event: SwipeEvent]",
         "description": ""
       },
       {
         "name": "swipeMove",
-        "type": "[event: CustomEvent<any>]",
+        "type": "[event: SwipeEvent]",
         "description": ""
       },
       {
         "name": "swipeCancel",
-        "type": "[event: CustomEvent<any>]",
+        "type": "[event: SwipeEvent]",
         "description": ""
       },
       {
         "name": "swipeEnd",
-        "type": "[event: CustomEvent<any>]",
+        "type": "[event: SwipeEvent]",
         "description": ""
       }
     ],
