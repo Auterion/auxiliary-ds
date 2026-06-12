@@ -19,13 +19,19 @@ import { fileURLToPath } from 'node:url';
 const { createChecker } = pkg;
 const here = dirname(fileURLToPath(import.meta.url));
 const vueRoot = resolve(here, '..', '..', '..', 'packages', 'vue');
+const vizRoot = resolve(here, '..', '..', '..', 'packages', 'viz');
 export const OUT_FILE = resolve(here, '..', '.vitepress', 'data', 'props.generated.json');
 
-/** name → src-relative `.vue` path, parsed from the barrel (same shape as gen-exports). */
-export function componentList() {
-  const src = readFileSync(resolve(vueRoot, 'src/index.ts'), 'utf8');
+/** name → src-relative `.vue` path, parsed from a package barrel (same shape as gen-exports). */
+function barrelComponents(pkgRoot) {
+  const src = readFileSync(resolve(pkgRoot, 'src/index.ts'), 'utf8');
   const re = /export\s*\{\s*default as (\w+)[^}]*\}\s*from\s*'(\.\/[^']+\.vue)';/g;
-  return [...src.matchAll(re)].map((m) => ({ name: m[1], file: m[2] }));
+  return [...src.matchAll(re)].map((m) => ({ name: m[1], file: m[2], pkgRoot }));
+}
+
+/** All documented component sources: @auxiliary/vue plus @auxiliary/viz charts. */
+export function componentList() {
+  return [...barrelComponents(vueRoot), ...barrelComponents(vizRoot)];
 }
 
 /** Strip the meta's quoted/encoded default down to a display string, or null. */
@@ -50,10 +56,17 @@ const cleanType = (t) => oneLine(t).replace(/\s*\|\s*undefined\b/g, '').trim();
 
 /** Build the full metadata object: { [Name]: { file, props, events, slots } }. */
 export function generateProps() {
-  const checker = createChecker(resolve(vueRoot, 'tsconfig.json'), { forceUseTs: true });
+  // One checker per package — each is a real TS program over that package's tsconfig.
+  const checkers = new Map();
+  const checkerFor = (pkgRoot) => {
+    if (!checkers.has(pkgRoot)) {
+      checkers.set(pkgRoot, createChecker(resolve(pkgRoot, 'tsconfig.json'), { forceUseTs: true }));
+    }
+    return checkers.get(pkgRoot);
+  };
   const out = {};
-  for (const { name, file } of componentList()) {
-    const meta = checker.getComponentMeta(resolve(vueRoot, 'src', file)); // file is relative to src/index.ts
+  for (const { name, file, pkgRoot } of componentList()) {
+    const meta = checkerFor(pkgRoot).getComponentMeta(resolve(pkgRoot, 'src', file)); // file is relative to src/index.ts
     out[name] = {
       file,
       props: meta.props

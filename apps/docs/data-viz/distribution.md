@@ -40,13 +40,7 @@ Fewer bins smooth the shape; more bins show detail (at the cost of noise). Pick 
 
 ## Props
 
-| Prop | Type | Default | Notes |
-|---|---|---|---|
-| `values` | `number[]` | — | Raw samples; the component bins them. |
-| `bins` | `number` | `12` | Equal-width buckets over `[min, max]`. |
-| `width` / `height` | `number` | `260` / `140` | px. |
-| `color` | `string` | `var(--viz-sequential-3)` | Bar fill. |
-| `label` | `string` | — | Accessible name (else `aria-hidden`). |
+<PropsTable name="Distribution" />
 
 ## Notes
 

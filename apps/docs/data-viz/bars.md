@@ -26,15 +26,7 @@ Default is a single color (one measured series). Set `colorByIndex` when the bar
 
 ## Props
 
-| Prop | Type | Default | Notes |
-|---|---|---|---|
-| `values` | `number[]` | — | Bar values; negatives clamp to zero height. |
-| `labels` | `string[]` | `[]` | Category labels under the bars. |
-| `width` / `height` | `number` | `260` / `140` | px. |
-| `max` | `number` | auto | Y-axis max; defaults to the largest value. |
-| `color` | `string` | `var(--viz-categorical-1)` | Single-series fill. |
-| `colorByIndex` | `boolean` | `false` | Color each bar from the categorical palette. |
-| `label` | `string` | — | Accessible name (else `aria-hidden`). |
+<PropsTable name="Bars" />
 
 ## Notes
 

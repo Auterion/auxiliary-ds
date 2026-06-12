@@ -16,15 +16,7 @@ A radial dial for a single bounded value — battery, CPU, signal, fuel. The **n
 
 ## Props
 
-| Prop | Type | Default | Notes |
-|---|---|---|---|
-| `value` | `number` | — | Clamped into `[min, max]`. |
-| `min` / `max` | `number` | `0` / `100` | Range. |
-| `unit` | `string` | `''` | Appended to the readout (e.g. `%`). |
-| `label` | `string` | — | Accessible name (announced via `aria-valuetext`). |
-| `size` | `number` | `96` | Square px. The readout scales with it. |
-| `thickness` | `number` | `8` | Arc stroke width. |
-| `color` | `string` | `var(--viz-categorical-1)` | Value-arc color. |
+<PropsTable name="Gauge" />
 
 ## When to use
 

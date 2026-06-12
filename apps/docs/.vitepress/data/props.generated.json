@@ -2907,5 +2907,271 @@
     "slots": [
       "default"
     ]
+  },
+  "Sparkline": {
+    "file": "./Sparkline.vue",
+    "props": [
+      {
+        "name": "values",
+        "type": "number[]",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "default": "120",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "32",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "area",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Fill the area under the line at low opacity."
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "default": "var(--viz-categorical-1)",
+        "required": false,
+        "description": "Stroke/fill color — any CSS color or var. Defaults to the first viz series."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Gauge": {
+    "file": "./Gauge.vue",
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "default": "0",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "default": "100",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "default": "",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Accessible name, e.g. \"Battery\". The readout is announced via aria-valuetext."
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "default": "96",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "thickness",
+        "type": "number",
+        "default": "8",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "default": "var(--viz-categorical-1)",
+        "required": false,
+        "description": "Value-arc color — any CSS color or var. Defaults to the first viz series."
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Bars": {
+    "file": "./Bars.vue",
+    "props": [
+      {
+        "name": "values",
+        "type": "number[]",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "labels",
+        "type": "string[]",
+        "default": "[]",
+        "required": false,
+        "description": "Category labels, shown under the bars when provided."
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "default": "260",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "140",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "default": null,
+        "required": false,
+        "description": "Y-axis max. Defaults to the largest value."
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "default": "var(--viz-categorical-1)",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "colorByIndex",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Color each bar from the categorical palette instead of one `color`."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "Distribution": {
+    "file": "./Distribution.vue",
+    "props": [
+      {
+        "name": "values",
+        "type": "number[]",
+        "default": null,
+        "required": true,
+        "description": ""
+      },
+      {
+        "name": "bins",
+        "type": "number",
+        "default": "12",
+        "required": false,
+        "description": "Number of equal-width bins."
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "default": "260",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "140",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "default": "var(--viz-sequential-3)",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": ""
+      }
+    ],
+    "events": [],
+    "slots": []
+  },
+  "TimeSeries": {
+    "file": "./TimeSeries.vue",
+    "props": [
+      {
+        "name": "data",
+        "type": "AlignedData",
+        "default": null,
+        "required": true,
+        "description": "uPlot-aligned data: `[xValues, ...ySeries]`."
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "default": "360",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "140",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "series",
+        "type": "string[]",
+        "default": "[]",
+        "required": false,
+        "description": "Per-series labels (used for the series name / a11y)."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": null,
+        "required": false,
+        "description": "Accessible name for the chart region."
+      }
+    ],
+    "events": [],
+    "slots": []
   }
 }
