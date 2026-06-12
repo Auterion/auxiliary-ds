@@ -7,14 +7,42 @@
  *
  * Run after building tokens: `pnpm --filter @auxiliary/tokens build` then this.
  */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { readFileSync, writeFileSync, mkdirSync, statSync, readdirSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PUSH_PROGRAM } from './push-logic.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const tokensDist = resolve(here, '..', '..', 'tokens', 'dist');
+const tokensDir = resolve(here, '..', '..', 'tokens');
+const tokensDist = resolve(tokensDir, 'dist');
 const outDir = resolve(here, '..', 'dist');
+
+// Freshness guard: this build INLINES whatever sits in tokens/dist — a stale
+// artifact gets silently baked in and pushed to Figma. Under `turbo run build`
+// the ^build dependency orders tokens first; this protects the documented
+// standalone flow (`pnpm --filter @auxiliary/figma-sync build`).
+const newestMtime = (dir) => {
+  let newest = 0;
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name);
+    newest = Math.max(newest, entry.isDirectory() ? newestMtime(p) : statSync(p).mtimeMs);
+  }
+  return newest;
+};
+let distMtime;
+try {
+  distMtime = statSync(resolve(tokensDist, 'figma-native.json')).mtimeMs;
+} catch {
+  console.error('✗ @auxiliary/tokens has no dist/figma-native.json — run `pnpm --filter @auxiliary/tokens build` first.');
+  process.exit(1);
+}
+if (newestMtime(resolve(tokensDir, 'src')) > distMtime) {
+  console.error(
+    '✗ @auxiliary/tokens dist is older than its src — the push program would inline stale tokens.\n' +
+      '  Run `pnpm --filter @auxiliary/tokens build` first (or build via turbo, which orders it).',
+  );
+  process.exit(1);
+}
 
 const figmaNative = JSON.parse(readFileSync(resolve(tokensDist, 'figma-native.json'), 'utf8'));
 const tokens = JSON.parse(readFileSync(resolve(tokensDist, 'tokens.json'), 'utf8'));
