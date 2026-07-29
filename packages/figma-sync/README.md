@@ -1,7 +1,11 @@
 # @auxiliary/figma-sync
 
-**One-way, session-triggered sync of Auxiliary tokens → Figma Variables, via the Figma MCP.**
-Code is the source of truth; this pushes into Figma and never reads back (README Principle 1).
+**Session-triggered sync of Auxiliary tokens → Figma Variables, via the Figma MCP, plus a
+read-only drift report in the other direction.**
+
+Writes flow one way. `push` applies the token contract to a Figma file; `diff` reads a Figma
+file and *reports* how it has drifted, applying nothing. Code stays the source of truth —
+the line is at application, not observation (README Principle 1).
 
 ---
 
@@ -83,6 +87,78 @@ pnpm --filter @auxiliary/figma-sync build  # → dist/push.figma.js
 
 then the skill feeds `dist/push.figma.js` to `use_figma` against a target file URL and verifies
 with `get_variable_defs`.
+
+## Reading back — `pnpm figma:diff`
+
+Designers explore in Figma by hand. Without a read path that exploration is invisible to the
+repo until someone re-types it from memory, so this reports what a file actually contains
+against what the contract says it should.
+
+```
+dist/figma-expected.json ─┐
+                          ├─▶ src/diff.mjs (pure) ─▶ report
+dist/figma-actual.json ───┘
+        ▲
+   use_figma(dist/pull.figma.js)
+```
+
+```bash
+pnpm --filter @auxiliary/tokens build && pnpm --filter @auxiliary/figma-sync build
+# → run dist/pull.figma.js through use_figma, save the result to dist/figma-actual.json
+pnpm figma:diff            # report
+pnpm figma:diff --check    # exit 1 on drift
+pnpm figma:diff --json     # raw findings
+```
+
+**The fetch is interactive; the comparison is not.** `src/diff.mjs` is pure — no I/O, no MCP —
+which is the only reason any of this is testable. See the CI note below.
+
+### The read program
+
+`dist/pull.figma.js` mirrors the push: read-only Plugin API, returning **the same shape**
+`figma-native.json` uses. That reuse is the whole trick — the export collapses a component
+token's size segment into a Figma *mode* and every dimension into a unitless FLOAT, and
+re-deriving that inverse by hand would be a bug farm. Two transports must match
+`push-logic.mjs` exactly or everything reports as drift: colours round-trip through the same
+`round(x * 255)` hex, and aliases resolve to a qualified `Collection/name` rather than a
+file-local id.
+
+It chunks per collection (`pull.01.primitives.js` …) for the opposite reason the push does:
+the push's *code* is too big once data is inlined; the pull's *response* is, at ~617 variables.
+Styles ride with the last payload. A per-collection payload still names alias targets in
+collections it didn't return.
+
+### Findings
+
+| Kind | Meaning |
+|---|---|
+| `changed` | present both sides; a mode's value or alias target differs |
+| `new-in-figma` | Figma has it, code doesn't |
+| `missing-in-figma` | code has it, Figma doesn't (push never ran, or partially) |
+| `type-mismatch` | e.g. FLOAT in code, COLOR in Figma — values aren't then compared |
+| `mode-mismatch` | a mode added/renamed/removed; reported once per collection |
+| `missing-collection` | reported once, instead of once per variable |
+| `changed-text-style` · `missing-text-style` | `Type/*`, matched by re-applying the push's own name transform |
+| `changed-effect-style` · `missing-effect-style` | `shadow/*`, numerics compared at 4dp so a nudged shadow doesn't drown the report |
+| `probable-rename` | a missing name and a gained one holding identical values in every mode |
+
+`new-in-figma` covers two cases the report deliberately does not claim to tell apart: a
+variable the designer added, and one **orphaned** by a code-side rename (renaming a token
+leaves the old Figma variable behind with its bindings live — see the idempotency note above).
+Telling them apart needs history nobody has. `probable-rename` is the honest hint instead, and
+it only fires when the pairing is unambiguous — exactly one candidate on each side — because
+"renamed to one of these four" helps nobody. It is never applied.
+
+Collections absent from the contract are ignored outright: a designer's scratch collection is
+not drift.
+
+### Why there is no CI gate on this
+
+There cannot be an honest one. The Figma MCP is interactively authenticated, and the Variables
+REST API is Enterprise-only while Auterion is Organization tier (same constraint that makes the
+push session-triggered — see *Why MCP, not REST* above). So CI gates the **comparator**, via
+fixture tests in `test/diff.test.mjs` covering every finding kind plus a positive control that
+fails if the comparator ever goes silent. The live check is a session command.
 
 ## What can't be a Variable (still designer-maintained)
 

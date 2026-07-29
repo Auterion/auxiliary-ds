@@ -47,7 +47,7 @@ tokens  →  css  →  vue  →  docs
 - `packages/icons` — icon set, consumable by `vue` and downstream surfaces.
 - `packages/viz` — token-driven, theme- & CVD-safe chart set (SVG + uPlot) and palette helpers.
 - `packages/brand` — Auterion logo/lockup components; `src/registry.generated.ts` is generated from `brand.manifest.json` + `assets/` and drift-gated by its test suite.
-- `packages/figma-sync` — one-way push of tokens → Figma Variables. Code → Figma, never the reverse (see Principle 1 below).
+- `packages/figma-sync` — pushes tokens → Figma Variables, and reads Figma back to **report** drift (`pnpm figma:diff`). Writes flow code → Figma only; the read path applies nothing (see Principle 1 below).
 - `apps/docs` — VitePress documentation site, runs at `http://localhost:5173`.
 
 ### The GTC token model
@@ -101,7 +101,7 @@ CSS vars and don't know which theme/register is active. See `apps/docs/foundatio
 
 These are architectural constraints, not style preferences:
 
-1. **Code is the source of truth.** Figma mirrors code. Do not introduce sync paths that flow Figma → code.
+1. **Code is the source of truth.** Figma mirrors code. Do not introduce sync paths that **apply** Figma → code. Reading Figma is fine and supported — `pnpm figma:diff` reports drift between a Figma file and the token contract — but the report is a worklist for a human, never a patch. No tool writes into `packages/tokens/src` from Figma.
 2. **Tokens are framework-agnostic.** Keep `packages/tokens` free of Vue/React/Tailwind specifics — runtime adapters live in their own packages.
 3. **Restraint over reach.** Prefer not adding a component over adding a marginal one. This is not a kitchen-sink library.
 4. **One library, many surfaces.** Tokens must serve product UI, marketing, and internal tools — don't bake product-specific assumptions into them.

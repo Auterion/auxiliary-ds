@@ -7,6 +7,7 @@
   "type": "module",
   "scripts": {
     "build": "node src/build-program.mjs",
+    "diff": "node bin/figma-diff.mjs",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "echo \"@auxiliary/figma-sync — JS only, no typecheck\" && exit 0",
     "test": "vitest run"

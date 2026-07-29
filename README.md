@@ -27,6 +27,10 @@ This is a pnpm + Turborepo monorepo.
 
 1. **Code is the source of truth.** Tokens, components, and patterns
    live here first. Figma mirrors what ships in code, not the reverse.
+   Figma may be **read** — `pnpm figma:diff` reports how a file has drifted
+   from the token contract — but nothing applies that report automatically.
+   The line is at *application*, not *observation*: a human moves a value
+   into `packages/tokens`, through the normal gates.
 2. **Tokens are framework-agnostic.** Vue today, anything tomorrow.
 3. **Restraint over reach.** A small, opinionated system that fits
    Auterion's products, not a kitchen sink.
