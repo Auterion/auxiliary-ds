@@ -6,6 +6,10 @@ node_modules/
 dist/
 .turbo/
 
+# ...except design-team's, which is a committed generated artifact with a CI drift gate
+# (`pnpm design-team:check`), not build output. The blanket dist/ rule above would hide it.
+!design-team/dist/
+
 # Editors
 .vscode/
 .idea/
@@ -61,7 +65,6 @@ HANDOFF.md
 /motto-*
 /images/
 /sandbox/
-/design-team/
 
 # Agent tooling managed outside the repo. .claude/agents and .claude/skills/ds-review
 # are this project's own and stay committed; these two are symlinks into .agents/.
