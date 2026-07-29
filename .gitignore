@@ -44,3 +44,28 @@ playwright-report/
 # Crystl quest scratch (DECISIONS.md is committed; these are per-quest working files)
 QUEST-LOG.md
 HANDOFF.md
+
+# Design scratch — local only.
+# Screenshots, .pen boards, scraped reference and generative sandboxes accumulate at
+# the repo root during design passes. They are working material, not artifacts the
+# system ships. Every rule is anchored with a leading `/` so real assets inside
+# packages/ and apps/ are untouched.
+/*.png
+/*.jpg
+/*.jpeg
+/*.gif
+/*.webp
+/*.pen
+/*.glsl
+/gauge.js
+/motto-*
+/images/
+/sandbox/
+/design-team/
+
+# Agent tooling managed outside the repo. .claude/agents and .claude/skills/ds-review
+# are this project's own and stay committed; these two are symlinks into .agents/.
+/.agents/
+/skills-lock.json
+/.claude/skills/hallmark
+/.claude/skills/magicpath
