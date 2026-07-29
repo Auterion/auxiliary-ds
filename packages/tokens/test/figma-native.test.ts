@@ -28,12 +28,14 @@ interface Collection {
 }
 
 let collections: Collection[];
+let textStyles: { name: string }[];
 
 beforeAll(() => {
   // Build fresh so the test validates current source, not a stale artifact.
   execFileSync('node', ['build.mjs'], { cwd: tokensRoot, stdio: 'pipe' });
   const json = JSON.parse(readFileSync(resolve(tokensRoot, 'dist/figma-native.json'), 'utf8'));
   collections = json.collections;
+  textStyles = json.textStyles;
 });
 
 const byName = (n: string) => collections.find((c) => c.name === n)!;
@@ -41,13 +43,27 @@ const isAlias = (v: unknown): v is { alias: string } =>
   typeof v === 'object' && v !== null && 'alias' in v;
 
 describe('figma-native contract', () => {
-  it('emits exactly the Primitives + Semantic collections', () => {
-    expect(collections.map((c) => c.name)).toEqual(['Primitives', 'Semantic']);
+  it('emits exactly the Primitives + Semantic + Component collections', () => {
+    expect(collections.map((c) => c.name)).toEqual(['Primitives', 'Semantic', 'Component']);
   });
 
-  it('Primitives has a single mode; Semantic has the 4 theme modes', () => {
+  it('Primitives has one mode; Semantic has the 4 themes; Component has the size axis', () => {
     expect(byName('Primitives').modes).toEqual(['Base']);
     expect(byName('Semantic').modes).toEqual(['light', 'dark', 'sunlight', 'darknight']);
+    expect(byName('Component').modes).toEqual(['sm', 'md', 'lg']);
+  });
+
+  it('never leaks a GTC tier into a variable name', () => {
+    // THE ORPHAN GUARD. Figma variable paths are an emitted public name with a live
+    // external consumer: the push program creates any name it does not find and never
+    // deletes, so renaming `spacing/4` to `global/spacing/4` would not move the bound
+    // instances — it would silently create 400+ duplicates and orphan the originals,
+    // returning success. GTC itself says the Group is carried by the collection, so
+    // the tier must be stripped from the path.
+    const leaked = collections.flatMap((c) =>
+      c.variables.map((v) => v.name).filter((n) => /^(global|theme|component|register)\//.test(n)),
+    );
+    expect(leaked).toEqual([]);
   });
 
   it('every alias resolves to a real Primitives variable (no dangling refs)', () => {
@@ -71,9 +87,44 @@ describe('figma-native contract', () => {
     }
   });
 
-  it('excludes non-representable types (shadow, cubicBezier/easing)', () => {
+  it('every Component variable is structural, aliased, and defined in all 3 size modes', () => {
+    const vars = byName('Component').variables;
+    expect(vars.length).toBeGreaterThan(100);
+    for (const v of vars) {
+      // Colour belongs to the theme axis; a component colour would be invisible to
+      // the per-theme contrast/CVD gates.
+      expect(v.type, `${v.name} must not be a COLOR`).toBe('FLOAT');
+      expect(Object.keys(v.valuesByMode).sort(), `${v.name} modes`).toEqual(['lg', 'md', 'sm']);
+      expect(Object.values(v.valuesByMode).every(isAlias), `${v.name} must alias`).toBe(true);
+    }
+  });
+
+  it('excludes non-representable types (shadow, cubicBezier/easing, strokeStyle)', () => {
     const names = byName('Primitives').variables.map((v) => v.name);
     expect(names.some((n) => n.startsWith('shadow/'))).toBe(false);
     expect(names.some((n) => n.startsWith('ease/') || n.includes('bezier'))).toBe(false);
+    // strokeStyle is a keyword — it would land as a FLOAT with a null value.
+    expect(names.some((n) => n.startsWith('border-style/'))).toBe(false);
+  });
+
+  it('keeps Text Style names stable', () => {
+    // These name Figma Text Styles that already exist in the file. A rename does not
+    // rename them on push — it creates a second set alongside the originals.
+    expect(textStyles.map((s) => s.name).sort()).toEqual([
+      'marketing/body',
+      'marketing/caption',
+      'marketing/display',
+      'marketing/h1',
+      'marketing/h2',
+      'marketing/h3',
+      'marketing/lead',
+      'product/body',
+      'product/body-lg',
+      'product/caption',
+      'product/display',
+      'product/heading',
+      'product/label',
+      'product/title',
+    ]);
   });
 });

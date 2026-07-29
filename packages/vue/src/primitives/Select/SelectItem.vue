@@ -18,8 +18,7 @@ const rootClass = computed(() => cn(styles.item(), props.class));
   <SelectItem :value="value" :disabled="disabled" :class="rootClass">
     <SelectItemIndicator :class="styles.itemIndicator()">
       <svg
-        width="12"
-        height="12"
+        class="size-(--component-select-item-icon-size)"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

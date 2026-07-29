@@ -2,7 +2,7 @@ import { tv, type VariantProps } from 'tailwind-variants';
 
 export const checkbox = tv({
   slots: {
-    root: 'flex h-4 w-4 shrink-0 items-center justify-center rounded border border-input bg-background outline-none data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:border-primary focus-visible:ring-2 ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed',
+    root: 'flex size-(--component-checkbox-size) shrink-0 items-center justify-center rounded-(--component-checkbox-radius) border border-input bg-background outline-none data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:border-primary focus-visible:ring-2 ring-ring focus-visible:ring-offset-2 ring-offset-background disabled:opacity-(--opacity-disabled) disabled:cursor-not-allowed',
     indicator: 'text-primary-foreground',
   },
   variants: {

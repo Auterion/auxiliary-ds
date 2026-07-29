@@ -1,0 +1,10 @@
+{
+  "component": {
+    "skeleton": {
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.sm}"
+      }
+    }
+  }
+}

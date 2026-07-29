@@ -1,0 +1,36 @@
+{
+  "component": {
+    "dialog": {
+      "max-width": {
+        "$type": "dimension",
+        "$value": "{global.size.container.lg}"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "{global.spacing.6}"
+      },
+      "gap": {
+        "$type": "dimension",
+        "$value": "{global.spacing.4}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      },
+      "close": {
+        "inset": {
+          "$type": "dimension",
+          "$value": "{global.spacing.4}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.sm}"
+        },
+        "icon-size": {
+          "$type": "dimension",
+          "$value": "{global.size.icon.md}"
+        }
+      }
+    }
+  }
+}

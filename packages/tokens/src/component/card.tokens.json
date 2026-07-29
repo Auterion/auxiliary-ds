@@ -1,0 +1,40 @@
+{
+  "component": {
+    "card": {
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      },
+      "padding-x": {
+        "$type": "dimension",
+        "$value": "{global.spacing.5}"
+      },
+      "header": {
+        "padding-top": {
+          "$type": "dimension",
+          "$value": "{global.spacing.5}"
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        }
+      },
+      "content": {
+        "padding-y": {
+          "$type": "dimension",
+          "$value": "{global.spacing.4}"
+        }
+      },
+      "footer": {
+        "padding-y": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      }
+    }
+  }
+}

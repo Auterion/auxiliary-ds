@@ -1,0 +1,48 @@
+{
+  "component": {
+    "toast": {
+      "viewport": {
+        "padding": {
+          "$type": "dimension",
+          "$value": "{global.spacing.6}"
+        },
+        "max-width": {
+          "$type": "dimension",
+          "$value": "{global.size.container.md}"
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "{global.spacing.4}"
+      },
+      "gap": {
+        "$type": "dimension",
+        "$value": "{global.spacing.3}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      },
+      "description": {
+        "margin-top": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        }
+      },
+      "close": {
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.sm}"
+        },
+        "icon-size": {
+          "$type": "dimension",
+          "$value": "{global.size.icon.sm}"
+        }
+      }
+    }
+  }
+}

@@ -92,7 +92,7 @@ describe('DropdownMenu', () => {
     const content = document.body.querySelector('[role="menu"]') as HTMLElement | null;
     expect(content).not.toBeNull();
     expect(content!.className).toContain('bg-popover');
-    expect(content!.className).toContain('rounded-md');
+    expect(content!.className).toContain('rounded-(--component-dropdown-menu-radius)');
     expect(content!.getAttribute('data-side')).toBe('top');
     expect(content!.getAttribute('data-align')).toBe('end');
   });
@@ -116,7 +116,7 @@ describe('DropdownMenu', () => {
     const item = document.body.querySelector('[role="menuitem"]') as HTMLElement | null;
     expect(item).not.toBeNull();
     expect(item!.hasAttribute('data-disabled')).toBe(true);
-    expect(item!.className).toContain('data-[disabled]:opacity-50');
+    expect(item!.className).toContain('data-[disabled]:opacity-(--opacity-disabled)');
   });
 
   it('renders a separator with role and label as a non-interactive group label', async () => {

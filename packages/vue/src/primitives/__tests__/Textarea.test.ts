@@ -37,7 +37,7 @@ describe('Textarea', () => {
     const wrapper = mount(Textarea, { props: { disabled: true } });
     const el = wrapper.get('textarea').element as HTMLTextAreaElement;
     expect(el.disabled).toBe(true);
-    expect(wrapper.get('textarea').classes()).toContain('disabled:opacity-50');
+    expect(wrapper.get('textarea').classes()).toContain('disabled:opacity-(--opacity-disabled)');
 
     await wrapper.setProps({ disabled: false });
     expect((wrapper.get('textarea').element as HTMLTextAreaElement).disabled).toBe(false);
@@ -51,15 +51,15 @@ describe('Textarea', () => {
 
   it('maps each size prop to its recipe padding class (defaulting to md)', () => {
     const cases: Array<['sm' | 'md' | 'lg', string]> = [
-      ['sm', 'py-1.5'],
-      ['md', 'py-2'],
-      ['lg', 'py-2.5'],
+      ['sm', 'py-(--component-textarea-padding-y-sm)'],
+      ['md', 'py-(--component-textarea-padding-y-md)'],
+      ['lg', 'py-(--component-textarea-padding-y-lg)'],
     ];
     for (const [size, cls] of cases) {
       const wrapper = mount(Textarea, { props: { size } });
       expect(wrapper.get('textarea').classes()).toContain(cls);
     }
-    expect(mount(Textarea).get('textarea').classes()).toContain('py-2');
+    expect(mount(Textarea).get('textarea').classes()).toContain('py-(--component-textarea-padding-y-md)');
   });
 
   it('sets aria-invalid and a destructive border when invalid', () => {

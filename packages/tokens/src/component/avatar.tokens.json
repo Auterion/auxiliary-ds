@@ -1,0 +1,20 @@
+{
+  "component": {
+    "avatar": {
+      "size": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.spacing.6}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.spacing.8}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.spacing.10}"
+        }
+      }
+    }
+  }
+}

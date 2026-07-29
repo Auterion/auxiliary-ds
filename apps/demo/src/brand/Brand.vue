@@ -148,18 +148,22 @@ const typeScale = [
         </defs>
         <rect width="100%" height="100%" fill="url(#stmt-grid)"/>
         <!-- animated mission arc -->
-        <path class="stmt-arc" d="M -40 520 C 120 420 280 300 520 200 S 900 80 1200 20"
+        <path
+class="stmt-arc" d="M -40 520 C 120 420 280 300 520 200 S 900 80 1200 20"
           fill="none" :stroke="dir !== 'mono' ? 'var(--brand)' : 'var(--foreground)'"
           stroke-width="1" stroke-dasharray="4 10" opacity="0.35"/>
-        <circle class="stmt-pulse" cx="520" cy="200" r="5"
+        <circle
+class="stmt-pulse" cx="520" cy="200" r="5"
           :fill="dir !== 'mono' ? 'var(--brand)' : 'var(--foreground)'" opacity="0.7"/>
-        <circle cx="520" cy="200" r="18" fill="none"
+        <circle
+cx="520" cy="200" r="18" fill="none"
           :stroke="dir !== 'mono' ? 'var(--brand)' : 'var(--foreground)'"
           stroke-width="0.8" opacity="0.2"/>
       </svg>
 
       <!-- brand mark — top right -->
-      <div class="absolute top-10 right-10 flex h-16 w-16 items-center justify-center rounded-sm shrink-0"
+      <div
+class="absolute top-10 right-10 flex h-16 w-16 items-center justify-center rounded-sm shrink-0"
         :style="`background: ${dir !== 'mono' ? 'var(--brand)' : 'var(--foreground)'}`">
         <Icon name="drone" size="md" :style="`color: ${dir !== 'mono' ? 'var(--brand-foreground)' : 'var(--background)'}`"/>
       </div>
@@ -177,7 +181,8 @@ const typeScale = [
         <!-- stat strip -->
         <div class="mt-10 flex items-end gap-10 border-t border-border/30 pt-6">
           <div v-for="s in [['2,000,000+','Flight hours'],['10,000+','Vehicles deployed'],['60+','Nations']]" :key="s[0]">
-            <p class="font-mono text-2xl font-semibold tabular-nums leading-none"
+            <p
+class="font-mono text-2xl font-semibold tabular-nums leading-none"
               :style="dir !== 'mono' ? 'color: var(--brand)' : ''">{{ s[0] }}</p>
             <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{{ s[1] }}</p>
           </div>
@@ -239,7 +244,8 @@ const typeScale = [
           <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground mb-3">Proposed Auterion palette</p>
           <div class="grid grid-cols-4 gap-2 sm:grid-cols-8">
             <div v-for="c in proposedPalette" :key="c.name" class="group relative">
-              <div class="h-16 rounded-sm flex flex-col justify-end p-2 overflow-hidden"
+              <div
+class="h-16 rounded-sm flex flex-col justify-end p-2 overflow-hidden"
                 :style="`background: ${c.hex}; color: ${c.fg};`"
                 :class="c.name === 'Aquamarine' ? 'ring-1 ring-yellow-400/60 ring-inset' : ''">
                 <span class="font-mono text-[9px] font-medium opacity-80 leading-tight">{{ c.hex }}</span>
@@ -433,7 +439,8 @@ const typeScale = [
                       <Sparkline :data="heroSpark" :height="28" />
                     </div>
                   </div>
-                  <div v-for="r in [['Skyhook-01','nominal'],['Falcon-02','advisory'],['Raven-03','warning']]" :key="r[0]"
+                  <div
+v-for="r in [['Skyhook-01','nominal'],['Falcon-02','advisory'],['Raven-03','warning']]" :key="r[0]"
                     class="flex items-center gap-2 border-t border-border/40 pt-1.5">
                     <Icon name="drone" size="xs" class="text-muted-foreground" />
                     <span class="font-mono flex-1 text-[10px]">{{ r[0] }}</span>
@@ -490,7 +497,8 @@ const typeScale = [
                     <span class="uppercase tracking-[0.1em] text-[9px] text-muted-foreground">Fleet · Live</span>
                     <span class="h-1.5 w-1.5 rounded-full" style="background: var(--color-primitive-auterion-blue-700);"/>
                   </div>
-                  <div v-for="r in [['Skyhook-01','nominal','86%'],['Falcon-02','advisory','64%'],['Raven-03','warning','18%'],['Osprey-05','nominal','92%']]"
+                  <div
+v-for="r in [['Skyhook-01','nominal','86%'],['Falcon-02','advisory','64%'],['Raven-03','warning','18%'],['Osprey-05','nominal','92%']]"
                     :key="r[0]" class="flex items-center gap-2 py-1.5 border-b border-border/20">
                     <Icon name="drone" size="xs" class="text-muted-foreground"/>
                     <span class="flex-1 text-foreground">{{ r[0] }}</span>
@@ -519,16 +527,19 @@ const typeScale = [
                 </defs>
                 <rect width="100%" height="100%" fill="url(#brand-grid)" />
                 <!-- mission path — animated trace -->
-                <path class="mission-trace" d="M 60 200 C 160 160, 200 100, 340 80 S 560 40, 640 28" fill="none"
+                <path
+class="mission-trace" d="M 60 200 C 160 160, 200 100, 340 80 S 560 40, 640 28" fill="none"
                   stroke="var(--brand)"
                   stroke-width="1.5" stroke-dasharray="3 7" opacity="0.8" />
                 <!-- waypoints -->
                 <g v-for="(p, i) in [[60,200],[200,130],[340,80],[640,28]]" :key="i">
-                  <circle :cx="p[0]" :cy="p[1]" r="3"
+                  <circle
+:cx="p[0]" :cy="p[1]" r="3"
                     :fill="i === 2 ? 'var(--brand)' : 'transparent'"
                     stroke="var(--brand)"
                     stroke-width="1.5" />
-                  <circle v-if="i === 2" :cx="p[0]" :cy="p[1]" r="12" fill="none"
+                  <circle
+v-if="i === 2" :cx="p[0]" :cy="p[1]" r="12" fill="none"
                     stroke="var(--brand)"
                     stroke-width="1" opacity="0.4" />
                 </g>
@@ -537,7 +548,8 @@ const typeScale = [
               <!-- content -->
               <div class="relative z-10 p-8 grid grid-cols-[1fr_auto] items-end h-72">
                 <div class="self-center max-w-lg">
-                  <p class="font-mono text-[10px] font-medium uppercase tracking-[0.18em]"
+                  <p
+class="font-mono text-[10px] font-medium uppercase tracking-[0.18em]"
                     :style="dir !== 'mono' ? 'color: var(--brand)' : 'color: var(--muted-foreground)'">
                     Operational truth, expressed with precision
                   </p>
@@ -572,37 +584,45 @@ const typeScale = [
           <span v-if="bg === 'cadet' && dir === 'blue'" class="ml-2 px-1.5 py-0.5 rounded-sm font-mono text-[10px] uppercase tracking-[0.1em]" style="background: var(--brand); color: var(--brand-foreground)">Live: Space Cadet + Ultramarine</span>
         </p>
         <div class="mt-6 grid gap-4 sm:grid-cols-2">
-          <div class="border p-5 space-y-2"
+          <div
+class="border p-5 space-y-2"
             :class="dir === 'mono' ? 'border-foreground bg-card' : 'border-border bg-card/40'">
-            <p class="font-mono text-[12px] font-medium uppercase tracking-[0.1em]"
+            <p
+class="font-mono text-[12px] font-medium uppercase tracking-[0.1em]"
               :class="dir === 'mono' ? 'text-foreground' : 'text-muted-foreground'">
               A — Mono
             </p>
             <p class="text-[13px] leading-relaxed text-muted-foreground">Fully monochromatic. Maximum discipline. No one in autonomous systems owns this. Reads as extremely precise and intentional. Status colors are the only chromatic elements.</p>
             <ul class="space-y-1 mt-3">
-              <li v-for="s in ['Uniquely owned — no competitors here','Strongest possible discipline signal','Ties marketing to the product register']" :key="s"
+              <li
+v-for="s in ['Uniquely owned — no competitors here','Strongest possible discipline signal','Ties marketing to the product register']" :key="s"
                 class="flex items-start gap-2 text-[13px] text-muted-foreground">
                 <span class="mt-0.5">+</span> {{ s }}
               </li>
-              <li v-for="s in ['Zero warmth — may read cold to non-technical audiences','Harder to drive CTAs without a second color']" :key="s"
+              <li
+v-for="s in ['Zero warmth — may read cold to non-technical audiences','Harder to drive CTAs without a second color']" :key="s"
                 class="flex items-start gap-2 text-[13px] text-muted-foreground/50">
                 <span class="mt-0.5">−</span> {{ s }}
               </li>
             </ul>
           </div>
-          <div class="border p-5 space-y-2"
+          <div
+class="border p-5 space-y-2"
             :class="dir === 'blue' ? 'border-foreground bg-card' : 'border-border bg-card/40'">
-            <p class="font-mono text-[12px] font-medium uppercase tracking-[0.1em]"
+            <p
+class="font-mono text-[12px] font-medium uppercase tracking-[0.1em]"
               :class="dir === 'blue' ? 'text-foreground' : 'text-muted-foreground'">
               B — Ultramarine
             </p>
             <p class="text-[13px] leading-relaxed text-muted-foreground">Electric indigo-blue from the auterion-blue token scale. Not IBM blue — bolder, more saturated. On Space Cadet ground it reads as a harmonic continuation of the same hue family. Best combination: Space Cadet + Ultramarine.</p>
             <ul class="space-y-1 mt-3">
-              <li v-for="s in ['Works on light and dark','Highest CTA contrast — unambiguous','Distinct from Anduril/Helsing — not SaaS-standard blue','Space Cadet ground amplifies it: same hue family']" :key="s"
+              <li
+v-for="s in ['Works on light and dark','Highest CTA contrast — unambiguous','Distinct from Anduril/Helsing — not SaaS-standard blue','Space Cadet ground amplifies it: same hue family']" :key="s"
                 class="flex items-start gap-2 text-[13px] text-muted-foreground">
                 <span class="mt-0.5">+</span> {{ s }}
               </li>
-              <li v-for="s in ['Advisory cyan must stay distinct (H185 vs H265 — they are)','Discipline required: brand touches ≤4 elements per section']" :key="s"
+              <li
+v-for="s in ['Advisory cyan must stay distinct (H185 vs H265 — they are)','Discipline required: brand touches ≤4 elements per section']" :key="s"
                 class="flex items-start gap-2 text-[13px] text-muted-foreground/50">
                 <span class="mt-0.5">−</span> {{ s }}
               </li>
@@ -654,7 +674,8 @@ const typeScale = [
             <div>
               <div class="flex items-center justify-between mb-5">
                 <p class="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">Fleet · Live</p>
-                <span class="h-1.5 w-1.5 rounded-full animate-pulse"
+                <span
+class="h-1.5 w-1.5 rounded-full animate-pulse"
                   :style="dir !== 'mono' ? 'background: var(--brand)' : 'background: var(--nominal)'"/>
               </div>
               <div
@@ -676,14 +697,17 @@ const typeScale = [
         </div>
 
         <!-- second moment: large quote -->
-        <div class="mt-6 relative overflow-hidden rounded-sm border border-border/40 p-10 lg:p-14"
+        <div
+class="mt-6 relative overflow-hidden rounded-sm border border-border/40 p-10 lg:p-14"
           :style="dir === 'blue' ? 'background: var(--color-primitive-auterion-blue-700)' : ''">
-          <p class="relative z-10 max-w-3xl"
+          <p
+class="relative z-10 max-w-3xl"
             :style="dir === 'blue' ? 'color: var(--color-primitive-white); opacity: 0.9' : ''"
             style="font-family: 'Inter Variable', Inter, system-ui; font-variation-settings: 'opsz' 32; font-size: clamp(1.25rem, 2.5vw, 1.875rem); font-weight: 500; line-height: 1.3; letter-spacing: -0.025em;">
             "From AuterionOS on the flight controller to Mission Control on the tablet, one token set, one type ramp, one truth."
           </p>
-          <p class="mt-6 font-mono text-[11px]"
+          <p
+class="mt-6 font-mono text-[11px]"
             :style="dir === 'blue' ? 'color: var(--color-primitive-white); opacity: 0.5' : ''"
             :class="dir !== 'blue' ? 'text-muted-foreground' : ''">
             — Design principle #1: code is the source of truth

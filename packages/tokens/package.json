@@ -21,7 +21,8 @@
   "scripts": {
     "build": "node build.mjs",
     "lint": "eslint . --max-warnings 0",
-    "typecheck": "echo \"@auxiliary/tokens typecheck — no sources yet\" && exit 0",
+    "validate:gtc": "node gtc-validate.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run"
   },
   "devDependencies": {

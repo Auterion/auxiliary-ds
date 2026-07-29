@@ -14,7 +14,13 @@ describe('Card', () => {
     expect(wrapper.element.tagName).toBe('DIV');
     expect(wrapper.text()).toContain('card body');
     expect(wrapper.classes()).toEqual(
-      expect.arrayContaining(['rounded-md', 'border', 'border-border', 'bg-card', 'text-card-foreground']),
+      expect.arrayContaining([
+        'rounded-(--component-card-radius)',
+        'border',
+        'border-border',
+        'bg-card',
+        'text-card-foreground',
+      ]),
     );
   });
 
@@ -23,7 +29,13 @@ describe('Card', () => {
     expect(wrapper.element.tagName).toBe('DIV');
     expect(wrapper.text()).toContain('header');
     expect(wrapper.classes()).toEqual(
-      expect.arrayContaining(['flex', 'flex-col', 'gap-1', 'px-5', 'pt-5']),
+      expect.arrayContaining([
+        'flex',
+        'flex-col',
+        'gap-(--component-card-header-gap)',
+        'px-(--component-card-padding-x)',
+        'pt-(--component-card-header-padding-top)',
+      ]),
     );
   });
 
@@ -49,7 +61,12 @@ describe('Card', () => {
     const wrapper = mount(CardContent, { slots: { default: 'content' } });
     expect(wrapper.element.tagName).toBe('DIV');
     expect(wrapper.text()).toContain('content');
-    expect(wrapper.classes()).toEqual(expect.arrayContaining(['px-5', 'py-4']));
+    expect(wrapper.classes()).toEqual(
+      expect.arrayContaining([
+        'px-(--component-card-padding-x)',
+        'py-(--component-card-content-padding-y)',
+      ]),
+    );
   });
 
   it('CardFooter is a top-bordered flex row', () => {
@@ -57,7 +74,15 @@ describe('Card', () => {
     expect(wrapper.element.tagName).toBe('DIV');
     expect(wrapper.text()).toContain('footer');
     expect(wrapper.classes()).toEqual(
-      expect.arrayContaining(['flex', 'items-center', 'gap-2', 'border-t', 'border-border', 'px-5', 'py-3']),
+      expect.arrayContaining([
+        'flex',
+        'items-center',
+        'gap-(--component-card-footer-gap)',
+        'border-t',
+        'border-border',
+        'px-(--component-card-padding-x)',
+        'py-(--component-card-footer-padding-y)',
+      ]),
     );
   });
 

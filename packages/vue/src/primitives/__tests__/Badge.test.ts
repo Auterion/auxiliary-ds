@@ -43,18 +43,23 @@ describe('Badge', () => {
 
   it('applies md sizing by default and sm sizing when size="sm"', () => {
     const md = mount(Badge, { slots: { default: 'md' } });
-    expect(md.classes()).toContain('h-6');
+    expect(md.classes()).toContain('h-(--component-badge-height-md)');
     expect(md.classes()).toContain('text-xs');
 
     const sm = mount(Badge, { props: { size: 'sm' }, slots: { default: 'sm' } });
-    expect(sm.classes()).toContain('h-5');
+    expect(sm.classes()).toContain('h-(--component-badge-height-sm)');
     expect(sm.classes()).toContain('text-2xs');
   });
 
   it('always carries the shared base classes', () => {
     const wrapper = mount(Badge, { slots: { default: 'Base' } });
     expect(wrapper.classes()).toEqual(
-      expect.arrayContaining(['inline-flex', 'items-center', 'rounded', 'font-medium']),
+      expect.arrayContaining([
+        'inline-flex',
+        'items-center',
+        'rounded-(--component-badge-radius)',
+        'font-medium',
+      ]),
     );
   });
 

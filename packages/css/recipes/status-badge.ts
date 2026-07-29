@@ -9,9 +9,9 @@ import { tv, type VariantProps } from 'tailwind-variants';
  */
 export const statusBadge = tv({
   slots: {
-    base: 'inline-flex items-center gap-1.5 rounded-full font-medium uppercase tracking-wide',
+    base: 'inline-flex items-center gap-(--component-status-badge-gap) rounded-full font-medium uppercase tracking-wide',
     icon: 'shrink-0',
-    dot: 'h-2 w-2 rounded-full',
+    dot: 'size-(--component-status-badge-dot-size) rounded-full',
   },
   variants: {
     level: {
@@ -26,8 +26,14 @@ export const statusBadge = tv({
       outline: '',
     },
     size: {
-      sm: { base: 'h-5 px-2 text-2xs', icon: 'h-3 w-3' },
-      md: { base: 'h-6 px-2.5 text-xs', icon: 'h-3.5 w-3.5' },
+      sm: {
+        base: 'h-(--component-status-badge-height-sm) px-(--component-status-badge-padding-x-sm) text-2xs',
+        icon: 'size-(--component-status-badge-icon-size-sm)',
+      },
+      md: {
+        base: 'h-(--component-status-badge-height-md) px-(--component-status-badge-padding-x-md) text-xs',
+        icon: 'size-(--component-status-badge-icon-size-md)',
+      },
     },
   },
   compoundVariants: [

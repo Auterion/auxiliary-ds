@@ -9,9 +9,9 @@ import AvatarImage from '../Avatar/AvatarImage.vue';
 type Size = 'sm' | 'md' | 'lg';
 
 const SIZE_CLASSES: Record<Size, string[]> = {
-  sm: ['h-6', 'w-6', 'text-xs'],
-  md: ['h-8', 'w-8', 'text-sm'],
-  lg: ['h-10', 'w-10', 'text-base'],
+  sm: ['size-(--component-avatar-size-sm)', 'text-xs'],
+  md: ['size-(--component-avatar-size-md)', 'text-sm'],
+  lg: ['size-(--component-avatar-size-lg)', 'text-base'],
 };
 
 describe('Avatar', () => {

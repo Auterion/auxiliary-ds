@@ -95,15 +95,15 @@ describe('NumberField', () => {
 
   it('maps each size prop to its recipe height class (defaulting to md)', () => {
     const cases: Array<['sm' | 'md' | 'lg', string]> = [
-      ['sm', 'h-[max(var(--control-height-sm),var(--target-floor))]'],
-      ['md', 'h-[max(var(--control-height-md),var(--target-floor))]'],
-      ['lg', 'h-[max(var(--control-height-lg),var(--target-floor))]'],
+      ['sm', 'h-[max(var(--component-number-field-height-sm),var(--target-floor))]'],
+      ['md', 'h-[max(var(--component-number-field-height-md),var(--target-floor))]'],
+      ['lg', 'h-[max(var(--component-number-field-height-lg),var(--target-floor))]'],
     ];
     for (const [size, cls] of cases) {
       const wrapper = mount(NumberField, { props: { size } });
       expect(wrapper.classes()).toContain(cls);
     }
-    expect(mount(NumberField).classes()).toContain('h-[max(var(--control-height-md),var(--target-floor))]');
+    expect(mount(NumberField).classes()).toContain('h-[max(var(--component-number-field-height-md),var(--target-floor))]');
   });
 
   it('sets aria-invalid on the input and a destructive border on the root when invalid', () => {

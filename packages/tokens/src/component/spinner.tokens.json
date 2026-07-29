@@ -1,0 +1,20 @@
+{
+  "component": {
+    "spinner": {
+      "size": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.spacing.4}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.spacing.6}"
+        }
+      }
+    }
+  }
+}

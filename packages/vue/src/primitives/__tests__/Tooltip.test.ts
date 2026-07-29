@@ -93,7 +93,7 @@ describe('Tooltip', () => {
     const cls = content!.className;
     expect(cls).toContain('bg-primary');
     expect(cls).toContain('text-primary-foreground');
-    expect(cls).toContain('rounded-md');
+    expect(cls).toContain('rounded-(--component-tooltip-radius)');
     expect(cls).toContain('z-[var(--z-tooltip)]');
   });
 

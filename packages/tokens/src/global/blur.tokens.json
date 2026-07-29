@@ -1,0 +1,16 @@
+{
+  "global": {
+    "blur": {
+      "$description": "WARNING — `--blur-*` IS a Tailwind v4 theme namespace, so these OVERRIDE the built-ins: changing a value here changes every blur-* and backdrop-blur-* utility in the system. The values below match Tailwind v4's defaults EXACTLY (verified against tailwindcss/theme.css), so adopting the tokens is a no-op today. Tailwind's 2xl (40px) and 3xl (64px) are deliberately not restated — nothing uses them and they keep working from the defaults.",
+      "xs": { "$type": "dimension", "$value": "4px" },
+      "sm": {
+        "$type": "dimension",
+        "$value": "8px",
+        "$description": "The dialog/popover scrim (`backdrop-blur-sm`) — the only blur in the system today."
+      },
+      "md": { "$type": "dimension", "$value": "12px" },
+      "lg": { "$type": "dimension", "$value": "16px" },
+      "xl": { "$type": "dimension", "$value": "24px" }
+    }
+  }
+}

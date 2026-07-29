@@ -107,7 +107,7 @@ describe('Toast', () => {
     const root = toastRoot()!;
     expect(root.getAttribute('data-state')).toBe('open');
     const cls = root.className;
-    expect(cls).toContain('rounded-md');
+    expect(cls).toContain('rounded-(--component-toast-radius)');
     expect(cls).toContain('bg-popover');
     expect(cls).toContain('text-popover-foreground');
     expect(cls).toContain('border-border');

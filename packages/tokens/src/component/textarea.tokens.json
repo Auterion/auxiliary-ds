@@ -1,0 +1,38 @@
+{
+  "component": {
+    "textarea": {
+      "padding-x": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2_5}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3_5}"
+        }
+      },
+      "padding-y": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1_5}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2_5}"
+        }
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      }
+    }
+  }
+}

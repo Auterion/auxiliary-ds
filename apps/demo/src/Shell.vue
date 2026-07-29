@@ -6,14 +6,18 @@ import DeviceConsole from './os/DeviceConsole.vue';
 import Site from './web/Site.vue';
 import Brand from './brand/Brand.vue';
 import PatternStudio from './pattern/PatternStudio.vue';
+import Console from './console/Console.vue';
+import TokenModel from './tokens/TokenModel.vue';
 import Gallery from './App.vue';
 
-type View = 'suite' | 'amc' | 'os' | 'web' | 'brand' | 'pattern' | 'gallery';
+type View = 'suite' | 'amc' | 'os' | 'web' | 'brand' | 'pattern' | 'console' | 'tokens' | 'gallery';
 const view = ref<View>('brand');
 
 const PAGES: { key: View; label: string }[] = [
   { key: 'brand', label: 'Brand' },
   { key: 'pattern', label: 'Pattern' },
+  { key: 'console', label: 'Console' },
+  { key: 'tokens', label: 'Tokens' },
   { key: 'web', label: 'auterion.com' },
   { key: 'suite', label: 'Suite' },
   { key: 'amc', label: 'Mission Control' },
@@ -25,6 +29,8 @@ const PAGES: { key: View; label: string }[] = [
 <template>
   <Brand v-if="view === 'brand'" />
   <PatternStudio v-else-if="view === 'pattern'" />
+  <Console v-else-if="view === 'console'" />
+  <TokenModel v-else-if="view === 'tokens'" />
   <SuiteApp v-else-if="view === 'suite'" />
   <MissionControl v-else-if="view === 'amc'" />
   <DeviceConsole v-else-if="view === 'os'" />

@@ -9,6 +9,7 @@ export default defineConfig({
     alias: {
       '@auxiliary/vue': fileURLToPath(new URL('../../packages/vue/src/index.ts', import.meta.url)),
       '@auxiliary/icons': fileURLToPath(new URL('../../packages/icons/src/index.ts', import.meta.url)),
+      '@auxiliary/viz': fileURLToPath(new URL('../../packages/viz/src/index.ts', import.meta.url)),
     },
   },
 });

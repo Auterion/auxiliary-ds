@@ -1,0 +1,18 @@
+{
+  "component": {
+    "checkbox": {
+      "size": {
+        "$type": "dimension",
+        "$value": "{global.spacing.4}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.sm}"
+      },
+      "icon-size": {
+        "$type": "dimension",
+        "$value": "{global.size.icon.2xs}"
+      }
+    }
+  }
+}

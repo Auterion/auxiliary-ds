@@ -1,0 +1,27 @@
+{
+  "component": {
+    "switch": {
+      "$description": "track.width aliases spacing.9, NOT control.height.md — both are 36px today, but borrowing the control rung would shrink the track under [data-register=\"operational\"] while the 14px thumb and its derived 18px throw stayed put. The thumb throw is computed in the recipe as track − thumb − 2×offset and must never become a token.",
+      "track": {
+        "width": {
+          "$type": "dimension",
+          "$value": "{global.spacing.9}"
+        },
+        "height": {
+          "$type": "dimension",
+          "$value": "{global.spacing.5}"
+        }
+      },
+      "thumb": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3_5}"
+        },
+        "offset": {
+          "$type": "dimension",
+          "$value": "{global.spacing.0_5}"
+        }
+      }
+    }
+  }
+}

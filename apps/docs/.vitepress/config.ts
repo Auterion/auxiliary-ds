@@ -54,6 +54,7 @@ export default defineConfig({
         {
           text: 'Foundations',
           items: [
+            { text: 'Tokens', link: '/foundations/tokens' },
             { text: 'Visual language', link: '/foundations/visual-language' },
             { text: 'Brand', link: '/foundations/brand' },
             { text: 'Registers', link: '/foundations/registers' },
@@ -61,7 +62,7 @@ export default defineConfig({
             { text: 'Colors', link: '/foundations/colors' },
             { text: 'Typography', link: '/foundations/typography' },
             { text: 'Spacing', link: '/foundations/spacing' },
-            { text: 'Radii', link: '/foundations/radii' },
+            { text: 'Radii & borders', link: '/foundations/radii' },
             { text: 'Motion', link: '/foundations/motion' },
             { text: 'Layering & breakpoints', link: '/foundations/layering' },
             { text: 'Input & touch', link: '/foundations/input-and-touch' },

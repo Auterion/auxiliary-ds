@@ -69,6 +69,36 @@ Components consume tokens through Tailwind utilities, never by direct CSS variab
 
 The Tailwind preset in [`@auxiliary/css`](https://github.com/Auterion/auxiliary-ds/tree/main/packages/css) maps every semantic token to a `--color-*` utility, so the full set of `bg-*`, `text-*`, `border-*`, `ring-*` work for every name above.
 
+## Opacity
+
+Alpha is a **state** signal, not a colour. The five `--opacity-*` tokens are role
+keys rather than a percent ladder, because a percent ladder would invent precision the
+system doesn't use: the only real signal in the codebase is that `0.5` means
+"disabled".
+
+| Token | Value | Used for |
+| --- | --- | --- |
+| `--opacity-none` | `0` | Fully transparent — hidden-but-present. |
+| `--opacity-disabled` | `0.5` | Every `disabled:` state in the library. WCAG imposes no contrast minimum on disabled controls; 0.5 keeps them readable enough to identify. |
+| `--opacity-muted` | `0.7` | De-emphasised but still active content. |
+| `--opacity-loading` | `0.8` | In-flight controls that stay legible while non-interactive (Button, GuardedAction). |
+| `--opacity-full` | `1` | Opaque — the explicit reset. |
+
+Two naming decisions are load-bearing:
+
+- They live at `global.opacity.*`, **not** under `color` as canonical GTC would have
+  it. `global.color.opacity.50` would emit `--color-opacity-50`, and `--color-*` is a
+  Tailwind v4 theme namespace — every step would masquerade as a colour and generate
+  `bg-`, `text-` and `border-` utilities for a number.
+- Tailwind has no `--opacity-*` namespace, so these generate **no** utilities.
+  Consume them as `opacity-(--opacity-disabled)` or in plain CSS — never as
+  `opacity-50`, which is a magic number that no longer tracks the token.
+
+Alpha applied to a *colour* is a different thing and stays in the palette: the modal
+scrim is `--overlay` (black at a fixed alpha, dark in every theme, because a
+surface-derived scrim is invisible in `sunlight` and floods `darknight`), not
+`--background` at `--opacity-muted`.
+
 ## Themes
 
 The same semantic name resolves to different OKLCH values per theme:

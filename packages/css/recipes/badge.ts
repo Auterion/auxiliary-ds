@@ -1,7 +1,7 @@
 import { tv, type VariantProps } from 'tailwind-variants';
 
 export const badge = tv({
-  base: 'inline-flex items-center gap-1 rounded font-medium',
+  base: 'inline-flex items-center gap-(--component-badge-gap) rounded-(--component-badge-radius) font-medium',
   variants: {
     variant: {
       // `neutral` (not `default`) — says what it looks like; `primary` (not
@@ -12,8 +12,8 @@ export const badge = tv({
       primary:   'bg-primary text-primary-foreground',
     },
     size: {
-      sm: 'h-5 px-1.5 text-2xs',
-      md: 'h-6 px-2 text-xs',
+      sm: 'h-(--component-badge-height-sm) px-(--component-badge-padding-x-sm) text-2xs',
+      md: 'h-(--component-badge-height-md) px-(--component-badge-padding-x-md) text-xs',
     },
   },
   defaultVariants: {

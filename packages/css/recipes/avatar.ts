@@ -4,9 +4,9 @@ export const avatar = tv({
   base: 'inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-muted text-muted-foreground',
   variants: {
     size: {
-      sm: 'h-6 w-6 text-xs',
-      md: 'h-8 w-8 text-sm',
-      lg: 'h-10 w-10 text-base',
+      sm: 'size-(--component-avatar-size-sm) text-xs',
+      md: 'size-(--component-avatar-size-md) text-sm',
+      lg: 'size-(--component-avatar-size-lg) text-base',
     },
   },
   defaultVariants: {

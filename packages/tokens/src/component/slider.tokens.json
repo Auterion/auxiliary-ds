@@ -1,0 +1,18 @@
+{
+  "component": {
+    "slider": {
+      "track": {
+        "height": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1_5}"
+        }
+      },
+      "thumb": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{global.spacing.4}"
+        }
+      }
+    }
+  }
+}

@@ -19,7 +19,7 @@ describe('Skeleton', () => {
     const classes = wrapper.classes();
     expect(classes).toContain('block');
     expect(classes).toContain('animate-pulse');
-    expect(classes).toContain('rounded');
+    expect(classes).toContain('rounded-(--component-skeleton-radius)');
     expect(classes).toContain('bg-input');
   });
 

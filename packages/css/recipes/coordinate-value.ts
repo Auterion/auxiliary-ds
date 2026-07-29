@@ -10,7 +10,7 @@ export const coordinateValue = tv({
   slots: {
     root: 'inline-flex flex-col',
     label: 'text-xs uppercase tracking-wide text-muted-foreground',
-    valueRow: 'inline-flex items-baseline gap-1.5',
+    valueRow: 'inline-flex items-baseline gap-(--component-coordinate-value-gap)',
     value: 'font-mono tabular font-medium leading-tight text-foreground',
     formatTag: 'font-mono text-2xs uppercase tracking-wide text-muted-foreground',
   },

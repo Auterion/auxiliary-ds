@@ -45,21 +45,21 @@ describe('Input', () => {
     const wrapper = mount(Input, { props: { disabled: true } });
     const input = wrapper.find('input');
     expect(input.attributes('disabled')).toBeDefined();
-    expect(input.classes()).toContain('disabled:opacity-50');
+    expect(input.classes()).toContain('disabled:opacity-(--opacity-disabled)');
     expect(input.classes()).toContain('disabled:cursor-not-allowed');
   });
 
   it('maps each size prop to its recipe height class (defaulting to md)', () => {
     const cases: Array<['sm' | 'md' | 'lg', string]> = [
-      ['sm', 'h-[max(var(--control-height-sm),var(--target-floor))]'],
-      ['md', 'h-[max(var(--control-height-md),var(--target-floor))]'],
-      ['lg', 'h-[max(var(--control-height-lg),var(--target-floor))]'],
+      ['sm', 'h-[max(var(--component-input-height-sm),var(--target-floor))]'],
+      ['md', 'h-[max(var(--component-input-height-md),var(--target-floor))]'],
+      ['lg', 'h-[max(var(--component-input-height-lg),var(--target-floor))]'],
     ];
     for (const [size, cls] of cases) {
       const wrapper = mount(Input, { props: { size } });
       expect(wrapper.find('input').classes()).toContain(cls);
     }
-    expect(mount(Input).find('input').classes()).toContain('h-[max(var(--control-height-md),var(--target-floor))]');
+    expect(mount(Input).find('input').classes()).toContain('h-[max(var(--component-input-height-md),var(--target-floor))]');
   });
 
   it('sets aria-invalid and a destructive border when invalid', () => {

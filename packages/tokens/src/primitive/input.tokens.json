@@ -1,6 +1,0 @@
-{
-  "target": {
-    "min":   { "$type": "dimension", "$value": "44px" },
-    "floor": { "$type": "dimension", "$value": "0px" }
-  }
-}

@@ -45,8 +45,6 @@ const srLabel = computed(() => STATUS_LABELS[props.level]);
 <template>
   <div :class="bannerClass" :role="live ? 'alert' : undefined">
     <svg
-      width="20"
-      height="20"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -88,14 +86,13 @@ const srLabel = computed(() => STATUS_LABELS[props.level]);
       @click="$emit('dismiss')"
     >
       <svg
-        width="16"
-        height="16"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
+        :class="styles.dismissIcon()"
         aria-hidden="true"
       >
         <line x1="18" y1="6" x2="6" y2="18" />

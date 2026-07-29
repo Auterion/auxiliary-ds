@@ -41,8 +41,7 @@ const rootClass = computed(() => cn(styles.value.root(), props.class));
     <CheckboxIndicator :class="styles.indicator()">
       <svg
         v-if="props.modelValue === 'indeterminate'"
-        width="10"
-        height="10"
+        class="size-(--component-checkbox-icon-size)"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -54,8 +53,7 @@ const rootClass = computed(() => cn(styles.value.root(), props.class));
       </svg>
       <svg
         v-else
-        width="10"
-        height="10"
+        class="size-(--component-checkbox-icon-size)"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

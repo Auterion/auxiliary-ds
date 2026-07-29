@@ -1,0 +1,29 @@
+{
+  "component": {
+    "table": {
+      "$description": "head.height aliases spacing.10 rather than control.height.lg despite both being 40px — a table header is not a control. Table density belongs to a future register override on this token.",
+      "head": {
+        "height": {
+          "$type": "dimension",
+          "$value": "{global.spacing.10}"
+        }
+      },
+      "padding-x": {
+        "$type": "dimension",
+        "$value": "{global.spacing.3}"
+      },
+      "cell": {
+        "padding-y": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      },
+      "caption": {
+        "margin-top": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        }
+      }
+    }
+  }
+}

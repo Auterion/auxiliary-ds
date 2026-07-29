@@ -1,0 +1,18 @@
+{
+  "component": {
+    "popover": {
+      "width": {
+        "$type": "dimension",
+        "$value": "{global.size.container.xs}"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "{global.spacing.4}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      }
+    }
+  }
+}

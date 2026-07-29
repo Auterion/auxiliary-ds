@@ -1,0 +1,20 @@
+{
+  "global": {
+    "opacity": {
+      "$description": "Alpha steps for STATE expression. Role keys, not a percent ladder: the only real signal in the codebase was that 0.5 consistently means \"disabled\" — a numeric ramp would invent precision we don't use. Deliberately NOT nested under color as canonical GTC does (global.color.opacity.N): that would emit --color-opacity-*, and --color-* is a Tailwind namespace, so every step would masquerade as a colour and generate bg-/text-/border- utilities. Tailwind has no --opacity-* namespace, so these generate no utilities — consume them as opacity-(--opacity-disabled) or in plain CSS.",
+      "none": { "$type": "number", "$value": 0 },
+      "disabled": {
+        "$type": "number",
+        "$value": 0.5,
+        "$description": "The 19 `disabled:opacity-50` sites. WCAG imposes no contrast minimum on disabled controls, but 0.5 keeps them readable enough to identify."
+      },
+      "muted": { "$type": "number", "$value": 0.7 },
+      "loading": {
+        "$type": "number",
+        "$value": 0.8,
+        "$description": "In-flight controls that stay legible while non-interactive (button/guarded-action loading)."
+      },
+      "full": { "$type": "number", "$value": 1 }
+    }
+  }
+}

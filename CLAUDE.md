@@ -50,6 +50,40 @@ tokens  →  css  →  vue  →  docs
 - `packages/figma-sync` — one-way push of tokens → Figma Variables. Code → Figma, never the reverse (see Principle 1 below).
 - `apps/docs` — VitePress documentation site, runs at `http://localhost:5173`.
 
+### The GTC token model
+
+`packages/tokens/src` is organised by the **GTC model** (Global · Theme · Component,
+per [buninux.com/design-tokens](https://buninux.com/design-tokens)) — four groups, each
+answering "where may this be changed, and what does changing it move?":
+
+| Directory | Carries | Example |
+| --- | --- | --- |
+| `global/` | the **value layer** — fixed, axis-free, self-contained | `global.spacing.4` → `--spacing-4` |
+| `theme/` | everything `[data-theme]` re-resolves — **colour only**, one file per theme | `theme.card-foreground` → `--card-foreground` |
+| `register/` | everything `[data-register]` re-resolves — control height, radius, duration | `register.operational.radius.md` |
+| `component/` | per-component **structure**: size, padding, gap, radius, icon size | `component.card.footer.gap` → `--component-card-footer-gap` |
+
+Rules that are enforced, not conventions:
+
+- **Component tokens are structural only** — never colour, never typography. Colour
+  belongs to `theme/` so it can re-resolve per theme; a colour frozen into a component
+  token would survive a theme switch.
+- **A component's geometry lives in a token, not a class string.** Recipes consume them
+  as `gap-(--component-card-footer-gap)`. A bare `gap-2` renders fine and so fails
+  nothing — which is why `packages/css/test/no-bare-scale-utilities.test.ts` gates it.
+- **Component tokens emit as `var()` references**, unlike every other tier, and each
+  `[data-register]` block re-emits the ones depending on a var it shadows. Without
+  that, a subtree setting `[data-register]` keeps the already-substituted `:root`
+  value. `packages/tokens/test/component-flex.test.ts` guards both halves.
+- `packages/tokens/gtc-validate.mjs` runs 13 rules over the **raw** source before Style
+  Dictionary hydration, so dangling refs and reference cycles fail with a token path
+  instead of an SD stack trace. Its header documents what it deliberately cannot check
+  and where Auxiliary diverges from canonical GTC — read it before "fixing" a divergence.
+
+Emitted CSS custom-property names are **tier-stripped** (`--spacing-4`, not
+`--global-spacing-4`), as are Figma variable paths. Full reference:
+`apps/docs/foundations/tokens.md`.
+
 ### Theme & register axes
 
 Two orthogonal token-mode layers re-resolve semantic tokens at runtime:

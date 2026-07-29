@@ -1,0 +1,12 @@
+{
+  "component": {
+    "progress": {
+      "track": {
+        "height": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      }
+    }
+  }
+}

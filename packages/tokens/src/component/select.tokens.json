@@ -1,0 +1,89 @@
+{
+  "component": {
+    "select": {
+      "$description": "item.padding-inline-start is absent on purpose: it is derived (indicator inset + indicator icon + gap) and written as a calc() in the recipe, so bumping the check icon can never silently overlap the label.",
+      "height": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.control.height.sm}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.control.height.md}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.control.height.lg}"
+        }
+      },
+      "padding-x": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2_5}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3_5}"
+        }
+      },
+      "gap": {
+        "$type": "dimension",
+        "$value": "{global.spacing.2}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      },
+      "icon-size": {
+        "$type": "dimension",
+        "$value": "{global.size.icon.sm}"
+      },
+      "content": {
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.md}"
+        }
+      },
+      "viewport": {
+        "padding": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        }
+      },
+      "item": {
+        "height": {
+          "$type": "dimension",
+          "$value": "{global.spacing.8}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.sm}"
+        },
+        "padding-inline-end": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        },
+        "indicator": {
+          "inset-inline-start": {
+            "$type": "dimension",
+            "$value": "{global.spacing.2}"
+          }
+        },
+        "icon-size": {
+          "$type": "dimension",
+          "$value": "{global.size.icon.xs}"
+        }
+      },
+      "separator": {
+        "margin-y": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        }
+      }
+    }
+  }
+}

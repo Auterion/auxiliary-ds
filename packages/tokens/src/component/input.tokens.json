@@ -1,0 +1,38 @@
+{
+  "component": {
+    "input": {
+      "height": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.control.height.sm}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.control.height.md}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.control.height.lg}"
+        }
+      },
+      "padding-x": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2_5}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3_5}"
+        }
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      }
+    }
+  }
+}

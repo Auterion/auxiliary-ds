@@ -8,7 +8,7 @@ export const telemetryValue = tv({
   slots: {
     root: 'inline-flex flex-col',
     label: 'text-xs uppercase tracking-wide text-muted-foreground',
-    valueRow: 'inline-flex items-baseline gap-1.5',
+    valueRow: 'inline-flex items-baseline gap-(--component-telemetry-value-gap)',
     value: 'font-mono tabular font-medium leading-tight text-foreground',
     unit: 'font-mono text-xs text-muted-foreground',
     trend: 'font-mono text-xs text-muted-foreground',

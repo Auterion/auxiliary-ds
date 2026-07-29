@@ -21,13 +21,22 @@ type Oklch = [number, number, number];
 
 const readJson = (p: string): unknown => JSON.parse(readFileSync(p, 'utf8'));
 
-const palette = readJson(resolve(srcDir, 'primitive', 'color', 'tailwind-palette.tokens.json'));
+const palette = readJson(resolve(srcDir, 'global', 'color', 'tailwind-palette.tokens.json'));
 
-/** Resolve a `{color.primitive.red.700}` reference to its oklch string. */
+/** Resolve a `{global.color.primitive.red.700}` reference to its oklch string. */
 function deref(reference: string): string {
   const path = reference.replace(/[{}]/g, '').split('.');
   let node: unknown = palette;
-  for (const key of path) node = (node as Record<string, unknown>)[key];
+  for (const key of path) {
+    // Walk defensively. A silently-undefined node here would make every contrast,
+    // CVD and blue-energy gate in this package pass on empty data — the failure
+    // mode with the worst consequences in the repo, since these gates encode
+    // aerospace alerting regulations.
+    if (node === null || typeof node !== 'object' || !(key in node)) {
+      throw new Error(`Unresolved token reference: ${reference} (no "${key}")`);
+    }
+    node = (node as Record<string, unknown>)[key];
+  }
   const value = (node as { $value?: string }).$value;
   if (typeof value !== 'string') throw new Error(`Unresolved token reference: ${reference}`);
   return value;
@@ -103,12 +112,11 @@ export type ThemeName = 'light' | 'dark' | 'sunlight' | 'darknight';
 
 /** Load a theme's resolved semantic tokens: role -> oklch tuple. */
 export function loadTheme(theme: ThemeName): Record<string, Oklch> {
-  const file = readJson(resolve(srcDir, 'semantic', `${theme}.tokens.json`)) as Record<
-    string,
-    Record<string, { $value: string }>
-  >;
-  const roles = file[theme];
-  if (!roles) throw new Error(`No "${theme}" block in ${theme}.tokens.json`);
+  const file = readJson(resolve(srcDir, 'theme', `${theme}.tokens.json`)) as {
+    theme?: Record<string, Record<string, { $value: string }>>;
+  };
+  const roles = file.theme?.[theme];
+  if (!roles) throw new Error(`No "theme.${theme}" block in theme/${theme}.tokens.json`);
   const out: Record<string, Oklch> = {};
   for (const [role, token] of Object.entries(roles)) out[role] = parseOklch(token.$value);
   return out;

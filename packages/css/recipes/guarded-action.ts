@@ -21,11 +21,11 @@ export const guardedAction = tv({
     // win unconditionally — focus is carried entirely by the ring channel.
     root: [
       'relative isolate overflow-hidden select-none',
-      'inline-flex items-center justify-center gap-2',
-      'rounded-md font-medium',
+      'inline-flex items-center justify-center gap-(--component-guarded-action-gap)',
+      'rounded-(--component-guarded-action-radius) font-medium',
       'transition-colors',
       'outline-none focus-visible:ring-2 ring-ring focus-visible:ring-offset-2 ring-offset-background',
-      'disabled:opacity-50 disabled:pointer-events-none',
+      'disabled:opacity-(--opacity-disabled) disabled:pointer-events-none',
     ].join(' '),
     // Solid currentColor progress bar along the bottom edge, out from under the
     // label: the variant's paired -foreground is token-gated against its fill
@@ -33,10 +33,10 @@ export const guardedAction = tv({
     // wash measured 1.2–2.2:1 — invisible progress on a safety-critical hold.
     // `pointer-events-none` so it never eats the press; width is set inline
     // from component state (JS-driven, so reduced-motion can't desync it).
-    fill: 'pointer-events-none absolute bottom-0 left-0 h-[3px] bg-current',
-    label: 'inline-flex items-center gap-2',
+    fill: 'pointer-events-none absolute bottom-0 left-0 h-(--component-guarded-action-fill-height) bg-current',
+    label: 'inline-flex items-center gap-(--component-guarded-action-gap)',
     // confirm-mode inline confirm/cancel pair
-    confirmRow: 'inline-flex items-center gap-1.5',
+    confirmRow: 'inline-flex items-center gap-(--component-guarded-action-confirm-row-gap)',
   },
   variants: {
     // Same colour treatment as Button — danger is the default since these are
@@ -52,9 +52,9 @@ export const guardedAction = tv({
     // to Button so guarded controls line up with ordinary ones and tighten under
     // [data-register="operational"].
     size: {
-      sm: { root: 'h-[max(var(--control-height-sm),var(--target-floor))] px-3 text-sm' },
-      md: { root: 'h-[max(var(--control-height-md),var(--target-floor))] px-4 text-sm' },
-      lg: { root: 'h-[max(var(--control-height-lg),var(--target-floor))] px-6 text-base' },
+      sm: { root: 'h-[max(var(--component-guarded-action-height-sm),var(--target-floor))] px-(--component-guarded-action-padding-x-sm) text-sm' },
+      md: { root: 'h-[max(var(--component-guarded-action-height-md),var(--target-floor))] px-(--component-guarded-action-padding-x-md) text-sm' },
+      lg: { root: 'h-[max(var(--component-guarded-action-height-lg),var(--target-floor))] px-(--component-guarded-action-padding-x-lg) text-base' },
     },
     // While armed/holding, draw a destructive outline — its own CSS channel,
     // so it can't collide with the focus ring (Tailwind ring utilities share

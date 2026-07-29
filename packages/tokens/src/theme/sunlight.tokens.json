@@ -1,0 +1,221 @@
+{
+  "theme": {
+    "sunlight": {
+      "background": {
+        "$type": "color",
+        "$value": "{global.color.primitive.white}"
+      },
+      "foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.black}"
+      },
+      "card": {
+        "$type": "color",
+        "$value": "{global.color.primitive.white}"
+      },
+      "card-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.black}"
+      },
+      "popover": {
+        "$type": "color",
+        "$value": "{global.color.primitive.white}"
+      },
+      "popover-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.black}"
+      },
+      "primary": {
+        "$type": "color",
+        "$value": "{global.color.primitive.black}"
+      },
+      "primary-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.white}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{global.color.primitive.zinc.200}"
+      },
+      "secondary-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.black}"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "{global.color.primitive.zinc.100}"
+      },
+      "muted-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.zinc.700}"
+      },
+      "accent": {
+        "$type": "color",
+        "$value": "{global.color.primitive.zinc.200}"
+      },
+      "accent-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.black}"
+      },
+      "brand": {
+        "$type": "color",
+        "$value": "{global.color.primitive.black}",
+        "$description": "brand := primary in this operational theme. De-branding is INTENTIONAL (calm, no marketing color under glare / at night) \u2014 keep this alias in lockstep with primary; it is a stated rule, not a value coincidence."
+      },
+      "brand-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.white}"
+      },
+      "destructive": {
+        "$type": "color",
+        "$value": "{global.color.primitive.red.900}"
+      },
+      "destructive-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.white}"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "{global.color.primitive.zinc.500}"
+      },
+      "input": {
+        "$type": "color",
+        "$value": "{global.color.primitive.zinc.600}"
+      },
+      "ring": {
+        "$type": "color",
+        "$value": "{global.color.primitive.black}"
+      },
+      "alarm": {
+        "$type": "color",
+        "$value": "{global.color.primitive.red.800}"
+      },
+      "alarm-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.white}"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "{global.color.primitive.orange.600}"
+      },
+      "warning-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.black}"
+      },
+      "caution": {
+        "$type": "color",
+        "$value": "{global.color.primitive.yellow.600}"
+      },
+      "caution-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.black}"
+      },
+      "advisory": {
+        "$type": "color",
+        "$value": "{global.color.primitive.cyan.800}"
+      },
+      "advisory-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.white}"
+      },
+      "nominal": {
+        "$type": "color",
+        "$value": "{global.color.primitive.green.700}"
+      },
+      "nominal-foreground": {
+        "$type": "color",
+        "$value": "{global.color.primitive.white}"
+      },
+      "alarm-emphasis": {
+        "$type": "color",
+        "$value": "{global.color.primitive.red.800}",
+        "$description": "On-surface alarm ink (text/border/glyph on page or card) \u2014 gated >=4.5:1 vs background AND card. The alarm FILL is only gated against its own -foreground; never use the fill as ink."
+      },
+      "warning-emphasis": {
+        "$type": "color",
+        "$value": "{global.color.primitive.orange.700}"
+      },
+      "caution-emphasis": {
+        "$type": "color",
+        "$value": "{global.color.primitive.amber.700}"
+      },
+      "advisory-emphasis": {
+        "$type": "color",
+        "$value": "{global.color.primitive.cyan.800}"
+      },
+      "nominal-emphasis": {
+        "$type": "color",
+        "$value": "{global.color.primitive.green.800}"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "{global.color.primitive.scrim.55}",
+        "$description": "Modal scrim \u2014 black at fixed alpha, dark in every theme (a surface-derived scrim is invisible in sunlight and floods darknight)."
+      },
+      "viz-categorical-1": {
+        "$type": "color",
+        "$value": "{global.color.primitive.auterion-blue.800}"
+      },
+      "viz-categorical-2": {
+        "$type": "color",
+        "$value": "{global.color.primitive.cadet.500}"
+      },
+      "viz-categorical-3": {
+        "$type": "color",
+        "$value": "{global.color.primitive.purple.950}"
+      },
+      "viz-categorical-4": {
+        "$type": "color",
+        "$value": "{global.color.primitive.stone.700}"
+      },
+      "viz-categorical-5": {
+        "$type": "color",
+        "$value": "{global.color.primitive.indigo.600}"
+      },
+      "viz-categorical-6": {
+        "$type": "color",
+        "$value": "{global.color.primitive.mono.950}"
+      },
+      "viz-sequential-1": {
+        "$type": "color",
+        "$value": "{global.color.primitive.auterion-blue.300}"
+      },
+      "viz-sequential-2": {
+        "$type": "color",
+        "$value": "{global.color.primitive.auterion-blue.500}"
+      },
+      "viz-sequential-3": {
+        "$type": "color",
+        "$value": "{global.color.primitive.auterion-blue.700}"
+      },
+      "viz-sequential-4": {
+        "$type": "color",
+        "$value": "{global.color.primitive.auterion-blue.900}"
+      },
+      "viz-sequential-5": {
+        "$type": "color",
+        "$value": "{global.color.primitive.auterion-blue.950}"
+      },
+      "viz-diverging-1": {
+        "$type": "color",
+        "$value": "{global.color.primitive.auterion-blue.800}"
+      },
+      "viz-diverging-2": {
+        "$type": "color",
+        "$value": "{global.color.primitive.auterion-blue.500}"
+      },
+      "viz-diverging-3": {
+        "$type": "color",
+        "$value": "{global.color.primitive.zinc.400}"
+      },
+      "viz-diverging-4": {
+        "$type": "color",
+        "$value": "{global.color.primitive.fuchsia.500}"
+      },
+      "viz-diverging-5": {
+        "$type": "color",
+        "$value": "{global.color.primitive.fuchsia.800}"
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "global": {
+    "control": {
+      "height": {
+        "xs": { "$type": "dimension", "$value": "28px", "$description": "Not used directly by any recipe — it is the rung the operational register shifts `sm` down to. Exists so register overrides can alias a global rung instead of restating a literal." },
+        "sm": { "$type": "dimension", "$value": "32px" },
+        "md": { "$type": "dimension", "$value": "36px" },
+        "lg": { "$type": "dimension", "$value": "40px" }
+      }
+    }
+  }
+}

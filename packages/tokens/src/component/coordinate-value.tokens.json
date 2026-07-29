@@ -1,0 +1,10 @@
+{
+  "component": {
+    "coordinate-value": {
+      "gap": {
+        "$type": "dimension",
+        "$value": "{global.spacing.1_5}"
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "component": {
+    "accordion": {
+      "padding-x": {
+        "$type": "dimension",
+        "$value": "{global.spacing.1}"
+      },
+      "padding-y": {
+        "$type": "dimension",
+        "$value": "{global.spacing.2}"
+      },
+      "chevron": {
+        "margin-inline-start": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      },
+      "icon-size": {
+        "$type": "dimension",
+        "$value": "{global.size.icon.sm}"
+      }
+    }
+  }
+}

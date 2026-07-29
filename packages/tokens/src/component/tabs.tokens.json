@@ -1,0 +1,41 @@
+{
+  "component": {
+    "tabs": {
+      "$description": "A tab is a control (focusable, ring, disabled state, sits in the same band as buttons), so trigger.height aliases control.height.xs and tightens with the register. There is deliberately NO list.height: the list is a container of triggers and derives its height from padding + trigger. The old h-9 (36px) was arithmetically wrong — 28 + 2×4 + 2×1 = 38 — so the trigger overflowed its own list by 2px.",
+      "trigger": {
+        "height": {
+          "$type": "dimension",
+          "$value": "{global.control.height.xs}"
+        },
+        "padding-x": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.sm}"
+        }
+      },
+      "list": {
+        "padding": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.md}"
+        }
+      },
+      "content": {
+        "margin-top": {
+          "$type": "dimension",
+          "$value": "{global.spacing.4}"
+        }
+      }
+    }
+  }
+}

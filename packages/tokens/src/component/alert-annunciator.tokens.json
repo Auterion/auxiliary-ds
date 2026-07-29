@@ -1,0 +1,14 @@
+{
+  "component": {
+    "alert-annunciator": {
+      "gap": {
+        "$type": "dimension",
+        "$value": "{global.spacing.2}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      }
+    }
+  }
+}

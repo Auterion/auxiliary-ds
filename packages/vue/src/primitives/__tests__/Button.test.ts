@@ -11,7 +11,7 @@ describe('Button', () => {
     expect(wrapper.text()).toContain('Click me');
     // default variant=primary, size=md
     expect(wrapper.classes()).toContain('bg-primary');
-    expect(wrapper.classes()).toContain('h-[max(var(--control-height-md),var(--target-floor))]');
+    expect(wrapper.classes()).toContain('h-[max(var(--component-button-height-md),var(--target-floor))]');
   });
 
   it('maps each variant prop to its recipe classes', () => {
@@ -29,9 +29,9 @@ describe('Button', () => {
 
   it('maps each size prop to its register-flex control-height class', () => {
     const cases: Array<[string, string]> = [
-      ['sm', 'h-[max(var(--control-height-sm),var(--target-floor))]'],
-      ['md', 'h-[max(var(--control-height-md),var(--target-floor))]'],
-      ['lg', 'h-[max(var(--control-height-lg),var(--target-floor))]'],
+      ['sm', 'h-[max(var(--component-button-height-sm),var(--target-floor))]'],
+      ['md', 'h-[max(var(--component-button-height-md),var(--target-floor))]'],
+      ['lg', 'h-[max(var(--component-button-height-lg),var(--target-floor))]'],
     ];
     for (const [size, cls] of cases) {
       const wrapper = mount(Button, { props: { size: size as never }, slots: { default: size } });
@@ -57,7 +57,7 @@ describe('Button', () => {
 
   it('applies loading styling and disables the button when loading', () => {
     const wrapper = mount(Button, { props: { loading: true }, slots: { default: 'Saving' } });
-    expect(wrapper.classes()).toContain('opacity-80');
+    expect(wrapper.classes()).toContain('opacity-(--opacity-loading)');
     expect(wrapper.classes()).toContain('pointer-events-none');
     expect(wrapper.attributes('disabled')).toBeDefined();
   });

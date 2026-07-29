@@ -58,15 +58,36 @@ describe('touch-target floor — generated CSS', () => {
 });
 
 describe('touch-target floor — recipes', () => {
-  it('every --control-height usage is floored via max(…, --target-floor)', () => {
+  // Control heights are consumed as `--control-height-*` directly, or through a
+  // component token (`--component-button-height-md`). BOTH forms must be floored:
+  // the component tier deliberately cannot carry the max() itself, because
+  // --target-floor is re-declared by the @media(pointer:coarse) and [data-input]
+  // blocks, which do not re-emit the component tier.
+  const HEIGHT_VAR = String.raw`var\(--(?:control-height-(?:xs|sm|md|lg)|component-[a-z-]+-height(?:-(?:sm|md|lg))?)\)`;
+  const UNFLOORED = new RegExp(
+    String.raw`(?<!max\()${HEIGHT_VAR}(?!\s*,\s*var\(--target-floor\))`,
+    'g',
+  );
+
+  it('every control-height usage is floored via max(…, --target-floor)', () => {
     const offenders: string[] = [];
     for (const file of recipeFiles) {
       const src = readFileSync(join(recipesDir, file), 'utf8');
-      // A bare `var(--control-height-…)` not wrapped in `max(…, --target-floor)`
-      // is an un-floored control — it would drop below 44px on a touch device.
-      const bare = src.match(/(?<!max\()var\(--control-height-(sm|md|lg)\)(?!\s*,\s*var\(--target-floor\))/g);
+      const bare = src.match(UNFLOORED);
       if (bare) offenders.push(`${file}: ${bare.join(', ')}`);
     }
     expect(offenders, `un-floored control-height usages:\n${offenders.join('\n')}`).toEqual([]);
+  });
+
+  it('actually finds the floored usages it is meant to police', () => {
+    // Positive control. Without this, a rename that stops the pattern matching
+    // yields zero offenders — a green test that checks nothing.
+    const floored = recipeFiles.flatMap(
+      (f) =>
+        readFileSync(join(recipesDir, f), 'utf8').match(
+          new RegExp(String.raw`max\(${HEIGHT_VAR}\s*,\s*var\(--target-floor\)\)`, 'g'),
+        ) ?? [],
+    );
+    expect(floored.length, 'no floored control heights found — has the var naming moved?').toBeGreaterThanOrEqual(6);
   });
 });

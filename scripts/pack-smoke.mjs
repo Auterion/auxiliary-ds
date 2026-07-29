@@ -75,7 +75,19 @@ try {
       try {
         const out = execFileSync(
           'node',
-          ['--input-type=module', '-e', `const m = await import('${pkg.name}'); if (!m.tokens?.color) throw new Error('tokens.color missing'); console.log('loaded');`],
+          // Assert the four GTC groups, not one key: this is the only check that sees
+        // the published tier layout, and the rename that moved `color` under `global`
+        // is exactly the shape of breakage a single-key probe misses.
+        [
+          '--input-type=module',
+          '-e',
+          `const m = await import('${pkg.name}');` +
+            `const missing = ['global', 'theme', 'register', 'component'].filter((g) => !m.tokens?.[g]);` +
+            `if (missing.length) throw new Error('token groups missing: ' + missing.join(', '));` +
+            `if (!m.tokens.global.color) throw new Error('tokens.global.color missing');` +
+            `if (!m.tokens.theme.light) throw new Error('tokens.theme.light missing');` +
+            `console.log('loaded');`,
+        ],
           { cwd: consumer, encoding: 'utf8' },
         );
         if (!out.includes('loaded')) fail('tokens entry did not load');

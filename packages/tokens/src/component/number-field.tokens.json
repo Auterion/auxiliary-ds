@@ -1,0 +1,40 @@
+{
+  "component": {
+    "number-field": {
+      "height": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.control.height.sm}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.control.height.md}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.control.height.lg}"
+        }
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      },
+      "stepper": {
+        "padding-x": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      },
+      "unit": {
+        "padding-inline-end": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      },
+      "icon-size": {
+        "$type": "dimension",
+        "$value": "{global.size.icon.md}"
+      }
+    }
+  }
+}

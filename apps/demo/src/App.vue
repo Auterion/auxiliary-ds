@@ -102,7 +102,14 @@ const RAMP_FAMILIES = [
   'zinc', 'neutral', 'red', 'orange', 'amber', 'yellow',
   'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue',
 ] as const;
-const primitive = tokens.color.primitive as unknown as Record<string, Record<string, string>>;
+// Guard the tier lookup explicitly. Every read below has a `?? 'transparent'`
+// per-value fallback for legitimately-absent keys, which means a missing *tier*
+// would render a full page of blank swatches with no error at all — the worst
+// failure mode in this file. Fail loudly instead.
+if (!tokens.global?.color?.primitive) {
+  throw new Error('demo: tokens.global.color.primitive is missing — the token tier layout changed?');
+}
+const primitive = tokens.global.color.primitive as unknown as Record<string, Record<string, string>>;
 const primitiveRamps = RAMP_FAMILIES.map((family) => {
   const ramp = primitive[family] ?? {};
   return { family, steps: PALETTE_STEPS.map((step) => ({ step, value: ramp[step] ?? 'transparent' })) };
@@ -116,7 +123,7 @@ const auterionBlueAliases = AUTERION_BLUE_ALIASES.map((alias) => ({
 
 // Reverse-lookup: which primitive step a resolved semantic value came from.
 const primitiveByValue = new Map<string, string>();
-for (const [family, ramp] of Object.entries(tokens.color.primitive)) {
+for (const [family, ramp] of Object.entries(tokens.global.color.primitive)) {
   if (typeof ramp === 'string') primitiveByValue.set(ramp, family);
   else for (const [step, value] of Object.entries(ramp)) primitiveByValue.set(value, `${family}.${step}`);
 }
@@ -147,7 +154,13 @@ const activeThemeName = computed<'light' | 'dark' | 'sunlight' | 'darknight'>(()
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 });
 const semanticMap = computed(() => {
-  const t = tokens[activeThemeName.value] as Record<string, string>;
+  const themeTokens = tokens.theme[activeThemeName.value];
+  if (!themeTokens) {
+    throw new Error(
+      `demo: tokens.theme.${activeThemeName.value} is missing — the token tier layout changed?`,
+    );
+  }
+  const t = themeTokens as Record<string, string>;
   return SEMANTIC_ROLES.map((role) => {
     const value = t[role] ?? 'transparent';
     return { role, value, source: primitiveByValue.get(value) ?? 'custom' };

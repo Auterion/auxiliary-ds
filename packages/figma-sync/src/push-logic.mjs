@@ -28,7 +28,22 @@ function scopesFor(variable) {
   if (n.startsWith('tracking/')) return ['LETTER_SPACING'];
   if (n.startsWith('font-weight/')) return ['FONT_WEIGHT'];
   if (n.startsWith('font/')) return ['FONT_FAMILY'];
-  return []; // z, breakpoint, duration, density — no standard picker
+  if (n.startsWith('size/icon/')) return ['WIDTH_HEIGHT'];
+  if (n.startsWith('size/container/')) return ['WIDTH_HEIGHT'];
+  if (n.startsWith('border-width/')) return ['STROKE_FLOAT'];
+  if (n.startsWith('opacity/')) return ['OPACITY'];
+  // Component-collection names lead with the Element (button/radius), so these
+  // match the trailing property rather than a prefix. Without them the component
+  // variables get [] scopes and vanish from Figma's property pickers.
+  // NOTE: this whole file is embedded into a template literal by build-program.mjs
+  // — never use a backtick here, not even inside a comment.
+  if (/(?:^|\/)radius$/.test(n)) return ['CORNER_RADIUS'];
+  if (/(?:^|\/)gap$/.test(n)) return ['GAP'];
+  if (/(?:^|\/)(padding|padding-x|padding-y|margin-y|margin-top|inset|offset-y)$/.test(n))
+    return ['GAP', 'WIDTH_HEIGHT'];
+  if (/(?:^|\/)(height|width|size|icon-size|max-width|min-width|max-height)$/.test(n))
+    return ['WIDTH_HEIGHT'];
+  return []; // z, breakpoint, duration — no standard picker
 }
 
 const collections = await figma.variables.getLocalVariableCollectionsAsync();
@@ -36,13 +51,29 @@ const collByName = new Map(collections.map((c) => [c.name, c]));
 
 function ensureCollection(name, modes) {
   let c = collByName.get(name);
+  const created = !c;
   if (!c) {
     c = figma.variables.createVariableCollection(name);
     collByName.set(name, c);
   }
-  c.renameMode(c.modes[0].modeId, modes[0]);
   const have = new Set(c.modes.map((m) => m.name));
-  for (let i = 1; i < modes.length; i++) if (!have.has(modes[i])) c.addMode(modes[i]);
+  // Rename the default mode ONLY on a collection we just created. Doing it
+  // unconditionally rewrites whichever mode happens to sit first in an existing
+  // collection: a Semantic collection ordered [dark, light, ...] would have its
+  // "dark" mode renamed to "light", producing two modes called "light" and
+  // silently orphaning every dark value in the file. Mode ORDER is not part of
+  // the contract; mode NAMES are.
+  if (created) {
+    c.renameMode(c.modes[0].modeId, modes[0]);
+    have.clear();
+    have.add(modes[0]);
+  }
+  for (const m of modes) {
+    if (!have.has(m)) {
+      c.addMode(m);
+      have.add(m);
+    }
+  }
   return c;
 }
 const modeId = (c, name) => c.modes.find((m) => m.name === name).modeId;
@@ -69,7 +100,18 @@ for (const coll of DATA.collections) {
 }
 
 // Qualified "Collection/name" → Variable, for cross-collection alias resolution.
+// Seeded from EVERY variable already in the file, not just the ones this payload
+// carries. That is what makes a CHUNKED push work: the program exceeds use_figma's
+// 50k code limit as one blob, so it ships as several payloads, and a later chunk
+// (Semantic, Component) must still resolve aliases into Primitives that an earlier
+// chunk created. This push's own variables are overlaid afterwards, so they win.
 const byQualified = new Map();
+const allColls = await figma.variables.getLocalVariableCollectionsAsync();
+const collNameById = new Map(allColls.map((c) => [c.id, c.name]));
+for (const v of await figma.variables.getLocalVariablesAsync()) {
+  const cn = collNameById.get(v.variableCollectionId);
+  if (cn) byQualified.set(cn + '/' + v.name, v);
+}
 for (const coll of DATA.collections) {
   const c = collObjs[coll.name];
   for (const v of coll.variables) byQualified.set(coll.name + '/' + v.name, varMap.get(keyOf(c.id, v.name)));

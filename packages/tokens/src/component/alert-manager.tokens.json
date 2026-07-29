@@ -1,0 +1,44 @@
+{
+  "component": {
+    "alert-manager": {
+      "root": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      },
+      "stack": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      },
+      "header": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        }
+      },
+      "ack-all": {
+        "padding-x": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        },
+        "padding-y": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.sm}"
+        }
+      },
+      "overflow": {
+        "padding-x": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        }
+      }
+    }
+  }
+}

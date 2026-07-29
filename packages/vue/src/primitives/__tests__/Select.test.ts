@@ -52,7 +52,7 @@ describe('Select', () => {
     const cls = trigger.classes();
     expect(cls).toContain('border-input');
     expect(cls).toContain('bg-background');
-    expect(cls).toContain('rounded-md');
+    expect(cls).toContain('rounded-(--component-select-radius)');
     // placeholder state is styled as muted
     expect(cls).toContain('data-[placeholder]:text-muted-foreground');
     wrapper.unmount();
@@ -68,7 +68,7 @@ describe('Select', () => {
       },
     });
     const wrapper = mount(cmp);
-    expect(wrapper.find('button').classes()).toContain('h-[max(var(--control-height-lg),var(--target-floor))]');
+    expect(wrapper.find('button').classes()).toContain('h-[max(var(--component-select-height-lg),var(--target-floor))]');
     wrapper.unmount();
   });
 

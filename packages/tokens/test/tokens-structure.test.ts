@@ -11,8 +11,10 @@ import { describe, expect, it } from 'vitest';
  * and the semantic type roles must alias the primitive scale (one source of truth).
  */
 const here = dirname(fileURLToPath(import.meta.url));
-const src = resolve(here, '..', 'src', 'primitive');
-const read = (f: string) => JSON.parse(readFileSync(resolve(src, f), 'utf8'));
+const src = resolve(here, '..', 'src', 'global');
+// Unwrap the GTC group key so the per-scale assertions below stay written against
+// the scale itself (`read('z-index.tokens.json').z`), not the tier.
+const read = (f: string) => JSON.parse(readFileSync(resolve(src, f), 'utf8')).global;
 
 describe('z-index layering scale', () => {
   const z = read('z-index.tokens.json').z as Record<string, { $value: number }>;
@@ -50,7 +52,9 @@ describe('semantic typography roles', () => {
   it('exposes named roles that alias the primitive scale', () => {
     for (const role of ['caption', 'label', 'body', 'body-lg', 'title', 'heading']) {
       expect(text[role], `missing semantic role text.${role}`).toBeDefined();
-      expect(text[role]!.$value, `text.${role} should alias a primitive size`).toMatch(/^\{text\.[a-z0-9]+\}$/);
+      expect(text[role]!.$value, `text.${role} should alias a primitive size`).toMatch(
+        /^\{global\.text\.[a-z0-9]+\}$/,
+      );
     }
   });
 });

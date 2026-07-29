@@ -1,0 +1,48 @@
+{
+  "component": {
+    "dropdown-menu": {
+      "min-width": {
+        "$type": "dimension",
+        "$value": "{global.size.container.2xs}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "{global.spacing.1}"
+      },
+      "item": {
+        "height": {
+          "$type": "dimension",
+          "$value": "{global.spacing.8}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.sm}"
+        },
+        "padding-x": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      },
+      "label": {
+        "padding-x": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        },
+        "padding-y": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1_5}"
+        }
+      },
+      "separator": {
+        "margin-y": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        }
+      }
+    }
+  }
+}

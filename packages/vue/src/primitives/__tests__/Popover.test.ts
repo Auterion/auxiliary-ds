@@ -76,7 +76,7 @@ describe('Popover', () => {
     const content = document.body.querySelector('[role="dialog"]') as HTMLElement | null;
     expect(content).not.toBeNull();
     expect(content!.className).toContain('bg-popover');
-    expect(content!.className).toContain('rounded-md');
+    expect(content!.className).toContain('rounded-(--component-popover-radius)');
     // Reka reflects the resolved placement onto data attributes.
     expect(content!.getAttribute('data-side')).toBe('top');
     expect(content!.getAttribute('data-align')).toBe('start');

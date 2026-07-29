@@ -1,0 +1,22 @@
+{
+  "component": {
+    "radio-group": {
+      "gap": {
+        "$type": "dimension",
+        "$value": "{global.spacing.2}"
+      },
+      "item": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{global.spacing.4}"
+        }
+      },
+      "dot": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      }
+    }
+  }
+}

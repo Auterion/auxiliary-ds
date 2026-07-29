@@ -4,9 +4,9 @@ import { axe } from '../../test-utils/a11y';
 import Spinner from '../Spinner.vue';
 
 const SIZES = {
-  sm: 'h-3 w-3',
-  md: 'h-4 w-4',
-  lg: 'h-6 w-6',
+  sm: 'size-(--component-spinner-size-sm)',
+  md: 'size-(--component-spinner-size-md)',
+  lg: 'size-(--component-spinner-size-lg)',
 } as const;
 
 describe('Spinner', () => {
@@ -21,16 +21,11 @@ describe('Spinner', () => {
 
   it('applies the correct sizing class for each size and defaults to md', () => {
     const svg = mount(Spinner).find('svg');
-    expect(svg.classes()).toContain('h-4');
-    expect(svg.classes()).toContain('w-4');
+    expect(svg.classes()).toContain(SIZES.md);
 
-    for (const [size, [h, w]] of Object.entries(SIZES).map(
-      ([s, cls]) => [s, cls.split(' ')] as const,
-    )) {
+    for (const [size, cls] of Object.entries(SIZES)) {
       const wrapper = mount(Spinner, { props: { size: size as 'sm' | 'md' | 'lg' } });
-      const sized = wrapper.find('svg');
-      expect(sized.classes()).toContain(h);
-      expect(sized.classes()).toContain(w);
+      expect(wrapper.find('svg').classes()).toContain(cls);
     }
   });
 

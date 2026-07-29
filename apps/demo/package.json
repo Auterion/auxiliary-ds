@@ -17,6 +17,7 @@
     "@auxiliary/css": "workspace:*",
     "@auxiliary/icons": "workspace:*",
     "@auxiliary/tokens": "workspace:*",
+    "@auxiliary/viz": "workspace:*",
     "@auxiliary/vue": "workspace:*",
     "p5": "^1.11.13",
     "vue": "^3.5.0"

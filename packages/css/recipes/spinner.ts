@@ -7,9 +7,9 @@ export const spinner = tv({
   },
   variants: {
     size: {
-      sm: { icon: 'h-3 w-3' },
-      md: { icon: 'h-4 w-4' },
-      lg: { icon: 'h-6 w-6' },
+      sm: { icon: 'size-(--component-spinner-size-sm)' },
+      md: { icon: 'size-(--component-spinner-size-md)' },
+      lg: { icon: 'size-(--component-spinner-size-lg)' },
     },
   },
   defaultVariants: {

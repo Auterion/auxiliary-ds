@@ -53,8 +53,7 @@ const rootClass = computed(() => cn(styles.value.root(), props.class));
   <NumberFieldRoot v-bind="forwarded" :class="rootClass">
     <NumberFieldDecrement :class="styles.button()" :aria-label="decrementLabel ?? 'Decrease'">
       <svg
-        width="16"
-        height="16"
+        class="size-(--component-number-field-icon-size)"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -73,8 +72,7 @@ const rootClass = computed(() => cn(styles.value.root(), props.class));
 
     <NumberFieldIncrement :class="styles.button()" :aria-label="incrementLabel ?? 'Increase'">
       <svg
-        width="16"
-        height="16"
+        class="size-(--component-number-field-icon-size)"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

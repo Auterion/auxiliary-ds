@@ -1,0 +1,60 @@
+{
+  "component": {
+    "alert-banner": {
+      "gap": {
+        "$type": "dimension",
+        "$value": "{global.spacing.3}"
+      },
+      "padding-x": {
+        "$type": "dimension",
+        "$value": "{global.spacing.4}"
+      },
+      "padding-y": {
+        "$type": "dimension",
+        "$value": "{global.spacing.3}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      },
+      "icon-size": {
+        "$type": "dimension",
+        "$value": "{global.size.icon.lg}"
+      },
+      "icon": {
+        "offset-y": {
+          "$type": "dimension",
+          "$value": "{global.spacing.0_5}"
+        }
+      },
+      "action": {
+        "padding-x": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        },
+        "padding-y": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.sm}"
+        }
+      },
+      "dismiss": {
+        "padding": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.sm}"
+        },
+        "icon-size": {
+          "$type": "dimension",
+          "$value": "{global.size.icon.md}"
+        }
+      }
+    }
+  }
+}

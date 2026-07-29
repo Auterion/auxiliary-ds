@@ -31,8 +31,7 @@ const rootClass = computed(() => cn(styles.value.anchor(), props.class));
     />
     <ComboboxTrigger :class="styles.trigger()" aria-label="Toggle options">
       <svg
-        width="14"
-        height="14"
+        class="size-(--component-combobox-icon-size)"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

@@ -9,25 +9,28 @@ import { tv, type VariantProps } from 'tailwind-variants';
 export const combobox = tv({
   slots: {
     anchor:
-      'inline-flex w-full items-center gap-2 rounded-md border border-input bg-background text-foreground focus-within:ring-2 ring-ring has-[input:disabled]:opacity-50 has-[input:disabled]:cursor-not-allowed',
+      'inline-flex w-full items-center gap-(--component-combobox-gap) rounded-(--component-combobox-radius) border border-input bg-background text-foreground focus-within:ring-2 ring-ring has-[input:disabled]:opacity-(--opacity-disabled) has-[input:disabled]:cursor-not-allowed',
     input:
       'min-w-0 flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed',
     trigger: 'shrink-0 text-muted-foreground outline-none',
     content:
-      'z-[var(--z-dropdown)] max-h-72 min-w-[var(--reka-combobox-trigger-width)] overflow-hidden overflow-y-auto rounded-md border border-border bg-popover text-sm text-popover-foreground shadow-md outline-none',
-    viewport: 'p-1',
-    item: 'relative flex h-8 cursor-pointer select-none items-center rounded-sm pl-7 pr-2 text-sm outline-none data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed',
-    itemIndicator: 'absolute left-2 flex items-center justify-center',
-    empty: 'px-2 py-6 text-center text-sm text-muted-foreground',
-    separator: 'my-1 border-t border-border',
+      'z-[var(--z-dropdown)] max-h-(--component-combobox-content-max-height) min-w-[var(--reka-combobox-trigger-width)] overflow-hidden overflow-y-auto rounded-(--component-combobox-content-radius) border border-border bg-popover text-sm text-popover-foreground shadow-md outline-none',
+    viewport: 'p-(--component-combobox-viewport-padding)',
+    // Text inset is DERIVED — see the same note in select.ts.
+    item: 'relative flex h-(--component-combobox-item-height) cursor-pointer select-none items-center rounded-(--component-combobox-item-radius) pl-[calc(var(--component-combobox-item-indicator-inset-inline-start)+var(--component-combobox-item-icon-size)+var(--spacing-2))] pr-(--component-combobox-item-padding-inline-end) text-sm outline-none data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground data-[disabled]:opacity-(--opacity-disabled) data-[disabled]:cursor-not-allowed',
+    itemIndicator:
+      'absolute left-(--component-combobox-item-indicator-inset-inline-start) flex items-center justify-center',
+    empty:
+      'px-(--component-combobox-empty-padding-x) py-(--component-combobox-empty-padding-y) text-center text-sm text-muted-foreground',
+    separator: 'my-(--component-combobox-separator-margin-y) border-t border-border',
   },
   variants: {
     // Register-flex anchor height via --control-height-* (ROADMAP §6g) — keeps
     // the anchor aligned with Input/Select rungs across registers.
     size: {
-      sm: { anchor: 'h-[max(var(--control-height-sm),var(--target-floor))] px-2.5 text-sm' },
-      md: { anchor: 'h-[max(var(--control-height-md),var(--target-floor))] px-3 text-sm' },
-      lg: { anchor: 'h-[max(var(--control-height-lg),var(--target-floor))] px-3.5 text-base' },
+      sm: { anchor: 'h-[max(var(--component-combobox-height-sm),var(--target-floor))] px-(--component-combobox-padding-x-sm) text-sm' },
+      md: { anchor: 'h-[max(var(--component-combobox-height-md),var(--target-floor))] px-(--component-combobox-padding-x-md) text-sm' },
+      lg: { anchor: 'h-[max(var(--component-combobox-height-lg),var(--target-floor))] px-(--component-combobox-padding-x-lg) text-base' },
     },
     invalid: {
       true: { anchor: 'border-destructive focus-within:ring-destructive' },

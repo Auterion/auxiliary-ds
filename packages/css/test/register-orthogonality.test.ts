@@ -40,7 +40,19 @@ function block(css: string, selector: string): string | null {
 
 const THEMES = ['light', 'dark', 'sunlight', 'darknight'];
 // Anything the register axis is allowed to own — by emitted var prefix.
-const NON_COLOR_PREFIXES = ['--control-height-', '--radius-', '--duration-', '--spacing'];
+// `--component-*` is here because the register block RE-EMITS the component tokens
+// that reference a var it shadows: custom properties inherit their post-substitution
+// value, so without the restatement a [data-register] subtree would keep the
+// expressive geometry. The component tier is colour-free by build-time invariant
+// (assertComponentTier), so this cannot smuggle colour into the register axis — and
+// the two assertions above still check that independently.
+const NON_COLOR_PREFIXES = [
+  '--control-height-',
+  '--radius-',
+  '--duration-',
+  '--spacing',
+  '--component-',
+];
 
 describe('register/theme orthogonality (generated CSS)', () => {
   const opBlock = block(tokensCss, '[data-register="operational"]');

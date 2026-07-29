@@ -890,7 +890,7 @@ Slice 1 is the spike + the written decision record (mirrors §6g's format).
 ### Viz token layer
 
 Categorical / sequential / diverging palettes **derived from the OKLCH primitive ramps**
-(`packages/tokens/src/primitive`), never ad-hoc, that survive **all four themes** (sunlight glare,
+(`packages/tokens/src/global`), never ad-hoc, that survive **all four themes** (sunlight glare,
 darknight scotopic/low-blue) **and** CVD (deutan/protan/tritan). Two hard constraints from the system's
 DNA: **luminance hierarchy over saturation** (every series distinguishable in grayscale — the same rule
 the darknight ladder already enforces), and **the severity ladder stays reserved** (no categorical

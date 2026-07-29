@@ -26,7 +26,16 @@ import { tokens } from '@auxiliary/tokens';
 export const SCALE_SIZES = { categorical: 6, sequential: 5, diverging: 5 } as const;
 export type VizScale = keyof typeof SCALE_SIZES;
 
-const light = tokens.light as Record<string, string>;
+// The `as Record<string, string>` widening is needed for the templated
+// `viz-${scale}-${i}` lookup below, but it also means a missing tier would yield
+// `undefined` colours at module-eval time rather than an error. Guard explicitly:
+// this module is imported for its SSR/static fallback, where a wrong-but-defined
+// value is far worse than a crash.
+const lightTheme = tokens.theme.light;
+if (!lightTheme) {
+  throw new Error('@auxiliary/viz: tokens.theme.light is missing — the token tier layout changed?');
+}
+const light = lightTheme as Record<string, string>;
 
 const lightScale = (scale: VizScale): string[] =>
   Array.from({ length: SCALE_SIZES[scale] }, (_unused, i) => light[`viz-${scale}-${i + 1}`]!);

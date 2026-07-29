@@ -1,6 +1,7 @@
 import { rmSync } from 'node:fs';
 import StyleDictionary from 'style-dictionary';
 import { converter, formatHex, parse as parseColor } from 'culori';
+import { assertGtc } from './gtc-validate.mjs';
 
 // Wipe dist entirely before building: cleanAllPlatforms() only removes the
 // declared destinations, so renamed outputs and stray files (e.g. editor /
@@ -32,8 +33,19 @@ const INPUT_MODALITY_CSS = `@media (pointer: coarse) {
 `;
 
 const toSrgb = converter('rgb');
-const isTheme = (t) => THEMES.includes(t.path[0]);
-const isRegister = (t) => REGISTERS.includes(t.path[0]);
+
+// GTC (buninux.com/design-tokens): the first path segment is always the Group, and
+// for the two axis tiers the second segment is the axis VALUE:
+//   global.spacing.4                  theme.dark.card
+//   register.operational.radius.sm    component.button.radius.md
+// Every classifier keys off path[0] so a token that isn't under a known group can
+// never fall through into the "everything else" bucket (see assertSourceShapes).
+const isGlobal = (t) => t.path[0] === 'global';
+const isTheme = (t) => t.path[0] === 'theme' && THEMES.includes(t.path[1]);
+const isRegister = (t) => t.path[0] === 'register' && REGISTERS.includes(t.path[1]);
+const isComponent = (t) => t.path[0] === 'component';
+/** Axis value (theme mode / register name) for the two axis tiers. */
+const axisOf = (t) => t.path[1];
 // Composite typography roles ($type "typography") are not a single CSS value —
 // they decompose into the existing text/leading/tracking/font utilities, and ship
 // to Figma as Text Styles (like shadow → Effect Styles). Excluded from the flat
@@ -41,9 +53,15 @@ const isRegister = (t) => REGISTERS.includes(t.path[0]);
 const isTypography = (t) => t.$type === 'typography';
 // Register override blocks, emitted only for registers that actually have tokens.
 const registersWithTokens = (allTokens) =>
-  REGISTERS.filter((name) => allTokens.some((t) => t.path[0] === name));
+  REGISTERS.filter((name) => allTokens.some((t) => isRegister(t) && axisOf(t) === name));
 
-const kebabSegment = (s) => String(s).replace(/_/g, '-');
+// `_` is this repo's DTCG-safe stand-in for a decimal point (JSON keys can hold a
+// "." but Style Dictionary treats it as a path separator), so `spacing.2_5` means
+// 2.5. It must emit as an ESCAPED dot: Tailwind looks up `--spacing-2\.5` for the
+// `px-2.5` utility. Emitting `--spacing-2-5` — as this did until the GTC pass —
+// silently never matched, leaving all three fractional rungs dead and every
+// `px-2.5` quietly falling back to Tailwind's own `--spacing` multiplier.
+const kebabSegment = (s) => String(s).replace(/_/g, '\\.');
 const cssName = (path) => path.map(kebabSegment).join('-');
 
 // Fluid type: a dimension token may declare a phone-width minimum via
@@ -71,63 +89,136 @@ const SUFFIX_GROUPS = {
   'text-leading': '--line-height',
   'text-tracking': '--letter-spacing',
 };
-const cssVarName = (t, stripPrefix) => {
-  const path = stripPrefix ? t.path.slice(1) : t.path;
-  const suffix = SUFFIX_GROUPS[path[0]];
-  if (suffix) return `--text-${cssName(path.slice(1))}${suffix}`;
-  return `--${cssName(path)}`;
+// How many leading path segments are namespace rather than name. Emitted CSS
+// variable names MUST NOT change across the GTC restructure — they are the public
+// contract every recipe, demo and doc page consumes:
+//   global.spacing.4                -> --spacing-4
+//   theme.light.card-foreground     -> --card-foreground     (drops TWO segments)
+//   register.operational.radius.md  -> --radius-md           (drops TWO segments)
+// The component tier deliberately KEEPS its group segment, so a per-component var
+// (--component-button-radius-md) can never collide with a global one.
+const GROUP_STRIP = { global: 1, theme: 2, register: 2, component: 0 };
+
+/** Name a CSS var from an already-stripped segment list. */
+const varNameFor = (segments) => {
+  const suffix = SUFFIX_GROUPS[segments[0]];
+  if (suffix) return `--text-${cssName(segments.slice(1))}${suffix}`;
+  return `--${cssName(segments)}`;
+};
+const cssVarName = (t) => varNameFor(t.path.slice(GROUP_STRIP[t.path[0]] ?? 0));
+
+const ALIAS_RE = /^\{([^}]+)\}$/;
+/** The `{a.b.c}` target of an alias-valued token, as segments — or null. */
+const aliasSegments = (t) => {
+  const raw = t.original?.$value;
+  const m = typeof raw === 'string' ? raw.match(ALIAS_RE) : null;
+  return m ? m[1].split('.') : null;
 };
 
-const renderVars = (tokens, stripPrefix, indent = '  ') =>
+/**
+ * Component tokens emit a REFERENCE, never a resolved literal.
+ *
+ * Every other tier resolves to a literal because a literal is what it means. A
+ * component token means "this button's md height IS the global md control height" —
+ * a redirect. Baking `36px` would freeze it: under [data-register="operational"]
+ * --control-height-md becomes 32px and a literal would not follow. `var(...)`
+ * follows by construction. No fallback value: the target is declared in this same
+ * generated file, and a fallback is precisely the frozen literal being eliminated.
+ */
+const componentValue = (t) => {
+  const alias = aliasSegments(t);
+  if (!alias) return t.$value; // unreachable — assertComponentTier forbids literals
+  return `var(${varNameFor(alias[0] === 'global' ? alias.slice(1) : alias)})`;
+};
+
+const renderComponentVars = (tokens, indent = '  ') =>
+  tokens.map((t) => `${indent}${cssVarName(t)}: ${componentValue(t)};`).join('\n');
+
+/** CSS var names a token list declares — used to find what a register block shadows. */
+const declaredNames = (tokens) => new Set(tokens.map((t) => cssVarName(t)));
+
+/**
+ * Component vars that must be RE-EMITTED inside a register block.
+ *
+ * Custom properties substitute var() at the element the declaration applies to, and
+ * descendants inherit the already-substituted value. So a `:root`-only
+ * `--component-button-height-md: var(--control-height-md)` computes to 36px at
+ * :root, and a SUBTREE carrying [data-register="operational"] would inherit that
+ * 36px — silently ignoring the register. Since the register axis is documented as
+ * composing at any tree depth, every block that shadows a referenced var has to
+ * restate the component tokens that point at it.
+ */
+const componentVarsDependingOn = (components, shadowed) =>
+  components.filter((t) => {
+    const alias = aliasSegments(t);
+    if (!alias) return false;
+    return shadowed.has(varNameFor(alias[0] === 'global' ? alias.slice(1) : alias));
+  });
+
+const renderVars = (tokens, indent = '  ') =>
   tokens
     .map((t) => {
       const min = fluidMin(t);
       const value = min ? fluidClamp(min, t.$value) : t.$value;
-      return `${indent}${cssVarName(t, stripPrefix)}: ${value};`;
+      return `${indent}${cssVarName(t)}: ${value};`;
     })
     .join('\n');
 
 StyleDictionary.registerFormat({
   name: 'css/auxiliary-tailwind-themes',
   format: async ({ dictionary }) => {
-    const primitives = dictionary.allTokens.filter(
-      (t) => !isTheme(t) && !isRegister(t) && !isTypography(t),
-    );
+    // Positive filter on the global tier. This was previously the double negative
+    // `!isTheme && !isRegister`, which is an allow-list by accident: a component
+    // token satisfies both negations, so it would silently land in @theme{} as a
+    // resolved literal — losing its var() reference and its register flex.
+    const globals = dictionary.allTokens.filter((t) => isGlobal(t) && !isTypography(t));
     const byTheme = Object.fromEntries(
-      THEMES.map((name) => [name, dictionary.allTokens.filter((t) => t.path[0] === name)])
+      THEMES.map((name) => [name, dictionary.allTokens.filter((t) => isTheme(t) && axisOf(t) === name)])
     );
     const byRegister = Object.fromEntries(
-      REGISTERS.map((name) => [name, dictionary.allTokens.filter((t) => t.path[0] === name)])
+      REGISTERS.map((name) => [name, dictionary.allTokens.filter((t) => isRegister(t) && axisOf(t) === name)])
     );
 
     let out = '';
-    // @theme: primitives + light defaults (Tailwind generates utilities from these)
+    // @theme: globals + light defaults (Tailwind generates utilities from these)
     out += '@theme {\n';
     out += '  /* Primitives */\n';
-    out += renderVars(primitives, false) + '\n\n';
+    out += renderVars(globals) + '\n\n';
     out += '  /* Semantic (light defaults) */\n';
-    out += renderVars(byTheme.light, true) + '\n';
+    out += renderVars(byTheme.light) + '\n';
     out += '}\n\n';
 
     // System dark mode
     out += '@media (prefers-color-scheme: dark) {\n  :root {\n';
-    out += renderVars(byTheme.dark, true, '    ') + '\n';
+    out += renderVars(byTheme.dark, '    ') + '\n';
     out += '  }\n}\n\n';
 
     // Explicit overrides via [data-theme]
     for (const theme of THEMES) {
       out += `[data-theme="${theme}"] {\n`;
-      out += renderVars(byTheme[theme], true) + '\n';
+      out += renderVars(byTheme[theme]) + '\n';
       out += '}\n\n';
     }
 
+    // Component tier — reference-valued so it follows [data-register]. Emitted in a
+    // plain :root block, deliberately NOT inside @theme{}: Tailwind tree-shakes theme
+    // variables against generated utilities, and --component-* is not a Tailwind
+    // namespace, so the whole tier could be dropped. Recipes consume these with the
+    // `px-(--component-button-padding-x-md)` shorthand, which needs no theme entry.
+    const components = dictionary.allTokens.filter(isComponent);
+    if (components.length) {
+      out += `:root {\n${renderComponentVars(components)}\n}\n\n`;
+    }
+
     // Register overrides via [data-register] — the orthogonal non-color axis.
-    // expressive = default (the @theme/primitive values above), so only the
+    // expressive = default (the @theme/global values above), so only the
     // operational override block is emitted.
     const regs = registersWithTokens(dictionary.allTokens);
     for (const register of regs) {
       out += `[data-register="${register}"] {\n`;
-      out += renderVars(byRegister[register], true) + '\n';
+      out += renderVars(byRegister[register]) + '\n';
+      const dependents = componentVarsDependingOn(components, declaredNames(byRegister[register]));
+      if (dependents.length) out += renderComponentVars(dependents) + '\n';
       out += '}\n';
       if (register !== regs.at(-1)) out += '\n';
     }
@@ -141,36 +232,43 @@ StyleDictionary.registerFormat({
 StyleDictionary.registerFormat({
   name: 'css/auxiliary-vars',
   format: async ({ dictionary }) => {
-    const primitives = dictionary.allTokens.filter(
-      (t) => !isTheme(t) && !isRegister(t) && !isTypography(t),
-    );
+    // Positive filter on the global tier — see the note in the tailwind format.
+    const globals = dictionary.allTokens.filter((t) => isGlobal(t) && !isTypography(t));
     const byTheme = Object.fromEntries(
-      THEMES.map((name) => [name, dictionary.allTokens.filter((t) => t.path[0] === name)])
+      THEMES.map((name) => [name, dictionary.allTokens.filter((t) => isTheme(t) && axisOf(t) === name)])
     );
     const byRegister = Object.fromEntries(
-      REGISTERS.map((name) => [name, dictionary.allTokens.filter((t) => t.path[0] === name)])
+      REGISTERS.map((name) => [name, dictionary.allTokens.filter((t) => isRegister(t) && axisOf(t) === name)])
     );
 
     let out = '/* Generated — do not edit */\n\n';
     out += ':root {\n';
-    out += renderVars(primitives, false) + '\n\n';
-    out += renderVars(byTheme.light, true) + '\n';
+    out += renderVars(globals) + '\n\n';
+    out += renderVars(byTheme.light) + '\n';
     out += '}\n\n';
 
     out += '@media (prefers-color-scheme: dark) {\n  :root {\n';
-    out += renderVars(byTheme.dark, true, '    ') + '\n';
+    out += renderVars(byTheme.dark, '    ') + '\n';
     out += '  }\n}\n\n';
 
     for (const theme of THEMES) {
       out += `[data-theme="${theme}"] {\n`;
-      out += renderVars(byTheme[theme], true) + '\n';
+      out += renderVars(byTheme[theme]) + '\n';
       out += '}\n\n';
+    }
+
+    // Component tier — see the note in the tailwind format.
+    const components = dictionary.allTokens.filter(isComponent);
+    if (components.length) {
+      out += `:root {\n${renderComponentVars(components)}\n}\n\n`;
     }
 
     // [data-register] — the orthogonal non-color axis (ROADMAP §6g).
     for (const register of registersWithTokens(dictionary.allTokens)) {
       out += `[data-register="${register}"] {\n`;
-      out += renderVars(byRegister[register], true) + '\n';
+      out += renderVars(byRegister[register]) + '\n';
+      const dependents = componentVarsDependingOn(components, declaredNames(byRegister[register]));
+      if (dependents.length) out += renderComponentVars(dependents) + '\n';
       out += '}\n\n';
     }
 
@@ -372,13 +470,24 @@ StyleDictionary.registerFormat({
  * Styles via figma-sync; easings stay documentation).
  */
 const FIGMA_PRIMITIVES = 'Primitives';
+/** Figma modes for the Component collection — the component tier's size axis. */
+const SIZE_MODES = ['sm', 'md', 'lg'];
 // shadow + cubicBezier aren't variables (shadow → Effect Styles; easings → docs).
 // typography is a composite → Text Styles, not a variable (handled separately below).
-const FIGMA_SKIP = new Set(['shadow', 'cubicBezier', 'typography']);
+// strokeStyle is a keyword, not a number or colour — figmaType() would fall through
+// to FLOAT and toFigmaValue() would yield null, producing exactly the junk variable
+// assertSourceShapes exists to prevent.
+const FIGMA_SKIP = new Set(['shadow', 'cubicBezier', 'typography', 'strokeStyle']);
 const figmaType = (type) =>
   type === 'color' ? 'COLOR' : type === 'fontFamily' ? 'STRING' : 'FLOAT';
-// `{color.primitive.red.700}` → `Primitives/color/primitive/red/700`
-const aliasToVarRef = (ref) => `${FIGMA_PRIMITIVES}/${ref.replace(/[{}]/g, '').split('.').join('/')}`;
+// `{global.color.primitive.red.700}` → `Primitives/color/primitive/red/700`.
+// The GTC group is carried by the COLLECTION, not the variable path — GTC's own
+// taxonomy rule 2 says so ("in Figma the collection name is the Group and variable
+// paths start at Element"). Stripping it is also what keeps every existing Figma
+// variable path stable across this migration: a renamed path would not move the
+// bound instances, it would ORPHAN them and silently create duplicates.
+const aliasToVarRef = (ref) =>
+  `${FIGMA_PRIMITIVES}/${ref.replace(/[{}]/g, '').replace(/^global\./, '').split('.').join('/')}`;
 
 // Map a resolved fontWeight number → the Figma font style name we'll try first.
 const WEIGHT_STYLE = { 400: 'Regular', 500: 'Medium', 600: 'Semi Bold', 700: 'Bold' };
@@ -418,7 +527,10 @@ const toTextStyles = (allTokens) =>
           ? aliasToVarRef(val)
           : null;
       return {
-        name: t.path.slice(1).join('/'),
+        // `global.type.product.display` → `product/display`. Drops the group AND the
+        // `type` group segment; these Text Style names are live in the Figma file, so
+        // a change here creates duplicates rather than renaming.
+        name: t.path.slice(2).join('/'),
         fontFamilyCandidates: figmaFamilyCandidates(v.fontFamily),
         fontStyle: WEIGHT_STYLE[weight] ?? 'Regular',
         fontSize: dimValue(v.fontSize),
@@ -452,24 +564,61 @@ StyleDictionary.registerFormat({
     // text-leading/text-tracking are CSS-only pairing vars for Tailwind's
     // per-size suffix convention; Text Styles already carry lh/ls, so raw
     // FLOAT variables for them would be junk in Figma.
-    const primitives = dictionary.allTokens.filter(
-      (t) =>
-        !isTheme(t) && !isRegister(t) && !FIGMA_SKIP.has(t.$type) && !SUFFIX_GROUPS[t.path[0]],
+    // Positive filter on the global tier (was `!isTheme && !isRegister`, which would
+    // sweep the component tier into Primitives). SUFFIX_GROUPS now sits at path[1],
+    // since path[0] is the group.
+    const globals = dictionary.allTokens.filter(
+      (t) => isGlobal(t) && !FIGMA_SKIP.has(t.$type) && !SUFFIX_GROUPS[t.path[1]],
     );
-    const primitiveVars = primitives.map((t) => ({
-      name: t.path.join('/'),
+    const primitiveVars = globals.map((t) => ({
+      // Group carried by the collection — see aliasToVarRef.
+      name: t.path.slice(1).join('/'),
       type: figmaType(t.$type),
       valuesByMode: { Base: toFigmaValue(t) },
     }));
 
-    // Group the 4 theme files by role (path after the theme segment) into one variable
-    // per role with a per-mode alias.
+    // Group the 4 theme files by role (path after the group + mode segments) into one
+    // variable per role with a per-mode alias.
     const roles = new Map();
     for (const t of dictionary.allTokens.filter(isTheme)) {
-      const mode = t.path[0];
-      const name = t.path.slice(1).join('/');
+      const mode = axisOf(t);
+      const name = t.path.slice(2).join('/');
       if (!roles.has(name)) roles.set(name, { name, type: figmaType(t.$type), valuesByMode: {} });
       roles.get(name).valuesByMode[mode] = toFigmaValue(t);
+    }
+
+    // Component tier → a third collection with SIZE as Figma modes. The source
+    // authors size as a path segment (DTCG has no mode concept we adopted), but
+    // Figma models exactly this natively, and collapsing at export is the same
+    // transform the Semantic collection already performs across four theme files.
+    // It is what lets a designer flip one frame's mode and have every bound
+    // radius/padding/height resize together.
+    const componentVars = new Map();
+    for (const t of dictionary.allTokens.filter(isComponent)) {
+      const leaf = t.path.at(-1);
+      const sized = SIZE_MODES.includes(leaf);
+      const name = (sized ? t.path.slice(1, -1) : t.path.slice(1)).join('/');
+      if (!componentVars.has(name)) {
+        componentVars.set(name, { name, type: figmaType(t.$type), valuesByMode: {} });
+      }
+      const entry = componentVars.get(name);
+      if (sized) entry.valuesByMode[leaf] = toFigmaValue(t);
+      else for (const m of SIZE_MODES) entry.valuesByMode[m] = toFigmaValue(t);
+    }
+    // Figma requires a value per mode. A two-size component (Badge, StatusBadge)
+    // genuinely has no `lg`, so carry the nearest declared rung outward rather than
+    // inventing a third size — "Badge at lg looks like Badge at md" is the truth.
+    for (const v of componentVars.values()) {
+      let carry = null;
+      for (const m of SIZE_MODES) {
+        if (v.valuesByMode[m] !== undefined) carry = v.valuesByMode[m];
+        else if (carry !== null) v.valuesByMode[m] = carry;
+      }
+      carry = null;
+      for (const m of [...SIZE_MODES].reverse()) {
+        if (v.valuesByMode[m] !== undefined) carry = v.valuesByMode[m];
+        else if (carry !== null) v.valuesByMode[m] = carry;
+      }
     }
 
     return (
@@ -478,6 +627,9 @@ StyleDictionary.registerFormat({
           collections: [
             { name: FIGMA_PRIMITIVES, modes: ['Base'], variables: primitiveVars },
             { name: 'Semantic', modes: THEMES, variables: [...roles.values()] },
+            ...(componentVars.size
+              ? [{ name: 'Component', modes: SIZE_MODES, variables: [...componentVars.values()] }]
+              : []),
           ],
           textStyles: toTextStyles(dictionary.allTokens),
         },
@@ -498,7 +650,10 @@ const assertPrimitivePurity = (dictionary) => {
   for (const t of dictionary.allTokens) {
     if (!isTheme(t)) continue;
     const orig = t.original?.$value;
-    const isAlias = typeof orig === 'string' && orig.startsWith('{') && orig.endsWith('}');
+    // Tightened with the GTC rename: the target must be a colour PRIMITIVE, not just
+    // any alias. Catches a theme role pointing at another theme role or at a
+    // non-colour global — neither of which the old "starts with {" test caught.
+    const isAlias = typeof orig === 'string' && orig.endsWith('}') && orig.startsWith('{global.color.primitive.');
     if (!isAlias) {
       offenders.push(`  ${t.path.join('.')} = ${JSON.stringify(orig)}`);
     }
@@ -549,7 +704,9 @@ const assertThemeRoleParity = (dictionary) => {
   const roleSets = new Map(THEMES.map((theme) => [theme, new Map()]));
   for (const t of dictionary.allTokens) {
     if (!isTheme(t)) continue;
-    roleSets.get(t.path[0]).set(t.path.slice(1).join('.'), t.$type);
+    // path[0] is the `theme` group, path[1] the mode. isTheme already guarantees
+    // path[1] ∈ THEMES, so the map lookup cannot be undefined.
+    roleSets.get(axisOf(t)).set(t.path.slice(2).join('.'), t.$type);
   }
   const union = new Map();
   for (const roles of roleSets.values()) {
@@ -574,11 +731,64 @@ const assertThemeRoleParity = (dictionary) => {
 };
 
 /**
+ * Build-time invariants for the component tier (GTC).
+ *
+ *  - No colour. Colour belongs to the theme axis exclusively; a component colour
+ *    would be invisible to the four per-theme contrast/CVD/blue-energy gates and
+ *    would not re-resolve under [data-theme].
+ *  - Every token aliases a global. A literal here defines a value the component tier
+ *    has no authority to define, and — because component tokens emit as var() — it
+ *    would be the one declaration in the block that silently does not follow
+ *    [data-register].
+ *  - Aliases must resolve, and only into `global.*`.
+ *  - No `global.target.*`. --target-floor is re-declared by the @media(pointer:coarse)
+ *    and [data-input] blocks, which do NOT re-emit the component tier, so a component
+ *    var pointing at it would inherit its :root-substituted value and silently ignore
+ *    the touch floor. Recipes must compose it with max() at the point of use.
+ */
+const assertComponentTier = (dictionary) => {
+  const globalPaths = new Set(
+    dictionary.allTokens.filter(isGlobal).map((t) => t.path.join('.')),
+  );
+  const offenders = [];
+  for (const t of dictionary.allTokens) {
+    if (!isComponent(t)) continue;
+    const at = t.path.join('.');
+    if (t.$type === 'color') {
+      offenders.push(`  ${at} is a color (the component tier is structural only)`);
+    }
+    const alias = aliasSegments(t);
+    if (!alias) {
+      offenders.push(
+        `  ${at} = ${JSON.stringify(t.original?.$value)} (component tokens must alias a global token)`,
+      );
+      continue;
+    }
+    const target = alias.join('.');
+    if (alias[0] !== 'global') {
+      offenders.push(`  ${at} -> {${target}} (component may only alias global.*)`);
+    } else if (!globalPaths.has(target)) {
+      offenders.push(`  ${at} -> {${target}} does not exist`);
+    } else if (alias[1] === 'target') {
+      offenders.push(
+        `  ${at} -> {${target}} (compose target.* with max() in the recipe — it is not re-emitted under [data-input])`,
+      );
+    }
+  }
+  if (offenders.length > 0) {
+    throw new Error(
+      `Component-tier check failed — ${offenders.length} violation(s):\n` + offenders.join('\n'),
+    );
+  }
+};
+
+/**
  * Build-time source-shape validation: every token must carry a known $type and
  * a $value whose shape matches it. Without this, an untyped token flows through
  * as $type undefined → Figma FLOAT with null values, and an object $value on a
  * scalar type emits `--x: [object Object]` into the CSS.
  */
+const GTC_GROUPS = new Set(['global', 'theme', 'component', 'register']);
 const KNOWN_TYPES = new Set([
   'color',
   'dimension',
@@ -589,7 +799,13 @@ const KNOWN_TYPES = new Set([
   'fontFamily',
   'fontWeight',
   'number',
+  'strokeStyle', // DTCG §9.2 — border-style
 ]);
+// DTCG §9.2 keyword forms. `none` is NOT among them (use border-width.0).
+const STROKE_STYLE_KEYWORDS = new Set([
+  'solid', 'dashed', 'dotted', 'double', 'groove', 'ridge', 'outset', 'inset',
+]);
+const LINE_CAPS = new Set(['round', 'butt', 'square']);
 const TYPOGRAPHY_KEYS = ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing'];
 const assertSourceShapes = (dictionary) => {
   const offenders = [];
@@ -597,6 +813,23 @@ const assertSourceShapes = (dictionary) => {
   for (const t of dictionary.allTokens) {
     const type = t.original?.$type ?? t.$type;
     const raw = t.original?.$value ?? t.$value;
+    // Every token must sit under a GTC group. Without this a file authored in the
+    // pre-GTC un-prefixed shape (`{"spacing": {...}}`) matches none of the
+    // classifiers, silently skips every emission block, and vanishes from the CSS.
+    if (!GTC_GROUPS.has(t.path[0])) {
+      offenders.push(
+        `  ${t.path.join('.')} is not under a GTC group (${[...GTC_GROUPS].join('/')})`,
+      );
+      continue;
+    }
+    if (t.path[0] === 'theme' && !THEMES.includes(t.path[1])) {
+      offenders.push(`  ${t.path.join('.')} — "theme" must be followed by ${THEMES.join('|')}`);
+      continue;
+    }
+    if (t.path[0] === 'register' && !REGISTERS.includes(t.path[1])) {
+      offenders.push(`  ${t.path.join('.')} — "register" must be followed by ${REGISTERS.join('|')}`);
+      continue;
+    }
     if (!KNOWN_TYPES.has(type)) {
       offenders.push(`  ${t.path.join('.')} has unknown $type ${JSON.stringify(type)}`);
       continue;
@@ -629,6 +862,21 @@ const assertSourceShapes = (dictionary) => {
       case 'shadow':
         if (typeof raw !== 'string') bad('shadow must be a CSS string');
         break;
+      case 'strokeStyle':
+        // DTCG §9.2: a keyword, or { dashArray: <dimension>[], lineCap }.
+        if (typeof raw === 'string') {
+          if (!STROKE_STYLE_KEYWORDS.has(raw)) bad('unknown strokeStyle keyword (DTCG §9.2)');
+        } else if (raw !== null && typeof raw === 'object' && !Array.isArray(raw)) {
+          if (
+            !Array.isArray(raw.dashArray) ||
+            !raw.dashArray.every((d) => typeof d === 'string' && DIM_RE.test(d))
+          )
+            bad('strokeStyle.dashArray must be an array of dimensions');
+          if (!LINE_CAPS.has(raw.lineCap)) bad('strokeStyle.lineCap must be round|butt|square');
+        } else {
+          bad('strokeStyle must be a keyword or { dashArray, lineCap }');
+        }
+        break;
       case 'typography': {
         if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) {
           bad('typography must be a composite object');
@@ -638,6 +886,12 @@ const assertSourceShapes = (dictionary) => {
         }
         break;
       }
+    }
+    // Opacity is a plain DTCG `number`, but a physically meaningful one. Outside
+    // 0..1 it is not an opacity — and a stray `50` (Tailwind's /100 convention)
+    // would emit `--opacity-disabled: 50` and render fully opaque, silently.
+    if (isGlobal(t) && t.path[1] === 'opacity' && (typeof raw !== 'number' || raw < 0 || raw > 1)) {
+      bad('opacity must be a number in 0..1');
     }
   }
   if (offenders.length > 0) {
@@ -681,11 +935,18 @@ const sd = new StyleDictionary({
   },
 });
 
+// GTC model check runs FIRST, against the raw merged source — before Style
+// Dictionary hydrates. SD resolves aliases before the assertions below can see
+// them, so a dangling `{ref}` throws from inside SD without naming the offending
+// token, and a reference *cycle* blows the stack before any assert runs.
+assertGtc();
+
 // Run the invariant assertions against a hydrated dictionary, then build.
 const dict = await sd.getPlatformTokens('dtcg');
 assertPrimitivePurity(dict);
 assertRegisterOrthogonality(dict);
 assertThemeRoleParity(dict);
+assertComponentTier(dict);
 assertSourceShapes(dict);
 
 await sd.cleanAllPlatforms();

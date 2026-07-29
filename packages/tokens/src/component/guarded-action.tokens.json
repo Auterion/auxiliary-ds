@@ -1,0 +1,55 @@
+{
+  "component": {
+    "guarded-action": {
+      "$description": "Deliberately does NOT alias button.* despite identical rungs today. Cross-component aliasing on a safety-critical control hides the coupling: retuning a button must never silently retune the armed-action geometry.",
+      "height": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.control.height.sm}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.control.height.md}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.control.height.lg}"
+        }
+      },
+      "padding-x": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.spacing.4}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.spacing.6}"
+        }
+      },
+      "gap": {
+        "$type": "dimension",
+        "$value": "{global.spacing.2}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{global.radius.md}"
+      },
+      "fill": {
+        "height": {
+          "$type": "dimension",
+          "$value": "{global.spacing.0_75}"
+        }
+      },
+      "confirm-row": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1_5}"
+        }
+      }
+    }
+  }
+}
