@@ -193,6 +193,55 @@ has to be stable, because **renaming a Figma variable path does not move the bou
 instances, it orphans them** and silently creates a duplicate alongside. A path is
 cheap to get right once and expensive to change later.
 
+### Choosing a name
+
+The stripping rules above say what a name *becomes*. This says what to write in the
+first place. Decision: [`AD-D-021`](https://github.com/Auterion/auxiliary-ds/blob/main/decisions/AD-D-021-token-naming.md).
+
+**Name the role, not the appearance.** A theme re-resolves the value; a name that
+describes the value is false the moment it does.
+
+| Don't | Do | Why |
+| --- | --- | --- |
+| `--blue-500` as a semantic role | `--primary` | Under Mono there is no blue. The name outlived the value. |
+| `--text-dark` | `--foreground` | It's the light theme's *light* text too. |
+| `--border-grey-subtle` | `--border` | Hue is the theme's business, not the consumer's. |
+| `--card-bg-color-default` | `--card` | `bg`, `color` and `default` all carry zero information. |
+
+**Say it once.** Every segment must eliminate an alternative that actually exists.
+
+| Don't | Do | Why |
+| --- | --- | --- |
+| `--global-spacing-4` | `--spacing-4` | The tier is an authoring concern; consumers never disambiguate by it. |
+| `--color-text-secondary-default` | `--muted-foreground` | Four segments, one idea. |
+| `--component-button-button-radius` | `--component-button-radius` | The element is already named. |
+
+**Keep the pairing convention.** A colour that things sit *on* pairs with its ink as
+`X` / `X-foreground` (`--card` / `--card-foreground`).
+
+Every status level carries a **third** name, and the three are not interchangeable:
+
+| Name | Is | Gated against |
+| --- | --- | --- |
+| `--alarm` | the **fill** — a filled badge, a banner ground | its own `--alarm-foreground` only |
+| `--alarm-foreground` | ink **on that fill** | the fill |
+| `--alarm-emphasis` | ink **on the page** — text, border, glyph on `background` or `card` | ≥4.5:1 vs *both* `--background` and `--card` |
+
+The same three exist for every level — `--warning-emphasis`, `--caution-emphasis`,
+`--advisory-emphasis`, `--nominal-emphasis`. Reaching for the fill where you need ink
+is the common mistake and it is a contrast defect, not a preference: the fill is
+gated only against its own foreground, so on a card it can land anywhere. See
+[`AD-D-014`](https://github.com/Auterion/auxiliary-ds/blob/main/decisions/AD-D-014-reserved-status-ladder.md).
+
+**Numeric keys stay factual.** `spacing.4` is 16px because the key is a step index on
+the 4px base — computable without a lookup. Never introduce a numeric key whose value
+you'd have to memorise. Role keys (`radius.sm`, `leading.tight`, `z.modal`) are exempt;
+that's true in canonical GTC too.
+
+**Component tokens name structure only** — size, padding, gap, radius, icon size.
+If you are reaching for `--component-button-background`, the token belongs in
+`theme/`, or it will survive a theme switch and be wrong.
+
 ## Component tokens
 
 The component tier is new with the GTC pass: **181 structural tokens across 31

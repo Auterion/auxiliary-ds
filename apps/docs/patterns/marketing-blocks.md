@@ -1,6 +1,6 @@
 # Marketing blocks
 
-The expressive-register blocks for auterion.com and brand surfaces. They are *not* generic SaaS marketing components — they carry the **operational design language**: Plex/Geist Mono as the type vehicle, instrument-readout framing, the precision of a flight-data display rather than the warmth of a consumer app. Roomy (expressive register, the default), but never decorative for its own sake.
+The expressive-register blocks for auterion.com and brand surfaces. They are *not* generic SaaS marketing components — they carry the **operational design language**: Geist Mono as the type vehicle, instrument-readout framing, the precision of a flight-data display rather than the warmth of a consumer app. Roomy (expressive register, the default), but never decorative for its own sake.
 
 ## Hero
 

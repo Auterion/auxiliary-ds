@@ -58,17 +58,14 @@ function isDocumented(role: string): boolean {
 /**
  * Semantic roles with no docs coverage today. This list only ever ratchets DOWN —
  * see the meta-test below, which fails the moment an entry becomes documented.
- * TODO(ratchet): burn this down — brand belongs in foundations/colors.md, the
- * *-emphasis tier in the alarm-hierarchy section, and the viz ramps in
- * data-viz/index.md. (`overlay` was retired when the Opacity/Blur sections landed.)
+ * TODO(ratchet): burn this down — brand belongs in foundations/colors.md and the viz
+ * ramps in data-viz/index.md. (`overlay` was retired when the Opacity/Blur sections
+ * landed; the whole *-emphasis tier went when foundations/tokens.md grew its
+ * fill-vs-ink table under "Choosing a name".)
  */
 const ALLOWLIST = [
-  'advisory-emphasis',
-  'alarm-emphasis',
   'brand',
   'brand-foreground',
-  'caution-emphasis',
-  'nominal-emphasis',
   'viz-categorical-5',
   'viz-categorical-6',
   'viz-diverging-1',
@@ -81,7 +78,6 @@ const ALLOWLIST = [
   'viz-sequential-3',
   'viz-sequential-4',
   'viz-sequential-5',
-  'warning-emphasis',
 ];
 
 describe('token manifest stays in sync with the built tokens', () => {
