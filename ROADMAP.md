@@ -1,5 +1,10 @@
 # Auxiliary — path to a world-class design system
 
+> **Scope note (2026-08-03).** This file owns **execution sequencing** — what gets built, in what
+> order, and what "done" means for each phase. [`AD-2026-001.md`](AD-2026-001.md) owns **doctrine,
+> the design org, and governance**, and defers all sequencing here. Settled choices live in
+> [`decisions/`](decisions/); cite the `AD-D-###`.
+
 Status as of 2026-06-12. This is the single forward-looking source of truth — a phased execution
 plan grounded in the current code. The monorepo is real and well-layered: 7 packages (incl.
 `@auxiliary/viz` and `@auxiliary/brand`), 2 apps, ~36 Vue primitives. Phases 1–6 are delivered

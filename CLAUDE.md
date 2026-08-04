@@ -23,7 +23,7 @@ Apps:
 - `apps/docs` — `@auxiliary/docs`, VitePress docs at `http://localhost:5173`
 - `apps/demo` — `@auxiliary/demo`, Vite playground at `http://localhost:5174`
 
-**Where things are headed:** `ROADMAP.md` is the single forward-looking source of truth (phased plan; active frontier is Phase 7 "Refinement"). Design grounding lives in `.claude/docs/` — incl. `auterion-product-inventory.md` (real Mission Control / Suite / OS surfaces to design against).
+**Where things are headed:** `ROADMAP.md` owns execution sequencing (phased plan; active frontier is Phase 7 "Refinement"). `AD-2026-001.md` owns doctrine, the design org, and governance, and defers sequencing to the roadmap. Settled choices live in `decisions/` — cite the `AD-D-###`. Design grounding lives in `.claude/docs/` — incl. `auterion-product-inventory.md` (real Mission Control / Suite / OS surfaces to design against); reference material is scored in `references/`.
 
 ## Architecture
 
