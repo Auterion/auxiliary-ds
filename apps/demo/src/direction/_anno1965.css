@@ -1,0 +1,205 @@
+/*
+ * Candidate B — "Anno 1965", as a token-override layer.
+ *
+ * THE TEST, NOT THE STYLING
+ * -------------------------
+ * AD-D-013 sets one constraint on the challenger: it must be expressible as a
+ * **token override plus a register value**. If it cannot be, that failure is the
+ * finding — it means the system cannot hold the language, and knowing that
+ * matters more than knowing which candidate is prettier.
+ *
+ * So this file is written in two halves, and the split is the deliverable:
+ *
+ *   PART 1 — overrides. Custom properties the system already emits. Anything
+ *            here is proof the language fits inside the token contract.
+ *   PART 2 — bespoke. CSS the token layer has no vocabulary for. Every rule in
+ *            here is a gap in the system, named as such.
+ *
+ * Do not "tidy" a rule from Part 2 into Part 1 by inventing a token inline. The
+ * count is the result.
+ *
+ * WHY THE ATTRIBUTE NESTS INSIDE [data-register]
+ * ----------------------------------------------
+ * The direction layer must beat the register layer — Anno 1965 wants zero radius
+ * even where `operational` wants a tightened one. Rather than fight that with
+ * specificity (both are single attribute selectors, so it would come down to
+ * source order and stay fragile), the harness nests the direction element inside
+ * the register element. A custom property declared on a descendant always wins
+ * over the value it would otherwise inherit, whatever the selector weights.
+ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   PART 1 — expressible as token overrides
+   Four of the language's seven characteristics land here.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-direction='anno-1965'] {
+  /* 1. Zero radius. Mechanical, not soft — a corner is where two rules meet. */
+  --radius-none: 0px;
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  /* `full` is deliberately left alone: pills and avatars are shapes, not radii,
+     and zeroing it would turn every status dot into a square by accident. */
+
+  /* 2. Zero shadow. Depth is expressed by rule weight and position, never by
+     a simulated light source. */
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+
+  /* 3. steps(1) motion. Nothing eases; state changes are discrete, the way a
+     split-flap board changes. Durations stay — the *interpolation* is what
+     carries the mechanical reading. */
+  --ease-out: steps(1, end);
+  --ease-in-out: steps(1, end);
+
+  /* 4. Mono as the display voice. The single largest visual shift, and it is a
+     one-line token swap because AD-D-011 kept display and sans on one stack
+     reached through `opsz` rather than hard-coding a display family. */
+  --font-display: var(--font-mono);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   PART 2 — NOT expressible. This is the finding.
+   Three characteristics need CSS the token layer has no vocabulary for, and
+   they cluster on exactly two gaps.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/*
+ * GAP 1 — no tracking or case tokens.
+ *
+ * Mechanical Swiss runs on letterspaced uppercase for structural labels and on
+ * *zero* optical tracking at display sizes (the incumbent sets -0.02em; 1965
+ * wants none). The system emits `--text-*`, `--leading-*` and `--font-weight-*`
+ * but nothing for tracking or case, so both have to be written as literals.
+ *
+ * Cost if adopted: a `global.tracking.*` family, and a decision about whether
+ * case is a token at all or a per-role property of the type composites.
+ */
+[data-direction='anno-1965'] .dir-cover-title {
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+[data-direction='anno-1965'] .dir-divider-title,
+[data-direction='anno-1965'] .dir-mobile-title {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/*
+ * GAP 2 — no column/grid tokens. The big one.
+ *
+ * The Gerstner field grid is the whole structural proposition of this candidate:
+ * a field of small units combined into varied column sets, so a cover, a table
+ * and a mobile view all sit on one visible module. The system has a spacing
+ * scale and breakpoints and **no column system at all** — which AD-D-012 already
+ * records as deferred, and this is the evidence for why that gap is load-bearing
+ * rather than cosmetic.
+ *
+ * Everything below is hand-authored layout that a column token set would own.
+ */
+[data-direction='anno-1965'] .dir-content {
+  --field-unit: var(--spacing-6);
+  --field-columns: 12;
+}
+
+[data-direction='anno-1965'] .dir-cover {
+  display: grid;
+  grid-template-columns: repeat(var(--field-columns), 1fr);
+  grid-auto-rows: minmax(var(--field-unit), auto);
+  gap: 0;
+  padding: 0;
+  border-width: var(--border-width-2);
+}
+
+[data-direction='anno-1965'] .dir-cover-eyebrow {
+  grid-column: 1 / -1;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: var(--border-width-1) solid var(--border);
+}
+
+[data-direction='anno-1965'] .dir-cover-title {
+  grid-column: 1 / span 9;
+  padding: var(--spacing-6) var(--spacing-4);
+}
+
+[data-direction='anno-1965'] .dir-cover-sub {
+  grid-column: 1 / span 6;
+  padding: 0 var(--spacing-4) var(--spacing-6);
+  max-width: none;
+}
+
+[data-direction='anno-1965'] .dir-cover-foot {
+  grid-column: 1 / -1;
+  margin-top: 0;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-top: var(--border-width-1) solid var(--border);
+}
+
+/* The divider becomes a field rule rather than a stacked block. */
+[data-direction='anno-1965'] .dir-divider {
+  display: grid;
+  grid-template-columns: repeat(var(--field-columns), 1fr);
+  gap: 0;
+  padding: 0;
+  border-top: var(--border-width-2) solid var(--foreground);
+  border-bottom: var(--border-width-1) solid var(--border);
+}
+
+[data-direction='anno-1965'] .dir-divider-num {
+  grid-column: 1 / span 2;
+  padding: var(--spacing-4) var(--spacing-4);
+  border-right: var(--border-width-1) solid var(--border);
+}
+
+[data-direction='anno-1965'] .dir-divider-body {
+  grid-column: 3 / -1;
+  padding: var(--spacing-4);
+}
+
+/* The product screen's split stops being 2fr/1fr and becomes 8/4 of the field. */
+[data-direction='anno-1965'] .dir-screen {
+  display: grid;
+  grid-template-columns: repeat(var(--field-columns), 1fr);
+  gap: 0;
+}
+
+[data-direction='anno-1965'] .dir-screen-main {
+  grid-column: 1 / span 8;
+  border-right-width: 0;
+}
+
+[data-direction='anno-1965'] .dir-screen-side {
+  grid-column: 9 / -1;
+}
+
+/* Mobile: the field collapses to 4 columns rather than to a flex stack. */
+[data-direction='anno-1965'] .dir-mobile {
+  --field-columns: 4;
+  padding: 0;
+  border-width: var(--border-width-2);
+}
+
+[data-direction='anno-1965'] .dir-mobile > * {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: var(--border-width-1) solid var(--border);
+}
+
+[data-direction='anno-1965'] .dir-mobile > *:last-child {
+  border-bottom: 0;
+}
+
+/*
+ * GAP 3 — the mono display swap needs a size correction the token scale cannot
+ * express. Geist Mono's cap height and advance width at `--text-6xl` overrun the
+ * measure that Inter holds comfortably, so the cover title has to be stepped
+ * down by hand. A type scale that is family-aware — or a display role that
+ * carries its own size per family — would own this.
+ */
+[data-direction='anno-1965'] .dir-cover-title {
+  font-size: var(--text-4xl);
+}
