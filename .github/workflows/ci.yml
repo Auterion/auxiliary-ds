@@ -41,6 +41,16 @@ jobs:
             exit 1
           fi
 
+      - name: Verify decision log
+        run: |
+          if ! pnpm decisions:check; then
+            echo "::error::decisions/ failed validation."
+            echo "::error::Every entry needs the frontmatter fields, the four body"
+            echo "::error::sections, and a row in decisions/README.md."
+            echo "::error::Template and rules: decisions/README.md"
+            exit 1
+          fi
+
       - name: Verify icon registry in sync with config
         env:
           FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}

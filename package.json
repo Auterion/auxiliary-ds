@@ -17,6 +17,7 @@
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "pack:smoke": "node scripts/pack-smoke.mjs",
+    "decisions:check": "node scripts/decisions-check.mjs",
     "figma:diff": "pnpm --filter @auxiliary/figma-sync diff",
     "design-team": "node design-team/build.mjs",
     "design-team:check": "node design-team/build.mjs --check",

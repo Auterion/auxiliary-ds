@@ -101,14 +101,22 @@ CSS vars and don't know which theme/register is active. See `apps/docs/foundatio
 
 These are architectural constraints, not style preferences:
 
-1. **Code is the source of truth.** Figma mirrors code. Do not introduce sync paths that **apply** Figma → code. Reading Figma is fine and supported — `pnpm figma:diff` reports drift between a Figma file and the token contract — but the report is a worklist for a human, never a patch. No tool writes into `packages/tokens/src` from Figma.
+1. **Code is the source of truth.** Figma mirrors code. Do not introduce sync paths that **apply** Figma → code. Reading Figma is fine and supported — `pnpm figma:diff` reports drift between a Figma file and the token contract — but the report is a worklist for a human, never a patch. No tool writes into `packages/tokens/src` from Figma. (`AD-D-022`)
 2. **Tokens are framework-agnostic.** Keep `packages/tokens` free of Vue/React/Tailwind specifics — runtime adapters live in their own packages.
 3. **Restraint over reach.** Prefer not adding a component over adding a marginal one. This is not a kitchen-sink library.
 4. **One library, many surfaces.** Tokens must serve product UI, marketing, and internal tools — don't bake product-specific assumptions into them.
 
+### The decision log
+
+`decisions/` holds one `AD-D-###` file per settled choice — context, options considered, the decision stated so a stranger could enforce it, and the condition that reopens it. Start at `decisions/README.md`.
+
+**Cite the ID; don't restate the rationale.** A proposal that contradicts a ratified entry must name it and argue for supersession. You may draft an entry at `status: proposed`; only Yasen ratifies. `pnpm decisions:check` gates the format and the README index (CI runs it).
+
+The old flat `DECISIONS.md` is a pointer stub — its four entries were migrated on 2026-08-03 with their original dates.
+
 ### Pre-1.0 status
 
-APIs and tokens will change without notice until the first tagged release. No backwards-compatibility shims are owed to consumers yet — prefer clean changes over deprecation layers.
+APIs and tokens will change without notice until the first tagged release. No backwards-compatibility shims are owed to consumers yet — prefer clean changes over deprecation layers. (`AD-D-035`)
 
 ## Environment & commands
 
@@ -142,7 +150,7 @@ CI (`.github/workflows/ci.yml`) enforces two things that are easy to miss:
 
 1. **The icon registry is generated and must be committed in sync.** `packages/icons/src/registry.ts` is produced from `packages/icons/src/config.ts` (and `packages/icons/inputs/*.svg`). After changing either, run `pnpm --filter @auxiliary/icons sync` and commit the regenerated `registry.ts` — CI fails if it drifts. Icons build on Font Awesome Pro Sharp plus a custom kit, so installing/syncing needs `FONTAWESOME_PACKAGE_TOKEN` in the environment.
 2. **Every PR needs a changeset.** CI runs `changeset status --since=origin/main`; add one with `pnpm changeset`.
-3. **More committed-generated artifacts with drift gates:** docs props (`apps/docs/.vitepress/data/props.generated.json`, regenerate with `node apps/docs/scripts/gen-props.mjs`) and the brand registry (`pnpm --filter @auxiliary/brand sync`) — both fail `pnpm test` when stale. CI also runs `pnpm pack:smoke` (publish-correctness of tokens/css/vue tarballs).
+3. **More committed-generated artifacts with drift gates:** docs props (`apps/docs/.vitepress/data/props.generated.json`, regenerate with `node apps/docs/scripts/gen-props.mjs`) and the brand registry (`pnpm --filter @auxiliary/brand sync`) — both fail `pnpm test` when stale. CI also runs `pnpm pack:smoke` (publish-correctness of tokens/css/vue tarballs) and `pnpm decisions:check` (decision-log format + index).
 
 `@auxiliary/figma-sync` builds a self-contained push program (`dist/push.figma.js`) with the token data inlined; its build hard-errors if `packages/tokens/dist` is older than the token sources.
 
