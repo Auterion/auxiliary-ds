@@ -12,6 +12,8 @@
     "lint": "eslint . --max-warnings 0",
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots",
     "gen:props": "node scripts/gen-props.mjs",
     "gen:tokens": "node scripts/gen-tokens.mjs",
     "predev": "node scripts/gen-props.mjs && node scripts/gen-tokens.mjs",
@@ -27,6 +29,7 @@
     "vue": "^3.5.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.0",
     "@tailwindcss/vite": "^4.0.0",
     "@types/node": "^22.0.0",
     "tailwindcss": "^4.0.0",

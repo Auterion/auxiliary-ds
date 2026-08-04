@@ -8,6 +8,7 @@ import { Logo } from '@auxiliary/brand';
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
 import TokenRow from './components/TokenRow.vue';
 import PropsTable from './components/PropsTable.vue';
+import VisualSpecimens from './components/VisualSpecimens.vue';
 
 import '@auxiliary/css/theme.css';
 import './style.css';
@@ -35,6 +36,10 @@ const theme: Theme = {
     app.component('Logo', Logo);
     app.component('TokenRow', TokenRow);
     app.component('PropsTable', PropsTable);
+    // The visual-regression harness (/specimens). Not linked from the nav — it is
+    // a test fixture that happens to live in the docs site, because the docs site
+    // is already wired to render every component in every theme.
+    app.component('VisualSpecimens', VisualSpecimens);
     // Data-viz charts (@auxiliary/viz). TimeSeries inits uPlot on the client only;
     // its SSR render is the bare container, so global registration is SSR-safe.
     app.component('Sparkline', Sparkline);

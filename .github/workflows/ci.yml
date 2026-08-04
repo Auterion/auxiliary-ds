@@ -79,6 +79,53 @@ jobs:
       - name: Pack smoke test (publish correctness)
         run: pnpm pack:smoke
 
+  visual:
+    name: Visual regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        env:
+          FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
+        run: pnpm install --frozen-lockfile
+
+      # Its own job, not a step in `build`: this one needs a browser binary and
+      # its own build of the docs site. Folding it into `pnpm test` would put a
+      # ~95 MB download and a vitepress build in front of every local test loop.
+      - name: Install Playwright browser
+        run: pnpm --filter @auxiliary/docs exec playwright install --with-deps chromium
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Visual regression
+        run: |
+          if ! pnpm --filter @auxiliary/docs test:visual; then
+            echo "::error::Committed screenshots no longer match what the components render."
+            echo "::error::If the change is intended, regenerate and commit:"
+            echo "::error::  pnpm --filter @auxiliary/docs test:visual:update"
+            echo "::error::Otherwise download the 'visual-diff' artifact to see the diff."
+            exit 1
+          fi
+
+      - name: Upload diff on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diff
+          path: |
+            apps/docs/test-results/
+            apps/docs/playwright-report/
+          retention-days: 7
+
   changeset:
     name: Changeset present
     runs-on: ubuntu-latest

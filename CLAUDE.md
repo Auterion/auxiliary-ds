@@ -152,6 +152,8 @@ CI (`.github/workflows/ci.yml`) enforces two things that are easy to miss:
 2. **Every PR needs a changeset.** CI runs `changeset status --since=origin/main`; add one with `pnpm changeset`.
 3. **More committed-generated artifacts with drift gates:** docs props (`apps/docs/.vitepress/data/props.generated.json`, regenerate with `node apps/docs/scripts/gen-props.mjs`) and the brand registry (`pnpm --filter @auxiliary/brand sync`) — both fail `pnpm test` when stale. CI also runs `pnpm pack:smoke` (publish-correctness of tokens/css/vue tarballs) and `pnpm decisions:check` (decision-log format + index).
 
+4. **Visual regression runs in its own CI job, not in `pnpm test`.** 48 committed screenshots — the operational-critical components × 4 themes × 2 registers — live in `apps/docs/test/visual/__screenshots__/`. Run locally with `pnpm --filter @auxiliary/docs test:visual`; accept an intended change with `test:visual:update` and commit the PNGs like any other generated artifact. It is a separate job because it needs a ~95 MB browser download and its own docs build; folding it into `pnpm test` would put both in front of every local test loop. The harness is `apps/docs/specimens.md` → `.vitepress/theme/components/VisualSpecimens.vue` (open `/specimens?theme=darknight&register=operational` by hand to explain a diff).
+
 `@auxiliary/figma-sync` builds a self-contained push program (`dist/push.figma.js`) with the token data inlined; its build hard-errors if `packages/tokens/dist` is older than the token sources.
 
 Note: root `turbo.json` deliberately keeps `test.dependsOn: ["^build"]` (upstream builds only, not the package's own) — every suite reads `src`, and adding own-`build` would force vite+vue-tsc ahead of each test loop.
