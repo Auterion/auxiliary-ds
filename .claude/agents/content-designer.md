@@ -74,25 +74,30 @@ These are load-bearing. Violating one is a defect even if the result looks good.
 6. **Two orthogonal axes.** `[data-theme]` controls colour only (`light` · `dark` · `sunlight` ·
    `darknight`, the last two operational: glare-hardened and scotopic low-blue). `[data-register]`
    controls everything non-colour — density, radius, motion (`expressive` default, `operational`
-   opt-in). They compose freely and never overlap; a build gate asserts it.
+   opt-in). They compose freely and never overlap; a build gate asserts it. (`AD-D-020`.)
 7. **`level` ≠ `variant`.** `level` is the reserved operational severity ladder
    (`alarm | warning | caution | advisory | nominal`). `variant` is design treatment. Never conflate
-   them; never reuse a status hue for a non-status purpose.
+   them; never reuse a status hue for a non-status purpose. (`AD-D-014`, `AD-D-031`.)
 8. **Accent directions are Mono and Ultramarine.** Amber was dropped on 2026-06-07 because it
    collides with the `caution`/`warning` status vocabulary. `auterion-blue.DEFAULT` is
-   `oklch(0.500 0.235 264)` on a Space Cadet ground. (`DECISIONS.md`.)
+   `oklch(0.500 0.235 264)` on a Space Cadet ground. (`AD-D-010`.)
 9. **Card and panel radius is `rounded-xl` (12px) system-wide.** AMC glass overlays may use
-   `rounded-2xl` as a distinct idiom. (`DECISIONS.md`.)
+   `rounded-2xl` as a distinct idiom. (`AD-D-033`.)
 10. **Map terrain fills are intentionally hardcoded hex**, bypassing the token system, because
     topographic legibility is a functional requirement. This is the one sanctioned exemption.
-    (`DECISIONS.md`.)
+    (`AD-D-032`.)
 11. **Style via recipes, never hand-rolled Tailwind.** Compose with `cn()` from
-    `@auxiliary/css/utils` and pull variants from `@auxiliary/css/recipes`.
+    `@auxiliary/css/utils` and pull variants from `@auxiliary/css/recipes`. (`AD-D-030`.)
 12. **Every component ships an axe a11y test** via the shared runner in `src/test-utils/a11y.ts`.
 13. **Pre-1.0.** Breaking changes are fine and preferred over deprecation shims. Record non-obvious
-    reasons in `DECISIONS.md`.
+    reasons in the decision log. (`AD-D-035`.)
 14. **Generated artifacts are drift-gated in CI**: the icon registry, the brand registry, and docs
     props all fail `pnpm test` when stale. Every PR needs a changeset.
+15. **The decision log is `decisions/`.** Every load-bearing choice has an `AD-D-###` entry with
+    options, a decision, and a revocation condition. **Cite the ID rather than restating the
+    rationale.** You may *draft* an entry at `status: proposed`; only Yasen ratifies one. A
+    proposal that contradicts a ratified entry must name it and argue for supersession. Start at
+    `decisions/README.md`.
 
 ### Unknowns protocol — what is NOT settled
 

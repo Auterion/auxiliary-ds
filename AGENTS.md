@@ -1,121 +1,65 @@
-## Overview
+# Agents
 
-Four-agent team working on the Auxiliary design system (Auterion's monorepo). Each agent has a distinct specialty.
+**The standing team is defined in [`design-team/roster.md`](design-team/roster.md).** That file is
+the single source of truth: ten design roles, their shared grounding, write scopes, routing table,
+and conflict resolution. Read it before dispatching work. This file only covers what the roster
+does not: which runtime to use, and the repo-level constraints every agent inherits.
 
-**Team spec:** See `.crystl/quest/spec.json` for dev environment, packages, token definitions, themes, current focus, and CI gates. This file is the single source of truth for shared configuration.
-- **Wizard**: Creative direction, brand, design review
-- **Warrior**: Tokens, governance, blast-radius analysis
-- **Ranger**: Brand & visual polish, consistency audits
-- **Healer**: Context health, documentation, coordination
+## Why this file used to say something else
 
-Operating in "Open Chat" mode. All agents see edits immediately. Sealed chat mode activates only when ≥2 agents will touch `packages/*` simultaneously.
+Until 2026-08-03 there were **two** teams defined against this repo — five crystl heroes here
+(Wizard, Warrior, Ranger, Rogue, Healer) and ten design roles in `design-team/roster.md` — with
+overlapping ownership of `packages/tokens`, `packages/vue/src/primitives`, and the decision log.
+Running both against the same paths was a live hazard.
 
-## Agent Roles
+Resolved in favour of the roster (`design-team/README.md`, option 1). The old five roles are
+retired; their file ownership is superseded by the roster's write-scope table. `.crystl/heroes/`
+now holds the ten roster roles, generated.
 
-### Wizard — Creative direction & planning
-**Model:** `claude-opus-4-6` (largest)
+## Two runtimes, one roster
 
-Owns the brief. Breaks work into agent-sized tasks and routes each to the right hero. Arbitrates cross-product consistency vs product-specific needs — consistency wins unless there's a documented reason (append to `DECISIONS.md`). Directs and reviews; does not implement hands-on. Covers UX review: layout, spacing rhythm, unglamorous states (empty, error, loading, disabled).
+Everything below is generated from `design-team/roster.md` by `node design-team/build.mjs`, and
+CI fails if any of it drifts (`pnpm design-team:check`). **Never hand-edit a generated file.**
 
-**Current tasks (2026-06-07):**
-- Polish brand visual language with Ranger
-- Ensure token integration across components
-- Review Suite & Mission Control interactivity flow (with Rogue)
-- Update `DECISIONS.md` with settled questions
+| Runtime | Files | Use it for |
+| --- | --- | --- |
+| **Claude Code subagents** (default) | `.claude/agents/*.md` — the 5 repo-tier roles | Almost everything. One agent at a time, or several on non-overlapping scopes. |
+| **crystl heroes** | `.crystl/heroes/*.json` — all 10 roles | Only what it is uniquely good at: **parallel isolated worktrees**, when several agents must touch overlapping files at once. |
+| **Any other platform** | `design-team/dist/personas.md` | Paste-ready personas for Claude Projects and the like. |
 
-### Warrior — Tokens, contracts, governance
-**Model:** `claude-sonnet-4-6`
+Heroes are committed on purpose — crystl carries them into every isolated worktree, so a clone
+gets the same team. Operational notes for the crystl runtime are in
+[`CRYSTL-WORKFLOW.md`](CRYSTL-WORKFLOW.md).
 
-Owns `packages/tokens` (DTCG spec, source of truth) and all component contracts. Evaluates every change for blast radius: does it break a downstream surface? Nothing primitive changes without a semantic alias. Tokens stay framework-agnostic — no Vue/Tailwind specifics in `packages/tokens`. Code is the source of truth; Figma mirrors code, never the reverse. Rejects one-off values that should be tokens.
+## Standing instructions for every agent
 
-**Current tasks (2026-06-07):**
-- Ensure custom blue scale (`auterion-blue`) is used throughout brand
-- Verify all new components derive from DTCG tokens, not ad-hoc values
-- Audit token consumption in Suite & Mission Control surfaces
+These apply on top of the role prompt.
 
-### Ranger — Brand & visual language
-**Model:** `claude-sonnet-4-6`
+1. **Cite decisions by ID.** The log is [`decisions/`](decisions/) — every load-bearing choice has
+   an `AD-D-###` entry with options and a revocation condition. Reference the ID; do not restate
+   the rationale, and do not re-litigate a ratified entry without naming it and arguing for
+   supersession.
+2. **Propose; do not ratify.** An agent may draft a decision entry at `status: proposed`. Only
+   Yasen moves one to `ratified`. `pnpm decisions:check` gates the format.
+3. **Rank your evidence.** Say what you checked and what you did not, cite `path:line`, and never
+   call something "verified" that was only inferred. The evidence ladder is in the roster.
+4. **Do not invent unknowns.** The roster's "Unknowns protocol" lists what is genuinely unsettled
+   (positioning, verbal identity, imagery direction, the research evidence base). If a task needs
+   one, say which fact is missing — or proceed under an explicitly labelled assumption.
 
-Owns visual consistency and the brand idiom. Works with Wizard to polish typography, color narrative, spacing rhythm. Audits changes for visual coherence across the three product surfaces (Suite, OS, Mission Control). Enforces the design system's restraint principle: prefer not adding something over adding a marginal one.
+## Repo constraints
 
-**Current tasks (2026-06-07):**
-- Polish brand type scale, color scale, and spacing rhythm with Wizard
-- Audit visual consistency across Suite, OS, and Mission Control
-- Verify blue-scale usage aligns with brand guidelines
+Architecture, commands, and component patterns live in [`CLAUDE.md`](CLAUDE.md). The four that
+most often bite:
 
-### Rogue — Interaction, layout, states
-**Model:** `claude-sonnet-4-6`
-
-Implements interactive components in Vue 3 + Tailwind v4. Styles via recipes from `@auxiliary/css/recipes` with `cn()` — never hand-rolled class strings. Every component gets an axe a11y test. Manages `level` (status severity: alarm|warning|caution|advisory|nominal) and `variant` (design treatment) as distinct axes. Runs the dev server and screenshots before declaring done.
-
-**Current tasks (2026-06-07):**
-- Build Suite & Mission Control small-interactivity features
-- Ensure all new components have a11y tests (axe runner, isolated mounts)
-- Verify keyboard navigation and focus management across new controls
-
-### Healer — Context health & coordination
-**Model:** `claude-haiku-4-5-20251001` (smallest, context-efficient)
-
-Monitors context health (`cat .crystl/quest/v2/progress/<shard>.json`). When any agent drops below 50%, writes compressed summaries to `QUEST-LOG.md`, handoff guidance to `HANDOFF.md`, and records settled decisions in `DECISIONS.md`. Also owns documentation alignment: CLAUDE.md, AGENTS.md, spec.json, ROADMAP.md stay in sync.
-
-**Current tasks (2026-06-07):**
-- Fill in AGENTS.md with real team structure and task assignments
-- Create `.crystl/quest/spec.json` for team-wide coordination
-- Monitor quest health and nudge agents near context limits
-- Ensure documentation files reflect current state
-
-## Workflow
-
-### Daily patterns
-- **Start of turn**: Healer checks health; nudges any agent below 20% context
-- **Mid-quest**: Wizard routes new work via `quest_task` with priority tags
-- **Before merging**: Rogue confirms changeset added; Warrior confirms token audit pass; Ranger confirms visual audit pass; Healer confirms documentation is current
-- **End of quest**: Healer calls `quest_summary` with digest; if needed, `quest_handoff` to next session
-
-### File ownership (checked via `quest_claim --list`)
-- `packages/tokens` — Warrior (others: read-only, ask before touching)
-- `packages/vue/src/primitives` — Rogue (others: read-only)
-- `packages/css/recipes` — Warrior validates, Rogue uses, Wizard reviews
-- `DECISIONS.md`, `AGENTS.md`, `spec.json` — Healer maintains; others read
-- `ROADMAP.md` — Wizard owns; Healer keeps in sync with DECISIONS
-
-## Constraints
-
-1. **Icon registry must be committed in sync.** After changing `packages/icons/src/config.ts` or inputs, run `pnpm --filter @auxiliary/icons sync` and commit the regenerated `registry.ts` — CI fails if it drifts.
-
-2. **Every PR needs a changeset.** CI runs `changeset status --since=origin/main`. Add one with `pnpm changeset` before merge.
-
-3. **Pre-1.0: API breaking changes are OK.** No backwards-compatibility shims owed; prefer clean changes over deprecation layers. Record the reason in `DECISIONS.md` if it's non-obvious.
-
-4. **One library, many surfaces.** Tokens must serve Suite, OS, and Mission Control. Don't bake product-specific assumptions into the DS. If a token is product-only, it lives in the product's own token set, not here.
-
-5. **FONTAWESOME_PACKAGE_TOKEN required locally.** Set it in Crystl Settings > API keys so any shard running `pnpm install` or `pnpm --filter @auxiliary/icons sync` succeeds.
-
-## Communication
-
-### Quest channels
-- `quest_msg "user" "..."` → the user (Design Lead)
-- `quest_msg "<shard>" "..."` → a specific agent (updates shown on dashboard)
-- `quest_announce "..."` → all agents at once (use for shared specs, decisions)
-- **Never `quest_msg "all"`** — it's not a valid target
-
-### Cross-team sync
-- **High-stakes decisions**: post via `quest_announce` so all agents see it
-- **Spec changes**: update `.crystl/quest/spec.json` and broadcast via `quest_announce`
-- **Stuck patterns**: append to `DECISIONS.md` to prevent re-litigation
-- **Handoff urgency**: use `quest_heartbeat --blocker "reason"` to signal a blocker
-
-### Approved decision format (in DECISIONS.md)
-```
-## <decision title>
-
-**Decision:** <what was decided>
-
-**Why:** <the motivation, constraint, or incident that drove it>
-
-**Scope:** <where/how it applies>
-
-**Date:** YYYY-MM-DD
-```
-
-Example already in file: Map terrain colors (hardcoded) vs tokens; card radius (rounded-xl system-wide).
+1. **Generated artifacts must be committed in sync.** The icon registry
+   (`pnpm --filter @auxiliary/icons sync`), the brand registry
+   (`pnpm --filter @auxiliary/brand sync`), the docs props
+   (`node apps/docs/scripts/gen-props.mjs`), and the design team (`pnpm design-team`). Each has a
+   CI gate that fails on drift.
+2. **Every PR needs a changeset** — `pnpm changeset`. CI runs
+   `changeset status --since=origin/main`.
+3. **Pre-1.0: clean breaks, no shims** (`AD-D-035`). Record a non-obvious reason as a decision
+   entry, not a code comment.
+4. **`FONTAWESOME_PACKAGE_TOKEN` must be set locally** for `pnpm install` and the icon sync. In
+   crystl, set it under Settings → API keys so every shard inherits it.

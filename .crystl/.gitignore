@@ -1,0 +1,9 @@
+# Crystl working state is local-only: session caches, quest scratch, worktree bookkeeping.
+*
+
+# …except project-local heroes. These are generated from design-team/roster.md and are
+# meant to travel with the repo — crystl loads them per-project and carries them into
+# every isolated worktree, so they have to be committed to work as intended.
+!.gitignore
+!heroes/
+!heroes/*.json

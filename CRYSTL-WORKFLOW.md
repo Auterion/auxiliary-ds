@@ -19,11 +19,24 @@ Full reference: https://crystl.dev/docs/cli
 How to run Crystl Quest on this repo without crashes, swap-death, or token burn.
 Written 2026-06-07 against Crystl 2.45.0.
 
-## Party: "Studio Lite" (create in Settings > crystl quest > Party templates)
+> **The roster below is superseded (2026-08-03).** The wizard/warrior/paladin/healer party was
+> retired when the two-team collision was resolved — see `design-team/README.md`. The standing
+> team is `design-team/roster.md`, and `.crystl/heroes/*.json` is generated from it, so the party
+> you summon and the subagent you invoke are the same ten roles. Model IDs in the sections below
+> are also stale; the generator sets them.
+>
+> **Everything from "Mode: open vs sealed" down is still current** — it is about the crystl
+> runtime, not about who is on the team. That is what this file is for now: use crystl for
+> parallel isolated worktrees, and read the stability rules before running a party.
+
+## Party: "Studio Lite" — SUPERSEDED, kept for the sizing rationale
 
 Four heroes, not nine. On a 16 GB machine, 8–9 agents ≈ 1.5–2 GB RAM + 8× token
 burn, and more agents = more injection races and stale-state churn. Four covers
 this repo's real work: direction, tokens, implementation, context health.
+
+*(The party-size argument still holds and is why you should summon a subset of the ten roles
+rather than all of them. The role definitions below are not the ones that ship.)*
 
 ### wizard — Creative direction & planning — `claude-opus-4-6`
 
@@ -111,8 +124,9 @@ CLAUDE.md/ROADMAP.md. Bump to Opus only for token-architecture redesigns.)
 
 ## Conventions
 
-- `DECISIONS.md` — committed. Settled design/architecture decisions; agents
-  read it before re-litigating.
+- `decisions/` — committed. The decision log; one `AD-D-###` file per settled choice.
+  Agents cite the ID before re-litigating, and may draft entries at `status: proposed`
+  but never ratify. `pnpm decisions:check` gates it.
 - `QUEST-LOG.md`, `HANDOFF.md` — gitignored quest scratch, written by healer.
   Never commit; never reference from product docs.
 

@@ -31,6 +31,16 @@ jobs:
           FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
         run: pnpm install --frozen-lockfile
 
+      - name: Verify design team in sync with roster
+        run: |
+          if ! pnpm design-team:check; then
+            echo "::error::Generated design-team outputs are out of date."
+            echo "::error::Edit design-team/roster.md, then run"
+            echo "::error::  pnpm design-team"
+            echo "::error::and commit .claude/agents/, design-team/dist/ and .crystl/heroes/."
+            exit 1
+          fi
+
       - name: Verify icon registry in sync with config
         env:
           FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
