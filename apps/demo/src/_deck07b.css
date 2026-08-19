@@ -1,0 +1,572 @@
+/* Hallmark · macrostructure: Editorial (portfolio deck) · tone: measured/declarative · anchor hue: auterion blue (rationed)
+ * pre-emit critique: P5 H5 E5 S5 R5 V4
+ *
+ * "DECK 07b" — the portfolio grammar, shared by Brand · Console · Suite · AuterionOS.
+ *
+ * Studied from the MagicPath board "Deck System 07b Portfolio" (eagerly-door-2982),
+ * the editorial-portfolio board absorbed into Flight Manual v0.5. That board's own
+ * footer reads "studied in the browser · rebuilt in the house inks", and it is
+ * literally true: its ink ramp IS --color-primitive-ink-* (hue 265) and its signal
+ * IS --color-primitive-auterion-blue-*. So nothing here is invented — every value
+ * resolves to a token already emitted by @auxiliary/tokens. A raw hex in a `.dk-*`
+ * rule is a bug.
+ *
+ * Written to the same rules as the Console `.bp-*` layer (_console.css), which is
+ * the house standard for a page-local layer:
+ *   · ONE ladder per axis — control height, radius, duration, easing — named here,
+ *     never improvised at the call site.
+ *   · The mode is [data-theme], the design system's own axis, set on the SAME
+ *     element as `.dk`. So the semantic tokens (Card, StatusBadge, Switch) and the
+ *     `--dk-*` palette re-resolve together and can never drift out of step.
+ *   · Repeating rows are GRIDS, not flex — fixed slots mean every label starts on
+ *     the same x and every numeral ends on the same x, down the whole page.
+ *   · Hairlines, never shadows. Motion only on state change, never on load.
+ *
+ * Namespaced `dk-`; sits alongside `ix-` (Suite) and `bp-` (Console) without
+ * collision. This is a demo layer — NOT a tokens or recipe change.
+ */
+
+/* ═══ Ladders ══════════════════════════════════════════════════════════════ */
+
+.dk {
+  /* Control scale — two heights for the whole grammar, no third. */
+  --dk-control-sm: 28px; /* dense, inside a ledger or card row */
+  --dk-control-md: 32px; /* page-level actions                 */
+
+  /* Radius ladder. 07b uses four values and no others. */
+  --dk-r-sm: 6px;
+  --dk-r: 8px;
+  --dk-r-lg: 10px;
+  --dk-r-pill: 9999px;
+
+  /* Motion — 120–160ms, two named easings, never the browser default. */
+  --dk-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dk-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dk-dur: 120ms;
+  --dk-dur-slow: 160ms;
+
+  /* Alignment — the single gutter every ledger, table and grid steps to.
+   * Strict alignment is the whole point of the editorial school: one rhythm,
+   * held across blocks, is what separates a deck from a stack of cards. */
+  --dk-gutter: 24px;
+  --dk-gutter-sm: 16px;
+  --dk-rule: 1px;
+}
+
+/* ═══ Ink — one material, four exposures ══════════════════════════════════
+ * `light` and `dark` are the two editorial exposures of the hue-265 material.
+ *
+ * `sunlight` and `darknight` are NOT variants of those — they are the
+ * operational themes, and each has a hard physical job that outranks the look:
+ *
+ *   sunlight  — glare hardening. Direct sun collapses the low end of the ramp,
+ *               so a soft ink-200 hairline disappears and a 4.5:1 tertiary is
+ *               simply unreadable. The DS theme answers with pure black on
+ *               white, zinc-500 rules, and `brand` demoted to BLACK.
+ *   darknight — scotopic, low-blue. Blue light is precisely what destroys dark
+ *               adaptation, so the DS theme is amber-on-black with no blue
+ *               anywhere in it.
+ *
+ * Folding either onto the editorial blocks would have put a full-chroma blue
+ * signal on both — under-contrasted rules in sun, and dark-adaptation-breaking
+ * blue at night. So the signal survives in these two themes as a POSITION in
+ * the hierarchy, not as a hue: the signal plate is black in sunlight and amber
+ * in darknight, because that is what each theme's own `brand` token resolves
+ * to. The device keeps its meaning; only its pigment changes. */
+
+.dk {
+  --dk-bg: var(--color-primitive-white, #fff);
+  --dk-bg-2: var(--color-primitive-ink-50);
+  --dk-fg: var(--color-primitive-ink-950);
+  --dk-fg-2: var(--color-primitive-ink-600);
+  --dk-fg-3: var(--color-primitive-ink-500);
+  --dk-line: var(--color-primitive-ink-200);
+  --dk-line-2: var(--color-primitive-ink-100);
+  --dk-signal: var(--color-primitive-auterion-blue-600);
+  --dk-signal-ink: var(--color-primitive-auterion-blue-700);
+  --dk-on-signal: var(--color-primitive-white, #fff);
+  /* The plate is the inverse exposure — dark in paper mode, and it stays dark. */
+  --dk-plate-bg: var(--color-primitive-ink-950);
+  --dk-plate-fg: var(--color-primitive-ink-50);
+  --dk-plate-fg-2: var(--color-primitive-ink-400);
+  --dk-plate-line: var(--color-primitive-ink-800);
+
+  color-scheme: light;
+  background: var(--dk-bg);
+  color: var(--dk-fg);
+  font-family: var(--font-sans);
+}
+
+.dk[data-theme='dark'] {
+  --dk-bg: var(--color-primitive-ink-950);
+  --dk-bg-2: var(--color-primitive-ink-900);
+  --dk-fg: var(--color-primitive-ink-50);
+  --dk-fg-2: var(--color-primitive-ink-400);
+  --dk-fg-3: var(--color-primitive-ink-500);
+  --dk-line: var(--color-primitive-ink-800);
+  --dk-line-2: var(--color-primitive-ink-850);
+  /* Signal steps DOWN a stop on ink: blue-500 as surface, blue-400 as text, so
+   * both clear 4.5:1 against ink-950 the way blue-600/700 do against paper. */
+  --dk-signal: var(--color-primitive-auterion-blue-500);
+  --dk-signal-ink: var(--color-primitive-auterion-blue-400);
+  --dk-on-signal: var(--color-primitive-ink-950);
+  /* In ink mode the plate inverts the other way — it is the light surface. */
+  --dk-plate-bg: var(--color-primitive-ink-900);
+  --dk-plate-fg: var(--color-primitive-ink-50);
+  --dk-plate-fg-2: var(--color-primitive-ink-400);
+  --dk-plate-line: var(--color-primitive-ink-800);
+
+  color-scheme: dark;
+}
+
+/* Sunlight — glare-hardened paper. The tertiary ink collapses UP to the
+ * secondary: under direct sun there is no legible third step, so pretending
+ * there is one just hides information. Rules go to zinc-500, the weight the DS
+ * theme itself uses. Signal is black, because sunlight's `brand` is black. */
+.dk[data-theme='sunlight'] {
+  --dk-bg: var(--color-primitive-white);
+  --dk-bg-2: var(--color-primitive-zinc-100);
+  --dk-fg: var(--color-primitive-black);
+  --dk-fg-2: var(--color-primitive-zinc-700);
+  --dk-fg-3: var(--color-primitive-zinc-700);
+  --dk-line: var(--color-primitive-zinc-500);
+  --dk-line-2: var(--color-primitive-zinc-400);
+  --dk-signal: var(--color-primitive-black);
+  --dk-signal-ink: var(--color-primitive-black);
+  --dk-on-signal: var(--color-primitive-white);
+  --dk-plate-bg: var(--color-primitive-black);
+  --dk-plate-fg: var(--color-primitive-white);
+  --dk-plate-fg-2: var(--color-primitive-zinc-400);
+  --dk-plate-line: var(--color-primitive-zinc-700);
+
+  color-scheme: light;
+}
+
+/* Darknight — scotopic. Amber on black, no blue at any strength. The plate
+ * darkens rather than lightens: a light surface at night is a flashbang. */
+.dk[data-theme='darknight'] {
+  --dk-bg: var(--color-primitive-black);
+  --dk-bg-2: var(--color-primitive-stone-950);
+  --dk-fg: var(--color-primitive-amber-500);
+  --dk-fg-2: var(--color-primitive-amber-600);
+  --dk-fg-3: var(--color-primitive-amber-700);
+  --dk-line: var(--color-primitive-amber-950);
+  --dk-line-2: var(--color-primitive-stone-900);
+  --dk-signal: var(--color-primitive-amber-600);
+  --dk-signal-ink: var(--color-primitive-amber-400);
+  --dk-on-signal: var(--color-primitive-black);
+  --dk-plate-bg: var(--color-primitive-stone-950);
+  --dk-plate-fg: var(--color-primitive-amber-500);
+  --dk-plate-fg-2: var(--color-primitive-amber-700);
+  --dk-plate-line: var(--color-primitive-amber-950);
+
+  color-scheme: dark;
+}
+
+/* ═══ Type ════════════════════════════════════════════════════════════════
+ * Grotesque speaks, mono measures.
+ *
+ * 07b's display face is Inter Tight; here it is --font-display (Inter at the
+ * pinned opsz-32 display cut), which is the same job done by the family the repo
+ * already self-hosts. No webfont is added.
+ *
+ * The display cut is 600 — a deliberate divergence from theme.css's "all titles
+ * are medium (500)", scoped to `.dk-*`. Outside this grammar, 500 still governs. */
+
+.dk-display,
+.dk-h1,
+.dk-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--dk-fg);
+  text-wrap: balance;
+}
+.dk-display { font-size: clamp(34px, 4.4vw, 54px); line-height: 1; letter-spacing: -0.035em; }
+.dk-h1 { font-size: clamp(26px, 2.6vw, 34px); line-height: 1.05; letter-spacing: -0.03em; }
+.dk-h2 { font-size: clamp(20px, 1.8vw, 26px); line-height: 1.15; letter-spacing: -0.02em; }
+
+.dk-value {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--dk-fg);
+}
+.dk-body { font-size: 14px; line-height: 1.5; color: var(--dk-fg-2); }
+.dk-body-lg { font-size: 15.5px; line-height: 1.5; color: var(--dk-fg-2); }
+.dk-small { font-size: 11.5px; line-height: 1.6; color: var(--dk-fg-2); }
+
+/* Mono label — the measuring voice. */
+.dk-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dk-fg-3);
+  white-space: nowrap;
+}
+.dk-micro {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--dk-fg-3);
+}
+
+/* Every numeral in this grammar is tabular. Columns of figures that don't line
+ * up are the fastest way to make an editorial layout look accidental. */
+.dk-num { font-variant-numeric: tabular-nums; }
+
+/* ═══ Device 1 · Pointer-label ═════════════════════════════════════════════
+ * `↳ OPERATOR`. The ledger variant of the bracket. Permission slip: labels
+ * table fields ONLY — never a headline. The glyph is generated, so the arrow
+ * can never be typed inconsistently or land in a copied string. */
+
+.dk-pointer {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dk-fg-3);
+  white-space: nowrap;
+}
+.dk-pointer::before {
+  content: '↳';
+  font-size: 9px;
+  letter-spacing: 0;
+  opacity: 0.7;
+}
+
+/* ═══ Device 2 · Header ledger ═════════════════════════════════════════════
+ * operator / mission / completed. Permission slip: TOPS a case layout; it is
+ * not a body element. A grid so the columns hold across every block on a page. */
+
+.dk-ledger {
+  display: grid;
+  grid-template-columns: repeat(var(--dk-ledger-cols, 3), minmax(0, 1fr));
+  gap: var(--dk-gutter);
+  padding-block: var(--dk-gutter-sm);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+.dk-ledger-cell { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+/* The measured column runs hard right — years, counts, totals. */
+.dk-ledger-cell[data-align='end'] { align-items: flex-end; text-align: right; }
+
+/* ═══ Device 3 · Numeral card ══════════════════════════════════════════════
+ * A card carrying a giant folio, overlapping a plate. Permission slip: ONE per
+ * spread. The folio is decorative-structural — it marks position in a sequence,
+ * so it is aria-hidden at the call site and never the only carrier of an index. */
+
+.dk-numeral {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  border-radius: var(--dk-r-sm);
+  background: var(--dk-bg);
+  border: var(--dk-rule) solid var(--dk-line);
+  padding: var(--dk-gutter-sm);
+  overflow: hidden;
+}
+.dk-numeral-folio {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 0.82;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+  color: var(--dk-fg);
+}
+
+/* ═══ Device 4 · Signal plate ══════════════════════════════════════════════
+ * A solid auterion-blue surface. Permission slip: CHAPTER DIVIDERS AND PARTNER
+ * TILES ONLY.
+ *
+ * The signal budget: one signal per view, spent where it matters. On 07b's own
+ * eight spreads blue appears exactly twice. A third occurrence is a defect, not
+ * a flourish. The status ladder is exempt — it is state, not brand; blue never
+ * encodes state and the ladder never encodes brand. */
+
+.dk-plate-signal {
+  background: var(--dk-signal);
+  color: var(--dk-on-signal);
+  border-radius: var(--dk-r-lg);
+}
+.dk-plate-signal .dk-label,
+.dk-plate-signal .dk-pointer,
+.dk-plate-signal .dk-micro { color: color-mix(in oklab, var(--dk-on-signal) 72%, transparent); }
+.dk-plate-signal :is(.dk-display, .dk-h1, .dk-h2, .dk-value) { color: var(--dk-on-signal); }
+
+/* The dark plate — the opposite exposure of the same material. Used for covers,
+ * proof closes and filmstrips. Not rationed, but it must earn its weight. */
+.dk-plate {
+  background: var(--dk-plate-bg);
+  color: var(--dk-plate-fg);
+  border-radius: var(--dk-r-lg);
+  border: var(--dk-rule) solid var(--dk-plate-line);
+}
+.dk-plate :is(.dk-display, .dk-h1, .dk-h2, .dk-value) { color: var(--dk-plate-fg); }
+.dk-plate :is(.dk-body, .dk-body-lg, .dk-small) { color: var(--dk-plate-fg-2); }
+.dk-plate :is(.dk-label, .dk-pointer, .dk-micro) { color: var(--dk-plate-fg-2); }
+.dk-plate .dk-rule { border-color: var(--dk-plate-line); }
+
+/* ═══ Device 5 · Ghost line ════════════════════════════════════════════════
+ * A subtitle at 32% ink. Permission slip: COVERS AND SECTION TITLES ONLY.
+ * It is decorative weight, so it must never be the only place a fact appears. */
+
+.dk-ghost { color: color-mix(in oklab, currentColor 32%, transparent); }
+
+/* ═══ Bracket — the measured fact ══════════════════════════════════════════
+ * [ 312 KM · 11 SORTIES · 0 INCIDENTS ]. Wraps measured facts ONLY: never an
+ * opinion, never a label, never a nav item. Brackets are generated for the same
+ * reason the pointer glyph is. */
+
+.dk-bracket {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--dk-fg-2);
+}
+.dk-bracket::before { content: '['; opacity: 0.55; }
+.dk-bracket::after { content: ']'; opacity: 0.55; }
+
+/* ═══ Spread caption ═══════════════════════════════════════════════════════
+ * `P-04 · MISSION REPORT — HEADER LEDGER + NUMERAL CARD`. Names what a block
+ * IS. Study and reference contexts only — never in shipped product chrome. */
+
+.dk-caption {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dk-fg-3);
+  padding-top: 8px;
+}
+
+/* ═══ Structure ═══════════════════════════════════════════════════════════ */
+
+.dk-rule { border: 0; border-top: var(--dk-rule) solid var(--dk-line); }
+.dk-divide > * + * { border-top: var(--dk-rule) solid var(--dk-line); }
+.dk-card {
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: var(--dk-r-lg);
+  background: var(--dk-bg);
+}
+.dk-inset { background: var(--dk-bg-2); border-radius: var(--dk-r); }
+
+/* Section head — a label on a hairline that runs to the block edge. The page's
+ * one repeating rhythm marker; stack content BELOW it, never beside it. */
+.dk-section {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--dk-gutter-sm);
+  padding-bottom: 10px;
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+
+/* ═══ Ledger table — strict alignment ═════════════════════════════════════
+ * Deployments-as-a-table, years hard right. A real <table> so it stays a table
+ * for assistive tech; `table-layout: fixed` so columns cannot drift between
+ * blocks on the same page. */
+
+.dk-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.dk-table th {
+  padding: 0 0 10px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dk-fg-3);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+  white-space: nowrap;
+}
+.dk-table td {
+  padding: 11px 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dk-fg-2);
+  border-top: var(--dk-rule) solid var(--dk-line-2);
+  vertical-align: baseline;
+}
+.dk-table :is(th, td) + :is(th, td) { padding-left: var(--dk-gutter-sm); }
+.dk-table :is(th, td)[data-align='end'] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.dk-table td[data-lead='true'] { color: var(--dk-fg); font-weight: 600; }
+.dk-table tbody tr { transition: background-color var(--dk-dur) var(--dk-ease); }
+
+/* Row — a grid with fixed slots, so copy starts and numerals end on one x. */
+.dk-row {
+  display: grid;
+  grid-template-columns: var(--dk-row-cols, auto minmax(0, 1fr) auto);
+  align-items: center;
+  gap: var(--dk-gutter-sm);
+  min-height: var(--dk-control-md);
+  padding: 10px 12px;
+  border-radius: var(--dk-r-sm);
+  transition: background-color var(--dk-dur) var(--dk-ease);
+}
+.dk-row:hover { background: var(--dk-bg-2); }
+.dk-row[data-active='true'] { background: var(--dk-bg-2); }
+
+/* ═══ Controls ════════════════════════════════════════════════════════════ */
+
+.dk-cta,
+.dk-cta-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--dk-control-md);
+  padding: 0 14px;
+  flex-shrink: 0;
+  border-radius: var(--dk-r-sm);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--dk-dur) var(--dk-ease),
+    border-color var(--dk-dur) var(--dk-ease),
+    color var(--dk-dur) var(--dk-ease);
+}
+.dk-cta {
+  border: var(--dk-rule) solid var(--dk-line);
+  background: transparent;
+  color: var(--dk-fg);
+}
+.dk-cta:hover { background: var(--dk-bg-2); border-color: var(--dk-fg-3); }
+.dk-cta-solid { border: var(--dk-rule) solid transparent; background: var(--dk-fg); color: var(--dk-bg); }
+.dk-cta-solid:hover { opacity: 0.86; }
+.dk-cta-sm { height: var(--dk-control-sm); padding: 0 10px; font-size: 12px; }
+
+/* Segmented control — one bordered well, no gaps, so it reads as one control. */
+.dk-segment {
+  display: inline-flex;
+  align-items: center;
+  height: var(--dk-control-md);
+  padding: 2px;
+  gap: 2px;
+  border-radius: var(--dk-r-sm);
+  border: var(--dk-rule) solid var(--dk-line);
+}
+.dk-segment-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dk-fg-3);
+  cursor: pointer;
+  transition: background-color var(--dk-dur) var(--dk-ease), color var(--dk-dur) var(--dk-ease);
+}
+.dk-segment-btn:hover { color: var(--dk-fg); }
+.dk-segment-btn[data-active='true'] { background: var(--dk-bg-2); color: var(--dk-fg); }
+
+/* Nav item — mono label, hairline active marker. No pill, no fill: the
+ * editorial school marks position with a rule, not a lozenge. */
+.dk-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: var(--dk-control-md);
+  padding: 0 10px;
+  border-radius: var(--dk-r-sm);
+  color: var(--dk-fg-2);
+  cursor: pointer;
+  transition: background-color var(--dk-dur) var(--dk-ease), color var(--dk-dur) var(--dk-ease);
+}
+.dk-nav-item:hover { background: var(--dk-bg-2); color: var(--dk-fg); }
+.dk-nav-item[data-active='true'] { background: var(--dk-bg-2); color: var(--dk-fg); }
+
+/* Link — weight and underline carry it, never hue. */
+.dk-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--dk-fg);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--dk-fg-3);
+  cursor: pointer;
+  transition: text-decoration-color var(--dk-dur) var(--dk-ease);
+}
+.dk-link:hover { text-decoration-color: var(--dk-fg); }
+
+/* ═══ Status ladder ═══════════════════════════════════════════════════════
+ * State, not brand — exempt from the signal budget, and never blue. */
+
+.dk-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: var(--dk-r-pill);
+  background: var(--dk-fg-3);
+}
+.dk-dot-alarm { background: var(--alarm); }
+.dk-dot-warning { background: var(--warning); }
+.dk-dot-caution { background: var(--caution); }
+.dk-dot-advisory { background: var(--advisory); }
+.dk-dot-nominal { background: var(--nominal); }
+
+/* Status text rides the *-emphasis tier — the contrast-gated on-surface ink. */
+.dk-ink-alarm { color: var(--alarm-emphasis); }
+.dk-ink-warning { color: var(--warning-emphasis); }
+.dk-ink-caution { color: var(--caution-emphasis); }
+.dk-ink-advisory { color: var(--advisory-emphasis); }
+.dk-ink-nominal { color: var(--nominal-emphasis); }
+
+/* ═══ Focus — one ring for the whole grammar ══════════════════════════════
+ * Never transitioned: the ring must appear the instant focus lands. */
+
+.dk :is(a, button, [tabindex], input, select, textarea):focus-visible,
+.dk-row:focus-visible,
+.dk-nav-item:focus-visible {
+  outline: 2px solid var(--dk-fg);
+  outline-offset: 2px;
+  border-radius: var(--dk-r-sm);
+}
+.dk-plate-signal :is(a, button, [tabindex]):focus-visible { outline-color: var(--dk-on-signal); }
+
+/* ═══ Motion ══════════════════════════════════════════════════════════════
+ * State change only. Nothing draws in on load — an editorial page is already
+ * finished when you arrive; animating it in is the deck pretending to be an app.
+ * `lift` is the one hover primitive, and it lifts a HAIRLINE, not a shadow. */
+
+.dk-lift { transition: border-color var(--dk-dur-slow) var(--dk-ease), background-color var(--dk-dur-slow) var(--dk-ease); }
+.dk-lift:hover { border-color: var(--dk-fg-3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .dk-row, .dk-cta, .dk-cta-solid, .dk-segment-btn, .dk-nav-item, .dk-link,
+  .dk-lift, .dk-table tbody tr {
+    transition: none;
+  }
+}

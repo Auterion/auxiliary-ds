@@ -1,7 +1,11 @@
-/* Hallmark · macrostructure: Swiss-Minimal · tone: clean-professional · anchor: white+blue-accent */
+<!--
+  Hallmark · macrostructure: Editorial (portfolio deck) · tone: measured/declarative
+  anchor hue: auterion blue (rationed — none on this page; the masthead mark is
+  the view's only signal)
+  pre-emit critique: P5 H5 E5 S5 R5 V4
+-->
 <script setup lang="ts">
 import { inject } from 'vue';
-import { Button } from '@auxiliary/vue';
 import { Icon, type IconName } from '@auxiliary/icons';
 import WebHero from '../WebHero.vue';
 
@@ -63,175 +67,144 @@ const compliance = ['NDAA Section 848', 'Blue UAS framework', 'AES-256 storage',
 </script>
 
 <template>
-  <div class="overflow-x-clip" style="background: var(--background)">
+  <div>
 
-    <!-- 1. HERO -->
+    <!-- ╭─ Cover ────────────────────────────────────────────────────╮ -->
     <WebHero
       eyebrow="Skynode"
       title="The brain that runs the stack."
       subtitle="Flight control, mission compute, AI acceleration and connectivity — in a single 199-gram module. The hardware foundation behind every Auterion vehicle."
+      facts="199 G · 275 TOPS · &lt;15 W · IP67"
       primary="Request a unit"
       secondary="Read the datasheet"
       @primary="navigate('company')"
       @secondary="navigate('developers')"
     />
 
-    <!-- 2. SPEC STRIP -->
-    <section class="border-b border-border" style="background: var(--card)">
-      <div class="mx-auto grid max-w-6xl grid-cols-2 gap-px md:grid-cols-4" style="background: var(--border)">
-        <div
-          v-for="s in specs"
-          :key="s.label"
-          class="px-6 py-8"
-          style="background: var(--card)"
-        >
-          <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{{ s.label }}</p>
-          <p class="mt-3 text-5xl font-medium tabular-nums tracking-tight" style="color: var(--foreground)">
-            {{ s.value }}
-          </p>
-          <p v-if="s.unit" class="mt-1 font-mono text-[11px] uppercase tracking-[0.1em]" style="color: var(--brand)">
-            {{ s.unit }}
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. CAPABILITIES -->
-    <section class="mx-auto max-w-6xl px-6 py-24">
-      <div class="mb-12 max-w-2xl">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">What's inside</p>
-        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-          One module. <span style="color: var(--brand)">The whole vehicle.</span>
-        </h2>
-        <p class="mt-4 text-[17px] leading-relaxed text-muted-foreground">
-          Everything that used to take a rack of boards and weeks of integration now fits in the palm of your hand.
-        </p>
-      </div>
-
-      <div class="grid gap-5 sm:grid-cols-2">
-        <div
-          v-for="c in capabilities"
-          :key="c.name"
-          class="group rounded-xl border border-border bg-card p-7 transition-shadow hover:shadow-md"
-        >
+    <!-- ╭─ Header ledger ────────────────────────────────────────────╮
+         The spec strip IS the header ledger: it tops the case layout, its
+         columns are the page's alignment, and the measured column runs
+         hard right. -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block-sm">
+        <div class="dk-ledger wb-ledger-4">
           <div
-            class="mb-5 flex h-11 w-11 items-center justify-center rounded-lg"
-            style="background: color-mix(in oklab, var(--brand) 12%, var(--card))"
+            v-for="(s, i) in specs"
+            :key="s.label"
+            class="dk-ledger-cell"
+            :data-align="i === specs.length - 1 ? 'end' : undefined"
           >
-            <Icon :name="c.icon" size="sm" style="color: var(--brand)" />
+            <span class="dk-pointer">{{ s.label }}</span>
+            <span class="wb-figure-num">{{ s.value }}</span>
+            <span v-if="s.unit" class="dk-label">{{ s.unit }}</span>
           </div>
-          <h3 class="text-[18px] font-medium" style="color: var(--foreground)">{{ c.name }}</h3>
-          <p class="mt-2.5 text-[14px] leading-relaxed text-muted-foreground">{{ c.desc }}</p>
         </div>
       </div>
     </section>
 
-    <!-- 4. VARIANTS -->
-    <section class="border-t border-border" style="background: var(--card)">
-      <div class="mx-auto max-w-6xl px-6 py-24">
-        <div class="mb-12">
-          <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">The family</p>
-          <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-            Pick the module that fits your airframe.
-          </h2>
+    <!-- ╭─ What's inside ────────────────────────────────────────────╮ -->
+    <section>
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">What's inside</span>
+          <span class="dk-bracket">4 SUBSYSTEMS · 1 MODULE</span>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">One module. The whole vehicle.</h2>
+          <p class="dk-body-lg wb-measure-text">
+            Everything that used to take a rack of boards and weeks of integration now fits in the palm of your hand.
+          </p>
         </div>
 
-        <div class="grid gap-5 md:grid-cols-3">
+        <div class="wb-grid" data-cols="2">
+          <div v-for="c in capabilities" :key="c.name" class="dk-card dk-lift wb-tile">
+            <div class="wb-tile-head">
+              <span class="wb-tile-mark"><Icon :name="c.icon" size="xs" /></span>
+            </div>
+            <h3 class="dk-h2">{{ c.name }}</h3>
+            <p class="dk-body">{{ c.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ╭─ The family ───────────────────────────────────────────────╮ -->
+    <section class="wb-band wb-band-alt">
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">The family</span>
+          <span class="dk-bracket">3 MODULES · 140–320 G</span>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">Pick the module that fits your airframe.</h2>
+        </div>
+
+        <div class="wb-grid" data-cols="3">
           <div
             v-for="v in variants"
             :key="v.name"
-            class="relative rounded-xl border p-7 transition-shadow hover:shadow-md"
-            :style="v.featured
-              ? 'background: var(--background); border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand)'
-              : 'background: var(--background); border-color: var(--border)'"
+            class="dk-card dk-lift wb-tile"
+            :data-featured="v.featured ? 'true' : undefined"
           >
-            <span
-              v-if="v.featured"
-              class="absolute right-5 top-5 rounded-full px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em]"
-              style="background: var(--brand); color: var(--brand-foreground)"
-            >Most deployed</span>
+            <div class="wb-tile-head">
+              <span class="dk-label">{{ v.tag }}</span>
+              <span v-if="v.featured" class="dk-label">Most deployed</span>
+            </div>
+            <h3 class="dk-h2">{{ v.name }}</h3>
+            <p class="dk-body">{{ v.blurb }}</p>
 
-            <p class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{{ v.tag }}</p>
-            <h3 class="mt-2 text-2xl font-medium" style="color: var(--foreground)">{{ v.name }}</h3>
-            <p class="mt-3 text-[14px] leading-relaxed text-muted-foreground">{{ v.blurb }}</p>
-
-            <ul class="mt-6 space-y-2.5 border-t border-border pt-5">
-              <li
-                v-for="sp in v.specs"
-                :key="sp"
-                class="flex items-center gap-2.5 font-mono text-[12px] tabular-nums"
-                style="color: var(--foreground)"
-              >
-                <Icon name="circle-check" size="xs" style="color: var(--brand); flex-shrink: 0" />
-                {{ sp }}
+            <ul class="wb-list">
+              <li v-for="sp in v.specs" :key="sp" class="wb-list-item">
+                <span class="dk-small dk-num">{{ sp }}</span>
               </li>
             </ul>
 
-            <Button
-              :variant="v.featured ? 'primary' : 'ghost'"
-              size="sm"
-              class="mt-7 w-full gap-2 text-[13px]"
-              @click="navigate('company')"
-            >
-              Configure <Icon name="arrow-right" size="xs" />
-            </Button>
+            <span class="wb-tile-foot">
+              <button type="button" class="dk-cta dk-cta-sm" @click="navigate('company')">
+                Configure <Icon name="arrow-right" size="xs" />
+              </button>
+            </span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 5. COMPLIANCE STRIP -->
-    <section class="border-t border-border" style="background: var(--background)">
-      <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-4 px-6 py-10">
-        <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Trusted &amp; compliant</span>
-        <span
-          v-for="c in compliance"
-          :key="c"
-          class="flex items-center gap-2 font-mono text-[12px]"
-          style="color: var(--foreground)"
-        >
-          <Icon name="lock" size="xs" style="color: var(--brand)" />
-          {{ c }}
-        </span>
+    <!-- ╭─ Compliance ───────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block-sm">
+        <div class="dk-section">
+          <span class="dk-label">Trusted &amp; compliant</span>
+          <span class="dk-bracket">5 STANDARDS</span>
+        </div>
+        <div class="wb-grid" data-cols="3">
+          <span v-for="c in compliance" :key="c" class="wb-rule-row wb-row-lead">
+            <Icon name="lock" size="xs" class="wb-glyph" />
+            <span class="dk-value">{{ c }}</span>
+          </span>
+        </div>
       </div>
     </section>
 
-    <!-- 6. CTA -->
-    <section class="border-t border-border" style="background: var(--card)">
-      <div class="mx-auto max-w-2xl px-6 py-24 text-center">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Get started</p>
-        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-          Build your vehicle on Skynode.
-        </h2>
-        <p class="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-muted-foreground">
-          Tell us about your airframe and mission. We'll help you spec the right module and get you flying.
-        </p>
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <button
-            class="cta-btn inline-flex items-center gap-2 rounded-lg px-6 py-3 text-[14px] font-medium"
-            style="background: var(--brand); color: var(--brand-foreground)"
-            @click="navigate('company')"
-          >
-            Request a unit
-            <Icon name="arrow-right" size="xs" />
-          </button>
-          <Button variant="ghost" size="md" class="gap-2 text-[14px]" @click="navigate('developers')">
-            Read the docs
-          </Button>
+    <!-- ╭─ Proof close ──────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-plate wb-cover">
+          <div class="wb-cover-copy">
+            <p class="dk-h2 dk-ghost">Get started</p>
+            <h2 class="dk-display">Build your vehicle on Skynode.</h2>
+          </div>
+          <p class="dk-body-lg wb-cover-lede">
+            Tell us about your airframe and mission. We'll help you spec the right module and get you flying.
+          </p>
+          <div class="wb-actions">
+            <button type="button" class="dk-cta-solid" @click="navigate('company')">
+              Request a unit <Icon name="arrow-right" size="xs" />
+            </button>
+            <button type="button" class="dk-cta" @click="navigate('developers')">Read the docs</button>
+          </div>
         </div>
       </div>
     </section>
 
   </div>
 </template>
-
-<style scoped>
-.cta-btn:hover {
-  background: color-mix(in oklab, var(--brand) 88%, black) !important;
-}
-
-.cta-btn:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
-</style>

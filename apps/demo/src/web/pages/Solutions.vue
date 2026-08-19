@@ -1,7 +1,11 @@
-/* Hallmark · macrostructure: Swiss-Minimal · tone: clean-professional · anchor: white+blue-accent */
+<!--
+  Hallmark · macrostructure: Editorial (portfolio deck) · tone: measured/declarative
+  anchor hue: auterion blue (rationed — none on this page; the masthead mark is
+  the view's only signal)
+  pre-emit critique: P5 H5 E5 S5 R5 V4
+-->
 <script setup lang="ts">
 import { inject } from 'vue';
-import { Button } from '@auxiliary/vue';
 import { Icon, type IconName } from '@auxiliary/icons';
 import WebHero from '../WebHero.vue';
 
@@ -15,216 +19,176 @@ const industries: { name: string; icon: IconName; blurb: string; to?: string }[]
   { name: 'Logistics', icon: 'arrow-up-right-from-square', blurb: 'BVLOS delivery networks with fleet routing and airspace integration.' },
   { name: 'Agriculture', icon: 'drone', blurb: 'Crop scouting, spraying and yield analytics across large operations.' },
 ];
+
+const caseStats = [
+  { value: '70%', label: 'Faster inspection' },
+  { value: '12k', label: 'Flights per year' },
+  { value: '9', label: 'Regions covered' },
+];
+
+const pylonRows = [37, 77, 117, 157, 197];
+const pylonCols = [40, 100, 160, 220, 280];
 </script>
 
 <template>
-  <div class="overflow-x-clip" style="background: var(--background)">
+  <div>
 
-    <!-- Hero -->
+    <!-- ╭─ Cover ────────────────────────────────────────────────────╮ -->
     <WebHero
       eyebrow="Solutions"
       title="Built for every operation."
       subtitle="Defense, energy, logistics, public safety. Same platform. Configured for each."
+      facts="6 SECTORS · 1 PLATFORM"
       primary="Find your solution"
       secondary="Talk to an expert"
+      @primary="navigate('company')"
+      @secondary="navigate('company')"
     />
 
-    <!-- Industry grid -->
-    <section class="mx-auto max-w-6xl px-6 py-20">
-      <div class="mb-10">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Industries</p>
-        <h2 class="mt-3 text-4xl font-medium">
-          Every sector. <span style="color: var(--brand)">One platform.</span>
-        </h2>
-      </div>
+    <!-- ╭─ Industries ───────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">Industries</span>
+          <span class="dk-bracket">6 SECTORS</span>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">Every sector. One platform.</h2>
+        </div>
 
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <button
-          v-for="ind in industries"
-          :key="ind.name"
-          class="industry-card group rounded-xl border border-border bg-card p-6 text-left transition-all hover:shadow-md"
-          @click="ind.to && navigate(ind.to)"
-        >
-          <div class="mb-4 flex items-center gap-3">
-            <div
-              class="flex h-9 w-9 items-center justify-center rounded-lg"
-              style="background: color-mix(in oklab, var(--brand) 8%, white)"
-            >
-              <Icon :name="ind.icon" size="sm" style="color: var(--brand)" />
-            </div>
-          </div>
-
-          <h3 class="flex items-center gap-1.5 text-[15px] font-medium">
-            {{ ind.name }}
-            <Icon
-              name="arrow-right"
-              size="xs"
-              class="text-muted-foreground opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-0.5"
-            />
-          </h3>
-          <p class="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{{ ind.blurb }}</p>
-        </button>
-      </div>
-    </section>
-
-    <!-- Case study: left-right split -->
-    <section class="border-t border-border">
-      <div class="mx-auto max-w-6xl px-6 py-20">
-        <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
-
-          <!-- Left: headline + text + stats -->
-          <div>
-            <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Case study · Energy &amp; utilities</p>
-            <h2 class="mt-3 text-4xl font-medium">
-              Inspecting 40,000 km of grid,<br><span style="color: var(--brand)">autonomously.</span>
-            </h2>
-            <p class="mt-4 text-[16px] leading-relaxed text-muted-foreground">
-              A national utility replaced manual line inspection with an Auterion-powered fleet —
-              cutting inspection time by 70% and flagging faults before they became outages.
-            </p>
-
-            <!-- Stats -->
-            <div class="mt-8 grid grid-cols-3 gap-6 border-t border-border pt-8">
-              <div>
-                <p class="font-mono text-4xl font-medium tabular-nums" style="color: var(--brand)">70%</p>
-                <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Faster inspection</p>
-              </div>
-              <div>
-                <p class="font-mono text-4xl font-medium tabular-nums text-foreground">12k</p>
-                <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Flights per year</p>
-              </div>
-              <div>
-                <p class="font-mono text-4xl font-medium tabular-nums text-foreground">9</p>
-                <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Regions covered</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right: grid inspection diagram -->
-          <div
-            class="rounded-xl p-8"
-            style="background: color-mix(in oklab, var(--brand) 6%, white); border: 1px solid color-mix(in oklab, var(--brand) 18%, transparent)"
+        <div class="wb-grid" data-cols="3">
+          <button
+            v-for="ind in industries"
+            :key="ind.name"
+            type="button"
+            class="dk-card dk-lift wb-tile"
+            @click="ind.to && navigate(ind.to)"
           >
-            <p class="mb-4 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Inspection flight path</p>
-            <!-- SVG grid inspection diagram -->
-            <svg viewBox="0 0 320 220" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full" aria-label="Grid inspection path diagram">
-              <!-- Grid lines (power grid) -->
-              <line x1="40" y1="40" x2="280" y2="40" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 3" />
-              <line x1="40" y1="80" x2="280" y2="80" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 3" />
-              <line x1="40" y1="120" x2="280" y2="120" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 3" />
-              <line x1="40" y1="160" x2="280" y2="160" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 3" />
-              <line x1="40" y1="200" x2="280" y2="200" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 3" />
-              <line x1="40" y1="40" x2="40" y2="200" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 3" />
-              <line x1="100" y1="40" x2="100" y2="200" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 3" />
-              <line x1="160" y1="40" x2="160" y2="200" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 3" />
-              <line x1="220" y1="40" x2="220" y2="200" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 3" />
-              <line x1="280" y1="40" x2="280" y2="200" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 3" />
-
-              <!-- Flight path (lawnmower pattern) -->
-              <polyline
-                points="40,50 280,50 280,70 40,70 40,90 280,90 280,110 40,110 40,130 280,130 280,150 40,150 40,170 280,170 280,190 40,190"
-                stroke="var(--brand)"
-                stroke-width="1.5"
-                fill="none"
-                stroke-linejoin="round"
-                opacity="0.7"
-              />
-
-              <!-- Tower/pylon markers -->
-              <g v-for="x in [40, 100, 160, 220, 280]" :key="x">
-                <rect :x="x - 3" y="37" width="6" height="6" fill="var(--brand)" rx="1" opacity="0.8" />
-                <rect :x="x - 3" y="77" width="6" height="6" fill="var(--brand)" rx="1" opacity="0.8" />
-                <rect :x="x - 3" y="117" width="6" height="6" fill="var(--brand)" rx="1" opacity="0.8" />
-                <rect :x="x - 3" y="157" width="6" height="6" fill="var(--brand)" rx="1" opacity="0.8" />
-                <rect :x="x - 3" y="197" width="6" height="6" fill="var(--brand)" rx="1" opacity="0.8" />
-              </g>
-
-              <!-- Fault marker -->
-              <circle cx="160" cy="130" r="7" fill="none" stroke="#EF4444" stroke-width="1.5" />
-              <circle cx="160" cy="130" r="2" fill="#EF4444" />
-
-              <!-- Drone icon (simple) -->
-              <g transform="translate(276, 46)">
-                <circle cx="4" cy="4" r="4" fill="var(--brand)" opacity="0.9" />
-              </g>
-
-              <!-- Legend -->
-              <line x1="40" y1="212" x2="60" y2="212" stroke="var(--brand)" stroke-width="1.5" opacity="0.7" />
-              <text x="65" y="216" font-family="monospace" font-size="8" fill="#64748B">Flight path</text>
-              <circle cx="150" cy="212" r="4" fill="none" stroke="#EF4444" stroke-width="1.5" />
-              <text x="158" y="216" font-family="monospace" font-size="8" fill="#64748B">Fault detected</text>
-            </svg>
-          </div>
+            <div class="wb-tile-head">
+              <span class="wb-tile-mark"><Icon :name="ind.icon" size="xs" /></span>
+            </div>
+            <h3 class="dk-h2">{{ ind.name }}</h3>
+            <p class="dk-body">{{ ind.blurb }}</p>
+            <span v-if="ind.to" class="wb-tile-foot">
+              <span class="dk-label">Open</span>
+              <Icon name="arrow-right" size="xs" class="wb-tile-go" />
+            </span>
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- Quote -->
-    <section class="border-t border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-3xl px-6 py-20">
-        <figure>
-          <blockquote
-            class="border-l-[3px] pl-6 text-[18px] leading-relaxed text-foreground lg:text-[20px]"
-            style="border-color: var(--brand)"
-          >
+    <!-- ╭─ Case study ───────────────────────────────────────────────╮ -->
+    <section class="wb-band wb-band-alt">
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">Case study · Energy &amp; utilities</span>
+          <span class="dk-bracket">40,000 KM · 12K FLIGHTS · 9 REGIONS</span>
+        </div>
+
+        <div class="wb-split wb-stack" data-lead="wide">
+          <div>
+            <h2 class="dk-h1">Inspecting 40,000 km of grid, autonomously.</h2>
+            <p class="dk-body-lg wb-measure-text wb-stack">
+              A national utility replaced manual line inspection with an Auterion-powered fleet —
+              cutting inspection time by 70% and flagging faults before they became outages.
+            </p>
+
+            <div class="dk-ledger wb-stack">
+              <div
+                v-for="(s, i) in caseStats"
+                :key="s.label"
+                class="dk-ledger-cell"
+                :data-align="i === caseStats.length - 1 ? 'end' : undefined"
+              >
+                <span class="dk-pointer">{{ s.label }}</span>
+                <span class="wb-figure-num">{{ s.value }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flight-path figure. Ink for geometry, the ladder for the one
+               thing that is genuinely a state: the detected fault. -->
+          <figure class="dk-card wb-figure">
+            <div class="wb-figure-bar">
+              <span class="dk-label">Inspection flight path</span>
+              <span class="dk-bracket wb-push">1 FAULT</span>
+            </div>
+            <div class="wb-figure-body">
+              <svg viewBox="0 0 320 226" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full" role="img" aria-label="Lawnmower inspection path over a power-grid section, with one detected fault">
+                <g stroke="var(--dk-line)" stroke-width="1" stroke-dasharray="4 3">
+                  <line v-for="y in pylonRows" :key="`h${y}`" x1="40" :y1="y + 3" x2="280" :y2="y + 3" />
+                  <line v-for="x in pylonCols" :key="`v${x}`" :x1="x" y1="40" :x2="x" y2="200" />
+                </g>
+
+                <polyline
+                  points="40,50 280,50 280,70 40,70 40,90 280,90 280,110 40,110 40,130 280,130 280,150 40,150 40,170 280,170 280,190 40,190"
+                  stroke="var(--dk-fg-3)"
+                  stroke-width="1.5"
+                  fill="none"
+                  stroke-linejoin="round"
+                />
+
+                <g fill="var(--dk-fg-2)">
+                  <template v-for="y in pylonRows" :key="`r${y}`">
+                    <rect v-for="x in pylonCols" :key="`p${x}-${y}`" :x="x - 3" :y="y" width="6" height="6" rx="1" />
+                  </template>
+                </g>
+
+                <circle cx="160" cy="130" r="7" fill="none" stroke="var(--alarm)" stroke-width="1.5" />
+                <circle cx="160" cy="130" r="2" fill="var(--alarm)" />
+                <circle cx="280" cy="50" r="4" fill="var(--dk-fg)" />
+
+                <line x1="40" y1="214" x2="60" y2="214" stroke="var(--dk-fg-3)" stroke-width="1.5" />
+                <text x="66" y="218" class="dk-micro" fill="var(--dk-fg-3)">FLIGHT PATH</text>
+                <circle cx="160" cy="214" r="4" fill="none" stroke="var(--alarm)" stroke-width="1.5" />
+                <text x="170" y="218" class="dk-micro" fill="var(--dk-fg-3)">FAULT DETECTED</text>
+              </svg>
+            </div>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ╭─ Quote ────────────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <figure class="wb-narrow-col">
+          <blockquote class="wb-quote">
             "We went from scheduling inspections in weeks to launching them in minutes.
             The whole fleet runs on one stack."
           </blockquote>
-          <figcaption class="mt-6 flex items-center gap-3 pl-6">
-            <span
-              class="flex h-9 w-9 items-center justify-center rounded-full font-mono text-[12px] font-medium"
-              style="background: color-mix(in oklab, var(--brand) 10%, white); color: var(--brand)"
-            >AR</span>
-            <span class="text-[13px]">
-              <span class="font-semibold text-foreground">Anna Roth</span>
-              <span class="mt-0.5 block text-muted-foreground">Head of Grid Ops, Nordic Power</span>
+          <figcaption class="wb-quote-by">
+            <span class="wb-initials">AR</span>
+            <span>
+              <span class="dk-value">Anna Roth</span>
+              <span class="dk-small block">Head of Grid Ops, Nordic Power</span>
             </span>
           </figcaption>
         </figure>
       </div>
     </section>
 
-    <!-- CTA -->
-    <section class="border-t border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-2xl px-6 py-20 text-center">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Get started</p>
-        <h2 class="mt-3 text-4xl font-medium">
-          Find your solution.
-        </h2>
-        <p class="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-muted-foreground">
-          Tell us about your operation and we'll map the right configuration.
-        </p>
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <button
-            class="cta-btn inline-flex items-center gap-2 rounded-lg px-6 py-3 text-[14px] font-semibold"
-            style="background: var(--brand); color: var(--brand-foreground)"
-          >
-            Talk to our team
-            <Icon name="arrow-right" size="xs" />
-          </button>
-          <Button variant="ghost" size="md" class="gap-2 text-[14px]">
-            Explore the platform
-          </Button>
+    <!-- ╭─ Proof close ──────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-plate wb-cover">
+          <div class="wb-cover-copy">
+            <p class="dk-h2 dk-ghost">Get started</p>
+            <h2 class="dk-display">Find your solution.</h2>
+          </div>
+          <p class="dk-body-lg wb-cover-lede">
+            Tell us about your operation and we'll map the right configuration.
+          </p>
+          <div class="wb-actions">
+            <button type="button" class="dk-cta-solid" @click="navigate('company')">
+              Talk to our team <Icon name="arrow-right" size="xs" />
+            </button>
+            <button type="button" class="dk-cta" @click="navigate('products')">Explore the platform</button>
+          </div>
         </div>
       </div>
     </section>
 
   </div>
 </template>
-
-<style scoped>
-.industry-card:hover {
-  border-color: color-mix(in oklab, var(--brand) 30%, var(--border));
-  border-bottom-width: 2px;
-  border-bottom-color: var(--brand);
-}
-
-.cta-btn:hover {
-  background: color-mix(in oklab, var(--brand) 88%, black) !important;
-}
-
-.cta-btn:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
-</style>

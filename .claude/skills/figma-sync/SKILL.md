@@ -40,12 +40,13 @@ write path needed:
 1. **Build the artifacts** (Bash):
    ```bash
    pnpm --filter @auxiliary/tokens build      # dist/figma-native.json + dist/tokens.json
-   pnpm --filter @auxiliary/figma-sync build  # dist/push.figma.js
+   pnpm --filter @auxiliary/css build         # component-schema.json (the component contract)
+   pnpm --filter @auxiliary/figma-sync build  # dist/push.figma.js + dist/push-components.figma.js
    ```
 2. **Load `/figma-use`** (canonical Plugin API rules) before any `use_figma` call.
 3. **Inspect** the target file first (idempotency / safety): a read-only `use_figma` listing
    existing collections via `figma.variables.getLocalVariableCollectionsAsync()`. Expect the push
-   to update in place if Primitives/Semantic already exist.
+   to update in place if Global/Theme already exist.
 4. **Run the push**: read `packages/figma-sync/dist/push.figma.js` and pass its **entire contents**
    as the `code` to `use_figma` (with `skillNames: "figma-use,figma-sync"` and the target fileKey).
    The program is idempotent and self-contained (data inlined). It returns a summary
@@ -55,12 +56,19 @@ write path needed:
    entry's `font` field reveals any weight that silently downgraded (e.g. to Inter Regular).
    - It creates ~350 variables in one atomic script. If `use_figma` errors on size/timeout, the
      program is safe to re-run (idempotent); if it persistently fails, split by editing the
-     generated `DATA.collections` to push Primitives first, then Semantic.
-5. **Verify**: `get_variable_defs` on a node, or a read-only `use_figma`, to confirm two
-   collections, the 4 Semantic modes, a spot-checked alias (e.g. `alarm` → red/700 in light,
+     generated `DATA.collections` to push Global first, then Theme.
+5. **Verify**: `get_variable_defs` on a node, or a read-only `use_figma`, to confirm the three
+   collections, the 4 Theme modes, a spot-checked alias (e.g. `alarm` → red/700 in light,
    red/800 in dark), the `shadow/*` Effect Styles, and the `Type/*` Text Styles. Re-run the
    push once to confirm no duplicates. (Note: freshly-created variables not bound to any node
    won't appear via `get_variable_defs` — the push summary is the authoritative count.)
+6. **Push the component sets** — `dist/push-components.figma.js`, or the nine per-set payloads
+   (`push-components.NN.<name>.js`) when the combined file exceeds use_figma's 50k code limit.
+   **Only after step 4**: every binding addresses a variable by qualified name, and a variable
+   that doesn't exist yet can't be bound. Returns
+   `{ page, sets: [{ set, created, updated, removed, total }], missingVariables, fontFailures }` —
+   a non-empty `missingVariables` means the token push didn't land, not that the component is
+   wrong. Idempotent: sets reconcile in place on the `Components` page.
 
 ## Reading drift back (`pnpm figma:diff`)
 
@@ -95,7 +103,7 @@ this", and that `probable-rename` is a hint, never applied.
 - Idempotency keys on collection + variable **name**. Renaming a token in code orphans the old
   Figma variable (pre-1.0: acceptable; clean up manually if needed).
 - `shadow` → Effect Styles and `type/*` typography composites → Text Styles (`Type/*`, font
-  size bound to the matching `Primitives/text/*` variable) — both handled by the push.
+  size bound to the matching `Global/text/*` variable) — both handled by the push.
   `cubicBezier`/easings can't be Variables → see the package README's table; maintain them
   manually in Figma.
 - Text Styles need the fonts **installed in the target file**. The push tries each role's

@@ -36,11 +36,32 @@ The primary voice. Inter Variable with optical sizing axis `opsz 14..32` so larg
 The body voice runs with these OpenType features turned on globally via [`@auxiliary/css/theme.css`](https://github.com/Auterion/auxiliary-ds/tree/main/packages/css):
 
 ```css
-font-feature-settings: "ss01", "ss03", "ss07", "ss08",
-  "cv02", "cv03", "cv04", "cv06", "cv09", "cv12", "cv13", "calt", "liga";
+font-feature-settings: "ss07", "ss08", "calt", "liga";
 ```
 
-Globally that buys the **square / straight-punctuation register** — geometric dots, straight quotes and commas, squared punctuation: the engineered, IBM-/Swiss-leaning voice that rhymes with the mark's faceted geometry. Strong `I/l/1` glyph disambiguation in the sans is deliberately **not** global — it's an [operational-register feature](./registers#type-in-the-operational-register) (the safety context that actually needs it), while the always-unambiguous path for identifiers stays the mono face below.
+That is the **whole** house set, and it is deliberately minimal:
+
+| Feature | Inter's name | Why |
+| --- | --- | --- |
+| `ss07` | Square punctuation | Geometric dots on `. : ; ! ?` and `i j` |
+| `ss08` | Square quotes | Squared quotes & commas |
+| `calt` · `liga` | Contextual alternates · ligatures | Ordinary text-rendering features, not stylistic choices |
+
+Together `ss07` + `ss08` buy the **square-punctuation register** — the engineered,
+IBM-/Swiss-leaning voice that rhymes with the mark's faceted geometry.
+
+**Only punctuation is squared — letterforms are left alone.** Inter's `ss01` (open
+digits) and the `cv*` letterform alternates are *not* enabled: they reshape glyphs
+rather than punctuation, and the house position is Inter's default letterforms.
+
+::: danger Never enable `ss03`
+Inter's `ss03` is **"Round quotes & commas"** — the direct opposite of `ss08`. Enabling
+both leaves quote and comma shape to the font's internal lookup order instead of to us.
+It was previously on across the whole system behind a comment that misnamed it
+"straight/square quotes".
+:::
+
+Strong `I/l/1` glyph disambiguation in the sans is deliberately **not** global — it's an [operational-register feature](./registers#type-in-the-operational-register) (the safety context that actually needs it), and `cv05`/`cv08`/`cv11` + `zero` are the only glyph alternates anywhere in the system. The always-unambiguous path for identifiers stays the mono face below.
 
 ## Mono — Geist Mono
 
@@ -141,18 +162,19 @@ Size by intent, not by number.
 Roles split into **two families on the two surfaces** (README Principle 4 — *one library,
 many surfaces*), mirroring the `expressive` / `operational` register axis. The marketing
 headline voice is tuned toward **Neue Haas Grotesk**: Inter's **Display** optical cut
-(`font/display`), **Medium** weight, **tight tracking**, and a clean feature set (the
-operational square/disambiguation alternates are dropped — see [features](#identifiers-tabular-numerals)).
+(`font/display`), **Medium** weight and **tight tracking**. Its OpenType set is
+identical to the house set (`ss07`/`ss08` + `calt`/`liga`) — display needs no
+exemption, because the house set is already only punctuation.
 Product keeps Inter's **Text** optical cut for operational legibility.
 
-### Marketing — `type/marketing/*` (expressive: web & brand · Inter Display)
+### Marketing — `type/marketing/*` (expressive: web & brand · Inter Variable @ `opsz 32`)
 
 | Role | Figma style | Font | Size | Weight | Leading | Tracking |
 | --- | --- | --- | --- | --- | --- | --- |
-| `display` | `Type/Marketing/Display` | Inter Display | 60px (`{text.6xl}`) | medium | `display` 1.0 | `tighter` −0.05em |
-| `h1` | `Type/Marketing/H1` | Inter Display | 48px (`{text.5xl}`) | medium | `title` 1.1 | `tighter` −0.05em |
-| `h2` | `Type/Marketing/H2` | Inter Display | 40px (`{text.4xl}`) | medium | `heading` 1.15 | `display` −0.04em |
-| `h3` | `Type/Marketing/H3` | Inter Display | 30px (`{text.3xl}`) | medium | `tight` 1.2 | `display` −0.04em |
+| `display` | `Type/Marketing/Display` | Inter Variable · `opsz 32` | 60px (`{text.6xl}`) | medium | `display` 1.0 | `tighter` −0.05em |
+| `h1` | `Type/Marketing/H1` | Inter Variable · `opsz 32` | 48px (`{text.5xl}`) | medium | `title` 1.1 | `tighter` −0.05em |
+| `h2` | `Type/Marketing/H2` | Inter Variable · `opsz 32` | 40px (`{text.4xl}`) | medium | `heading` 1.15 | `display` −0.04em |
+| `h3` | `Type/Marketing/H3` | Inter Variable · `opsz 32` | 30px (`{text.3xl}`) | medium | `tight` 1.2 | `display` −0.04em |
 | `lead` | `Type/Marketing/Lead` | Inter | 20px (`{text.xl}`) | regular | `normal` 1.5 | `tight` −0.01em |
 | `body` | `Type/Marketing/Body` | Inter | 18px (`{text.lg}`) | regular | `normal` 1.5 | `tight` −0.01em |
 | `caption` | `Type/Marketing/Caption` | Inter | 14px (`{text.sm}`) | semibold | `snug` 1.35 | `tight` −0.01em |
@@ -169,12 +191,25 @@ Product keeps Inter's **Text** optical cut for operational legibility.
 | `label` | `Type/Product/Label` | Inter | 14px (`{text.sm}`) | medium | `snug` 1.35 | `normal` 0 |
 | `caption` | `Type/Product/Caption` | Inter | 12px (`{text.xs}`) | regular | `snug` 1.35 | `normal` 0 |
 
-**Inter Display vs Text.** The two are the ends of Inter's optical-size (`opsz`) axis. On the
-web this is automatic (`font-optical-sizing: auto` on `html`), so large headlines already get
-the display rendering; the `font-display` utility pins `opsz 32` and the clean feature set
-explicitly. **Figma** doesn't auto-apply `opsz`, so the marketing heading Text Styles use the
-separate `Inter Display` family to get the same display cut. No extra font binary ships — web
-falls through `Inter Display → Inter Variable` and resolves the cut via the axis.
+**Inter Display vs Text.** The two are the ends of Inter's optical-size (`opsz`) axis, which
+Inter v4 folded into the variable font (range 14–32). **`opsz 32` IS the static Inter Display
+design** — same drawings, reached through the axis instead of a second binary. On the web this
+is automatic (`font-optical-sizing: auto` on `html`), so large headlines already get the display
+rendering; the `font-display` utility pins `opsz 32` explicitly.
+
+**Why `font/display` no longer names `Inter Display`.** The standalone `Inter Display` binary
+does **not** carry `ss07`/`ss08` — Inter's square-punctuation sets — and square punctuation is
+house-wide. Rather than exempt marketing from the house punctuation, `font/display` is now the
+same stack as `font/sans` (`Inter Variable` first) and earns its display voice from `opsz 32`
+plus weight and tracking. Nothing is lost on the web.
+
+::: warning Figma does not auto-apply `opsz`
+Figma has no automatic optical sizing, and the Plugin API exposes **no** setter for variable-font
+axes or OpenType features (`openTypeFeatures` is read-only). So the `Type/Marketing/*` styles land
+on Inter Variable at its *default* optical size, and `opsz 32` + `ss07`/`ss08` must be switched on
+by hand in Figma's **Type details** panel. This is a known, deliberate gap between web and Figma —
+the web output is correct either way.
+:::
 
 ```vue
 <!-- marketing headline — NHG-leaning display voice -->

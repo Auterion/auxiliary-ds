@@ -1,0 +1,817 @@
+/* Hallmark · macrostructure: Editorial (portfolio deck) worn by a marketing site
+ * tone: measured/declarative · anchor hue: auterion blue (rationed, ≤2 surfaces)
+ * pre-emit critique: P5 H5 E5 S5 R5 V4
+ *
+ * "PRESS SHEET" — the page-local layer for auterion.com, written in the
+ * Deck 07b grammar (`_deck07b.css`).
+ *
+ * 07b is an editorial language, so a marketing site is the surface it fits
+ * best: covers, section titles at the display cut, header ledgers of facts,
+ * ledger tables, brackets around measured claims. This file adds NOTHING to
+ * that grammar. Every colour, radius, duration and easing resolves through a
+ * `--dk-*` alias or a design-system status token. There is no hex, no rgb, no
+ * oklch here: a raw literal in a `.wb-*` rule is a bug, exactly as it is in a
+ * `.dk-*` rule.
+ *
+ * Built to the Console standard (`console/_console.css`):
+ *   · ONE ladder per axis — measure, gutter, block rhythm, control height,
+ *     radius, duration, easing — named HERE, never improvised at the call
+ *     site. This layer adds exactly three dimensions the grammar has no
+ *     opinion about (site measure, nav height, block rhythm); everything else
+ *     steps to the `--dk-*` ladders.
+ *   · The mode is [data-theme], on the SAME element as `.dk` — so the DS
+ *     semantic tokens (Button, Badge, StatusBadge) and the `--dk-*` palette
+ *     re-resolve together and can never drift. There is no second mode
+ *     attribute on this surface.
+ *   · Repeating structures are GRIDS and TABLES, not flex rows. Every card
+ *     grid, metric strip and footer column steps to one column model, so a
+ *     reader moving between pages sees the columns stay where they were.
+ *   · Hairlines, never shadows — including on hover. `.dk-lift` lifts a rule.
+ *   · Motion only on state change, never on load. The one exception is the
+ *     cover's telemetry ticker, which is the module's own "LIVE" claim being
+ *     kept — the same permission `bp-map-ping` holds in the Console layer.
+ *
+ * Namespaced `wb-`; sits alongside `dk-` (grammar), `bp-` (Console), `ix-`
+ * (Suite) and `os-` (AuterionOS) without collision. Demo layer — NOT a tokens
+ * or recipe change.
+ */
+
+/* ═══ Surface ladder ══════════════════════════════════════════════════════ */
+
+.wb-root {
+  --wb-measure: 1120px; /* the site column — every band steps to it        */
+  --wb-measure-narrow: 780px; /* single-column reading measure             */
+  --wb-nav-h: 56px; /* sticky masthead                                     */
+  --wb-block: 80px; /* vertical rhythm between bands                        */
+  --wb-block-sm: 48px;
+  --wb-mark: 26px; /* the identity tile — a signal surface                  */
+
+  /* The grammar has ONE focus ring (`--dk-fg`, never transitioned). The DS
+   * components on this surface ring off `--ring`, which is auterion-blue —
+   * that would be a second ring treatment AND extra occurrences of the
+   * signal. Point it at the grammar's ink instead. */
+  --ring: var(--dk-fg);
+
+  min-height: 100dvh;
+}
+
+@media (max-width: 767px) {
+  .wb-root {
+    --wb-block: 52px;
+    --wb-block-sm: 36px;
+  }
+}
+
+/* ═══ Chrome — masthead ═══════════════════════════════════════════════════
+ * No border of its own beyond the one hairline: the grammar marks position
+ * with a rule, never a lozenge, so the nav's active state is a rule too. */
+
+.wb-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: color-mix(in oklab, var(--dk-bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+.wb-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--dk-gutter);
+  min-height: var(--wb-nav-h);
+  padding-block: 8px;
+}
+.wb-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+/* The one identity tile. Sized off the surface ladder, never a magic number. */
+.wb-mark {
+  display: grid;
+  place-items: center;
+  width: var(--wb-mark);
+  height: var(--wb-mark);
+  flex-shrink: 0;
+}
+.wb-wordmark {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--dk-fg);
+}
+
+.wb-navlinks {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.wb-navlinks::-webkit-scrollbar { display: none; }
+
+.wb-navlink {
+  display: inline-flex;
+  align-items: center;
+  height: var(--dk-control-md);
+  padding: 0 9px;
+  border-bottom: var(--dk-rule) solid transparent;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--dk-fg-3);
+  cursor: pointer;
+  transition: color var(--dk-dur) var(--dk-ease),
+    border-color var(--dk-dur) var(--dk-ease);
+}
+.wb-navlink:hover { color: var(--dk-fg); }
+.wb-navlink[data-active='true'] {
+  color: var(--dk-fg);
+  border-bottom-color: var(--dk-fg);
+}
+
+.wb-nav-end {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Below `sm` the masthead drops its two optional controls. The breakpoint
+ * lives HERE, not as a `hidden sm:inline-flex` pair: this layer is unlayered
+ * CSS and Tailwind's utilities sit in `@layer utilities`, so `.dk-segment`'s
+ * own `display: inline-flex` beats `hidden` outright and the control never
+ * disappears. Measured before the fix: 529px of content in a 390px viewport. */
+@media (max-width: 639px) {
+  .wb-nav-inner { gap: 12px; }
+  /* `.wb-root` prefix is load-bearing: at (0,1,0) this ties with
+   * `.dk-segment`/`.dk-cta`'s own `display` and loses on source order. */
+  .wb-root .wb-sm-up { display: none; }
+}
+
+/* The masthead is two rows at every width, not a single row that collapses:
+ * nine section links cannot share one line with the identity and the actions
+ * inside the site measure without one of them being squeezed, and a masthead
+ * that reflows at a breakpoint is two masthead designs. Row one is identity
+ * and actions; row two is the section index, on its own hairline. */
+.wb-nav-strip {
+  display: flex;
+  border-top: var(--dk-rule) solid var(--dk-line-2);
+  padding-bottom: 2px;
+}
+
+/* ═══ Bands and measure ═══════════════════════════════════════════════════
+ * One rule between bands, one measure across the whole site. Every label on
+ * every page starts on the same x because the wrap is the only gutter. */
+
+.wb-band { border-top: var(--dk-rule) solid var(--dk-line); }
+.wb-band-alt { background: var(--dk-bg-2); }
+
+.wb-wrap {
+  max-width: var(--wb-measure);
+  margin-inline: auto;
+  padding-inline: var(--dk-gutter);
+}
+/* A narrower reading column, but it starts on the SAME left rail as every
+ * other block — a centred narrow wrap would indent one section relative to
+ * the whole page, which is exactly the alignment the deck is holding. */
+.wb-narrow-col { max-width: var(--wb-measure-narrow); }
+
+.wb-block { padding-block: var(--wb-block); }
+.wb-block-sm { padding-block: var(--wb-block-sm); }
+
+/* Section head — the grammar's `.dk-section` rule, then the title stack
+ * BELOW it. Never beside it. */
+.wb-head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: var(--dk-gutter);
+  margin-bottom: var(--dk-gutter);
+}
+.wb-measure-text { max-width: 62ch; }
+
+/* Two spacing helpers so no template carries a bare number: one gutter of
+ * separation below a section rule, and the push that sends a trailing item
+ * to the block's right edge. */
+.wb-stack { margin-top: var(--dk-gutter); }
+.wb-push { margin-left: auto; }
+
+/* ═══ Cover ═══════════════════════════════════════════════════════════════
+ * The dark plate is the opposite exposure of the same material — covers and
+ * proof closes. Not rationed, but it has to earn its weight, so it appears
+ * exactly twice per page: the cover and the close. */
+
+.wb-cover {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dk-gutter);
+  padding: calc(var(--dk-gutter) * 2);
+  overflow: hidden;
+}
+@media (max-width: 639px) { .wb-cover { padding: var(--dk-gutter); } }
+
+.wb-cover-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 66ch;
+}
+.wb-cover-lede { max-width: 56ch; }
+
+.wb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Cover foot — the LIVE claim and the measured bracket, on one hairline. */
+.wb-cover-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--dk-gutter-sm);
+  padding-top: var(--dk-gutter-sm);
+  border-top: var(--dk-rule) solid var(--dk-plate-line);
+  min-width: 0;
+}
+.wb-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.wb-ticker {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.wb-ticker-items {
+  display: inline-block;
+  animation: wb-marquee 34s linear infinite;
+}
+@keyframes wb-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ═══ Grids — one column model for the whole site ═════════════════════════
+ * Fixed slots, not flex: every card in every grid on every page starts on the
+ * same x, which is what separates a deck from a stack of cards. */
+
+.wb-grid {
+  display: grid;
+  gap: var(--dk-gutter-sm);
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 640px) {
+  .wb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wb-grid[data-cols='6'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .wb-grid[data-cols='3'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wb-grid[data-cols='4'] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .wb-grid[data-cols='6'] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+/* Editorial split — copy left, figure right. Below `lg` it stacks. */
+.wb-split {
+  display: grid;
+  gap: calc(var(--dk-gutter) * 1.5);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+}
+@media (min-width: 1024px) {
+  .wb-split { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wb-split[data-lead='wide'] { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+}
+
+/* ═══ Tile — the one card ═════════════════════════════════════════════════
+ * Composed with `.dk-card .dk-lift` at the call site. A `<button>` tile has
+ * to be reset to a block, because the grammar's alignment beats the UA's. */
+
+.wb-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: var(--dk-gutter);
+  text-align: left;
+  min-width: 0;
+  cursor: default;
+  color: var(--dk-fg);
+}
+button.wb-tile, a.wb-tile { cursor: pointer; }
+
+.wb-tile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--dk-gutter-sm);
+  min-width: 0;
+}
+/* Icon plate. A hairline square, NOT a tinted lozenge — a tinted icon well on
+ * every card is how a one-signal budget quietly becomes thirty. */
+.wb-tile-mark {
+  display: grid;
+  place-items: center;
+  width: var(--dk-control-md);
+  height: var(--dk-control-md);
+  flex-shrink: 0;
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: var(--dk-r-sm);
+  color: var(--dk-fg-3);
+}
+.wb-tile-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 4px;
+}
+/* The chevron is the tile's only motion, and it moves on hover — state
+ * change, not entrance. */
+.wb-tile-go {
+  color: var(--dk-fg-3);
+  transition: transform var(--dk-dur) var(--dk-ease), color var(--dk-dur) var(--dk-ease);
+}
+.wb-tile:hover .wb-tile-go { transform: translateX(2px); color: var(--dk-fg); }
+
+/* Decorative glyph — one alias for the tertiary ink, not a second ladder.
+ * Icons that carry no meaning of their own sit a step back from the copy. */
+.wb-glyph { color: var(--dk-fg-3); }
+
+/* Bullet list inside a tile — a rule above, mono-measured items. */
+.wb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: var(--dk-gutter-sm);
+  border-top: var(--dk-rule) solid var(--dk-line-2);
+}
+.wb-list-item {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 10px;
+}
+.wb-list-item::before {
+  content: '—';
+  color: var(--dk-fg-3);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+/* ═══ Metric strip — measured facts, hairline-ruled ═══════════════════════
+ * Cells pull their own rule 1px under the card's, so the strip reads as one
+ * ruled block rather than a row of boxes. */
+
+.wb-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .wb-metrics[data-cols='3'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wb-metrics[data-cols='4'] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.wb-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: var(--dk-gutter);
+  border-top: var(--dk-rule) solid var(--dk-line-2);
+  border-left: var(--dk-rule) solid var(--dk-line-2);
+  margin-top: calc(-1 * var(--dk-rule));
+  margin-left: calc(-1 * var(--dk-rule));
+}
+/* The measured figure. One size for the whole site, tabular, at the display
+ * cut — so a stat on Home and a stat on Skynode are the same object. */
+.wb-figure-num {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 3.6vw, 42px);
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--dk-fg);
+}
+.wb-metric-delta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.wb-span-2 { grid-column: span 2; }
+
+/* ═══ Ruled row list — partners, compliance, docs, legends ════════════════
+ * Three named column models and no fourth. A bare track list in a template
+ * is the thing this layer exists to prevent. */
+
+.wb-rule-row {
+  display: grid;
+  grid-template-columns: var(--wb-row-cols, minmax(0, 1fr) auto);
+  align-items: center;
+  gap: var(--dk-gutter-sm);
+  padding-block: 10px;
+  border-top: var(--dk-rule) solid var(--dk-line-2);
+}
+/* label · bar · figure — the two proportional lists on Insure. */
+.wb-row-bar { --wb-row-cols: minmax(0, 1fr) 96px auto; }
+.wb-row-stage { --wb-row-cols: 76px minmax(0, 1fr) auto; }
+/* glyph · label — a leading mark keeps every claim starting on one x; a
+ * trailing one strands itself at the far edge of a variable-width cell. */
+.wb-row-lead { --wb-row-cols: 14px minmax(0, 1fr); }
+
+/* Fixed-size donut, sized off the layer rather than the call site. */
+.wb-donut { width: 112px; height: 112px; flex-shrink: 0; }
+
+/* Partner names — mono, evenly slotted, no motion. A logo carousel is an
+ * entrance animation wearing a suit; the editorial answer is a ruled row. */
+.wb-logos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: var(--dk-rule) solid var(--dk-line-2);
+}
+@media (min-width: 640px) { .wb-logos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .wb-logos { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.wb-logo {
+  padding-block: 14px;
+  border-bottom: var(--dk-rule) solid var(--dk-line-2);
+}
+
+/* ═══ Figure frame — diagrams, code, mock panels ══════════════════════════ */
+
+/* `<figure>` carries a UA margin that would break the site's one rhythm; the
+ * surface resets it once here rather than at every call site. */
+.wb-root figure { margin: 0; }
+
+.wb-figure {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+.wb-figure-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--dk-gutter-sm);
+  padding: 10px var(--dk-gutter-sm);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+  min-height: var(--dk-control-md);
+}
+.wb-figure-body { padding: var(--dk-gutter); min-width: 0; }
+.wb-figure-scroll { overflow-x: auto; scrollbar-width: thin; scrollbar-color: var(--dk-line) transparent; }
+.wb-figure-scroll::-webkit-scrollbar { height: 8px; }
+.wb-figure-scroll::-webkit-scrollbar-thumb { background: var(--dk-line); border-radius: var(--dk-r-pill); }
+.wb-figure-scroll::-webkit-scrollbar-track { background: transparent; }
+
+.wb-code {
+  margin: 0;
+  padding: var(--dk-gutter-sm) var(--dk-gutter);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--dk-fg-2);
+  overflow-x: auto;
+}
+.wb-code-kw { color: var(--dk-fg); font-weight: 500; }
+.wb-code-comment { color: var(--dk-fg-3); }
+
+/* Header-ledger widths. The grammar ships a 3-up; the site needs 4- and 5-up
+ * too, and the count is named here so no template carries a bare number. */
+.wb-ledger-4 { --dk-ledger-cols: 4; }
+.wb-ledger-5 { --dk-ledger-cols: 5; }
+
+/* A featured tile is marked with the ink rule, not a hue. */
+.wb-root .wb-tile[data-featured='true'] { border-color: var(--dk-fg); }
+
+/* ═══ Table column model ═════════════════════════════════════════════════
+ * `.dk-table` is `table-layout: fixed`, so the columns are declared once here
+ * and applied with `<col>`. Every table on the site draws from this one set,
+ * which is why a measured column lands on the same x whichever page it is on. */
+
+.wb-col-xs { width: 64px; }
+.wb-col-sm { width: 96px; }
+.wb-col-md { width: 128px; }
+.wb-col-lg { width: 176px; }
+.wb-table-wide { min-width: 640px; }
+
+/* ═══ Status devices — state, never brand ════════════════════════════════
+ * Exempt from the signal budget and never blue. Kept because 07b has no
+ * proportional bar and no in-table status pill. */
+
+/* `display: block` on both halves is load-bearing, not tidiness: these are
+ * `<span>`s inside table cells and list rows, and an inline box ignores
+ * `height`/`width` outright — the fill silently renders at zero. */
+.wb-bar {
+  display: block;
+  height: 4px;
+  width: 100%;
+  min-width: 48px;
+  border-radius: var(--dk-r-pill);
+  background: var(--dk-line);
+  overflow: hidden;
+}
+.wb-bar-fill { display: block; height: 100%; border-radius: var(--dk-r-pill); }
+.wb-bar-alarm { background: var(--alarm); }
+.wb-bar-warning { background: var(--warning); }
+.wb-bar-caution { background: var(--caution); }
+.wb-bar-advisory { background: var(--advisory); }
+.wb-bar-nominal { background: var(--nominal); }
+.wb-bar-ink { background: var(--dk-fg-3); }
+
+/* Sparkline wrapper. `Sparkline` strokes `currentColor` by default, so the
+ * hue is set by the WRAPPER — plain ink here, or a `.dk-ink-*` rung where the
+ * series genuinely reports a state. No `stroke` prop at the call site. */
+.wb-spark { display: block; color: var(--dk-fg-2); }
+
+/* Status token in a table cell — restated in the mono voice, on the
+ * `*-emphasis` inks (the contrast-gated on-surface tier). */
+.wb-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ═══ Quote ═══════════════════════════════════════════════════════════════ */
+
+.wb-quote {
+  margin: 0;
+  padding-left: var(--dk-gutter);
+  border-left: var(--dk-rule) solid var(--dk-fg);
+  font-family: var(--font-display);
+  font-size: clamp(19px, 2.2vw, 24px);
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--dk-fg);
+  text-wrap: balance;
+}
+.wb-quote-by {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: var(--dk-gutter);
+  padding-left: var(--dk-gutter);
+}
+.wb-initials {
+  display: grid;
+  place-items: center;
+  width: var(--dk-control-md);
+  height: var(--dk-control-md);
+  flex-shrink: 0;
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: var(--dk-r-pill);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--dk-fg-2);
+}
+
+/* ═══ Specimen devices — the Brand sheet only ════════════════════════════
+ * A colour swatch is CONTENT, not signal: the brand page's job is to show
+ * the ramp, so the blues in `.wb-swatch` are specimens the way a type
+ * specimen is a specimen. They are not counted against the signal budget,
+ * and they are the only place on the site where a hue appears without a
+ * meaning attached to it. */
+
+.wb-swatches {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: var(--dk-r-sm);
+}
+.wb-swatch {
+  display: flex;
+  align-items: flex-end;
+  min-height: 68px;
+  padding: 8px;
+}
+.wb-swatch[data-wide='true'] { grid-column: span 2; }
+.wb-swatch-name {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, currentColor 78%, transparent);
+}
+@media (max-width: 639px) { .wb-swatch { min-height: 52px; } }
+
+/* Type specimen — meta column fixed so every specimen starts on one x. */
+.wb-type-row {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--dk-gutter);
+  padding-block: 14px;
+  border-top: var(--dk-rule) solid var(--dk-line-2);
+}
+@media (max-width: 639px) {
+  .wb-type-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
+.wb-specimen {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--dk-fg);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.wb-specimen[data-face='mono'] {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dk-fg-2);
+}
+
+/* Inline code chip. The grammar has no code role; it is defined once here on
+ * the mono voice and the hairline. */
+.wb-chip {
+  display: inline-block;
+  padding: 1px 6px;
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--dk-fg);
+  background: var(--dk-bg-2);
+  overflow-wrap: anywhere;
+}
+
+/* Logo placeholder stage — the one block on the site with a fixed height,
+ * because it stands in for artwork that is not here yet. */
+.wb-stage {
+  display: grid;
+  place-items: center;
+  height: 104px;
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+.wb-stage[data-tone='inverse'] { background: var(--dk-plate-bg); color: var(--dk-plate-fg); }
+.wb-stage[data-tone='surface'] { background: var(--dk-bg-2); color: var(--dk-fg); }
+.wb-stage-ph { display: flex; align-items: center; gap: 10px; opacity: 0.4; }
+.wb-stage-box {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+}
+.wb-stage-word {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* ═══ Footer ══════════════════════════════════════════════════════════════ */
+
+.wb-foot-grid {
+  display: grid;
+  gap: var(--dk-gutter);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 1024px) {
+  .wb-foot-grid { grid-template-columns: minmax(0, 1.4fr) repeat(4, minmax(0, 1fr)); }
+}
+.wb-foot-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.wb-foot-links { display: flex; flex-direction: column; gap: 7px; margin-top: 4px; }
+.wb-foot-link {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dk-fg-2);
+  cursor: pointer;
+  transition: color var(--dk-dur) var(--dk-ease);
+}
+.wb-foot-link:hover { color: var(--dk-fg); }
+.wb-foot-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: var(--dk-gutter-sm);
+  border-top: var(--dk-rule) solid var(--dk-line);
+}
+
+/* ═══ Page-scoped fill-ins on the grammar ═════════════════════════════════
+ * Scoped under `.wb-root` and above the grammar's own specificity, so they
+ * hold whatever order the stylesheets land in and cannot leak sideways. */
+
+/* Body copy on a signal plate is the one role `.dk-plate-signal` doesn't
+ * colour for itself. */
+.wb-root .dk-plate-signal .dk-body,
+.wb-root .dk-plate-signal .dk-body-lg,
+.wb-root .dk-plate-signal .dk-small { color: color-mix(in oklab, var(--dk-on-signal) 90%, transparent); }
+
+/* On a dark plate the CTA pair has to invert with it: the solid one takes the
+ * plate's ink, the outlined one takes the plate's hairline. */
+.wb-root .dk-plate .dk-cta {
+  border-color: var(--dk-plate-line);
+  color: var(--dk-plate-fg);
+}
+.wb-root .dk-plate .dk-cta:hover {
+  background: color-mix(in oklab, var(--dk-plate-fg) 8%, transparent);
+  border-color: var(--dk-plate-fg-2);
+}
+.wb-root .dk-plate .dk-cta-solid {
+  background: var(--dk-plate-fg);
+  color: var(--dk-plate-bg);
+}
+.wb-root .dk-plate :is(a, button, [tabindex]):focus-visible { outline-color: var(--dk-plate-fg); }
+.wb-root .dk-plate .dk-bracket { color: var(--dk-plate-fg-2); }
+
+/* FINDING #1, worked around here — `_deck07b.css` gives the plate
+ *   `.dk-plate :is(.dk-display, .dk-h1, .dk-h2, .dk-value) { color: … }`
+ * at specificity (0,2,0), which outranks `.dk-ghost` at (0,1,0). Measured on
+ * the cover: the ghost line and the display line BOTH resolved to
+ * `oklch(0.985 0.004 265)` — the device was inert on a plate, which is the
+ * one place its permission slip sends it.
+ *
+ * FINDING #2, also worked around — restating the ghost at the grammar's own
+ * 32% then measures 2.89:1 (light) / 3.01:1 (dark) against `--dk-plate-bg`,
+ * under the 4.5:1 floor for the ~24px subtitle it carries. On this surface
+ * the ghost is the cover's eyebrow, so it is real copy and has to clear the
+ * floor. 50% clears it: measured 5.13:1 (light) /
+ * 5.08:1 (dark). It still reads as half-strength ink against the display
+ * line's full white, which is the device's point.
+ *
+ * Neither file is this layer's to change; both are reported upstream. */
+.wb-root .dk-plate .dk-ghost,
+.wb-root .dk-plate-signal .dk-ghost {
+  color: color-mix(in oklab, currentColor 50%, transparent);
+}
+
+/* FINDING #3 — the grammar's `.dk-plate-signal .dk-label` sits at 72% of
+ * `--dk-on-signal`, which measures 3.46:1 (light) / 3.80:1 (dark) on the
+ * signal surface: a 9.5px mono label under the 4.5:1 floor. 88% still missed
+ * it in light (4.41:1); 92% is the stop that clears both — measured 4.69:1
+ * (light) / 4.98:1 (dark) — and it keeps the label a step back from the
+ * display line (5.25:1 / 5.32:1) without dropping below the floor. */
+.wb-root .dk-plate-signal :is(.dk-label, .dk-pointer, .dk-micro) {
+  color: color-mix(in oklab, var(--dk-on-signal) 92%, transparent);
+}
+
+/* A metric strip on a plate has to re-rule itself: `--dk-line-2` is a paper
+ * hairline and would vanish on ink and fight on signal. Both plates state
+ * their own rule as a mix of their own ink, so the strip stays one block. */
+.wb-root .dk-plate :is(.wb-metric, .wb-rule-row, .wb-list, .wb-logo) {
+  border-color: var(--dk-plate-line);
+}
+.wb-root .dk-plate .wb-figure-num { color: var(--dk-plate-fg); }
+.wb-root .dk-plate-signal :is(.wb-metric, .wb-rule-row, .wb-list, .wb-logo) {
+  border-color: color-mix(in oklab, var(--dk-on-signal) 26%, transparent);
+}
+.wb-root .dk-plate-signal .wb-figure-num { color: var(--dk-on-signal); }
+
+/* The DS Card/Badge ship `text-card-foreground`; inside this surface the ink
+ * ramp is the 07b one and the two must not disagree by a step. */
+.wb-root .dk-card { color: var(--dk-fg); }
+
+/* Long marketing tables are a scanning task; the grammar declares the
+ * transition for exactly this and leaves the hover to the consumer. */
+.wb-root .dk-table tbody tr:hover { background: var(--dk-bg-2); }
+
+/* The header ledger is prose-length values; below `sm` they stack and the
+ * measured cell stops running right, because there is nothing left to align
+ * against. */
+@media (max-width: 639px) {
+  .wb-root .dk-ledger { --dk-ledger-cols: 2; gap: 12px; }
+  .wb-root .dk-ledger-cell[data-align='end'] { align-items: flex-start; text-align: left; }
+}
+
+/* ═══ Reduced motion ══════════════════════════════════════════════════════
+ * The grammar collapses its own transitions; these are the page's additions.
+ * The ticker is the only looping motion on the surface and it stops here. */
+
+@media (prefers-reduced-motion: reduce) {
+  .wb-ticker-items { animation: none; }
+  .wb-navlink, .wb-tile-go, .wb-foot-link { transition: none; }
+}

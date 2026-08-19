@@ -18,15 +18,15 @@ import { diff, format, styleNameForRole } from '../src/diff.mjs';
 const expected = () => ({
   collections: [
     {
-      name: 'Semantic',
+      name: 'Theme',
       modes: ['light', 'dark'],
       variables: [
         {
           name: 'background',
           type: 'COLOR',
           valuesByMode: {
-            light: { alias: 'Primitives/color/primitive/white' },
-            dark: { alias: 'Primitives/color/primitive/ink/950' },
+            light: { alias: 'Global/color/primitive/white' },
+            dark: { alias: 'Global/color/primitive/ink/950' },
           },
         },
         {
@@ -52,7 +52,7 @@ const expected = () => ({
       fontSize: 18,
       lineHeightPercent: 140,
       letterSpacingPercent: -1,
-      fontSizeVar: 'Primitives/text/lg',
+      fontSizeVar: 'Global/text/lg',
     },
   ],
   shadows: {
@@ -72,15 +72,15 @@ const expected = () => ({
 const actual = () => ({
   collections: [
     {
-      name: 'Semantic',
+      name: 'Theme',
       modes: ['light', 'dark'],
       variables: [
         {
           name: 'background',
           type: 'COLOR',
           valuesByMode: {
-            light: { alias: 'Primitives/color/primitive/white' },
-            dark: { alias: 'Primitives/color/primitive/ink/950' },
+            light: { alias: 'Global/color/primitive/white' },
+            dark: { alias: 'Global/color/primitive/ink/950' },
           },
         },
         { name: 'card', type: 'COLOR', valuesByMode: { light: '#ffffff', dark: '#0d0e10' } },
@@ -115,15 +115,15 @@ const actual = () => ({
       fontSize: 18,
       lineHeightPercent: 140,
       letterSpacingPercent: -1,
-      fontSizeVar: 'Primitives/text/lg',
+      fontSizeVar: 'Global/text/lg',
     },
   ],
 });
 
 const run = (e, a) => diff(e, a, { expectedShadows: e.shadows });
 const kinds = (report) => report.findings.map((f) => f.kind);
-/** Find the Semantic collection's variable list in a document. */
-const semantic = (doc) => doc.collections.find((c) => c.name === 'Semantic');
+/** Find the Theme collection's variable list in a document. */
+const semantic = (doc) => doc.collections.find((c) => c.name === 'Theme');
 
 describe('a file that matches the contract', () => {
   it('reports no drift at all', () => {
@@ -150,7 +150,7 @@ describe('value drift', () => {
     semantic(a).variables[1].valuesByMode.dark = '#131417';
     const report = run(expected(), a);
     const changed = report.findings.find((f) => f.kind === 'changed');
-    expect(changed.key).toBe('Semantic/card');
+    expect(changed.key).toBe('Theme/card');
     expect(changed.changes).toEqual([{ mode: 'dark', expected: '#0d0e10', actual: '#131417' }]);
     expect(format(report)).toContain('#0d0e10');
     expect(format(report)).toContain('#131417');
@@ -158,16 +158,16 @@ describe('value drift', () => {
 
   it('detects a re-pointed alias', () => {
     const a = actual();
-    semantic(a).variables[0].valuesByMode.dark = { alias: 'Primitives/color/primitive/black' };
+    semantic(a).variables[0].valuesByMode.dark = { alias: 'Global/color/primitive/black' };
     const report = run(expected(), a);
     const changed = report.findings.find((f) => f.kind === 'changed');
-    expect(changed.key).toBe('Semantic/background');
-    expect(changed.changes[0].actual).toEqual({ alias: 'Primitives/color/primitive/black' });
+    expect(changed.key).toBe('Theme/background');
+    expect(changed.changes[0].actual).toEqual({ alias: 'Global/color/primitive/black' });
   });
 
   it('does not confuse an alias with a literal of the same text', () => {
     const a = actual();
-    semantic(a).variables[0].valuesByMode.dark = 'Primitives/color/primitive/ink/950';
+    semantic(a).variables[0].valuesByMode.dark = 'Global/color/primitive/ink/950';
     expect(kinds(run(expected(), a))).toContain('changed');
   });
 
@@ -184,14 +184,14 @@ describe('structural drift', () => {
     const a = actual();
     semantic(a).variables.push({ name: 'signal-text', type: 'COLOR', valuesByMode: { light: '#1355c4', dark: '#6ba2f8' } });
     const report = run(expected(), a);
-    expect(report.findings.find((f) => f.kind === 'new-in-figma').key).toBe('Semantic/signal-text');
+    expect(report.findings.find((f) => f.kind === 'new-in-figma').key).toBe('Theme/signal-text');
   });
 
   it('flags a variable Figma lacks', () => {
     const a = actual();
     semantic(a).variables.pop();
     const report = run(expected(), a);
-    expect(report.findings.find((f) => f.kind === 'missing-in-figma').key).toBe('Semantic/card');
+    expect(report.findings.find((f) => f.kind === 'missing-in-figma').key).toBe('Theme/card');
   });
 
   it('flags a type change and does not then compare values across it', () => {
@@ -199,7 +199,7 @@ describe('structural drift', () => {
     semantic(a).variables[1].type = 'FLOAT';
     const report = run(expected(), a);
     expect(kinds(report)).toContain('type-mismatch');
-    expect(report.findings.filter((f) => f.kind === 'changed' && f.key === 'Semantic/card')).toEqual([]);
+    expect(report.findings.filter((f) => f.kind === 'changed' && f.key === 'Theme/card')).toEqual([]);
   });
 
   it('flags mode drift once per collection, not once per variable', () => {
@@ -213,10 +213,10 @@ describe('structural drift', () => {
 
   it('reports a wholly absent collection once, not once per variable', () => {
     const a = actual();
-    a.collections = a.collections.filter((c) => c.name !== 'Semantic');
+    a.collections = a.collections.filter((c) => c.name !== 'Theme');
     const report = run(expected(), a);
     expect(report.findings.filter((f) => f.kind === 'missing-collection')).toHaveLength(1);
-    // The 2 Semantic variables must NOT each restate it.
+    // The 2 Theme variables must NOT each restate it.
     expect(report.findings.filter((f) => f.kind === 'missing-in-figma')).toEqual([]);
   });
 
@@ -241,7 +241,7 @@ describe('probable renames', () => {
     };
     const report = run(expected(), a);
     expect(report.renames).toEqual([
-      { kind: 'probable-rename', from: 'Semantic/card', to: 'Semantic/surface' },
+      { kind: 'probable-rename', from: 'Theme/card', to: 'Theme/surface' },
     ]);
     expect(format(report)).toContain('NOT applied');
   });
@@ -288,12 +288,12 @@ describe('probable renames', () => {
     semantic(e).variables[1] = {
       name: 'card',
       type: 'COLOR',
-      valuesByMode: { light: { alias: 'Primitives/a' }, dark: { alias: 'Primitives/b' } },
+      valuesByMode: { light: { alias: 'Global/a' }, dark: { alias: 'Global/b' } },
     };
     semantic(a).variables[1] = {
       name: 'surface',
       type: 'COLOR',
-      valuesByMode: { light: { alias: 'Primitives/x' }, dark: { alias: 'Primitives/y' } },
+      valuesByMode: { light: { alias: 'Global/x' }, dark: { alias: 'Global/y' } },
     };
     expect(run(e, a).renames).toEqual([]);
   });

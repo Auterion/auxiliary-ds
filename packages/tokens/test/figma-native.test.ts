@@ -9,9 +9,13 @@ import { beforeAll, describe, expect, it } from 'vitest';
  *
  * dist/figma-native.json is what @auxiliary/figma-sync pushes into Figma Variables.
  * A dangling alias or a missing mode would silently corrupt the synced library, so
- * we build fresh and assert the structure holds: two collections, the 4 semantic
- * modes, every alias resolves to a real primitive, and the non-representable types
+ * we build fresh and assert the structure holds: three collections, the 4 theme
+ * modes, every alias resolves to a real global, and the non-representable types
  * (shadow, cubicBezier) are excluded.
+ *
+ * Collections are named for the GTC tiers they carry — Global / Theme / Component —
+ * so a Figma binding path and a token path read the same. Unlike a variable *path*,
+ * a collection name is safe to change: Figma binds by variable id, not qualified name.
  */
 const here = dirname(fileURLToPath(import.meta.url));
 const tokensRoot = resolve(here, '..');
@@ -31,9 +35,18 @@ let collections: Collection[];
 let textStyles: { name: string }[];
 
 beforeAll(() => {
-  // Build fresh so the test validates current source, not a stale artifact.
-  execFileSync('node', ['build.mjs'], { cwd: tokensRoot, stdio: 'pipe' });
-  const json = JSON.parse(readFileSync(resolve(tokensRoot, 'dist/figma-native.json'), 'utf8'));
+  // Build fresh so the test validates current source, not a stale artifact — but into a
+  // PRIVATE directory. The build wipes its output first, and dist/ is read at test time
+  // by packages/css (which derives its component schema from figma-native.json +
+  // tokens.css). Rebuilding in place would delete that directory out from under a
+  // suite turbo is running concurrently, surfacing as a missing module somewhere else.
+  const out = 'dist-test-figma-native';
+  execFileSync('node', ['build.mjs'], {
+    cwd: tokensRoot,
+    stdio: 'pipe',
+    env: { ...process.env, AUX_TOKENS_OUT: out },
+  });
+  const json = JSON.parse(readFileSync(resolve(tokensRoot, out, 'figma-native.json'), 'utf8'));
   collections = json.collections;
   textStyles = json.textStyles;
 });
@@ -43,13 +56,13 @@ const isAlias = (v: unknown): v is { alias: string } =>
   typeof v === 'object' && v !== null && 'alias' in v;
 
 describe('figma-native contract', () => {
-  it('emits exactly the Primitives + Semantic + Component collections', () => {
-    expect(collections.map((c) => c.name)).toEqual(['Primitives', 'Semantic', 'Component']);
+  it('emits exactly the Global + Theme + Component collections', () => {
+    expect(collections.map((c) => c.name)).toEqual(['Global', 'Theme', 'Component']);
   });
 
-  it('Primitives has one mode; Semantic has the 4 themes; Component has the size axis', () => {
-    expect(byName('Primitives').modes).toEqual(['Base']);
-    expect(byName('Semantic').modes).toEqual(['light', 'dark', 'sunlight', 'darknight']);
+  it('Global has one mode; Theme has the 4 themes; Component has the size axis', () => {
+    expect(byName('Global').modes).toEqual(['Base']);
+    expect(byName('Theme').modes).toEqual(['light', 'dark', 'sunlight', 'darknight']);
     expect(byName('Component').modes).toEqual(['sm', 'md', 'lg']);
   });
 
@@ -66,8 +79,8 @@ describe('figma-native contract', () => {
     expect(leaked).toEqual([]);
   });
 
-  it('every alias resolves to a real Primitives variable (no dangling refs)', () => {
-    const primNames = new Set(byName('Primitives').variables.map((v) => `Primitives/${v.name}`));
+  it('every alias resolves to a real Global variable (no dangling refs)', () => {
+    const primNames = new Set(byName('Global').variables.map((v) => `Global/${v.name}`));
     const dangling: string[] = [];
     for (const coll of collections) {
       for (const v of coll.variables) {
@@ -79,8 +92,8 @@ describe('figma-native contract', () => {
     expect(dangling).toEqual([]);
   });
 
-  it('every Semantic role is a COLOR aliased across all 4 modes', () => {
-    for (const v of byName('Semantic').variables) {
+  it('every Theme role is a COLOR aliased across all 4 modes', () => {
+    for (const v of byName('Theme').variables) {
       expect(v.type).toBe('COLOR');
       expect(Object.keys(v.valuesByMode).sort()).toEqual(['dark', 'darknight', 'light', 'sunlight']);
       expect(Object.values(v.valuesByMode).every(isAlias)).toBe(true);
@@ -100,7 +113,7 @@ describe('figma-native contract', () => {
   });
 
   it('excludes non-representable types (shadow, cubicBezier/easing, strokeStyle)', () => {
-    const names = byName('Primitives').variables.map((v) => v.name);
+    const names = byName('Global').variables.map((v) => v.name);
     expect(names.some((n) => n.startsWith('shadow/'))).toBe(false);
     expect(names.some((n) => n.startsWith('ease/') || n.includes('bezier'))).toBe(false);
     // strokeStyle is a keyword — it would land as a FLOAT with a null value.

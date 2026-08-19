@@ -59,6 +59,33 @@ Duration is chosen by **what the motion is for**, not by taste:
 - **Flight-critical path: 0–80 ms, effectively instant.** A vehicle status flip, an alarm appearing, a telemetry value updating — these must *not* wait on a transition. Animate the affordance (a color/border change is visible), never delay the information. This is the operational register's whole point.
 - **Expressive earns its motion.** On marketing/brand surfaces, purposeful animation that communicates scale or system behaviour is welcome — but never decorative parallax that serves only itself.
 
+## Named animations
+
+Transitions cover state changes on something already on screen. Entering and leaving need
+keyframes, and those are **named in the layer, not composed at the call site**:
+
+| Utility | Used by | Built from |
+| --- | --- | --- |
+| `animate-fade-in` / `animate-fade-out` | dialog scrim | `duration-fast` · `ease-out` |
+| `animate-accordion-down` / `animate-accordion-up` | accordion panel | `duration-base` · `ease-out` |
+
+Duration and easing reach them through `var()`, so they shorten under the operational
+register exactly as transitions do, and `prefers-reduced-motion` still collapses them.
+
+The deliberate omission is the shadcn/radix vocabulary — `animate-in` composed with
+`fade-in-0` and `slide-in-from-top-2` at the point of use. That is a second motion system
+assembled per call site, which is the thing one named ladder per axis exists to prevent.
+Adding a behaviour means naming an animation here, not stacking three utilities in a
+recipe.
+
+::: warning A dropped animation class is silent
+Those five shadcn names sat in `accordion.ts` and `dialog.ts` for months while
+`tw-animate-css` was never a dependency. An unmatched Tailwind class produces no rule, no
+warning and no error — so the accordion had never slid and the scrim had never faded, and
+everything looked fine. The component-schema build now fails on a class that generates no
+CSS, which is how it was found.
+:::
+
 ## Register vs. reduced-motion — two different things
 
 These are independent and both can suppress motion; don't conflate them.

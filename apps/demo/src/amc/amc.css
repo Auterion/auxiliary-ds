@@ -1,20 +1,489 @@
-/* Shared glass surfaces for the Mission Control views (global, used across
- * MapView + CameraView; theme-aware via semantic tokens). */
-.amc-glass {
-  background: color-mix(in oklab, var(--card) 76%, transparent);
-  backdrop-filter: blur(16px);
-  border: 1px solid color-mix(in oklab, var(--foreground) 13%, transparent);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.38), inset 0 1px 0 color-mix(in oklab, var(--foreground) 8%, transparent);
+/* Hallmark · macrostructure: Editorial (portfolio deck) worn by a ground-control station
+ * tone: measured/declarative · anchor hue: auterion blue (rationed to the ownship symbol)
+ * pre-emit critique: P5 H5 E5 S5 R5 V4
+ *
+ * "TABLET GCS" — Auterion Mission Control, written in the Deck 07b grammar.
+ *
+ * This surface is the one place in the demo where legibility under stress
+ * outranks editorial elegance, so the migration is deliberately asymmetric:
+ *
+ *   · The CHROME speaks 07b in full — the stage, the view/mode switchers, the
+ *     Settings page and the Interop tables take the display cut, the mono
+ *     pointer-labels, the bracket, the ledger table, the hairlines.
+ *   · The READOUTS stay instrument-plain. No display cut, no ghost line and no
+ *     pointer glyph lands on a live telemetry value, an OSD burn-in or a map
+ *     symbol. Those carry `.dk-label` / `.dk-micro` and the DS TelemetryValue,
+ *     at full contrast, because an operator reading altitude on a degraded link
+ *     is not reading an editorial page.
+ *   · The five-level status ladder is exempt from the signal budget and is
+ *     never dimmed to fit the palette. Blue never encodes state here; the
+ *     ladder never encodes brand.
+ *
+ * What this file is FOR (the Console standard, `console/_console.css`):
+ * a page-local layer holding only what 07b has no device for, restated in the
+ * `--dk-*` ladders so the surface runs ONE ladder per axis, not two:
+ *
+ *   · the tablet stage and its bezel · the glass overlay idiom that floats over
+ *     a moving map · the OSD legibility shadow · the severity left-rail · the
+ *     live-link pulse · the operational density pass on `.dk-table`.
+ *
+ * Rules this layer is held to:
+ *   · ONE ladder per axis, named here, never improvised at the call site. The
+ *     only dimensions added are the ones 07b has no opinion about (screen,
+ *     bezel, overlay inset, gloved touch target); everything else steps to the
+ *     `--dk-*` ladders.
+ *   · The mode is [data-theme], on the SAME element as `.dk` — so the DS
+ *     semantic tokens (Card, StatusBadge, Switch, TelemetryValue) and the
+ *     `--dk-*` palette re-resolve together and can never drift. `day`/`night`
+ *     is not a second mode axis: it *is* [data-theme], mapped to the two
+ *     operational themes (`dark` / `darknight`).
+ *   · Hairlines, never shadows — including on the glass, which used to carry a
+ *     30px drop shadow and now carries a hairline over a blurred fill.
+ *   · Motion only on state change, or where it is a claim being kept (the
+ *     ownship pulse, the REC blink, the reporting-link pulse). Nothing draws in
+ *     on load. Everything collapses under `prefers-reduced-motion`.
+ *   · No raw hex / rgb / oklch. Every colour resolves through a `--dk-*` alias,
+ *     a DS semantic token, or a token primitive. The two exceptions live in the
+ *     views' own scoped blocks and are labelled there: the map terrain fills
+ *     (the sanctioned topographic-legibility exemption) and the simulated
+ *     sensor imagery in the camera feed, which is photography, not UI.
+ *
+ * Namespaced `amc-`; sits alongside `dk-` (grammar), `ix-` (Suite), `bp-`
+ * (Console) and `os-` (AuterionOS) without collision. Demo layer — NOT a
+ * tokens or recipe change.
+ */
+
+/* ═══ Surface ladder ═══════════════════════════════════════════════════════
+ * The dimensions the grammar has no opinion about. Everything else — radius,
+ * rule, duration, easing, gutter, ink — comes from `--dk-*`. */
+
+.amc-root {
+  /* The device. A 1160×760 landscape tablet in a bezel. */
+  --amc-screen-w: 1160px;
+  --amc-screen-h: 760px;
+  --amc-bezel: 12px;
+  --amc-bezel-r: 34px;
+  --amc-screen-r: 22px;
+
+  /* Overlay geometry. ONE inset for every floating panel on a live view, and
+   * one bar height — so the top bar, the instrument cluster and the action bar
+   * all step to the same rhythm instead of three hand-picked offsets. */
+  --amc-gap: 12px;
+  --amc-bar-h: 48px;
+  --amc-row-2: calc(var(--amc-gap) * 2 + var(--amc-bar-h));
+  --amc-glass-blur: 16px;
+
+  /* Gloved-touch target. 07b names two control heights and no third, and it is
+   * right for a desktop page; a tablet GCS flown with gloves genuinely needs a
+   * larger one. It is named ONCE here rather than appearing as h-9/h-10/h-11/
+   * h-12 across four views, which is what this surface used to do. */
+  --amc-touch: 44px;
+
+  /* Panel measures used by more than one live view. */
+  --amc-cluster-w: 228px;
+  --amc-pip-w: 224px;
+
+  /* The attitude indicator's horizon. `--dk-bg` and `--dk-bg-2` are one step
+   * apart on the ink ramp, which is enough separation for a card on a page and
+   * nowhere near enough for a sky/ground boundary read at a glance. So the one
+   * mid-tone this surface needs is named ONCE here, derived from the ramp
+   * rather than mixed at the call site. */
+  --amc-ahi-sky: color-mix(in oklab, var(--dk-fg) 26%, var(--dk-bg));
+  --amc-ahi-ground: var(--dk-bg);
+
+  /* 07b has one focus ring (`--dk-fg`, never transitioned). The DS components
+   * on this surface ring off `--ring`, which is auterion-blue — that would be
+   * both a second ring treatment and an extra spend of the signal. Point it at
+   * the grammar's ink so Button/Switch/StatusBadge focus matches `.dk`. */
+  --ring: var(--dk-fg);
 }
+
+/* ═══ Stage & device ═══════════════════════════════════════════════════════
+ * The stage is the desk the tablet sits on — presentation chrome, always ink
+ * exposure, and deliberately not part of the product surface. */
+
+.amc-stage {
+  position: relative;
+  background:
+    radial-gradient(80% 60% at 50% 0%, var(--dk-bg-2) 0%, var(--dk-bg) 55%, var(--dk-plate-bg) 100%);
+}
+
+.amc-bezel {
+  position: relative;
+  padding: var(--amc-bezel);
+  border-radius: var(--amc-bezel-r);
+  border: var(--dk-rule) solid var(--dk-line);
+  background: var(--dk-plate-bg);
+}
+/* The camera pinhole. Decorative-structural: it says "tablet", and it is
+ * aria-hidden at the call site. */
+.amc-lens {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--amc-bezel) / 2);
+  width: 6px;
+  height: 6px;
+  transform: translateX(-50%);
+  border-radius: var(--dk-r-pill);
+  background: var(--dk-line);
+}
+
+.amc-screen {
+  position: relative;
+  width: var(--amc-screen-w);
+  height: var(--amc-screen-h);
+  overflow: hidden;
+  border-radius: var(--amc-screen-r);
+}
+
+/* The stage caption sits over the desk, not over the product. */
+.amc-caption { position: absolute; left: 32px; top: 32px; z-index: 10; user-select: none; pointer-events: none; }
+.amc-controls { position: absolute; right: 32px; top: 32px; z-index: 10; display: flex; align-items: flex-end; gap: var(--dk-gutter-sm); }
+.amc-control-group { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+
+/* ═══ Overlay geometry ═════════════════════════════════════════════════════
+ * The live views float panels over a moving image. Their positions are named
+ * here so no view carries `top-[72px]`; the second row is derived from the bar
+ * height, so changing the bar moves every rail with it. */
+
+.amc-bar-top { position: absolute; inset-inline: var(--amc-gap); top: var(--amc-gap); height: var(--amc-bar-h); }
+.amc-bar-bottom { position: absolute; inset-inline: var(--amc-gap); bottom: var(--amc-gap); }
+.amc-rail-l { position: absolute; left: var(--amc-gap); top: var(--amc-row-2); }
+.amc-rail-r { position: absolute; right: var(--amc-gap); top: var(--amc-row-2); }
+.amc-dock-l { position: absolute; left: var(--amc-gap); bottom: var(--amc-gap); }
+.amc-dock-r { position: absolute; right: var(--amc-gap); bottom: var(--amc-gap); }
+/* Centred under the top bar — the one place an in-flight caution is allowed to
+ * interrupt the map. */
+.amc-notice { position: absolute; left: 50%; top: var(--amc-row-2); transform: translateX(-50%); }
+
+/* ═══ Glass ════════════════════════════════════════════════════════════════
+ * The one product device on this surface that 07b has no answer for: a panel
+ * that has to stay readable over an arbitrary, moving, high-chroma image.
+ * Blur plus a near-opaque fill does the separating; the old 30px drop shadow
+ * is gone, because in this grammar a hairline is what lifts an edge. */
+
+.amc-glass {
+  background: color-mix(in oklab, var(--dk-bg) 78%, transparent);
+  backdrop-filter: blur(var(--amc-glass-blur));
+  border: var(--dk-rule) solid color-mix(in oklab, var(--dk-fg) 16%, transparent);
+  border-radius: var(--dk-r-lg);
+  color: var(--dk-fg);
+}
+
+/* Two control sizes on the live views and no third: the grammar's page-level
+ * control for bar affordances, the gloved target for the floating rails. */
 .amc-glass-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.6rem;
-  background: color-mix(in oklab, var(--card) 76%, transparent);
-  border: 1px solid color-mix(in oklab, var(--foreground) 13%, transparent);
-  color: var(--foreground);
+  flex-shrink: 0;
+  width: var(--dk-control-md);
+  height: var(--dk-control-md);
+  border-radius: var(--dk-r-sm);
+  border: var(--dk-rule) solid color-mix(in oklab, var(--dk-fg) 16%, transparent);
+  background: color-mix(in oklab, var(--dk-bg) 78%, transparent);
+  color: var(--dk-fg);
+  cursor: pointer;
+  transition: background-color var(--dk-dur) var(--dk-ease), border-color var(--dk-dur) var(--dk-ease);
 }
-.amc-glass-btn:hover {
-  background: var(--secondary);
+.amc-glass-btn:hover { background: var(--dk-bg-2); border-color: var(--dk-fg-3); }
+.amc-glass-btn-lg { width: var(--amc-touch); height: var(--amc-touch); border-radius: var(--dk-r-pill); }
+/* The dense control, for affordances that live INSIDE another panel (the PiP's
+ * expand corner) where the page-level height would swallow the panel. */
+.amc-glass-btn-xs { width: var(--dk-control-sm); height: var(--dk-control-sm); }
+/* The selected floating control is marked by INK, not by the signal — weight
+ * carried by contrast. A solid `--dk-fg` fill was tried and rejected: over a
+ * map it became the loudest mark on the view, louder than the ownship it was
+ * meant to be subordinate to. An opaque well plus a full-contrast rule and
+ * glyph is unambiguous without out-shouting the track. */
+.amc-glass-btn[data-active='true'] {
+  background: var(--dk-bg-2);
+  border-color: var(--dk-fg);
+  border-width: calc(var(--dk-rule) * 2);
+  color: var(--dk-fg);
+}
+
+/* A stack of glass buttons reading as one control (zoom ±, gimbal ±). The
+ * direction is a modifier here rather than a `flex-col` utility: this layer is
+ * unlayered CSS and Tailwind's utilities sit in @layer utilities, so the local
+ * `display: flex` would win and the utility would silently do nothing. */
+.amc-glass-stack { display: flex; overflow: hidden; border-radius: var(--dk-r-lg); }
+.amc-glass-stack-v { flex-direction: column; }
+.amc-glass-stack > button { border: 0; background: transparent; border-radius: 0; }
+.amc-glass-stack > button:hover { background: var(--dk-bg-2); }
+.amc-glass-sep { align-self: center; background: color-mix(in oklab, var(--dk-fg) 16%, transparent); }
+
+/* The two panel measures, as classes — so no view carries a bound inline
+ * width for something the ladder already names. */
+.amc-cluster { width: var(--amc-cluster-w); }
+.amc-pip { width: var(--amc-pip-w); }
+
+/* A glass chip carrying a mono label — the map's flight-mode, the camera's
+ * FOV and action captions. One padding, one radius. */
+.amc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: var(--dk-r-sm);
+  white-space: nowrap;
+}
+/* A chip that is also a control steps to the grammar's page-level height. */
+.amc-chip-md {
+  height: var(--dk-control-md);
+  padding-inline: 10px;
+  cursor: pointer;
+  transition: background-color var(--dk-dur) var(--dk-ease);
+}
+.amc-chip-md:hover { background: var(--dk-bg-2); }
+
+/* A DS component forced onto the gloved touch target. `!important` is the only
+ * lever a consumer has over a recipe's own sizing, and the alternative is four
+ * arbitrary `!h-11 !w-11` pairs in the templates. */
+.amc-touch-target {
+  height: var(--amc-touch) !important;
+  width: var(--amc-touch) !important;
+  padding: 0 !important;
+  border-radius: var(--dk-r-pill) !important;
+}
+
+.amc-round { border-radius: var(--dk-r-pill); }
+
+/* A hairline box drawn on a surface that already has a background — the bar's
+ * accuracy readout, the mode pickers. One rule, one ink. */
+.amc-hairline { border: var(--dk-rule) solid var(--dk-line); border-radius: var(--dk-r-sm); }
+
+/* Decorative glyph — one alias for the tertiary ink, not a second ladder.
+ * Icons and separators that carry no meaning sit a step back from the copy. */
+.amc-glyph { color: var(--dk-fg-3); }
+
+/* ═══ OSD legibility ═══════════════════════════════════════════════════════
+ * Burn-in text sits directly on the sensor image with nothing behind it, so it
+ * carries a shadow. This is not decoration and not a 07b shadow: it is the
+ * only thing keeping the readout legible over a bright frame. */
+
+.amc-osd { text-shadow: 0 1px 3px color-mix(in oklab, var(--color-primitive-ink-950) 84%, transparent); }
+
+/* Corner falloff so overlays keep contrast over bright terrain. Functional,
+ * same reason the terrain fills are exempt from the token system. */
+.amc-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 90% at 50% 45%,
+    transparent 50%,
+    color-mix(in oklab, var(--color-primitive-ink-950) 55%, transparent) 100%
+  );
+}
+
+/* ═══ Severity edge ════════════════════════════════════════════════════════
+ * The status ladder tied to a row's structure — 07b carries the ladder as dots
+ * and inks but has no way to bind a level to structure. State, never brand:
+ * exempt from the signal budget, never blue, never dimmed. Two hairlines wide,
+ * so the rail steps to the same `--dk-rule` as every other line on the page. */
+
+.amc-edge { border-left: calc(var(--dk-rule) * 2) solid transparent; }
+.amc-edge-alarm { border-left-color: var(--alarm); }
+.amc-edge-warning { border-left-color: var(--warning); }
+.amc-edge-caution { border-left-color: var(--caution); }
+.amc-edge-advisory { border-left-color: var(--advisory); }
+.amc-edge-nominal { border-left-color: var(--nominal); }
+
+/* ═══ Liveness ═════════════════════════════════════════════════════════════
+ * "Reporting" is a claim the surface makes about right now, so the marker
+ * keeps it. Not an entrance, not decoration. */
+
+.amc-live { animation: amc-live 2s var(--dk-ease-in-out) infinite; }
+@keyframes amc-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* ═══ Chrome views · Settings and Interop ══════════════════════════════════
+ * These two are the surface's editorial half: pages of measured facts about a
+ * configuration, not live readouts. They get the grammar in full. */
+
+.amc-page { display: flex; flex-direction: column; height: 100%; background: var(--dk-bg); }
+
+/* The page header is a hairline strip, not a card — the rule under it is the
+ * boundary, one rule and not two stacked. */
+.amc-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  height: var(--amc-bar-h);
+  padding-inline: var(--dk-gutter-sm);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+
+.amc-body { display: flex; min-height: 0; flex: 1; gap: var(--dk-gutter-sm); padding: var(--dk-gutter-sm); }
+.amc-scroll { overflow: auto; scrollbar-width: thin; scrollbar-color: var(--dk-line) transparent; }
+.amc-stack { display: flex; flex-direction: column; gap: var(--dk-gutter-sm); min-height: 0; }
+.amc-inline { display: flex; align-items: center; gap: 8px; }
+
+/* A block head that does NOT draw its own rule, for use above a `.dk-table`
+ * whose own `th` hairline is the rule. `.dk-section` is used where nothing
+ * below supplies one. */
+.amc-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--dk-gutter-sm);
+  padding-bottom: 8px;
+}
+
+/* Card padding — one value across both chrome views. */
+.amc-pad { padding: var(--dk-gutter-sm); }
+
+/* A settings row: pointer-labelled subject on the left, control hard right.
+ * A grid with fixed slots, so every control on the page starts on the same x
+ * however long the label above it runs. */
+.amc-setting {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 168px;
+  align-items: center;
+  gap: var(--dk-gutter-sm);
+  padding: 10px 0;
+  border-bottom: var(--dk-rule) solid var(--dk-line-2);
+}
+.amc-setting:last-child { border-bottom: none; }
+/* The subject stacks a pointer-label over its description. `.dk-pointer` is
+ * inline-flex by design (the `↳` glyph is generated), so the column has to be
+ * declared here rather than left to a `block` utility. */
+.amc-setting-subject { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.amc-setting-control { display: flex; justify-content: flex-end; }
+.amc-setting[data-disabled='true'] { opacity: 0.45; }
+/* When the row carries a severity rail it needs room for it. */
+.amc-setting.amc-edge { padding-left: 10px; }
+
+/* A pointer-labelled fact pair, hard right — the Interop link panel and the
+ * CATL.POS payload. Deliberately NOT `.dk-ledger`: the header ledger tops a
+ * case layout once, and reusing it as a body element is the failure mode its
+ * permission slip names. Same column discipline, no device misuse. */
+.amc-field {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--dk-gutter-sm);
+  padding-block: 3px;
+}
+.amc-field-value {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  color: var(--dk-fg);
+  text-align: right;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ═══ Interop · the coalition-reporting layout ═════════════════════════════
+ * Three fixed columns: the link, the message set, the payload. Fixed rather
+ * than fractional so a reader's eye does not have to re-find the message set
+ * when the bandwidth profile changes the numbers inside it. */
+
+.amc-interop {
+  display: grid;
+  grid-template-columns: 296px minmax(0, 1fr) 324px;
+  gap: var(--dk-gutter-sm);
+  min-height: 0;
+  flex: 1;
+  padding: var(--dk-gutter-sm);
+}
+
+/* Column model for the CATL message set. `table-layout: fixed` on `.dk-table`
+ * makes these binding, so the columns cannot drift as rows re-render. */
+.amc-col-catl-id { width: 104px; }
+.amc-col-catl-rate { width: 76px; }
+.amc-col-catl-state { width: 100px; }
+
+/* The wire feed is a stream of measured facts, so it is a GRID with fixed
+ * slots — every timestamp starts on one x and every ACK ends on another,
+ * whatever the message id is. A flex row would let the columns breathe with
+ * the content, which is exactly what a log must not do. */
+.amc-wire { height: 152px; overflow: hidden; }
+.amc-wire-row {
+  display: grid;
+  grid-template-columns: 84px 72px 76px 52px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 17px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Coalition track and pre-sail gate rows — grids, same reason. */
+.amc-track-row {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 10px;
+  border-radius: var(--dk-r-sm);
+}
+.amc-track-row[data-own='true'] { background: var(--dk-bg-2); }
+.amc-gate-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 4px 3px 10px;
+}
+
+/* ═══ Table density ════════════════════════════════════════════════════════
+ * `.dk-table` is set for a desktop editorial page. On a 760px screen running
+ * `[data-register="operational"]` the same table has to hold twice the rows,
+ * so this is the operational pass on it — same ladders, tighter steps. It is
+ * written at (0,2,0) because `_deck07b.css` is imported from the app entry and
+ * can land after this file. */
+
+.dk-table.amc-table { font-variant-numeric: tabular-nums; }
+.dk-table.amc-table th { padding-bottom: 7px; font-size: 8.5px; }
+.dk-table.amc-table td { padding: 6px 0; font-size: 12px; }
+.dk-table.amc-table :is(th, td) + :is(th, td) { padding-left: 10px; }
+.dk-table.amc-table td.amc-cell-mid { vertical-align: middle; }
+.dk-table.amc-table tbody tr:hover { background: var(--dk-bg-2); }
+/* Column heads that stay put while the set scrolls under them. `border-collapse:
+ * collapse` drops a sticky cell's border, so the hairline is redrawn on the
+ * padding edge — still a hairline, still `--dk-line`. */
+.amc-table thead th { position: sticky; top: 0; z-index: 1; background: var(--dk-bg); }
+.amc-table thead th::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+/* The severity rail belongs to the row, so it is drawn on the leading cell. */
+.dk-table.amc-table td.amc-edge { padding-left: 8px; }
+
+/* ═══ Page-scoped fill-ins on the grammar ══════════════════════════════════
+ * Scoped under `.amc-root` and above the grammar's own specificity, so they
+ * hold whatever order the two stylesheets land in and never leak sideways. */
+
+/* The DS Card ships `text-card-foreground`; inside this surface the ink ramp
+ * is the 07b one, and the two must not disagree by a step. */
+.amc-root .dk-card { color: var(--dk-fg); }
+/* The nav item's label has to move with the item's hover/active colour. */
+.amc-root .dk-nav-item .dk-label { color: inherit; }
+/* A bracket heads a narrow panel here, not a wide editorial block, and a
+ * wrapped bracket reads as two broken measurements rather than one fact. */
+.amc-root .dk-bracket { white-space: nowrap; }
+/* A segmented control filling its container (the bandwidth profile picker). */
+.dk-segment.amc-segment-block { display: flex; width: 100%; }
+.dk-segment.amc-segment-block .dk-segment-btn { flex: 1; }
+/* The operational density pass on the grammar's field value: same role, one
+ * step down, because a tablet status bar holds twice the facts a page row does. */
+.dk-value.amc-value-sm { font-size: 12px; }
+
+/* ═══ Reduced motion ═══════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .amc-live { animation: none; }
+  .amc-glass-btn { transition: none; }
 }

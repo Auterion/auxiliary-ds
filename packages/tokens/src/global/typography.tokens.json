@@ -7,7 +7,8 @@
       },
       "display": {
         "$type": "fontFamily",
-        "$value": ["Inter Display", "Inter Variable", "Inter", "system-ui", "sans-serif"]
+        "$description": "Marketing/display voice. Deliberately the SAME stack as font.sans — the display cut is reached via the opsz axis (`opsz 32` === the static Inter Display), not via a separate family. The standalone Inter Display binary does NOT carry the ss07/ss08 square-punctuation sets, and square punctuation is house-wide; keeping one family keeps the feature set intact.",
+        "$value": ["Inter Variable", "Inter", "system-ui", "sans-serif"]
       },
       "mono": {
         "$type": "fontFamily",

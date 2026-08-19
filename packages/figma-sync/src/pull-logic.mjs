@@ -49,10 +49,10 @@ function rgbaToHex(c) {
 const collections = await figma.variables.getLocalVariableCollectionsAsync();
 const allVariables = await figma.variables.getLocalVariablesAsync();
 
-// id -> "Collection/name", so an alias reads as Primitives/color/primitive/ink/950.
+// id -> "Collection/name", so an alias reads as Global/color/primitive/ink/950.
 // Built over EVERY variable in the file, not just the ones we are returning: a
-// Semantic variable aliases into Primitives, and a per-collection pull must still
-// name its alias targets even when Primitives is not in this payload.
+// Theme variable aliases into Global, and a per-collection pull must still
+// name its alias targets even when Global is not in this payload.
 const collNameById = new Map(collections.map((c) => [c.id, c.name]));
 const qualifiedById = new Map();
 for (const v of allVariables) {

@@ -1,7 +1,11 @@
-/* Hallmark · macrostructure: Swiss-Minimal · tone: clean-professional · anchor: white+blue-accent */
+<!--
+  Hallmark · macrostructure: Editorial (portfolio deck) · tone: measured/declarative
+  anchor hue: auterion blue (rationed — none on this page; the masthead mark is
+  the view's only signal)
+  pre-emit critique: P5 H5 E5 S5 R5 V4
+-->
 <script setup lang="ts">
 import { inject } from 'vue';
-import { Button } from '@auxiliary/vue';
 import { Icon, type IconName } from '@auxiliary/icons';
 import WebHero from '../WebHero.vue';
 
@@ -42,106 +46,92 @@ const comparison: { feature: string; oss: boolean; auterion: boolean }[] = [
 </script>
 
 <template>
-  <div class="overflow-x-clip" style="background: var(--background)">
+  <div>
 
-    <!-- 1. HERO -->
+    <!-- ╭─ Cover ────────────────────────────────────────────────────╮ -->
     <WebHero
       eyebrow="Products"
       title="Every layer of the autonomy stack."
       subtitle="From the flight controller to the cloud, each part is engineered to work as one system — and open enough to build on."
+      facts="4 PRODUCTS · 1 STACK · 7 CAPABILITIES COMPARED"
       primary="Get started"
       secondary="Compare products"
       @primary="navigate('company')"
       @secondary="navigate('developers')"
     />
 
-    <!-- 2. PRODUCT GRID (2x2) -->
-    <section class="mx-auto max-w-6xl px-6 py-20">
-      <div class="mb-10">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">The platform</p>
-        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-          Four products. <span style="color: var(--brand)">One stack.</span>
-        </h2>
-      </div>
+    <!-- ╭─ The platform ─────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">The platform</span>
+          <span class="dk-bracket">4 PRODUCTS · 12 CAPABILITIES</span>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">Four products. One stack.</h2>
+        </div>
 
-      <div class="grid gap-5 sm:grid-cols-2">
-        <div
-          v-for="p in products"
-          :key="p.name"
-          class="rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md"
-        >
-          <div class="mb-4 flex items-center gap-3">
-            <div
-              class="flex h-10 w-10 items-center justify-center rounded-lg"
-              style="background: color-mix(in oklab, var(--brand) 8%, white)"
-            >
-              <Icon :name="p.icon" size="sm" style="color: var(--brand)" />
+        <div class="wb-grid" data-cols="2">
+          <div v-for="p in products" :key="p.name" class="dk-card dk-lift wb-tile">
+            <div class="wb-tile-head">
+              <span class="wb-tile-mark"><Icon :name="p.icon" size="xs" /></span>
+              <span class="dk-label">{{ p.tag }}</span>
             </div>
-            <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{{ p.tag }}</span>
+            <h3 class="dk-h2">{{ p.name }}</h3>
+            <p class="dk-body">{{ p.desc }}</p>
+
+            <ul class="wb-list">
+              <li v-for="b in p.bullets" :key="b" class="wb-list-item">
+                <span class="dk-small">{{ b }}</span>
+              </li>
+            </ul>
+
+            <span class="wb-tile-foot">
+              <span class="dk-label">Learn more</span>
+              <Icon name="arrow-right" size="xs" class="wb-tile-go" />
+            </span>
           </div>
-
-          <h3 class="text-[18px] font-medium" style="color: var(--foreground)">{{ p.name }}</h3>
-          <p class="mt-2 text-[14px] leading-relaxed text-muted-foreground">{{ p.desc }}</p>
-
-          <ul class="mt-5 space-y-2.5">
-            <li v-for="b in p.bullets" :key="b" class="flex items-center gap-2.5 text-[14px]" style="color: var(--foreground)">
-              <Icon name="circle-check" size="xs" style="color: var(--brand); flex-shrink: 0" />
-              {{ b }}
-            </li>
-          </ul>
-
-          <Button variant="ghost" size="sm" class="mt-6 gap-2 text-[13px]">
-            Learn more <Icon name="arrow-right" size="xs" />
-          </Button>
         </div>
       </div>
     </section>
 
-    <!-- 3. COMPARISON TABLE -->
-    <section class="border-t border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-4xl px-6 py-20">
-        <div class="mb-10">
-          <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Open source vs. Auterion</p>
-          <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-            Built on open. <span style="color: var(--brand)">Ready for scale.</span>
-          </h2>
+    <!-- ╭─ Comparison — the ledger table ────────────────────────────╮
+         A real <table>, fixed layout, marks hard right: the same column
+         model every other table on the site uses. -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">Open source vs. Auterion</span>
+          <span class="dk-bracket">7 ROWS · 2 COLUMNS</span>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">Built on open. Ready for scale.</h2>
         </div>
 
-        <div class="overflow-hidden rounded-xl border border-border">
-          <table class="w-full border-collapse text-left">
+        <div class="wb-figure-scroll">
+          <table class="dk-table wb-table-wide">
+            <colgroup>
+              <col>
+              <col class="wb-col-md">
+              <col class="wb-col-md">
+            </colgroup>
             <thead>
-              <tr style="background: var(--brand)">
-                <th class="px-5 py-3.5 text-[13px] font-semibold" style="color: var(--brand-foreground)">Feature</th>
-                <th class="w-32 px-5 py-3.5 text-center text-[13px] font-semibold" style="color: var(--brand-foreground)">Open Source</th>
-                <th class="w-32 px-5 py-3.5 text-center text-[13px] font-semibold" style="color: var(--brand-foreground)">Auterion</th>
+              <tr>
+                <th scope="col">Feature</th>
+                <th scope="col" data-align="end">Open source</th>
+                <th scope="col" data-align="end">Auterion</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="(row, i) in comparison"
-                :key="row.feature"
-                class="border-t border-border"
-                :style="i % 2 === 1 ? 'background: color-mix(in oklab, var(--foreground) 2.5%, var(--card))' : 'background: var(--card)'"
-              >
-                <td class="px-5 py-3.5 text-[14px]" style="color: var(--foreground)">{{ row.feature }}</td>
-                <td class="px-5 py-3.5 text-center">
-                  <Icon
-                    v-if="row.oss"
-                    name="check"
-                    size="xs"
-                    class="text-muted-foreground"
-                    style="display: inline-block"
-                  />
-                  <Icon
-                    v-else
-                    name="minus"
-                    size="xs"
-                    class="text-muted-foreground/50"
-                    style="display: inline-block"
-                  />
+              <tr v-for="row in comparison" :key="row.feature">
+                <td data-lead="true">{{ row.feature }}</td>
+                <!-- Presence is carried by weight, never by hue: the status
+                     ladder is state, and "ships in the product" is not state. -->
+                <td data-align="end">
+                  <span class="dk-label">{{ row.oss ? 'Yes' : 'No' }}</span>
                 </td>
-                <td class="px-5 py-3.5 text-center">
-                  <Icon name="circle-check" size="sm" style="color: var(--brand); display: inline-block" />
+                <td data-align="end">
+                  <span class="dk-value">{{ row.auterion ? 'Yes' : 'No' }}</span>
                 </td>
               </tr>
             </tbody>
@@ -150,42 +140,26 @@ const comparison: { feature: string; oss: boolean; auterion: boolean }[] = [
       </div>
     </section>
 
-    <!-- 4. CTA -->
-    <section class="border-t border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-2xl px-6 py-24 text-center">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Get started</p>
-        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-          See the whole platform in action.
-        </h2>
-        <p class="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-muted-foreground">
-          Book a walkthrough with our team, tailored to your fleet and missions.
-        </p>
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <button
-            class="cta-btn inline-flex items-center gap-2 rounded-lg px-6 py-3 text-[14px] font-semibold"
-            style="background: var(--brand); color: var(--brand-foreground)"
-            @click="navigate('company')"
-          >
-            Request a demo
-            <Icon name="arrow-right" size="xs" />
-          </button>
-          <Button variant="ghost" size="md" class="gap-2 text-[14px]" @click="navigate('developers')">
-            Read the docs
-          </Button>
+    <!-- ╭─ Proof close ──────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-plate wb-cover">
+          <div class="wb-cover-copy">
+            <p class="dk-h2 dk-ghost">Get started</p>
+            <h2 class="dk-display">See the whole platform in action.</h2>
+          </div>
+          <p class="dk-body-lg wb-cover-lede">
+            Book a walkthrough with our team, tailored to your fleet and missions.
+          </p>
+          <div class="wb-actions">
+            <button type="button" class="dk-cta-solid" @click="navigate('company')">
+              Request a demo <Icon name="arrow-right" size="xs" />
+            </button>
+            <button type="button" class="dk-cta" @click="navigate('developers')">Read the docs</button>
+          </div>
         </div>
       </div>
     </section>
 
   </div>
 </template>
-
-<style scoped>
-.cta-btn:hover {
-  background: color-mix(in oklab, var(--brand) 88%, black) !important;
-}
-
-.cta-btn:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
-</style>

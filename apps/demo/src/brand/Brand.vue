@@ -1,56 +1,55 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref } from 'vue';
 import { Button, Badge, StatusBadge } from '@auxiliary/vue';
 import { Icon } from '@auxiliary/icons';
 import Sparkline from '../suite/Sparkline.vue';
 
 type Direction = 'mono' | 'blue';
-type Background = 'neutral' | 'cadet';
+type Theme = 'light' | 'dark';
+type Level = 'alarm' | 'warning' | 'caution' | 'advisory' | 'nominal';
 
+/* Two axes on this surface, and no third:
+ *
+ *   [data-theme]  — the design system's own colour axis. `.dk` sits on the SAME
+ *                   element, so the --dk-* palette and the DS semantic tokens
+ *                   (Card, Badge, StatusBadge, Button) re-resolve together and
+ *                   cannot drift out of step (deck-07b §3).
+ *   [data-accent] — the study's own subject: mono vs ultramarine. It moves ONE
+ *                   named ladder (--bd-accent / --bd-accent-ink / --bd-on-accent)
+ *                   declared in the scoped layer below, never a value at a call
+ *                   site.
+ *
+ * The old "Ground: Neutral / Space Cadet" switch is gone on purpose. Space Cadet
+ * IS the ink exposure — `--dk-bg` resolves to ink-950, oklch(0.139 0.014 265),
+ * the same hue-265 navy the toggle used to paint on. Keeping it would have meant
+ * a second mode attribute fighting [data-theme], which the grammar forbids
+ * outright. The ground comparison survives as a specimen in 01 · Identity.
+ */
+const theme = ref<Theme>('light');
 const dir = ref<Direction>('blue');
-const bg = ref<Background>('neutral');
-const theme = ref<'dark' | 'light'>('light');
-watch(theme, t => { if (t === 'light') bg.value = 'neutral'; });
 
-const BLUE = 'var(--color-primitive-auterion-blue-700)';
-const BLUE_FG = 'var(--color-primitive-white)';
+const THEMES: { k: Theme; l: string }[] = [
+  { k: 'light', l: 'Light' },
+  { k: 'dark', l: 'Dark' },
+];
 
-const accentStyle = computed(() => {
-  if (dir.value === 'blue')  return `--brand: ${BLUE};  --brand-foreground: ${BLUE_FG};  --ring: ${BLUE};`;
-  return '';
-});
+const DIRECTIONS: { k: Direction; l: string }[] = [
+  { k: 'mono', l: 'Mono' },
+  { k: 'blue', l: 'Ultramarine' },
+];
 
-// Space Cadet — deep indigo-navy brand ground.
-// cadet scale: see color.primitive.cadet in tailwind-palette.tokens.json
-const bgStyle = computed(() => {
-  if (bg.value !== 'cadet') return '';
-  return [
-    '--background: var(--color-primitive-ink-950)',                  // oklch(0.139 0.014 265) ≈ #06090f
-    '--card: var(--color-primitive-ink-900)',                        // oklch(0.210 0.018 265) ≈ #141821
-    '--card-foreground: var(--color-primitive-auterion-blue-50)',    // oklch(0.970 0.013 264) ≈ #f1f5fe
-    '--popover: var(--color-primitive-ink-900)',
-    '--popover-foreground: var(--color-primitive-auterion-blue-50)',
-    '--secondary: var(--color-primitive-ink-800)',                   // oklch(0.274 0.022 265) ≈ #222732
-    '--secondary-foreground: var(--color-primitive-auterion-blue-50)',
-    '--muted: var(--color-primitive-ink-900)',
-    '--muted-foreground: var(--color-primitive-cadet-600)',
-    '--accent: var(--color-primitive-ink-800)',
-    '--accent-foreground: var(--color-primitive-auterion-blue-50)',
-    '--border: var(--color-primitive-ink-700)',                      // oklch(0.372 0.022 265) ≈ #3b404c
-    '--input: var(--color-primitive-ink-700)',
-  ].join('; ');
-});
-
-// Proposed Auterion palette from shared reference
+// Proposed Auterion palette from shared reference. The hex IS the datum here —
+// these are specimens of a palette that does not (yet) live in the token set,
+// so the value is the content, not a styling shortcut.
 const proposedPalette = [
-  { name: 'Ultramarine', hex: '#1248DF', oklch: 'oklch(0.482 0.235 264)', fg: '#ffffff', role: 'Brand accent — auterion-blue.700 (semantic brand)' },
-  { name: 'Space Cadet', hex: '#171744', oklch: 'oklch(0.18 0.08 264)', fg: '#ffffff', role: 'Dark ground' },
-  { name: 'Night', hex: '#191C1C', oklch: 'oklch(0.17 0 0)', fg: '#ffffff', role: 'Near-black surface' },
-  { name: 'Cadet Grey', hex: '#919A9B', oklch: 'oklch(0.63 0.01 200)', fg: '#ffffff', role: 'Neutral mid — cadet.500' },
-  { name: 'Platinum', hex: '#D3DFE2', oklch: 'oklch(0.88 0.015 200)', fg: '#191C1C', role: 'Light surface — cadet.300' },
-  { name: 'Seasalt', hex: '#F5F7F7', oklch: 'oklch(0.97 0.005 200)', fg: '#191C1C', role: 'Near-white — cadet.50' },
-  { name: 'Azure', hex: '#E3F7FF', oklch: 'oklch(0.97 0.025 205)', fg: '#171744', role: 'Tinted light' },
-  { name: 'Aquamarine', hex: '#3BE494', oklch: 'oklch(0.83 0.17 155)', fg: '#16352B', role: '? secondary / advisory conflict' },
+  { name: 'Ultramarine', hex: '#1248DF', oklch: 'oklch(0.482 0.235 264)', role: 'Brand accent — auterion-blue.700' },
+  { name: 'Space Cadet', hex: '#171744', oklch: 'oklch(0.180 0.080 264)', role: 'Dark ground' },
+  { name: 'Night', hex: '#191C1C', oklch: 'oklch(0.170 0.000 000)', role: 'Near-black surface' },
+  { name: 'Cadet Grey', hex: '#919A9B', oklch: 'oklch(0.630 0.010 200)', role: 'Neutral mid — cadet.500' },
+  { name: 'Platinum', hex: '#D3DFE2', oklch: 'oklch(0.880 0.015 200)', role: 'Light surface — cadet.300' },
+  { name: 'Seasalt', hex: '#F5F7F7', oklch: 'oklch(0.970 0.005 200)', role: 'Near-white — cadet.50' },
+  { name: 'Azure', hex: '#E3F7FF', oklch: 'oklch(0.970 0.025 205)', role: 'Tinted light' },
+  { name: 'Aquamarine', hex: '#3BE494', oklch: 'oklch(0.830 0.170 155)', role: 'Unresolved — collides with advisory' },
 ];
 
 const heroSpark = [8, 10, 9, 12, 14, 13, 16, 15, 18, 20, 19, 23, 26, 24, 28, 31];
@@ -64,72 +63,102 @@ const monoRamp = [
   { label: 'foreground', val: 'var(--foreground)', text: 'var(--background)' },
 ];
 
-const statusLevels = [
-  { level: 'alarm' as const, label: 'Alarm' },
-  { level: 'warning' as const, label: 'Warning' },
-  { level: 'caution' as const, label: 'Caution' },
-  { level: 'advisory' as const, label: 'Advisory' },
-  { level: 'nominal' as const, label: 'Nominal' },
+const statusLevels: { level: Level; label: string }[] = [
+  { level: 'alarm', label: 'Alarm' },
+  { level: 'warning', label: 'Warning' },
+  { level: 'caution', label: 'Caution' },
+  { level: 'advisory', label: 'Advisory' },
+  { level: 'nominal', label: 'Nominal' },
 ];
 
 const typeScale = [
-  { cls: 'text-10xl font-medium', label: 'Inter / 128 medium', sample: 'Auterion',                   font: 'sans' as const },
-  { cls: 'text-8xl  font-medium', label: 'Inter / 80 medium',  sample: 'Autonomous Systems',         font: 'sans' as const },
-  { cls: 'text-6xl  font-medium',   label: 'Inter / 60 medium',    sample: 'Pushing boundaries',         font: 'sans' as const },
-  { cls: 'text-4xl  font-medium',   label: 'Inter / 40 medium',    sample: 'Mission-ready at scale',     font: 'sans' as const },
-  { cls: 'text-3xl  font-normal',   label: 'Inter / 30 regular',   sample: 'Fleet operations & telemetry', font: 'sans' as const },
-  { cls: 'text-2xl  font-normal',   label: 'Inter / 24 regular',   sample: 'One stack, from silicon to fleet', font: 'sans' as const },
-  { cls: 'text-base',               label: 'Inter / 16 regular',      sample: 'Encrypted datalinks, on-device autonomy and a hardened OS — engineered to operate where connectivity is contested.', font: 'sans' as const },
-  { cls: 'text-sm',                 label: 'Inter / 14 regular',      sample: 'The open software platform for autonomous vehicles. Build, deploy and command from the cloud.', font: 'sans' as const },
-  { cls: 'text-xs font-medium',     label: 'Inter / 12 medium',       sample: 'AuterionOS 4.2 · Release notes · June 2026', font: 'sans' as const },
-  { cls: 'text-xs font-mono',       label: 'Geist Mono / 12',         sample: 'TELEMETRY · RSSI −82 dBm · BATTERY 86% · ALT 124m', font: 'mono' as const },
+  { cls: 'text-10xl font-medium', label: 'Inter / 128 medium', sample: 'Auterion', font: 'sans' as const },
+  { cls: 'text-8xl font-medium', label: 'Inter / 80 medium', sample: 'Autonomous Systems', font: 'sans' as const },
+  { cls: 'text-6xl font-medium', label: 'Inter / 60 medium', sample: 'Pushing boundaries', font: 'sans' as const },
+  { cls: 'text-4xl font-medium', label: 'Inter / 40 medium', sample: 'Mission-ready at scale', font: 'sans' as const },
+  { cls: 'text-3xl font-normal', label: 'Inter / 30 regular', sample: 'Fleet operations & telemetry', font: 'sans' as const },
+  { cls: 'text-2xl font-normal', label: 'Inter / 24 regular', sample: 'One stack, from silicon to fleet', font: 'sans' as const },
+  { cls: 'text-base', label: 'Inter / 16 regular', sample: 'Encrypted datalinks, on-device autonomy and a hardened OS — engineered to operate where connectivity is contested.', font: 'sans' as const },
+  { cls: 'text-sm', label: 'Inter / 14 regular', sample: 'The open software platform for autonomous vehicles. Build, deploy and command from the cloud.', font: 'sans' as const },
+  { cls: 'text-xs font-medium', label: 'Inter / 12 medium', sample: 'AuterionOS 4.2 · Release notes · June 2026', font: 'sans' as const },
+  { cls: 'text-xs font-mono', label: 'Geist Mono / 12', sample: 'TELEMETRY · RSSI −82 dBm · BATTERY 86% · ALT 124m', font: 'mono' as const },
+];
+
+const coverFigures = [
+  { label: 'Flight hours', value: '2,000,000+' },
+  { label: 'Vehicles deployed', value: '10,000+' },
+  { label: 'Nations', value: '60+' },
+];
+
+const componentStats = [
+  { value: '2M+', label: 'Flight hours' },
+  { value: '10k+', label: 'Vehicles deployed' },
+  { value: '60+', label: 'Countries' },
+  { value: '99.9%', label: 'Fleet uptime' },
+];
+
+const fleet: { id: string; level: Level; batt: string; note: string }[] = [
+  { id: 'Skyhook-01', level: 'nominal', batt: '86%', note: 'ALT 408 M' },
+  { id: 'Falcon-02', level: 'advisory', batt: '64%', note: 'ALT 122 M' },
+  { id: 'Raven-03', level: 'warning', batt: '18%', note: 'RETURNING' },
+  { id: 'Osprey-05', level: 'nominal', batt: '92%', note: 'ALT 312 M' },
+];
+
+const monoPros = [
+  'Uniquely owned — no competitors here',
+  'Strongest possible discipline signal',
+  'Ties marketing to the product register',
+];
+const monoCons = [
+  'Zero warmth — may read cold to non-technical audiences',
+  'Harder to drive CTAs without a second colour',
+];
+const bluePros = [
+  'Works on light and dark',
+  'Highest CTA contrast — unambiguous',
+  'Distinct from Anduril / Helsing — not SaaS-standard blue',
+  'Ink ground amplifies it: same hue family (265)',
+];
+const blueCons = [
+  'Advisory cyan must stay distinct (H185 vs H265 — they are)',
+  'Discipline required: two blue surfaces per view, no third',
 ];
 </script>
 
 <template>
-  <div :data-theme="theme" class="brand-root min-h-dvh bg-background text-foreground" :style="[accentStyle, bgStyle].filter(Boolean).join('; ')">
-
-    <!-- sticky header -->
-    <header class="sticky top-0 z-30 border-b border-border/60 bg-background/90 backdrop-blur-xl">
-      <div class="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-6">
-        <div class="flex items-center gap-3 shrink-0">
-          <span class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">Brand</span>
-          <span class="h-3 w-px bg-border" />
-          <span class="font-mono text-[11px] text-muted-foreground">Auterion · 2026</span>
+  <div
+    class="dk bd-root min-h-dvh"
+    :data-theme="theme"
+    :data-accent="dir"
+  >
+    <!-- ═══ Chrome — one hairline bar, two segmented controls ═══ -->
+    <header class="bd-header">
+      <div class="bd-shell flex h-14 items-center justify-between gap-6">
+        <div class="flex min-w-0 items-center gap-3">
+          <span class="dk-label">Auterion</span>
+          <span class="bd-tick" />
+          <span class="dk-micro truncate">Brand system · 2026</span>
         </div>
         <div class="flex items-center gap-3">
-          <!-- theme toggle -->
-          <div class="flex items-center gap-0.5">
-            <span class="mr-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">Theme</span>
+          <span class="dk-micro hidden sm:inline">Theme</span>
+          <div class="dk-segment">
             <button
-              v-for="t in (['dark','light'] as const)"
-              :key="t"
-              class="rounded-sm px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.08em] transition-colors"
-              :class="theme === t ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'"
-              @click="theme = t"
-            >{{ t }}</button>
+              v-for="t in THEMES"
+              :key="t.k"
+              type="button"
+              class="dk-segment-btn"
+              :data-active="theme === t.k"
+              @click="theme = t.k"
+            >{{ t.l }}</button>
           </div>
-          <span class="h-3 w-px bg-border/60" />
-          <!-- background toggle -->
-          <div class="flex items-center gap-0.5">
-            <span class="mr-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">Ground</span>
+          <span class="dk-micro hidden sm:inline">Accent</span>
+          <div class="dk-segment">
             <button
-              v-for="b in ([{k:'neutral',l:'Neutral'},{k:'cadet',l:'Space Cadet'}] as const)"
-              :key="b.k"
-              class="rounded-sm px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.08em] transition-colors"
-              :class="[bg === b.k ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground', theme === 'light' && b.k === 'cadet' ? 'opacity-30 pointer-events-none' : '']"
-              @click="bg = b.k"
-            >{{ b.l }}</button>
-          </div>
-          <span class="h-3 w-px bg-border/60" />
-          <!-- accent direction switcher -->
-          <div class="flex items-center gap-0.5">
-            <span class="mr-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">Accent</span>
-            <button
-              v-for="d in ([{k:'mono',l:'Mono'},{k:'blue',l:'Ultramarine'}] as const)"
+              v-for="d in DIRECTIONS"
               :key="d.k"
-              class="rounded-sm px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.08em] transition-colors"
-              :class="dir === d.k ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'"
+              type="button"
+              class="dk-segment-btn"
+              :data-active="dir === d.k"
               @click="dir = d.k"
             >{{ d.l }}</button>
           </div>
@@ -137,669 +166,1475 @@ const typeScale = [
       </div>
     </header>
 
-    <!-- ── 00 BRAND STATEMENT ── -->
-    <section class="brand-statement relative overflow-hidden border-b border-border/40 px-8 flex flex-col justify-end min-h-[72vh]">
-      <!-- hairline grid -->
-      <svg class="absolute inset-0 h-full w-full pointer-events-none" aria-hidden preserveAspectRatio="none">
+    <!-- ═══ P-01 · COVER ═══════════════════════════════════════════════
+         Display + ghost line. The art is a static hairline field: nothing
+         draws in on load — an editorial page is already finished when you
+         arrive at it. -->
+    <section class="bd-cover">
+      <svg
+        class="bd-cover-art"
+        aria-hidden="true"
+        preserveAspectRatio="none"
+      >
         <defs>
-          <pattern id="stmt-grid" width="56" height="56" patternUnits="userSpaceOnUse">
-            <path d="M 56 0 L 0 0 0 56" fill="none" stroke="currentColor" stroke-width="0.4" class="text-border/30"/>
+          <pattern
+            id="bd-cover-grid"
+            width="56"
+            height="56"
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d="M 56 0 L 0 0 0 56"
+              fill="none"
+              stroke="var(--dk-line-2)"
+              stroke-width="1"
+            />
           </pattern>
         </defs>
-        <rect width="100%" height="100%" fill="url(#stmt-grid)"/>
-        <!-- animated mission arc -->
+        <rect
+          width="100%"
+          height="100%"
+          fill="url(#bd-cover-grid)"
+        />
         <path
-class="stmt-arc" d="M -40 520 C 120 420 280 300 520 200 S 900 80 1200 20"
-          fill="none" :stroke="dir !== 'mono' ? 'var(--brand)' : 'var(--foreground)'"
-          stroke-width="1" stroke-dasharray="4 10" opacity="0.35"/>
+          d="M -40 520 C 120 420 280 300 520 200 S 900 80 1200 20"
+          fill="none"
+          stroke="var(--dk-line)"
+          stroke-width="1"
+          stroke-dasharray="4 10"
+        />
         <circle
-class="stmt-pulse" cx="520" cy="200" r="5"
-          :fill="dir !== 'mono' ? 'var(--brand)' : 'var(--foreground)'" opacity="0.7"/>
+          cx="520"
+          cy="200"
+          r="3.5"
+          fill="var(--dk-fg-3)"
+        />
         <circle
-cx="520" cy="200" r="18" fill="none"
-          :stroke="dir !== 'mono' ? 'var(--brand)' : 'var(--foreground)'"
-          stroke-width="0.8" opacity="0.2"/>
+          cx="520"
+          cy="200"
+          r="16"
+          fill="none"
+          stroke="var(--dk-line)"
+          stroke-width="1"
+        />
       </svg>
 
-      <!-- brand mark — top right -->
-      <div
-class="absolute top-10 right-10 flex h-16 w-16 items-center justify-center rounded-sm shrink-0"
-        :style="`background: ${dir !== 'mono' ? 'var(--brand)' : 'var(--foreground)'}`">
-        <Icon name="drone" size="md" :style="`color: ${dir !== 'mono' ? 'var(--brand-foreground)' : 'var(--background)'}`"/>
-      </div>
+      <div class="bd-shell bd-cover-inner">
+        <div class="flex items-start justify-between gap-6">
+          <p class="dk-label">Auterion · Brand identity · 2026</p>
+          <span class="bd-mark">
+            <Icon
+              name="drone"
+              size="md"
+            />
+          </span>
+        </div>
 
-      <!-- index stamp — top left -->
-      <p class="absolute top-10 left-8 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">
-        Auterion · Brand identity · 2026
-      </p>
+        <div class="max-w-4xl">
+          <h1 class="dk-display">
+            Precision design<br>for autonomous<br>systems
+          </h1>
+          <p class="dk-h2 dk-ghost mt-6">
+            Trusted · mission-critical · precise
+          </p>
+        </div>
 
-      <!-- statement -->
-      <div class="relative z-10 pb-16 max-w-4xl">
-        <h1 class="stmt-h1">
-          Precision design<br>for autonomous<br>systems
-        </h1>
-        <!-- stat strip -->
-        <div class="mt-10 flex items-end gap-10 border-t border-border/30 pt-6">
-          <div v-for="s in [['2,000,000+','Flight hours'],['10,000+','Vehicles deployed'],['60+','Nations']]" :key="s[0]">
-            <p
-class="font-mono text-2xl font-semibold tabular-nums leading-none"
-              :style="dir !== 'mono' ? 'color: var(--brand)' : ''">{{ s[0] }}</p>
-            <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{{ s[1] }}</p>
+        <div>
+          <div class="bd-figures">
+            <div
+              v-for="(f, i) in coverFigures"
+              :key="f.label"
+              class="bd-figure"
+              :data-align="i === coverFigures.length - 1 ? 'end' : null"
+            >
+              <span class="dk-label">{{ f.label }}</span>
+              <span class="dk-h2 dk-num">{{ f.value }}</span>
+            </div>
+          </div>
+          <div class="mt-5 flex flex-wrap items-baseline justify-between gap-4">
+            <span class="dk-bracket">4 themes · 2 registers · 1 token source</span>
+            <span class="dk-caption">P-01 · Cover — display + ghost line</span>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="mx-auto max-w-5xl px-6 py-16 space-y-20">
+    <div class="bd-shell bd-flow bd-body">
 
-      <!-- ── 01 IDENTITY ── -->
+      <!-- ═══ P-02 · IDENTITY ══════════════════════════════════════════ -->
       <section>
-        <p class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">01 — Identity</p>
-        <h2 class="mt-2 section-h2 text-[2rem] font-medium">Color system</h2>
-        <p class="mt-2 text-[14px] text-muted-foreground max-w-xl">
-          The palette is a signal vocabulary, not a mood palette. Ground → Surface → Content → Accent. Status colors are reserved for operational severity.
+        <div class="dk-section">
+          <p class="dk-label">01 — Identity</p>
+          <p class="dk-label">Ground · surface · content · accent</p>
+        </div>
+        <h2 class="dk-h1 mt-6">
+          Colour system
+        </h2>
+        <p class="dk-body mt-3 max-w-xl">
+          The palette is a signal vocabulary, not a mood palette. Ground → Surface → Content → Accent.
+          Status colours are reserved for operational severity and never spent on decoration.
         </p>
 
-        <!-- mono ramp -->
-        <div class="mt-8 grid grid-cols-6 overflow-hidden rounded-sm border border-border">
+        <!-- semantic ramp -->
+        <p class="dk-label mt-10">
+          Semantic ramp
+        </p>
+        <div class="bd-ramp mt-3">
           <div
-            v-for="s in monoRamp" :key="s.label"
-            class="flex flex-col justify-end p-3 aspect-square"
-            :style="`background: ${s.val}; color: ${s.text};`"
+            v-for="s in monoRamp"
+            :key="s.label"
+            class="bd-ramp-cell"
+            :style="{ background: s.val }"
           >
-            <span class="font-mono text-[10px] font-medium uppercase tracking-wide opacity-70">{{ s.label }}</span>
+            <span
+              class="dk-micro"
+              :style="{ color: s.text }"
+            >{{ s.label }}</span>
           </div>
         </div>
 
-        <!-- brand accent -->
-        <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <!-- accent + status ladder -->
+        <div class="mt-6 grid gap-6 sm:grid-cols-2">
           <div>
-            <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground mb-2">Brand accent</p>
-            <div class="flex h-20 items-center justify-center rounded-sm" style="background: var(--brand)">
-              <span class="font-mono text-[11px] font-medium uppercase tracking-wide" style="color: var(--brand-foreground)">
-                {{ dir === 'blue' ? 'Ultramarine' : 'mono.50' }}
-              </span>
+            <p class="dk-label">Brand accent — one signal, rationed</p>
+            <!-- BLUE SURFACE 1 of 2. The one place blue is the subject rather
+                 than the signal, so it is a specimen, not a plate. -->
+            <div class="bd-accent-swatch mt-3">
+              <span class="dk-label bd-on-accent">{{ dir === 'blue' ? 'Ultramarine' : 'Ink' }}</span>
             </div>
           </div>
           <div>
-            <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground mb-2">On brand</p>
-            <div class="flex h-20 items-center justify-center rounded-sm" style="background: var(--brand-foreground)">
-              <span class="font-mono text-[11px] font-medium uppercase tracking-wide" style="color: var(--brand)">
-                white
-              </span>
-            </div>
-          </div>
-          <div class="sm:col-span-2">
-            <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground mb-2">Status ladder (fixed — never decorative)</p>
-            <div class="flex h-20 gap-px overflow-hidden rounded-sm">
-              <div v-for="s in statusLevels" :key="s.level" class="flex flex-1 items-end p-1.5" :style="`background: var(--${s.level})`">
-                <span class="font-mono text-[9px] font-medium uppercase tracking-wide" :style="`color: var(--${s.level}-foreground)`">{{ s.label }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- proposed palette (blue direction only) -->
-        <div v-if="dir === 'blue'" class="mt-8">
-          <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground mb-3">Proposed Auterion palette</p>
-          <div class="grid grid-cols-4 gap-2 sm:grid-cols-8">
-            <div v-for="c in proposedPalette" :key="c.name" class="group relative">
+            <p class="dk-label">Status ladder — fixed, never decorative</p>
+            <div class="bd-ladder mt-3">
               <div
-class="h-16 rounded-sm flex flex-col justify-end p-2 overflow-hidden"
-                :style="`background: ${c.hex}; color: ${c.fg};`"
-                :class="c.name === 'Aquamarine' ? 'ring-1 ring-yellow-400/60 ring-inset' : ''">
-                <span class="font-mono text-[9px] font-medium opacity-80 leading-tight">{{ c.hex }}</span>
-              </div>
-              <p class="mt-1 font-mono text-[9px] text-muted-foreground leading-tight">{{ c.name }}</p>
-              <p class="font-mono text-[8px] text-muted-foreground/50 leading-tight">{{ c.role }}</p>
-            </div>
-          </div>
-          <!-- Space Cadet dark surface preview -->
-          <div class="mt-4 grid grid-cols-2 gap-4">
-            <div class="rounded-sm overflow-hidden border border-border">
-              <div class="px-3 py-1.5 bg-card border-b border-border">
-                <span class="font-mono text-[10px] text-muted-foreground">Dark ground: Space Cadet #171744</span>
-              </div>
-              <div class="p-6 flex items-center justify-between" style="background: var(--color-primitive-ink-950);">
-                <div>
-                  <p class="font-mono text-[10px] uppercase tracking-[0.12em] mb-2" :style="`color: ${BLUE}`">Auterion · 2026</p>
-                  <p class="font-mono text-[22px] font-medium leading-tight text-white">The operating system<br>for autonomous robotics</p>
-                </div>
-                <div class="flex h-16 w-16 items-center justify-center rounded-sm shrink-0" :style="`background: ${BLUE}`">
-                  <Icon name="drone" size="md" style="color: white"/>
-                </div>
-              </div>
-            </div>
-            <div class="rounded-sm overflow-hidden border border-border">
-              <div class="px-3 py-1.5 bg-card border-b border-border">
-                <span class="font-mono text-[10px] text-muted-foreground">Dark ground: mono.950 (current)</span>
-              </div>
-              <div class="p-6 flex items-center justify-between bg-background">
-                <div>
-                  <p class="font-mono text-[10px] uppercase tracking-[0.12em] mb-2" :style="`color: ${BLUE}`">Auterion · 2026</p>
-                  <p class="font-mono text-[22px] font-medium leading-tight">The operating system<br>for autonomous robotics</p>
-                </div>
-                <div class="flex h-16 w-16 items-center justify-center rounded-sm shrink-0" :style="`background: ${BLUE}`">
-                  <Icon name="drone" size="md" style="color: white"/>
-                </div>
+                v-for="s in statusLevels"
+                :key="s.level"
+                class="bd-ladder-cell"
+                :style="{ background: `var(--${s.level})` }"
+              >
+                <span
+                  class="dk-micro"
+                  :style="{ color: `var(--${s.level}-foreground)` }"
+                >{{ s.label }}</span>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- ledger table — the proposed palette, values hard right -->
+        <p class="dk-label mt-10">
+          Proposed Auterion palette
+        </p>
+        <table class="dk-table mt-3">
+          <thead>
+            <tr>
+              <th class="bd-col-chip">
+                <span class="bd-sr">Swatch</span>
+              </th>
+              <th class="bd-col-name">
+                Name
+              </th>
+              <th class="bd-col-hex">
+                Hex
+              </th>
+              <th
+                class="bd-col-oklch hidden md:table-cell"
+                data-align="end"
+              >
+                OKLCH
+              </th>
+              <th class="hidden sm:table-cell">
+                Role
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="c in proposedPalette"
+              :key="c.name"
+            >
+              <td>
+                <span
+                  class="bd-chip"
+                  :style="{ background: c.hex }"
+                />
+              </td>
+              <td data-lead="true">
+                {{ c.name }}
+              </td>
+              <td class="bd-mono">
+                {{ c.hex }}
+              </td>
+              <td
+                class="bd-mono hidden md:table-cell"
+                data-align="end"
+              >
+                {{ c.oklch }}
+              </td>
+              <td class="hidden sm:table-cell">
+                {{ c.role }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- ground study — the same block at two exposures. The left panel
+             carries its own `.dk` + [data-theme], so the whole --dk-* palette
+             (and the accent ladder) re-resolves inside it. -->
+        <p class="dk-label mt-10">
+          Ground study — ink vs page
+        </p>
+        <div class="mt-3 grid gap-6 sm:grid-cols-2">
+          <div class="dk-card overflow-hidden">
+            <div class="bd-strip">
+              <span class="dk-label">Ink ground — ink-950 · hue 265</span>
+            </div>
+            <div
+              class="dk bd-preview"
+              data-theme="dark"
+            >
+              <div class="min-w-0">
+                <p class="dk-label bd-accent-ink">
+                  Auterion · 2026
+                </p>
+                <p class="dk-h2 mt-3">
+                  The operating system<br>for autonomous robotics
+                </p>
+              </div>
+              <span class="bd-mark bd-mark-sm">
+                <Icon
+                  name="drone"
+                  size="sm"
+                />
+              </span>
+            </div>
+          </div>
+          <div class="dk-card overflow-hidden">
+            <div class="bd-strip">
+              <span class="dk-label">Page ground — theme: {{ theme }}</span>
+            </div>
+            <div class="bd-preview">
+              <div class="min-w-0">
+                <p class="dk-label bd-accent-ink">
+                  Auterion · 2026
+                </p>
+                <p class="dk-h2 mt-3">
+                  The operating system<br>for autonomous robotics
+                </p>
+              </div>
+              <span class="bd-mark bd-mark-sm">
+                <Icon
+                  name="drone"
+                  size="sm"
+                />
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <p class="dk-caption">
+          P-02 · Identity — ledger table + ground study
+        </p>
       </section>
 
-      <!-- ── 02 TYPOGRAPHY ── -->
+      <!-- ═══ P-03 · TYPOGRAPHY ════════════════════════════════════════
+           The one numeral card in the whole view. -->
       <section>
-        <p class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">02 — Typography</p>
-        <h2 class="mt-2 section-h2 text-[2rem] font-medium">Type scale</h2>
-        <p class="mt-2 text-[14px] text-muted-foreground max-w-xl">
-          Inter Variable throughout — display, headings, and body. Geist Mono reserved for telemetry data and code.
+        <div class="bd-numeral-block">
+          <div class="dk-plate bd-numeral-plate">
+            <p class="dk-label">02 — Typography</p>
+            <p class="dk-h2 mt-3">
+              Grotesque speaks,<br>mono measures
+            </p>
+          </div>
+          <div
+            class="dk-numeral bd-numeral"
+            aria-hidden="true"
+          >
+            <span class="dk-numeral-folio">02</span>
+          </div>
+        </div>
+
+        <h2 class="dk-h1 mt-10">
+          Type scale
+        </h2>
+        <p class="dk-body mt-3 max-w-xl">
+          Inter Variable throughout — display, headings and body. Geist Mono is reserved for
+          telemetry, coordinates and code.
         </p>
 
-        <div class="mt-8 divide-y divide-border/60 border-y border-border/60">
-          <div v-for="t in typeScale" :key="t.label" class="grid grid-cols-[200px_1fr] gap-4 py-5 items-baseline">
-            <span class="font-mono text-[11px] text-muted-foreground self-start pt-1">{{ t.label }}</span>
+        <div class="bd-specimens dk-divide mt-8">
+          <div
+            v-for="t in typeScale"
+            :key="t.label"
+            class="bd-specimen"
+          >
+            <span class="dk-pointer">{{ t.label }}</span>
             <span :class="[t.cls, t.font === 'mono' ? 'font-mono' : '']">{{ t.sample }}</span>
           </div>
         </div>
+
+        <p class="dk-caption">
+          P-03 · Typography — numeral card + pointer-labelled fields
+        </p>
       </section>
 
-      <!-- ── 03 COMPONENTS ── -->
+      <!-- ═══ P-04 · COMPONENTS ════════════════════════════════════════ -->
       <section>
-        <p class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">03 — Components</p>
-        <h2 class="mt-2 section-h2 text-[2rem] font-medium">Interactive elements</h2>
-        <p class="mt-2 text-[14px] text-muted-foreground max-w-xl">
-          Brand accent surfaces in interactive controls — buttons, active states, focus rings. Geist Mono reserved for telemetry and data labels.
+        <div class="dk-section">
+          <p class="dk-label">03 — Components</p>
+          <p class="dk-label">@auxiliary/vue</p>
+        </div>
+        <h2 class="dk-h1 mt-6">
+          Interactive elements
+        </h2>
+        <p class="dk-body mt-3 max-w-xl">
+          Design-system primitives inside the deck's surroundings. Where a component fights the
+          grammar the layout yields, not the component.
         </p>
 
         <div class="mt-8 grid gap-6 sm:grid-cols-2">
-          <!-- buttons -->
-          <div class="rounded-sm border border-border bg-card p-6 space-y-4">
-            <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Buttons</p>
+          <div class="dk-card bd-pad space-y-4">
+            <p class="dk-label">Buttons</p>
             <div class="flex flex-wrap gap-3">
-              <Button size="md">Get started</Button>
-              <Button variant="secondary" size="md">Learn more</Button>
-              <Button variant="secondary" size="md">Documentation</Button>
-              <Button variant="ghost" size="md">Sign in</Button>
+              <Button size="md">
+                Get started
+              </Button>
+              <Button
+                variant="secondary"
+                size="md"
+              >
+                Learn more
+              </Button>
+              <Button
+                variant="secondary"
+                size="md"
+              >
+                Documentation
+              </Button>
+              <Button
+                variant="ghost"
+                size="md"
+              >
+                Sign in
+              </Button>
             </div>
             <div class="flex flex-wrap gap-3">
-              <Button size="sm">Request briefing</Button>
-              <Button variant="secondary" size="sm">Watch demo</Button>
+              <Button size="sm">
+                Request briefing
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+              >
+                Watch demo
+              </Button>
             </div>
           </div>
 
-          <!-- badges + status -->
-          <div class="rounded-sm border border-border bg-card p-6 space-y-4">
-            <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Status badges</p>
+          <div class="dk-card bd-pad space-y-4">
+            <p class="dk-label">Status badges</p>
             <div class="flex flex-wrap gap-2">
-              <StatusBadge v-for="s in statusLevels" :key="s.level" :level="s.level" size="sm">{{ s.label }}</StatusBadge>
+              <StatusBadge
+                v-for="s in statusLevels"
+                :key="s.level"
+                :level="s.level"
+                size="sm"
+              >
+                {{ s.label }}
+              </StatusBadge>
             </div>
             <div class="flex flex-wrap gap-2">
-              <StatusBadge v-for="s in statusLevels" :key="s.level" :level="s.level" size="sm" dot>{{ s.label }}</StatusBadge>
+              <StatusBadge
+                v-for="s in statusLevels"
+                :key="s.level"
+                :level="s.level"
+                size="sm"
+                dot
+              >
+                {{ s.label }}
+              </StatusBadge>
             </div>
             <div class="flex flex-wrap gap-2">
               <Badge>Primary</Badge>
-              <Badge variant="secondary">Secondary</Badge>
-              <Badge variant="outline">Outline</Badge>
+              <Badge variant="secondary">
+                Secondary
+              </Badge>
+              <Badge variant="outline">
+                Outline
+              </Badge>
             </div>
           </div>
 
-          <!-- product card -->
-          <div class="rounded-sm border border-border bg-card p-6 space-y-3">
-            <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Product card</p>
-            <div class="rounded-sm border border-border bg-background p-5 text-left">
-              <div class="flex h-9 w-9 items-center justify-center border border-border/60">
-                <Icon name="drone" size="sm" class="text-muted-foreground" />
-              </div>
-              <h3 class="mt-4 font-mono text-[17px] font-medium">Mission Control</h3>
-              <p class="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">Field-proven ground control. Map, gimbal and mission, on any tablet.</p>
-              <div class="mt-4 flex items-center gap-1.5 font-mono text-[13px] font-medium" style="color: var(--brand)">
-                Learn more <Icon name="arrow-right" size="xs" />
-              </div>
+          <div class="dk-card bd-pad space-y-3">
+            <p class="dk-label">Product card</p>
+            <div class="dk-inset bd-pad-sm dk-lift bd-product">
+              <span class="bd-mark bd-mark-sm">
+                <Icon
+                  name="drone"
+                  size="sm"
+                />
+              </span>
+              <h3 class="dk-h2 mt-4">
+                Mission Control
+              </h3>
+              <p class="dk-body mt-2">
+                Field-proven ground control. Map, gimbal and mission, on any tablet.
+              </p>
+              <span class="dk-link mt-4">
+                Learn more
+                <Icon
+                  name="arrow-right"
+                  size="xs"
+                />
+              </span>
             </div>
           </div>
 
-          <!-- stat strip -->
-          <div class="rounded-sm border border-border bg-card p-6 space-y-3">
-            <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Stats</p>
-            <div class="grid grid-cols-2 gap-4">
-              <div v-for="s in [['2M+','Flight hours'],['10k+','Vehicles deployed'],['60+','Countries'],['99.9%','Fleet uptime']]" :key="s[0]">
-                <p class="font-mono text-3xl font-medium tabular-nums" :style="dir !== 'mono' ? `color: var(--brand)` : ''">{{ s[0] }}</p>
-                <p class="mt-0.5 font-mono text-[12px] text-muted-foreground">{{ s[1] }}</p>
+          <div class="dk-card bd-pad space-y-3">
+            <p class="dk-label">Figures</p>
+            <div class="grid grid-cols-2 gap-6">
+              <div
+                v-for="s in componentStats"
+                :key="s.label"
+              >
+                <p class="dk-h2 dk-num">
+                  {{ s.value }}
+                </p>
+                <p class="dk-label mt-1">
+                  {{ s.label }}
+                </p>
               </div>
             </div>
           </div>
         </div>
+
+        <p class="dk-caption">
+          P-04 · Components — hairline cards, no shadow
+        </p>
       </section>
 
-      <!-- ── 04 HERO DIRECTIONS ── -->
+      <!-- ═══ P-05 · CHAPTER PLATE ═════════════════════════════════════
+           BLUE SURFACE 2 of 2, and the only sanctioned use of the device:
+           a chapter divider. Drops to the dark plate on the mono direction. -->
       <section>
-        <p class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">04 — Hero</p>
-        <h2 class="mt-2 section-h2 text-[2rem] font-medium">Above the fold</h2>
-        <p class="mt-2 text-[14px] text-muted-foreground max-w-xl">
-          Two structural directions for the hero section. Toggle the accent above to see color impact on each.
+        <div
+          class="bd-chapter"
+          :class="dir === 'blue' ? 'dk-plate-signal' : 'dk-plate'"
+        >
+          <div>
+            <p class="dk-label">Chapter</p>
+            <p class="dk-h1 mt-3">
+              Above the fold
+            </p>
+          </div>
+          <span class="dk-bracket">4 directions · 2 grounds · 1 accent</span>
+        </div>
+        <p class="dk-caption">
+          P-05 · Chapter plate — the signal, spent once
+        </p>
+      </section>
+
+      <!-- ═══ P-06 · HERO FILMSTRIP ════════════════════════════════════ -->
+      <section>
+        <div class="dk-section">
+          <p class="dk-label">04 — Hero</p>
+          <p class="dk-label">Four structural directions</p>
+        </div>
+        <h2 class="dk-h1 mt-6">
+          Above the fold
+        </h2>
+        <p class="dk-body mt-3 max-w-xl">
+          Structural directions for the hero section. Switch the accent in the bar above to see the
+          colour impact on each.
         </p>
 
         <div class="mt-8 grid gap-6 lg:grid-cols-2">
-          <!-- Hero A: Editorial / Statement -->
-          <div class="rounded-sm border border-border overflow-hidden">
-            <div class="border-b border-border px-4 py-2.5 bg-card flex items-center justify-between">
-              <span class="font-mono text-[11px] text-muted-foreground">Direction A — Statement</span>
-              <span class="font-mono text-[10px] text-muted-foreground/60">Type-forward · No widget</span>
+          <!-- A — Statement -->
+          <div class="dk-card overflow-hidden">
+            <div class="bd-strip bd-strip-split">
+              <span class="dk-label">Direction A — Statement</span>
+              <span class="dk-micro">Type-forward · no widget</span>
             </div>
-            <div class="hero-grid p-8 relative min-h-64">
-              <div class="relative z-10 max-w-lg">
-                <p class="font-mono text-[10px] font-medium uppercase tracking-[0.18em]" :style="dir !== 'mono' ? 'color: var(--brand)' : 'color: var(--muted-foreground)'">Auterion · 2026</p>
-                <h1 class="mt-4 hero-h1 text-4xl font-medium leading-[1.0]">
+            <div class="bd-hero">
+              <div class="max-w-lg">
+                <p class="dk-label bd-accent-ink">
+                  Auterion · 2026
+                </p>
+                <h3 class="dk-h1 mt-4">
                   The operating<br>system for<br>autonomous<br>robotics
-                </h1>
-                <p class="mt-5 text-[14px] leading-relaxed text-muted-foreground max-w-sm">
-                  One platform from flight controller to fleet — built for the mission, proven at the edge.
+                </h3>
+                <p class="dk-body mt-5 max-w-sm">
+                  One platform from flight controller to fleet — built for the mission, proven at
+                  the edge.
                 </p>
                 <div class="mt-6 flex gap-3">
-                  <Button size="md">Get started</Button>
-                  <Button variant="secondary" size="md">Watch demo</Button>
+                  <Button size="md">
+                    Get started
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="md"
+                  >
+                    Watch demo
+                  </Button>
                 </div>
               </div>
-              <!-- telemetry strip decoration -->
-              <div class="absolute bottom-4 right-4 font-mono text-[10px] text-muted-foreground/40 text-right space-y-0.5">
-                <p>FLEET · GLOBAL</p>
-                <p>8 ACTIVE · 2 IN FLIGHT</p>
-                <p>LINK NOMINAL · 12ms</p>
+              <div class="bd-hud">
+                <p>Fleet · Global</p>
+                <p>8 active · 2 in flight</p>
+                <p>Link nominal · 12 ms</p>
               </div>
             </div>
           </div>
 
-          <!-- Hero B: Data + Statement -->
-          <div class="rounded-sm border border-border overflow-hidden">
-            <div class="border-b border-border px-4 py-2.5 bg-card flex items-center justify-between">
-              <span class="font-mono text-[11px] text-muted-foreground">Direction B — Data + Statement</span>
-              <span class="font-mono text-[10px] text-muted-foreground/60">Two-column · Live data right</span>
+          <!-- B — Data + Statement -->
+          <div class="dk-card overflow-hidden">
+            <div class="bd-strip bd-strip-split">
+              <span class="dk-label">Direction B — Data + statement</span>
+              <span class="dk-micro">Two-column · live data right</span>
             </div>
-            <div class="p-6 grid grid-cols-[1fr_200px] gap-6 items-center min-h-64">
-              <div>
-                <p class="font-mono text-[10px] font-medium uppercase tracking-[0.18em]" :style="dir !== 'mono' ? 'color: var(--brand)' : 'color: var(--muted-foreground)'">Auterion · 2026</p>
-                <h1 class="mt-3 hero-h1 text-3xl font-medium leading-[1.02]">The operating system for autonomous robotics</h1>
-                <div class="mt-4 flex gap-2">
-                  <Button size="sm">Get started</Button>
-                  <Button variant="secondary" size="sm">Watch demo</Button>
+            <div class="bd-hero bd-hero-split">
+              <div class="min-w-0">
+                <p class="dk-label bd-accent-ink">
+                  Auterion · 2026
+                </p>
+                <h3 class="dk-h2 mt-4">
+                  The operating system for autonomous robotics
+                </h3>
+                <div class="mt-5 flex gap-2">
+                  <Button size="sm">
+                    Get started
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                  >
+                    Watch demo
+                  </Button>
                 </div>
               </div>
-              <!-- live widget -->
-              <div class="rounded-sm border border-border bg-card text-[11px]">
-                <div class="flex items-center gap-1.5 border-b border-border px-3 py-2">
-                  <span class="h-1.5 w-1.5 rounded-full" :style="dir !== 'mono' ? 'background: var(--brand)' : 'background: var(--nominal)'" />
-                  <span class="font-mono text-muted-foreground">Fleet · Live</span>
+              <div class="dk-inset bd-widget">
+                <div class="bd-widget-head">
+                  <span class="dk-dot dk-dot-nominal" />
+                  <span class="dk-label">Fleet · Live</span>
                 </div>
-                <div class="p-3 space-y-2">
-                  <div>
-                    <p class="font-mono text-muted-foreground text-[10px]">Flights · 30d</p>
-                    <p class="font-mono text-xl font-medium tabular-nums">695</p>
-                    <div class="mt-1 h-7" :style="dir !== 'mono' ? 'color: var(--brand)' : 'color: var(--foreground)'">
-                      <Sparkline :data="heroSpark" :height="28" />
+                <div class="bd-pad-sm">
+                  <p class="dk-pointer">Flights · 30 d</p>
+                  <p class="dk-h2 dk-num mt-1">
+                    695
+                  </p>
+                  <div class="bd-spark mt-2">
+                    <Sparkline
+                      :data="heroSpark"
+                      :height="28"
+                    />
+                  </div>
+                  <div class="dk-divide mt-3">
+                    <div
+                      v-for="r in fleet.slice(0, 3)"
+                      :key="r.id"
+                      class="bd-fleet-row"
+                    >
+                      <Icon
+                        name="drone"
+                        size="xs"
+                      />
+                      <span class="bd-mono truncate">{{ r.id }}</span>
+                      <StatusBadge
+                        :level="r.level"
+                        size="sm"
+                        dot
+                      />
                     </div>
                   </div>
-                  <div
-v-for="r in [['Skyhook-01','nominal'],['Falcon-02','advisory'],['Raven-03','warning']]" :key="r[0]"
-                    class="flex items-center gap-2 border-t border-border/40 pt-1.5">
-                    <Icon name="drone" size="xs" class="text-muted-foreground" />
-                    <span class="font-mono flex-1 text-[10px]">{{ r[0] }}</span>
-                    <StatusBadge :level="(r[1] as any)" size="sm" dot />
-                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Hero D: Light theme (blue direction only) -->
-          <div v-if="dir === 'blue'" class="lg:col-span-2 rounded-sm border border-border overflow-hidden">
-            <div class="border-b border-border px-4 py-2.5 bg-card flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <span class="font-mono text-[11px] text-muted-foreground">Hero D — Light theme</span>
-                <span class="rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em]" style="background: var(--color-primitive-auterion-blue-700); color: white;">Blue direction</span>
-              </div>
-              <span class="font-mono text-[10px] text-muted-foreground/60">White ground · Blue CTA · Fleet data right</span>
+          <!-- D — Paper exposure. Carries its own `.dk` + [data-theme] so the
+               whole grammar re-resolves to paper inside a dark page. -->
+          <div class="dk-card overflow-hidden lg:col-span-2">
+            <div class="bd-strip bd-strip-split">
+              <span class="dk-label">Direction D — Paper exposure</span>
+              <span class="dk-micro">White ground · fleet data right</span>
             </div>
-            <div data-theme="light" class="relative bg-background text-foreground overflow-hidden" style="--brand: var(--color-primitive-auterion-blue-700); --brand-foreground: white; --ring: var(--color-primitive-auterion-blue-600);">
-              <!-- hairline grid, right half only -->
-              <svg class="absolute right-0 top-0 h-full w-1/2 pointer-events-none" aria-hidden preserveAspectRatio="none">
+            <div
+              class="dk bd-hero-d"
+              data-theme="light"
+            >
+              <svg
+                class="bd-hero-d-art"
+                aria-hidden="true"
+                preserveAspectRatio="none"
+              >
                 <defs>
-                  <pattern id="light-grid" width="48" height="48" patternUnits="userSpaceOnUse">
-                    <path d="M 48 0 L 0 0 0 48" fill="none" stroke="oklch(0.88 0 0)" stroke-width="0.5"/>
+                  <pattern
+                    id="bd-hero-grid"
+                    width="48"
+                    height="48"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <path
+                      d="M 48 0 L 0 0 0 48"
+                      fill="none"
+                      stroke="var(--dk-line-2)"
+                      stroke-width="1"
+                    />
                   </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#light-grid)"/>
-                <!-- mission trace -->
-                <path d="M 20 240 C 80 190 120 150 200 110 S 340 60 420 20" fill="none" stroke="var(--color-primitive-auterion-blue-700)" stroke-width="1.5" stroke-dasharray="3 9" opacity="0.4"/>
-                <circle cx="200" cy="110" r="4" fill="var(--color-primitive-auterion-blue-700)" opacity="0.7"/>
-                <circle cx="200" cy="110" r="14" fill="none" stroke="var(--color-primitive-auterion-blue-700)" stroke-width="1" opacity="0.25"/>
-                <text x="218" y="106" font-family="monospace" font-size="9" fill="oklch(0.65 0 0)">47°22'N 8°32'E / ALT 128m</text>
+                <rect
+                  width="100%"
+                  height="100%"
+                  fill="url(#bd-hero-grid)"
+                />
+                <path
+                  d="M 20 240 C 80 190 120 150 200 110 S 340 60 420 20"
+                  fill="none"
+                  stroke="var(--dk-line)"
+                  stroke-width="1"
+                  stroke-dasharray="3 9"
+                />
+                <circle
+                  cx="200"
+                  cy="110"
+                  r="3.5"
+                  fill="var(--dk-fg-3)"
+                />
+                <circle
+                  cx="200"
+                  cy="110"
+                  r="14"
+                  fill="none"
+                  stroke="var(--dk-line)"
+                  stroke-width="1"
+                />
+                <text
+                  x="220"
+                  y="114"
+                  class="bd-hero-d-coord"
+                >47°22'N 8°32'E · ALT 128 M</text>
               </svg>
 
-              <div class="relative z-10 grid grid-cols-[3fr_2fr] gap-0 items-stretch min-h-80">
-                <!-- left: headline -->
-                <div class="p-10 flex flex-col justify-center">
-                  <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-6">01</p>
-                  <h1 class="font-sans text-[52px] font-medium leading-[0.93] tracking-[-0.025em]">
+              <div class="bd-hero-d-inner">
+                <div class="bd-hero-d-type">
+                  <p class="dk-label">01</p>
+                  <h3 class="dk-display mt-6">
                     The operating<br>system for<br>autonomous<br>robotics
-                  </h1>
-                  <p class="mt-5 text-[15px] leading-relaxed text-muted-foreground max-w-sm">
+                  </h3>
+                  <p class="dk-body-lg mt-5 max-w-sm">
                     One platform to build, deploy and command intelligent drones at scale.
                   </p>
                   <div class="mt-8 flex items-center gap-4">
-                    <Button size="sm">Get started <Icon name="arrow-right" size="xs"/></Button>
-                    <Button variant="secondary" size="sm">Watch the demo</Button>
+                    <Button size="sm">
+                      Get started
+                      <Icon
+                        name="arrow-right"
+                        size="xs"
+                      />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                    >
+                      Watch the demo
+                    </Button>
                   </div>
                 </div>
-                <!-- right: fleet status -->
-                <div class="border-l border-border/40 p-8 flex flex-col justify-center gap-1 font-mono text-[11px]">
-                  <div class="flex items-center justify-between pb-2 mb-1 border-b border-border/30">
-                    <span class="uppercase tracking-[0.1em] text-[9px] text-muted-foreground">Fleet · Live</span>
-                    <span class="h-1.5 w-1.5 rounded-full" style="background: var(--color-primitive-auterion-blue-700);"/>
+                <div class="bd-hero-d-data">
+                  <div class="bd-hero-d-head">
+                    <span class="dk-pointer">Fleet · Live</span>
+                    <span class="dk-dot dk-dot-nominal" />
                   </div>
-                  <div
-v-for="r in [['Skyhook-01','nominal','86%'],['Falcon-02','advisory','64%'],['Raven-03','warning','18%'],['Osprey-05','nominal','92%']]"
-                    :key="r[0]" class="flex items-center gap-2 py-1.5 border-b border-border/20">
-                    <Icon name="drone" size="xs" class="text-muted-foreground"/>
-                    <span class="flex-1 text-foreground">{{ r[0] }}</span>
-                    <span class="tabular-nums text-muted-foreground">{{ r[2] }}</span>
-                    <StatusBadge :level="(r[1] as any)" size="sm" dot/>
+                  <div class="dk-divide">
+                    <div
+                      v-for="r in fleet"
+                      :key="r.id"
+                      class="bd-fleet-row bd-fleet-row-wide"
+                    >
+                      <Icon
+                        name="drone"
+                        size="xs"
+                      />
+                      <span class="bd-mono truncate">{{ r.id }}</span>
+                      <span class="bd-mono dk-num bd-fleet-num">{{ r.batt }}</span>
+                      <StatusBadge
+                        :level="r.level"
+                        size="sm"
+                        dot
+                      />
+                    </div>
                   </div>
-                  <p class="mt-2 font-mono text-[9px] text-muted-foreground/50 uppercase tracking-widest">LINK NOMINAL · 12ms / SYS v4.2.1</p>
+                  <p class="dk-micro mt-4">
+                    Link nominal · 12 ms · SYS v4.2.1
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Hero C: Mission canvas -->
-          <div class="lg:col-span-2 rounded-sm border border-border overflow-hidden">
-            <div class="border-b border-border px-4 py-2.5 bg-card flex items-center justify-between">
-              <span class="font-mono text-[11px] text-muted-foreground">Direction C — Mission canvas</span>
-              <span class="font-mono text-[10px] text-muted-foreground/60">Full-width · Operational data layer</span>
+          <!-- C — Mission canvas -->
+          <div class="dk-card overflow-hidden lg:col-span-2">
+            <div class="bd-strip bd-strip-split">
+              <span class="dk-label">Direction C — Mission canvas</span>
+              <span class="dk-micro">Full-width · operational data layer</span>
             </div>
-            <div class="relative mission-bg min-h-72 overflow-hidden">
-              <!-- grid lines -->
-              <svg class="absolute inset-0 h-full w-full" aria-hidden="true" preserveAspectRatio="none">
+            <div class="bd-canvas">
+              <svg
+                class="bd-canvas-art"
+                aria-hidden="true"
+                preserveAspectRatio="none"
+              >
                 <defs>
-                  <pattern id="brand-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="0.5" class="text-border/40"/>
+                  <pattern
+                    id="bd-canvas-grid"
+                    width="40"
+                    height="40"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <path
+                      d="M 40 0 L 0 0 0 40"
+                      fill="none"
+                      stroke="var(--dk-line-2)"
+                      stroke-width="1"
+                    />
                   </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#brand-grid)" />
-                <!-- mission path — animated trace -->
+                <rect
+                  width="100%"
+                  height="100%"
+                  fill="url(#bd-canvas-grid)"
+                />
                 <path
-class="mission-trace" d="M 60 200 C 160 160, 200 100, 340 80 S 560 40, 640 28" fill="none"
-                  stroke="var(--brand)"
-                  stroke-width="1.5" stroke-dasharray="3 7" opacity="0.8" />
-                <!-- waypoints -->
-                <g v-for="(p, i) in [[60,200],[200,130],[340,80],[640,28]]" :key="i">
+                  d="M 60 200 C 160 160, 200 100, 340 80 S 560 40, 640 28"
+                  fill="none"
+                  stroke="var(--dk-line)"
+                  stroke-width="1"
+                  stroke-dasharray="3 7"
+                />
+                <g
+                  v-for="(p, i) in [[60, 200], [200, 130], [340, 80], [640, 28]]"
+                  :key="i"
+                >
                   <circle
-:cx="p[0]" :cy="p[1]" r="3"
-                    :fill="i === 2 ? 'var(--brand)' : 'transparent'"
-                    stroke="var(--brand)"
-                    stroke-width="1.5" />
+                    :cx="p[0]"
+                    :cy="p[1]"
+                    r="3"
+                    :fill="i === 2 ? 'var(--dk-fg-3)' : 'transparent'"
+                    stroke="var(--dk-fg-3)"
+                    stroke-width="1"
+                  />
                   <circle
-v-if="i === 2" :cx="p[0]" :cy="p[1]" r="12" fill="none"
-                    stroke="var(--brand)"
-                    stroke-width="1" opacity="0.4" />
+                    v-if="i === 2"
+                    :cx="p[0]"
+                    :cy="p[1]"
+                    r="12"
+                    fill="none"
+                    stroke="var(--dk-line)"
+                    stroke-width="1"
+                  />
                 </g>
               </svg>
 
-              <!-- content -->
-              <div class="relative z-10 p-8 grid grid-cols-[1fr_auto] items-end h-72">
-                <div class="self-center max-w-lg">
-                  <p
-class="font-mono text-[10px] font-medium uppercase tracking-[0.18em]"
-                    :style="dir !== 'mono' ? 'color: var(--brand)' : 'color: var(--muted-foreground)'">
+              <div class="bd-canvas-inner">
+                <div class="max-w-lg">
+                  <p class="dk-label bd-accent-ink">
                     Operational truth, expressed with precision
                   </p>
-                  <h1 class="mt-3 hero-h1 text-[42px] font-medium leading-[1.0]">
+                  <h3 class="dk-h1 mt-4">
                     The operating system<br>for autonomous robotics
-                  </h1>
+                  </h3>
                   <div class="mt-6 flex gap-3">
-                    <Button size="md">Get started</Button>
-                    <Button variant="secondary" size="md">Watch demo</Button>
+                    <Button size="md">
+                      Get started
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="md"
+                    >
+                      Watch demo
+                    </Button>
                   </div>
                 </div>
-                <!-- operational HUD strip -->
-                <div class="self-end pb-1 text-right space-y-1">
-                  <p class="font-mono text-[10px] text-muted-foreground/60">FLEET · GLOBAL</p>
-                  <p class="font-mono text-[10px]" :style="dir !== 'mono' ? 'color: var(--brand)' : 'color: var(--foreground)'">
-                    2,000,000+ FLIGHT HRS
+                <div class="bd-hud bd-hud-static">
+                  <p>Fleet · Global</p>
+                  <p class="dk-num">
+                    2,000,000+ flight hrs
                   </p>
-                  <p class="font-mono text-[10px] text-muted-foreground/60">10,000+ VEHICLES · 60 NATIONS</p>
-                  <p class="font-mono text-[10px] text-muted-foreground/40">LINK NOMINAL · UTC 14:22:09</p>
+                  <p class="dk-num">
+                    10,000+ vehicles · 60 nations
+                  </p>
+                  <p>Link nominal · UTC 14:22:09</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <p class="dk-caption">
+          P-06 · Hero filmstrip — four exposures of one page
+        </p>
       </section>
 
-      <!-- ── 05 DIRECTION SUMMARY ── -->
-      <section class="border-t border-border/60 pt-12">
-        <p class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">05 — Direction summary</p>
-        <p class="mt-2 text-[13px] text-muted-foreground">
-          Combine the Ground toggle (Neutral / Space Cadet) with each accent to compare all combinations.
-          <span v-if="bg === 'cadet' && dir === 'blue'" class="ml-2 px-1.5 py-0.5 rounded-sm font-mono text-[10px] uppercase tracking-[0.1em]" style="background: var(--brand); color: var(--brand-foreground)">Live: Space Cadet + Ultramarine</span>
+      <!-- ═══ P-07 · DOCTRINE ══════════════════════════════════════════ -->
+      <section>
+        <div class="dk-section">
+          <p class="dk-label">05 — Direction summary</p>
+          <p class="dk-label">Doctrine</p>
+        </div>
+        <h2 class="dk-h1 mt-6">
+          Two accents, one discipline
+        </h2>
+        <p class="dk-body mt-3 max-w-xl">
+          Switch the theme and the accent in the bar above to compare every combination. The ink
+          exposure is the Space Cadet ground — ink-950 at hue 265 — so the ground question rides
+          the same axis as the theme.
         </p>
-        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+
+        <div class="mt-8 grid gap-6 sm:grid-cols-2">
           <div
-class="border p-5 space-y-2"
-            :class="dir === 'mono' ? 'border-foreground bg-card' : 'border-border bg-card/40'">
-            <p
-class="font-mono text-[12px] font-medium uppercase tracking-[0.1em]"
-              :class="dir === 'mono' ? 'text-foreground' : 'text-muted-foreground'">
-              A — Mono
+            class="dk-card bd-pad bd-doctrine"
+            :data-active="dir === 'mono'"
+          >
+            <p class="dk-label">A — Mono</p>
+            <p class="dk-value mt-3">
+              Fully monochromatic. Maximum discipline.
             </p>
-            <p class="text-[13px] leading-relaxed text-muted-foreground">Fully monochromatic. Maximum discipline. No one in autonomous systems owns this. Reads as extremely precise and intentional. Status colors are the only chromatic elements.</p>
-            <ul class="space-y-1 mt-3">
+            <p class="dk-body mt-2">
+              No one in autonomous systems owns this. It reads as extremely precise and
+              intentional. Status colours are the only chromatic elements on the page.
+            </p>
+            <ul class="bd-list mt-5">
               <li
-v-for="s in ['Uniquely owned — no competitors here','Strongest possible discipline signal','Ties marketing to the product register']" :key="s"
-                class="flex items-start gap-2 text-[13px] text-muted-foreground">
-                <span class="mt-0.5">+</span> {{ s }}
+                v-for="s in monoPros"
+                :key="s"
+              >
+                <span class="bd-list-sign">+</span>
+                <span class="dk-body">{{ s }}</span>
               </li>
               <li
-v-for="s in ['Zero warmth — may read cold to non-technical audiences','Harder to drive CTAs without a second color']" :key="s"
-                class="flex items-start gap-2 text-[13px] text-muted-foreground/50">
-                <span class="mt-0.5">−</span> {{ s }}
+                v-for="s in monoCons"
+                :key="s"
+                class="bd-list-con"
+              >
+                <span class="bd-list-sign">−</span>
+                <span class="dk-body">{{ s }}</span>
               </li>
             </ul>
           </div>
+
           <div
-class="border p-5 space-y-2"
-            :class="dir === 'blue' ? 'border-foreground bg-card' : 'border-border bg-card/40'">
-            <p
-class="font-mono text-[12px] font-medium uppercase tracking-[0.1em]"
-              :class="dir === 'blue' ? 'text-foreground' : 'text-muted-foreground'">
-              B — Ultramarine
+            class="dk-card bd-pad bd-doctrine"
+            :data-active="dir === 'blue'"
+          >
+            <p class="dk-label">B — Ultramarine</p>
+            <p class="dk-value mt-3">
+              Electric indigo-blue from the auterion-blue scale.
             </p>
-            <p class="text-[13px] leading-relaxed text-muted-foreground">Electric indigo-blue from the auterion-blue token scale. Not IBM blue — bolder, more saturated. On Space Cadet ground it reads as a harmonic continuation of the same hue family. Best combination: Space Cadet + Ultramarine.</p>
-            <ul class="space-y-1 mt-3">
+            <p class="dk-body mt-2">
+              Not IBM blue — bolder and more saturated. On the ink ground it reads as a harmonic
+              continuation of the same hue family rather than a foreign accent.
+            </p>
+            <ul class="bd-list mt-5">
               <li
-v-for="s in ['Works on light and dark','Highest CTA contrast — unambiguous','Distinct from Anduril/Helsing — not SaaS-standard blue','Space Cadet ground amplifies it: same hue family']" :key="s"
-                class="flex items-start gap-2 text-[13px] text-muted-foreground">
-                <span class="mt-0.5">+</span> {{ s }}
+                v-for="s in bluePros"
+                :key="s"
+              >
+                <span class="bd-list-sign">+</span>
+                <span class="dk-body">{{ s }}</span>
               </li>
               <li
-v-for="s in ['Advisory cyan must stay distinct (H185 vs H265 — they are)','Discipline required: brand touches ≤4 elements per section']" :key="s"
-                class="flex items-start gap-2 text-[13px] text-muted-foreground/50">
-                <span class="mt-0.5">−</span> {{ s }}
+                v-for="s in blueCons"
+                :key="s"
+                class="bd-list-con"
+              >
+                <span class="bd-list-sign">−</span>
+                <span class="dk-body">{{ s }}</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <!-- ground + accent recommendation -->
-        <div class="mt-6 border border-border p-5 space-y-2">
-          <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Director recommendation</p>
-          <p class="text-[14px] leading-relaxed">
-            <span class="font-medium">Space Cadet + Ultramarine.</span>
-            <span class="text-muted-foreground ml-2">The navy ground gives Auterion something no aerospace peer has — a background with character, not just darkness. The electric blue accent is decisive and legible. Together they read as precision + confidence: Swiss engineering for the autonomous era.</span>
+        <div class="dk-inset bd-pad mt-6">
+          <p class="dk-label">Director recommendation</p>
+          <p class="dk-value mt-3">
+            Ink ground + Ultramarine.
           </p>
-          <p class="mt-2 text-[13px] text-muted-foreground">
-            Anduril → near-black + warm orange. Helsing → near-black + white. Auterion → Space Cadet navy + Ultramarine blue. Distinct from all of them.
+          <p class="dk-body mt-2 max-w-2xl">
+            The navy ground gives Auterion something no aerospace peer has — a background with
+            character, not just darkness. The electric blue accent is decisive and legible.
+            Together they read as precision plus confidence.
+          </p>
+          <p class="dk-body mt-3 max-w-2xl">
+            Anduril → near-black + warm orange. Helsing → near-black + white. Auterion → ink navy +
+            Ultramarine. Distinct from all of them.
           </p>
         </div>
+
+        <p class="dk-caption">
+          P-07 · Doctrine — the argument, on the record
+        </p>
       </section>
 
-      <!-- ── 06 VOICE ── -->
-      <section class="border-t border-border/60 pt-12">
-        <p class="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">06 — Voice</p>
-        <h2 class="mt-2 section-h2 text-[2rem] font-medium">In use</h2>
-        <p class="mt-2 text-[14px] text-muted-foreground max-w-xl">
-          The system speaking for itself — type, color, and data working together.
-        </p>
+      <!-- ═══ P-08 · VOICE + PROOF CLOSE ═══════════════════════════════ -->
+      <section>
+        <div class="dk-section">
+          <p class="dk-label">06 — Voice</p>
+          <p class="dk-label">In use</p>
+        </div>
 
-        <!-- editorial two-col -->
-        <div class="mt-10 grid lg:grid-cols-[3fr_2fr] overflow-hidden border border-border/40 rounded-sm">
-          <!-- pull quote + body copy -->
-          <div class="p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-border/40">
+        <!-- header ledger — tops the case layout below it -->
+        <div class="dk-ledger">
+          <div class="dk-ledger-cell">
+            <span class="dk-label">System</span>
+            <span class="dk-value">Auxiliary · @auxiliary/*</span>
+          </div>
+          <div class="dk-ledger-cell">
+            <span class="dk-label">Surfaces</span>
+            <span class="dk-value">Suite · Mission Control · AuterionOS</span>
+          </div>
+          <div
+            class="dk-ledger-cell"
+            data-align="end"
+          >
+            <span class="dk-label">Themes · registers</span>
+            <span class="dk-value dk-num">4 · 2</span>
+          </div>
+        </div>
+
+        <div class="bd-case mt-8">
+          <div class="bd-case-copy">
             <div>
-              <p class="editorial-quote">
+              <p class="dk-h2">
                 The autonomous era demands design that operates at mission speed.
               </p>
-              <p class="mt-6 text-[15px] leading-[1.65] text-muted-foreground max-w-lg">
-                Every surface in Auterion's stack appears in contested environments — where a moment of confusion costs a mission. The design system isn't furniture. It's operational infrastructure.
+              <p class="dk-body-lg mt-6 max-w-lg">
+                Every surface in Auterion's stack appears in contested environments — where a
+                moment of confusion costs a mission. The design system isn't furniture. It's
+                operational infrastructure.
               </p>
             </div>
             <div class="mt-10 flex items-center gap-3">
-              <span class="h-px w-8 shrink-0" :style="dir !== 'mono' ? 'background: var(--brand)' : 'background: var(--foreground)'"/>
-              <span class="font-mono text-[11px] text-muted-foreground">Auterion Design Principles · 2026</span>
+              <span class="bd-attrib-rule" />
+              <span class="dk-label">Auterion design principles · 2026</span>
             </div>
           </div>
 
-          <!-- live data panel -->
-          <div class="bg-card p-8 flex flex-col justify-between">
+          <div class="bd-case-data">
             <div>
-              <div class="flex items-center justify-between mb-5">
-                <p class="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">Fleet · Live</p>
-                <span
-class="h-1.5 w-1.5 rounded-full animate-pulse"
-                  :style="dir !== 'mono' ? 'background: var(--brand)' : 'background: var(--nominal)'"/>
+              <div class="bd-widget-head bd-widget-head-flush">
+                <span class="dk-pointer">Fleet · Live</span>
+                <span class="dk-dot dk-dot-nominal" />
               </div>
-              <div
-                v-for="r in [['Skyhook-01','nominal','86%','ALT 408m'],['Falcon-02','advisory','64%','ALT 122m'],['Raven-03','warning','18%','RETURNING'],['Osprey-05','nominal','92%','ALT 312m']]"
-                :key="r[0]"
-                class="flex items-center gap-3 py-3 border-b border-border/20 last:border-0 font-mono text-[11px]"
-              >
-                <Icon name="drone" size="xs" class="text-muted-foreground shrink-0"/>
-                <span class="flex-1">{{ r[0] }}</span>
-                <span class="tabular-nums text-muted-foreground/60 text-[10px] hidden sm:block">{{ r[3] }}</span>
-                <span class="tabular-nums text-muted-foreground text-[10px]">{{ r[2] }}</span>
-                <StatusBadge :level="(r[1] as any)" size="sm" dot/>
+              <div class="dk-divide">
+                <div
+                  v-for="r in fleet"
+                  :key="r.id"
+                  class="bd-fleet-row bd-fleet-row-wide"
+                >
+                  <Icon
+                    name="drone"
+                    size="xs"
+                  />
+                  <span class="bd-mono truncate">{{ r.id }}</span>
+                  <span class="bd-mono dk-num bd-fleet-note hidden sm:inline">{{ r.note }}</span>
+                  <span class="bd-mono dk-num bd-fleet-num">{{ r.batt }}</span>
+                  <StatusBadge
+                    :level="r.level"
+                    size="sm"
+                    dot
+                  />
+                </div>
               </div>
             </div>
-            <p class="font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground/30 mt-5">
-              SYS NOMINAL · UTC 14:22:09 · v4.2.1
+            <p class="dk-micro mt-5">
+              SYS nominal · UTC 14:22:09 · v4.2.1
             </p>
           </div>
         </div>
 
-        <!-- second moment: large quote -->
-        <div
-class="mt-6 relative overflow-hidden rounded-sm border border-border/40 p-10 lg:p-14"
-          :style="dir === 'blue' ? 'background: var(--color-primitive-auterion-blue-700)' : ''">
-          <p
-class="relative z-10 max-w-3xl"
-            :style="dir === 'blue' ? 'color: var(--color-primitive-white); opacity: 0.9' : ''"
-            style="font-family: 'Inter Variable', Inter, system-ui; font-variation-settings: 'opsz' 32; font-size: clamp(1.25rem, 2.5vw, 1.875rem); font-weight: 500; line-height: 1.3; letter-spacing: -0.025em;">
-            "From AuterionOS on the flight controller to Mission Control on the tablet, one token set, one type ramp, one truth."
+        <!-- proof close — the dark plate, not the signal -->
+        <div class="dk-plate bd-close mt-6">
+          <p class="dk-h2 max-w-3xl">
+            “From AuterionOS on the flight controller to Mission Control on the tablet, one token
+            set, one type ramp, one truth.”
           </p>
-          <p
-class="mt-6 font-mono text-[11px]"
-            :style="dir === 'blue' ? 'color: var(--color-primitive-white); opacity: 0.5' : ''"
-            :class="dir !== 'blue' ? 'text-muted-foreground' : ''">
-            — Design principle #1: code is the source of truth
-          </p>
+          <div class="mt-8 flex flex-wrap items-baseline justify-between gap-4">
+            <span class="dk-label">Design principle #1 — code is the source of truth</span>
+            <span class="dk-bracket">1 token source · 4 themes · 0 forks</span>
+          </div>
         </div>
-      </section>
 
+        <p class="dk-caption">
+          P-08 · Voice + proof close — header ledger tops the case
+        </p>
+      </section>
     </div>
   </div>
 </template>
 
 <style scoped>
-.hero-h1 {
-  font-family: 'Inter Variable', Inter, system-ui, sans-serif;
-  font-variation-settings: 'opsz' 36;
-  letter-spacing: -0.025em;
+/* ── Brand · page-local layer ─────────────────────────────────────────────
+ * Composes `_deck07b.css` (`.dk-*`). Nothing here re-derives a deck value:
+ * every length steps to --dk-gutter / --dk-rule / --dk-r-*, every colour
+ * resolves through --dk-* or a design-system semantic token.
+ *
+ * ONE ladder is added on top of the deck's — the accent, which is this page's
+ * subject. It is declared on `.bd-root` AND on every nested `.dk` scope,
+ * because a var() inside a custom-property declaration is substituted where it
+ * is declared: without the re-declaration, the ink ground study and the paper
+ * hero would keep the outer scope's already-resolved blue.
+ */
+
+.bd-root,
+.bd-root .dk {
+  --bd-accent: var(--dk-fg);
+  --bd-accent-ink: var(--dk-fg);
+  --bd-on-accent: var(--dk-bg);
+  /* One focus ring for the whole grammar — the DS components ride it too. */
+  --ring: var(--dk-fg);
+}
+.bd-root[data-accent='blue'],
+.bd-root[data-accent='blue'] .dk {
+  --bd-accent: var(--dk-signal);
+  --bd-accent-ink: var(--dk-signal-ink);
+  --bd-on-accent: var(--dk-on-signal);
 }
 
-.section-h2 {
-  font-family: 'Inter Variable', Inter, system-ui, sans-serif;
-  font-variation-settings: 'opsz' 28;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+.bd-accent-ink { color: var(--bd-accent-ink); }
+.bd-on-accent { color: var(--bd-on-accent); }
+
+/* Contrast repair — measured, scoped to this page, reported upstream.
+ * `_deck07b.css` re-inks `.dk-label` / `.dk-pointer` / `.dk-micro` inside
+ * `.dk-plate` (l.257) and `.dk-plate-signal` (l.244) but omits `.dk-bracket`,
+ * so a bracket on a plate keeps `--dk-fg-2` — the wrong exposure's ink:
+ *   · dark plate, light theme  ink-600 on ink-950   →  2.59:1
+ *   · signal plate, light      ink-600 on blue-600  →  1.47:1
+ *   · signal plate, dark       ink-400 on blue-500  →  1.43:1
+ * And the plate's 72% on-signal mono roles land at 3.46:1 (light) / 3.80:1
+ * (dark), under the 4.5:1 floor at 9.5px. Held at full on-signal here. */
+.dk-plate .dk-bracket { color: var(--dk-plate-fg-2); }
+.dk-plate-signal :is(.dk-bracket, .dk-label) { color: var(--dk-on-signal); }
+
+/* ── Measure & rhythm ──────────────────────────────────────────────────── */
+.bd-shell {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: var(--dk-gutter);
+}
+.bd-body { padding-block: calc(var(--dk-gutter) * 3); }
+.bd-flow > * + * { margin-top: calc(var(--dk-gutter) * 4); }
+.bd-pad { padding: var(--dk-gutter); }
+.bd-pad-sm { padding: var(--dk-gutter-sm); }
+
+.bd-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-.brand-root {
-  background-image: radial-gradient(
-    color-mix(in oklab, var(--foreground) 3%, transparent) 1px,
-    transparent 1px
-  );
-  background-size: 28px 28px;
-}
-.hero-grid {
-  background: radial-gradient(60% 80% at 80% 20%, color-mix(in oklab, var(--foreground) 5%, transparent), transparent 70%);
-}
-.mission-bg {
-  background: linear-gradient(
-    160deg,
-    color-mix(in oklab, var(--foreground) 4%, var(--background)),
-    var(--background)
-  );
+/* Mono field value — the measuring voice at body size. */
+.bd-mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--dk-fg-2);
 }
 
-/* ── Brand statement hero ── */
-.brand-statement {
-  background-image: radial-gradient(
-    color-mix(in oklab, var(--foreground) 2%, transparent) 1px,
-    transparent 1px
-  );
-  background-size: 28px 28px;
+/* ── Chrome ────────────────────────────────────────────────────────────── */
+.bd-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: color-mix(in oklab, var(--dk-bg) 90%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+.bd-tick {
+  display: block;
+  width: var(--dk-rule);
+  height: 12px;
+  flex-shrink: 0;
+  background: var(--dk-line);
 }
 
-.stmt-h1 {
-  font-family: 'Inter Variable', Inter, system-ui, sans-serif;
-  font-variation-settings: 'opsz' 48;
-  font-size: clamp(3rem, 7.5vw, 6rem);
-  font-weight: 500;
-  line-height: 0.93;
-  letter-spacing: -0.04em;
+/* ── P-01 · Cover ──────────────────────────────────────────────────────── */
+.bd-cover {
+  position: relative;
+  overflow: hidden;
+  min-height: 72vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+.bd-cover-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.bd-cover-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: calc(var(--dk-gutter) * 2);
+  flex: 1;
+  padding-block: calc(var(--dk-gutter) * 2);
 }
 
-.stmt-arc {
-  stroke-dashoffset: 800;
-  animation: trace-arc 2.4s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+/* Cover figures — the cover's own 3-slot grid. Not `.dk-ledger`: that device
+ * tops a case layout, and this closes a cover. Same column rhythm, same
+ * hairline, different job. */
+.bd-figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--dk-gutter);
+  padding-top: var(--dk-gutter-sm);
+  border-top: var(--dk-rule) solid var(--dk-line);
+}
+.bd-figure {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.bd-figure[data-align='end'] { align-items: flex-end; text-align: right; }
+
+.bd-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: var(--dk-r-sm);
+  color: var(--dk-fg);
+}
+.bd-mark-sm { width: 36px; height: 36px; }
+
+/* ── P-02 · Identity ───────────────────────────────────────────────────── */
+.bd-ramp {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  overflow: hidden;
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: var(--dk-r-lg);
+}
+.bd-ramp-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  aspect-ratio: 1;
+  padding: 10px;
+  min-width: 0;
+  overflow: hidden;
 }
 
-.stmt-pulse {
-  opacity: 0;
-  animation: fade-in 0.4s ease 2.4s forwards;
+.bd-accent-swatch {
+  display: flex;
+  align-items: flex-end;
+  height: 96px;
+  padding: 12px;
+  border-radius: var(--dk-r-lg);
+  background: var(--bd-accent);
 }
 
-@keyframes trace-arc {
-  to { stroke-dashoffset: 0; }
+.bd-ladder {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--dk-rule);
+  height: 96px;
+  overflow: hidden;
+  border-radius: var(--dk-r-lg);
+}
+.bd-ladder-cell {
+  display: flex;
+  align-items: flex-end;
+  padding: 8px 6px;
+  min-width: 0;
+  overflow: hidden;
 }
 
-@keyframes fade-in {
-  to { opacity: 0.7; }
+.bd-col-chip { width: 40px; }
+.bd-col-name { width: 22%; }
+.bd-col-hex { width: 84px; }
+.bd-col-oklch { width: 24%; }
+.bd-chip {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: var(--dk-rule) solid var(--dk-line);
+}
+.dk-table tbody tr:hover { background: var(--dk-bg-2); }
+
+.bd-strip {
+  padding: 10px var(--dk-gutter-sm);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+  background: var(--dk-bg-2);
+}
+.bd-strip-split {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--dk-gutter-sm);
+}
+.bd-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--dk-gutter);
+  padding: var(--dk-gutter);
+  min-height: 148px;
 }
 
-/* ── Mission canvas trace ── */
-.mission-trace {
-  stroke-dashoffset: 500;
-  animation: trace-arc 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+/* ── P-03 · Typography ─────────────────────────────────────────────────── */
+.bd-numeral-block { position: relative; }
+.bd-numeral-plate {
+  padding: var(--dk-gutter);
+  padding-right: 160px;
+  padding-bottom: calc(var(--dk-gutter) + 20px);
+}
+.bd-numeral {
+  position: absolute;
+  right: var(--dk-gutter);
+  bottom: 0;
+  width: 112px;
+  height: 88px;
 }
 
-/* ── Editorial voice section ── */
-.editorial-quote {
-  font-family: 'Inter Variable', Inter, system-ui, sans-serif;
-  font-variation-settings: 'opsz' 28;
-  font-size: clamp(1.5rem, 2.8vw, 2.25rem);
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: -0.025em;
+.bd-specimens { border-block: var(--dk-rule) solid var(--dk-line); }
+.bd-specimen {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: var(--dk-gutter);
+  align-items: baseline;
+  padding-block: 20px;
+  overflow: hidden;
 }
+@media (max-width: 640px) {
+  .bd-specimen { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+}
+
+/* ── P-04 · Components ─────────────────────────────────────────────────── */
+.bd-product {
+  display: block;
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: var(--dk-r);
+}
+.bd-product .dk-link { display: inline-flex; }
+
+/* ── P-05 · Chapter plate ──────────────────────────────────────────────── */
+.bd-chapter {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--dk-gutter);
+  flex-wrap: wrap;
+  padding: calc(var(--dk-gutter) * 2);
+  min-height: 200px;
+}
+
+/* ── P-06 · Hero filmstrip ─────────────────────────────────────────────── */
+.bd-hero {
+  position: relative;
+  padding: calc(var(--dk-gutter) * 1.5);
+  min-height: 300px;
+}
+.bd-hero-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 210px;
+  gap: var(--dk-gutter);
+  align-items: center;
+}
+@media (max-width: 640px) {
+  .bd-hero-split { grid-template-columns: minmax(0, 1fr); }
+}
+
+.bd-hud {
+  position: absolute;
+  right: var(--dk-gutter);
+  bottom: var(--dk-gutter);
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1.8;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dk-fg-3);
+}
+.bd-hud-static { position: static; }
+
+.bd-widget { overflow: hidden; }
+.bd-widget-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px var(--dk-gutter-sm);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+.bd-widget-head-flush {
+  padding-inline: 0;
+  padding-top: 0;
+  margin-bottom: 4px;
+}
+.bd-spark { height: 28px; color: var(--dk-fg); }
+
+.bd-fleet-row {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding-block: 7px;
+  color: var(--dk-fg-3);
+}
+.bd-fleet-row-wide { grid-template-columns: 14px minmax(0, 1fr) auto auto; }
+.bd-fleet-row-wide:has(.bd-fleet-note) { grid-template-columns: 14px minmax(0, 1fr) auto auto auto; }
+.bd-fleet-row .bd-mono { color: var(--dk-fg); }
+.bd-fleet-num,
+.bd-fleet-note { color: var(--dk-fg-3) !important; }
+
+.bd-hero-d { position: relative; overflow: hidden; }
+.bd-hero-d-art {
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  pointer-events: none;
+}
+.bd-hero-d-coord {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  fill: var(--dk-fg-3);
+}
+.bd-hero-d-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  align-items: stretch;
+  min-height: 340px;
+}
+@media (max-width: 900px) {
+  .bd-hero-d-inner { grid-template-columns: minmax(0, 1fr); }
+}
+.bd-hero-d-type {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--dk-gutter) * 1.5);
+}
+.bd-hero-d-data {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--dk-gutter) * 1.5);
+  border-left: var(--dk-rule) solid var(--dk-line);
+}
+@media (max-width: 900px) {
+  .bd-hero-d-data { border-left: 0; border-top: var(--dk-rule) solid var(--dk-line); }
+}
+.bd-hero-d-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--dk-gutter-sm);
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+
+.bd-canvas { position: relative; overflow: hidden; background: var(--dk-bg-2); }
+.bd-canvas-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.bd-canvas-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--dk-gutter);
+  padding: calc(var(--dk-gutter) * 1.5);
+  min-height: 300px;
+}
+@media (max-width: 640px) {
+  .bd-canvas-inner { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── P-07 · Doctrine ───────────────────────────────────────────────────── */
+.bd-doctrine[data-active='true'] { border-color: var(--dk-fg); }
+.bd-list { display: flex; flex-direction: column; gap: 6px; }
+.bd-list li {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+}
+/* The sign is the only thing separating a pro from a con, so it is not an
+ * 8px micro. Cons step down the ink ladder rather than fading on opacity —
+ * opacity would drag them under the 4.5:1 floor; `--dk-fg-3` holds 4.77:1
+ * (light) / 4.17:1 (dark, the layer's own fg-3 ceiling). */
+.bd-list-sign {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--dk-fg-3);
+}
+.bd-list-con .dk-body { color: var(--dk-fg-3); }
+
+/* ── P-08 · Voice + proof close ────────────────────────────────────────── */
+.bd-case {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  overflow: hidden;
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: var(--dk-r-lg);
+}
+@media (max-width: 900px) {
+  .bd-case { grid-template-columns: minmax(0, 1fr); }
+}
+.bd-case-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(var(--dk-gutter) * 1.5);
+  border-right: var(--dk-rule) solid var(--dk-line);
+}
+@media (max-width: 900px) {
+  .bd-case-copy { border-right: 0; border-bottom: var(--dk-rule) solid var(--dk-line); }
+}
+.bd-case-data {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(var(--dk-gutter) * 1.5);
+  background: var(--dk-bg-2);
+}
+.bd-attrib-rule {
+  display: block;
+  width: 32px;
+  height: var(--dk-rule);
+  flex-shrink: 0;
+  background: var(--dk-fg);
+}
+
+.bd-close { padding: calc(var(--dk-gutter) * 2); }
 </style>

@@ -29,9 +29,9 @@ feeds a REST action.
    figma-sync build ──▶ dist/push.figma.js            (self-contained use_figma program)
         │
    /figma-sync skill ──▶ use_figma(push.figma.js) ──▶ Figma file
-                              ├─ Collection "Primitives" (Base)                            412 vars
-                              ├─ Collection "Semantic"   (light / dark / sunlight / darknight)  53
-                              ├─ Collection "Component"  (sm / md / lg)                        146
+                              ├─ Collection "Global"    (Base)                              412 vars
+                              ├─ Collection "Theme"     (light / dark / sunlight / darknight)  53
+                              ├─ Collection "Component" (sm / md / lg)                         146
                               ├─ Text Styles    Type/product/* · Type/marketing/*               14
                               └─ Effect Styles  shadow/sm · shadow/md · shadow/lg
 ```
@@ -42,15 +42,19 @@ re-running updates in place — no duplicates.
 
 ### The three collections
 
-- **Primitives** (single mode `Base`) — every scalar global token as a COLOR / FLOAT / STRING
+They are named for the **GTC tiers** they carry, so a Figma binding path and a token path read the
+same thing. (Unlike a variable path, a collection name is safe to change: Figma binds by variable
+id, not by qualified name. They were `Primitives` / `Semantic` until the component-schema work.)
+
+- **Global** (single mode `Base`) — every scalar global token as a COLOR / FLOAT / STRING
   variable. Figma variables are unitless, so dimension and duration collapse to FLOAT (px for
   spacing/radius/text, rem for breakpoint, em for tracking, ms for duration).
-- **Semantic** (4 modes) — each of the 53 theme roles as one COLOR variable whose per-mode value
-  is a cross-collection alias into Primitives.
+- **Theme** (4 modes) — each of the 53 theme roles as one COLOR variable whose per-mode value
+  is a cross-collection alias into Global.
 - **Component** (3 modes: `sm` / `md` / `lg`) — the component tier's **size axis as Figma modes**.
   The token source carries size as a path segment (`component.button.padding-x.md`) because the
   `$extensions.mode` mechanism was not adopted; Figma models exactly this natively, so the export
-  collapses the segment into modes — the same transform the Semantic collection already performs
+  collapses the segment into modes — the same transform the Theme collection already performs
   across four theme files. It's what lets a designer flip one frame's mode and have every bound
   radius, padding and height resize together. A size-less token (`component.button.radius`) gets
   the same value in all three modes, and a two-size component (Badge, StatusBadge) carries its
@@ -58,7 +62,7 @@ re-running updates in place — no duplicates.
   at md"* is the truth, and Figma requires a value per mode.
 
 **GTC groups are carried by the collection, not the variable path.** `{global.color.primitive.red.700}`
-pushes as `Primitives/color/primitive/red/700`, `theme.light.card` as `Semantic/card`,
+pushes as `Global/color/primitive/red/700`, `theme.light.card` as `Theme/card`,
 `component.button.padding-x.md` as `Component/button/padding-x`. That follows GTC's own taxonomy
 rule ("in Figma the collection name is the Group and variable paths start at Element") — and it is
 what kept every existing variable path stable across the GTC restructure. Renaming a Figma variable
@@ -87,6 +91,46 @@ pnpm --filter @auxiliary/figma-sync build  # → dist/push.figma.js
 
 then the skill feeds `dist/push.figma.js` to `use_figma` against a target file URL and verifies
 with `get_variable_defs`.
+
+## Component sets — `dist/push-components.figma.js`
+
+The token push gives Figma the vocabulary. This gives it the components, built from
+`@auxiliary/css`'s generated `component-schema.json` so a Figma component and the
+shipped component are the same component.
+
+```bash
+pnpm --filter @auxiliary/css build      # regenerates component-schema.json
+pnpm --filter @auxiliary/figma-sync build
+# run dist/push.figma.js FIRST, then dist/push-components.figma.js
+```
+
+**Order is not optional.** Every binding addresses a variable by qualified name
+(`Theme/primary`), and a variable that does not exist yet cannot be bound — the program
+reports it in `missingVariables` rather than silently producing a component that looks
+right and carries no tokens.
+
+Scope is the **nine flat recipes** — Button, Badge, Input, Textarea, Label, Avatar,
+Separator, Skeleton, Tooltip — 88 variants across nine sets on a `Components` page.
+Idempotent: sets are matched by name and reconciled in place (variants updated, missing
+ones added, extras removed), so re-running is how a recipe change reaches Figma.
+
+The other 23 recipes have schema coverage but no generated component, and that is a
+judgement rather than a gap: they declare `slots:`, and a slotted recipe's frame tree
+cannot be derived. Card ships as six separate Vue components, so how they nest is the
+consumer's choice. A plausible guess would be a component that quietly disagrees with
+every real usage.
+
+Two translation decisions worth knowing, both made in `src/component-spec.mjs` (pure,
+unit-tested — the plugin program interprets nothing):
+
+- **A size variant binds a MODE, not three variables.** `Size=md` sets the Component
+  collection's `md` mode on the frame, so every bound structural variable resolves at
+  that size together.
+- **`rest` and `disabled` become variants; `hover` and `active` do not.** Disabled is
+  carried by a real token (`Global/opacity/disabled`). Hover is an opacity modifier over
+  a token with none of its own, so materialising it would write a literal colour that
+  `figma:diff` then correctly reports as untokenised drift. It stays in the schema, where
+  it is true.
 
 ## Reading back — `pnpm figma:diff`
 

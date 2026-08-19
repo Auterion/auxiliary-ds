@@ -36,6 +36,9 @@ playground/
 
 # Tokens build output
 packages/tokens/dist/
+# ...and the private output figma-native.test.ts builds into, so its rebuild can't
+# delete dist/ while packages/css is reading it in a concurrent turbo task.
+packages/tokens/dist-test-*/
 
 # Playwright
 test-results/

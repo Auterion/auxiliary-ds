@@ -6,7 +6,7 @@
  *
  * Idempotent: collections/variables are matched by name and updated in place, so
  * re-running never duplicates. Two passes — create every variable first, then set
- * values/aliases — so cross-collection aliases (Semantic → Primitives) always resolve.
+ * values/aliases — so cross-collection aliases (Theme → Global) always resolve.
  * `use_figma` auto-wraps this in an async context, so top-level await is fine.
  */
 export const PUSH_PROGRAM = String.raw`
@@ -59,7 +59,7 @@ function ensureCollection(name, modes) {
   const have = new Set(c.modes.map((m) => m.name));
   // Rename the default mode ONLY on a collection we just created. Doing it
   // unconditionally rewrites whichever mode happens to sit first in an existing
-  // collection: a Semantic collection ordered [dark, light, ...] would have its
+  // collection: a Theme collection ordered [dark, light, ...] would have its
   // "dark" mode renamed to "light", producing two modes called "light" and
   // silently orphaning every dark value in the file. Mode ORDER is not part of
   // the contract; mode NAMES are.
@@ -103,7 +103,7 @@ for (const coll of DATA.collections) {
 // Seeded from EVERY variable already in the file, not just the ones this payload
 // carries. That is what makes a CHUNKED push work: the program exceeds use_figma's
 // 50k code limit as one blob, so it ships as several payloads, and a later chunk
-// (Semantic, Component) must still resolve aliases into Primitives that an earlier
+// (Theme, Component) must still resolve aliases into Global that an earlier
 // chunk created. This push's own variables are overlaid afterwards, so they win.
 const byQualified = new Map();
 const allColls = await figma.variables.getLocalVariableCollectionsAsync();
@@ -190,7 +190,7 @@ for (const ts of TEXTSTYLES) {
   s.fontSize = ts.fontSize;
   s.lineHeight = ts.lineHeightPercent != null ? { unit: 'PERCENT', value: ts.lineHeightPercent } : { unit: 'AUTO' };
   s.letterSpacing = { unit: 'PERCENT', value: ts.letterSpacingPercent || 0 };
-  // Bind font size to its Primitives variable where the role aliased one.
+  // Bind font size to its Global variable where the role aliased one.
   if (ts.fontSizeVar) {
     const v = byQualified.get(ts.fontSizeVar);
     if (v) { try { s.setBoundVariable('fontSize', v); } catch (e) {} }

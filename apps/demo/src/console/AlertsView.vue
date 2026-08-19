@@ -2,9 +2,12 @@
 /* Alerts — the one module where the status ladder leads. Uses the real
  * StatusBadge primitive in its `outline` variant, whose *-emphasis inks are
  * contrast-gated (>=4.5:1 vs both background and card, every theme) — so the
- * severity reads in light and dark without shouting on a neutral page.
- * Level is never color-only: the badge ships a per-level glyph and an
- * always-present visually-hidden level label. */
+ * severity reads in every theme without shouting on an otherwise ink page.
+ * Level is never colour-only: the badge ships a per-level glyph and an
+ * always-present visually-hidden level label.
+ *
+ * The rows are `dk-row` on fixed grid slots, so the timestamp and the trailing
+ * action end on one x however long the detail line runs. */
 import { computed, reactive } from 'vue';
 import { Card, StatusBadge } from '@auxiliary/vue';
 import { Icon } from '@auxiliary/icons';
@@ -15,15 +18,18 @@ const openCount = computed(() => rows.filter((r) => !r.acked).length);
 </script>
 
 <template>
-  <Card class="bp-card p-5">
-    <div class="flex items-center justify-between pb-3">
-      <div>
-        <h2 class="bp-ink-1 text-[14px] font-semibold">Active alerts</h2>
-        <p class="bp-ink-2 pt-0.5 text-[13px]">
-          {{ openCount }} unacknowledged · {{ rows.length }} total
-        </p>
-      </div>
-      <button type="button" class="bp-cta bp-cta-sm bp-focus" @click="rows.forEach((r) => (r.acked = true))">
+  <Card class="dk-card p-5">
+    <div class="dk-section">
+      <h2 class="dk-label">Active alerts</h2>
+      <span class="dk-bracket">
+        <span>{{ openCount }} unacknowledged</span>
+        <span aria-hidden="true">·</span>
+        <span>{{ rows.length }} total</span>
+      </span>
+    </div>
+
+    <div class="flex justify-end py-4">
+      <button type="button" class="dk-cta dk-cta-sm" @click="rows.forEach((r) => (r.acked = true))">
         Acknowledge all
       </button>
     </div>
@@ -32,32 +38,37 @@ const openCount = computed(() => rows.filter((r) => !r.acked).length);
       <li
         v-for="a in rows"
         :key="a.id"
-        class="bp-row !items-start"
+        class="dk-row bp-alert-row"
         :data-active="!a.acked ? 'true' : 'false'"
       >
         <StatusBadge :level="a.level" variant="outline" size="sm" class="mt-0.5 shrink-0">
           {{ a.level }}
         </StatusBadge>
-        <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-2">
-            <span class="bp-ink-1 text-[14px] font-medium">{{ a.title }}</span>
-            <span class="bp-chip">{{ a.vehicle }}</span>
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <span class="dk-value">{{ a.title }}</span>
+            <span class="dk-label">{{ a.vehicle }}</span>
           </div>
-          <div class="bp-ink-2 text-[13px] leading-4">{{ a.detail }}</div>
+          <div class="dk-body">{{ a.detail }}</div>
         </div>
-        <span class="bp-ink-3 shrink-0 pt-0.5 text-[12px]">{{ a.when }}</span>
-        <button
-          v-if="!a.acked"
-          type="button"
-          class="bp-cta bp-cta-sm bp-focus"
-          @click="a.acked = true"
-        >
-          Acknowledge
-        </button>
-        <span v-else class="bp-ink-3 flex h-6 shrink-0 items-center gap-1 text-[12px]">
-          <Icon name="check" size="sm" />
-          Acked
-        </span>
+        <!-- Time and action share ONE grid slot. With a `1fr` middle track that
+             slot is flush to the row's right edge, so the timestamps and the
+             actions each end on one x no matter how wide either is. -->
+        <div class="flex shrink-0 flex-col items-end gap-2">
+          <span class="dk-label">{{ a.when }}</span>
+          <button
+            v-if="!a.acked"
+            type="button"
+            class="dk-cta dk-cta-sm"
+            @click="a.acked = true"
+          >
+            Acknowledge
+          </button>
+          <span v-else class="dk-label flex items-center gap-1.5">
+            <Icon name="check" size="sm" />
+            Acked
+          </span>
+        </div>
       </li>
     </ul>
   </Card>

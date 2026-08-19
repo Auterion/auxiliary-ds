@@ -1,7 +1,10 @@
-/* Hallmark · macrostructure: Swiss-Minimal · tone: clean-professional · anchor: white+blue-accent */
+<!--
+  Hallmark · macrostructure: Editorial (portfolio deck) · tone: measured/declarative
+  anchor hue: auterion blue (rationed — ONE chapter divider on this page)
+  pre-emit critique: P5 H5 E5 S5 R5 V4
+-->
 <script setup lang="ts">
 import { inject } from 'vue';
-import { Button } from '@auxiliary/vue';
 import { Icon, type IconName } from '@auxiliary/icons';
 import WebHero from '../WebHero.vue';
 
@@ -23,171 +26,140 @@ const steps = [
 ];
 
 const stats = [
-  { value: '2M+', label: 'Flight hours', brand: true },
-  { value: '10,000+', label: 'Vehicles deployed', brand: false },
-  { value: '60+', label: 'Countries', brand: false },
-  { value: '99.9%', label: 'Fleet uptime', brand: false },
+  { value: '2M+', label: 'Flight hours' },
+  { value: '10,000+', label: 'Vehicles deployed' },
+  { value: '60+', label: 'Countries' },
+  { value: '99.9%', label: 'Fleet uptime' },
 ];
 </script>
 
 <template>
-  <div class="overflow-x-clip" style="background: var(--background)">
+  <div>
 
-    <!-- 1. HERO -->
+    <!-- ╭─ Cover ────────────────────────────────────────────────────╮ -->
     <WebHero
       eyebrow="AuterionOS 4.2 is now available"
       title="The operating system for autonomous robotics."
       subtitle="One software platform to build, deploy and command intelligent drones at scale — from the flight controller to the fleet."
+      facts="2M+ FLIGHT HOURS · 10,000+ VEHICLES · 60+ COUNTRIES"
       primary="Get started"
       secondary="Watch the demo"
       @primary="navigate('products')"
       @secondary="navigate('developers')"
     />
 
-    <!-- 2. TRUST STRIP -->
-    <section class="border-b border-border overflow-hidden" style="background: var(--background)">
-      <div class="flex items-center gap-1 py-4">
-        <span class="shrink-0 pr-4 pl-6 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground/40">Trusted by</span>
-        <div class="trust-track flex items-center gap-16 whitespace-nowrap">
-          <span v-for="(l, i) in [...logos, ...logos]" :key="`${l}-${i}`" class="font-mono text-[13px] font-medium text-muted-foreground/40 uppercase tracking-[0.08em]">{{ l }}</span>
+    <!-- ╭─ Trust ────────────────────────────────────────────────────╮
+         A ruled row, not a carousel: a logo marquee is an entrance
+         animation wearing a suit, and nothing in this grammar draws in. -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block-sm">
+        <div class="dk-section">
+          <span class="dk-label">Trusted by</span>
+          <span class="dk-bracket">6 PROGRAMS · 60+ COUNTRIES</span>
+        </div>
+        <div class="wb-logos">
+          <span v-for="l in logos" :key="l" class="wb-logo dk-label">{{ l }}</span>
         </div>
       </div>
     </section>
 
-    <!-- 3. PRODUCTS -->
-    <section class="mx-auto max-w-6xl px-6 py-20">
-      <div class="mb-10 max-w-xl">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">The platform</p>
-        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-          One stack, <span style="color: var(--brand)">silicon to fleet.</span>
-        </h2>
-        <p class="mt-4 text-[16px] leading-relaxed text-muted-foreground">
-          Every layer is built to work together — and open enough to build on.
-        </p>
-      </div>
+    <!-- ╭─ Platform ─────────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">The platform</span>
+          <span class="dk-bracket">4 PRODUCTS · 1 STACK</span>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">One stack, silicon to fleet.</h2>
+          <p class="dk-body-lg wb-measure-text">
+            Every layer is built to work together — and open enough to build on.
+          </p>
+        </div>
 
-      <div class="grid gap-4 sm:grid-cols-2">
-        <button
-          v-for="p in products"
-          :key="p.name"
-          class="group rounded-xl border border-border bg-card p-6 text-left transition-all hover:shadow-md"
-          @click="navigate(p.to)"
-        >
-          <div class="mb-4 flex items-center gap-3">
-            <div
-              class="flex h-10 w-10 items-center justify-center rounded-lg"
-              style="background: color-mix(in oklab, var(--brand) 8%, white)"
-            >
-              <Icon :name="p.icon" size="sm" style="color: var(--brand)" />
+        <div class="wb-grid" data-cols="2">
+          <button
+            v-for="p in products"
+            :key="p.name"
+            type="button"
+            class="dk-card dk-lift wb-tile"
+            @click="navigate(p.to)"
+          >
+            <div class="wb-tile-head">
+              <span class="wb-tile-mark"><Icon :name="p.icon" size="xs" /></span>
+            </div>
+            <h3 class="dk-h2">{{ p.name }}</h3>
+            <p class="dk-body">{{ p.blurb }}</p>
+            <span class="wb-tile-foot">
+              <span class="dk-label">Explore</span>
+              <Icon name="arrow-right" size="xs" class="wb-tile-go" />
+            </span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ╭─ How it works ─────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">How it works</span>
+          <span class="dk-bracket">3 STEPS</span>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">From idea to autonomy.</h2>
+        </div>
+
+        <div class="wb-grid" data-cols="3">
+          <div v-for="s in steps" :key="s.n" class="dk-card wb-tile">
+            <span class="dk-label dk-num">Step {{ s.n }}</span>
+            <h3 class="dk-h2">{{ s.title }}</h3>
+            <p class="dk-body">{{ s.blurb }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ╭─ Numbers ──────────────────────────────────────────────────╮
+         The page's ONE chapter divider, and the second (and last) blue
+         surface in the view after the masthead mark. -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-plate-signal wb-cover">
+          <div class="wb-cover-copy">
+            <p class="dk-label">Numbers that matter</p>
+            <h2 class="dk-h1">Proven in the field, not the deck.</h2>
+          </div>
+          <div class="wb-metrics" data-cols="4">
+            <div v-for="s in stats" :key="s.label" class="wb-metric">
+              <span class="wb-figure-num">{{ s.value }}</span>
+              <span class="dk-label">{{ s.label }}</span>
             </div>
           </div>
-          <h3 class="flex items-center gap-1.5 text-[16px] font-medium" style="color: var(--foreground)">
-            {{ p.name }}
-            <Icon
-              name="arrow-right"
-              size="xs"
-              class="text-muted-foreground opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-0.5"
-            />
-          </h3>
-          <p class="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{{ p.blurb }}</p>
-        </button>
+        </div>
       </div>
     </section>
 
-    <!-- 4. HOW IT WORKS -->
-    <section class="border-t border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-6xl px-6 py-20">
-        <div class="mb-12 max-w-xl">
-          <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">How it works</p>
-          <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-            From idea to <span style="color: var(--brand)">autonomy.</span>
-          </h2>
-        </div>
-
-        <div class="grid gap-10 sm:grid-cols-3">
-          <div v-for="s in steps" :key="s.n">
-            <div
-              class="flex h-11 w-11 items-center justify-center rounded-full font-mono text-[13px] font-medium"
-              style="border: 1.5px solid var(--brand); color: var(--brand)"
-            >{{ s.n }}</div>
-            <h3 class="mt-5 text-[18px] font-medium" style="color: var(--foreground)">{{ s.title }}</h3>
-            <p class="mt-2 text-[14px] leading-relaxed text-muted-foreground">{{ s.blurb }}</p>
+    <!-- ╭─ Proof close ──────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-plate wb-cover">
+          <div class="wb-cover-copy">
+            <p class="dk-h2 dk-ghost">Get started</p>
+            <h2 class="dk-display">Build the autonomous future.</h2>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. STATS (dark) -->
-    <section style="background: #0a0c0e">
-      <div class="mx-auto max-w-6xl px-6 py-24">
-        <p class="font-mono text-[11px] uppercase tracking-[0.14em] mb-12 text-center" style="color: #4b5563">Numbers that matter</p>
-        <div class="grid grid-cols-2 gap-12 text-center lg:grid-cols-4">
-          <div v-for="s in stats" :key="s.label" class="flex flex-col items-center">
-            <p
-              class="stat-value font-medium tabular-nums"
-              :style="s.brand ? 'color: var(--brand)' : 'color: #f3f4f6'"
-            >{{ s.value }}</p>
-            <div class="mt-3 h-px w-8 opacity-20" style="background: #6b7280" />
-            <p class="mt-3 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #4b5563">{{ s.label }}</p>
+          <p class="dk-body-lg wb-cover-lede">
+            Trusted across defense, enterprise and public safety. See what one stack can do for your fleet.
+          </p>
+          <div class="wb-actions">
+            <button type="button" class="dk-cta-solid" @click="navigate('products')">
+              Get started <Icon name="arrow-right" size="xs" />
+            </button>
+            <button type="button" class="dk-cta" @click="navigate('developers')">Read the docs</button>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. CTA -->
-    <section class="border-t border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-2xl px-6 py-24 text-center">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Get started</p>
-        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-          Build the autonomous future.
-        </h2>
-        <p class="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-muted-foreground">
-          Trusted across defense, enterprise and public safety. See what one stack can do for your fleet.
-        </p>
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <button
-            class="cta-btn inline-flex items-center gap-2 rounded-lg px-6 py-3 text-[14px] font-semibold"
-            style="background: var(--brand); color: var(--brand-foreground)"
-            @click="navigate('products')"
-          >
-            Get started
-            <Icon name="arrow-right" size="xs" />
-          </button>
-          <Button variant="ghost" size="md" class="gap-2 text-[14px]" @click="navigate('developers')">
-            Read the docs
-          </Button>
         </div>
       </div>
     </section>
 
   </div>
 </template>
-
-<style scoped>
-.trust-track {
-  animation: scroll-left 22s linear infinite;
-}
-
-@keyframes scroll-left {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-.stat-value {
-  font-family: 'Inter Variable', Inter, system-ui, sans-serif;
-  font-optical-sizing: auto;
-  font-variation-settings: 'opsz' 48;
-  font-size: clamp(2.5rem, 4vw, 3.5rem);
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-
-.cta-btn:hover {
-  background: color-mix(in oklab, var(--brand) 88%, black) !important;
-}
-
-.cta-btn:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
-</style>

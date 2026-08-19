@@ -21,10 +21,10 @@ function seriesGen(seed: number, n: number, base: number, amp: number) {
 }
 
 const stats = [
-  { label: 'Flights · 30d', value: 695, unit: '', precision: 0, delta: '+75%', up: true, spark: seriesGen(3, 30, 12, 8) },
-  { label: 'Flight hours', value: 1284, unit: 'h', precision: 0, delta: '+12%', up: true, spark: seriesGen(9, 30, 30, 10) },
-  { label: 'Avg mission', value: 18.4, unit: 'min', precision: 1, delta: '−4%', up: false, spark: seriesGen(15, 30, 18, 6) },
-  { label: 'Missions today', value: 14, unit: '', precision: 0, delta: '+3', up: true, spark: seriesGen(21, 30, 8, 7) },
+  { label: 'FLIGHTS · 30D', value: 695, unit: '', precision: 0, delta: '+75%', up: true, spark: seriesGen(3, 30, 12, 8) },
+  { label: 'FLIGHT HOURS', value: 1284, unit: 'h', precision: 0, delta: '+12%', up: true, spark: seriesGen(9, 30, 30, 10) },
+  { label: 'AVG MISSION', value: 18.4, unit: 'min', precision: 1, delta: '−4%', up: false, spark: seriesGen(15, 30, 18, 6) },
+  { label: 'MISSIONS TODAY', value: 14, unit: '', precision: 0, delta: '+3', up: true, spark: seriesGen(21, 30, 8, 7) },
 ];
 
 const flightTrend = seriesGen(42, 30, 16, 9);
@@ -62,133 +62,174 @@ const activity = [
 
 <template>
   <div class="flex min-w-0 flex-1 flex-col">
-    <!-- topbar -->
-    <header class="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur">
-      <Icon name="house" size="sm" class="text-muted-foreground" />
-      <span class="ix-label">SUITE</span>
-      <span class="text-muted-foreground/40">/</span>
-      <h1 class="text-[14px] font-medium tracking-tight">Overview</h1>
+    <!-- Topbar -->
+    <header class="ix-hair-b flex h-14 shrink-0 items-center gap-3 px-4">
+      <Icon name="house" size="sm" class="ix-ink-3" />
+      <span class="dk-label">SUITE / OVERVIEW</span>
 
-      <div class="mx-1 h-5 w-px bg-border" />
-
-      <nav class="flex min-w-0 items-center gap-0.5 overflow-x-auto">
-        <button
-          v-for="(loc, i) in LOCATIONS"
-          :key="loc"
-          type="button"
-          class="ix-edge shrink-0 rounded-lg pl-2.5 pr-2.5 py-1.5 text-[13px] transition-colors"
-          :class="i === 0 ? 'ix-active bg-secondary font-medium text-foreground' : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground'"
-        >
-          {{ loc }}
+      <nav class="ml-2 flex min-w-0 items-center gap-2 overflow-x-auto">
+        <div class="dk-segment">
+          <button
+            v-for="(loc, i) in LOCATIONS"
+            :key="loc"
+            type="button"
+            class="dk-segment-btn"
+            :data-active="i === 0"
+          >
+            {{ loc }}
+          </button>
+        </div>
+        <button type="button" class="dk-cta dk-cta-sm" aria-label="Add site">
+          <Icon name="plus" size="xs" />
         </button>
-        <button type="button" class="shrink-0 rounded-lg px-2 py-1.5 text-muted-foreground hover:bg-secondary/60 hover:text-foreground"><Icon name="plus" size="xs" /></button>
       </nav>
 
-      <div class="ml-auto flex items-center gap-3">
-        <span class="ix-label hidden lg:inline">{{ total }} UNITS · {{ counts.advisory }} FLYING</span>
-
-        <button
-          type="button"
-          class="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-[13px] text-foreground transition-colors hover:bg-secondary"
-        >
-          <span class="ix-label-sm">RANGE</span>
+      <div class="ml-auto flex items-center gap-2">
+        <button type="button" class="dk-cta">
+          <span class="dk-label">RANGE</span>
           Last 30 days
-          <Icon name="chevron-down" size="xs" class="text-muted-foreground" />
+          <Icon name="chevron-down" size="xs" class="ix-ink-3" />
         </button>
 
         <!-- theme quick toggle -->
-        <div class="flex items-center gap-0.5 rounded-lg border border-border bg-card p-0.5">
+        <div class="dk-segment">
           <button
-v-for="t in (['dark','light'] as const)" :key="t" type="button"
-            class="rounded-md px-2 py-1 text-[12px] capitalize transition-colors"
-            :class="theme === t ? 'bg-secondary text-foreground' : 'text-muted-foreground'"
-            @click="theme = t">{{ t }}</button>
+            v-for="t in (['dark', 'light'] as const)"
+            :key="t"
+            type="button"
+            class="dk-segment-btn"
+            :data-active="theme === t"
+            @click="theme = t"
+          >
+            {{ t }}
+          </button>
         </div>
       </div>
     </header>
 
-    <!-- body -->
-    <div class="flex-1 overflow-auto px-4 py-4">
-      <div class="mx-auto max-w-6xl space-y-4">
-        <!-- stat panels -->
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <div v-for="s in stats" :key="s.label" class="ix-panel ix-lift flex flex-col gap-2.5 p-4">
-            <div class="ix-head">
-              <span class="ix-label">{{ s.label }}</span>
-              <span class="ml-auto flex items-center gap-0.5 font-mono text-[11px] tabular-nums" :style="{ color: s.up ? 'var(--nominal)' : 'var(--warning)' }">
-                <Icon :name="s.up ? 'arrow-up' : 'arrow-down'" size="xs" />{{ s.delta }}
-              </span>
+    <!-- Body -->
+    <div class="flex-1 overflow-auto px-6 py-5">
+      <div class="mx-auto max-w-6xl space-y-6">
+        <!-- Case header + the ledger that tops it. The four headline figures
+             ARE the ledger — four fixed slots, one rhythm, held across blocks. -->
+        <div>
+          <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+            <div class="min-w-0">
+              <h1 class="dk-h1">Overview</h1>
+              <p class="dk-body dk-ghost">Fleet posture across every site, last thirty days.</p>
             </div>
-            <TelemetryValue :value="s.value" :unit="s.unit" :precision="s.precision" size="lg" />
-            <div class="ix-grid -mx-1 h-7 rounded-md" style="color: var(--foreground)">
-              <Sparkline :data="s.spark" :height="28" stroke="color-mix(in oklab, var(--foreground) 80%, transparent)" />
+            <span class="dk-bracket">
+              {{ total }} UNITS · {{ counts.advisory }} FLYING · {{ LOCATIONS.length }} SITES
+            </span>
+          </div>
+
+          <div class="dk-ledger mt-4" style="--dk-ledger-cols: 4">
+            <div v-for="s in stats" :key="s.label" class="dk-ledger-cell">
+              <span class="dk-label">{{ s.label }}</span>
+              <TelemetryValue :value="s.value" :unit="s.unit" :precision="s.precision" size="lg" />
+              <span class="dk-micro flex items-center gap-1">
+                <Icon :name="s.up ? 'arrow-up' : 'arrow-down'" size="xs" />{{ s.delta }} VS PRIOR
+              </span>
+              <div class="ix-grid mt-1 w-full">
+                <Sparkline :data="s.spark" :height="24" stroke="var(--dk-fg-3)" />
+              </div>
             </div>
           </div>
         </div>
 
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <!-- flight activity chart -->
-          <section class="ix-panel flex flex-col p-5 lg:col-span-2">
-            <div class="ix-head">
-              <span class="ix-label">FLIGHT ACTIVITY</span>
-              <span class="ix-label-sm hidden text-muted-foreground/70 sm:inline">SORTIES PER DAY · ALL SITES</span>
-              <span class="ml-auto flex items-baseline gap-1.5">
-                <TelemetryValue :value="695" unit="" :precision="0" size="md" />
-                <span class="ix-label-sm">30D TOTAL</span>
-              </span>
+          <!-- Flight activity — carries this spread's ONE numeral card. -->
+          <section class="dk-card flex flex-col p-5 lg:col-span-2">
+            <div class="dk-section">
+              <span class="dk-label">FLIGHT ACTIVITY</span>
+              <span class="dk-bracket">695 SORTIES · 30 DAYS · ALL SITES</span>
             </div>
-            <div class="ix-grid mt-4 h-40 rounded-md" style="color: var(--foreground)">
-              <Sparkline :data="flightTrend" :height="160" :width="760" stroke="color-mix(in oklab, var(--foreground) 80%, transparent)" />
-            </div>
-            <div class="mt-2 flex justify-between font-mono text-[10px] tabular-nums text-muted-foreground">
-              <span>May 6</span><span>May 14</span><span>May 22</span><span>May 30</span><span>Jun 5</span>
+
+            <div class="mt-4 flex items-stretch gap-4">
+              <div class="dk-numeral w-44 shrink-0 flex-col justify-end gap-1">
+                <span class="dk-label">30D TOTAL</span>
+                <span class="dk-numeral-folio" aria-hidden="true">695</span>
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <div class="ix-grid h-40">
+                  <Sparkline :data="flightTrend" :height="160" :width="760" stroke="var(--dk-fg-2)" />
+                </div>
+                <div class="mt-2 flex justify-between">
+                  <span class="dk-micro">MAY 6</span>
+                  <span class="dk-micro">MAY 14</span>
+                  <span class="dk-micro">MAY 22</span>
+                  <span class="dk-micro">MAY 30</span>
+                  <span class="dk-micro">JUN 5</span>
+                </div>
+              </div>
             </div>
           </section>
 
-          <!-- fleet status donut -->
-          <section class="ix-panel flex flex-col p-5 lg:col-span-1">
-            <div class="ix-head">
-              <span class="ix-label">FLEET STATUS</span>
-              <span class="ml-auto font-mono text-[11px] tabular-nums text-muted-foreground">{{ total }} UNITS</span>
+          <!-- Fleet status -->
+          <section class="dk-card flex flex-col p-5 lg:col-span-1">
+            <div class="dk-section">
+              <span class="dk-label">FLEET STATUS</span>
+              <span class="dk-bracket">{{ total }} UNITS</span>
             </div>
             <div class="mt-4 flex items-center gap-4">
               <svg viewBox="0 0 120 120" class="h-28 w-28 -rotate-90">
-                <circle cx="60" cy="60" r="52" fill="none" stroke="var(--secondary)" stroke-width="14" />
+                <circle cx="60" cy="60" r="52" fill="none" stroke="var(--dk-line)" stroke-width="14" />
                 <circle
-v-for="seg in donut" :key="seg.level"
-                  cx="60" cy="60" r="52" fill="none" :stroke="seg.color" stroke-width="14"
-                  :stroke-dasharray="`${seg.dash} ${seg.gap}`" :stroke-dashoffset="seg.offset" stroke-linecap="butt" />
+                  v-for="seg in donut"
+                  :key="seg.level"
+                  cx="60"
+                  cy="60"
+                  r="52"
+                  fill="none"
+                  :stroke="seg.color"
+                  stroke-width="14"
+                  :stroke-dasharray="`${seg.dash} ${seg.gap}`"
+                  :stroke-dashoffset="seg.offset"
+                  stroke-linecap="butt"
+                />
               </svg>
-              <ul class="flex-1 space-y-1.5">
-                <li v-for="l in LEVELS" v-show="counts[l]" :key="l" class="ix-edge flex items-center gap-2 pl-2 text-[12px]" :class="`ix-edge-${l}`">
-                  <span class="flex-1 text-muted-foreground">{{ LEVEL_LABELS[l] }}</span>
-                  <span class="font-mono tabular-nums text-foreground">{{ counts[l] }}</span>
+              <ul class="min-w-0 flex-1 space-y-2">
+                <li
+                  v-for="l in LEVELS"
+                  v-show="counts[l]"
+                  :key="l"
+                  class="ix-edge flex items-baseline gap-2 pl-2.5"
+                  :class="`ix-edge-${l}`"
+                >
+                  <span class="dk-label flex-1 truncate">{{ LEVEL_LABELS[l] }}</span>
+                  <span class="dk-value dk-num">{{ counts[l] }}</span>
                 </li>
               </ul>
             </div>
           </section>
         </div>
 
-        <!-- recent activity -->
-        <section class="ix-panel flex flex-col overflow-hidden">
-          <div class="ix-head px-5 pt-3.5">
-            <span class="ix-label">RECENT ACTIVITY</span>
-            <span class="ml-auto font-mono text-[11px] tabular-nums text-muted-foreground">{{ activity.length }} EVENTS</span>
-            <button type="button" class="ml-3 text-[12px] text-muted-foreground transition-colors hover:text-foreground">View all</button>
+        <!-- Recent activity — fixed slots, so copy starts and times end on one x. -->
+        <section class="dk-card flex flex-col overflow-hidden">
+          <div class="dk-section px-5 pt-3.5">
+            <span class="dk-label">RECENT ACTIVITY</span>
+            <span class="flex items-baseline gap-3">
+              <span class="dk-bracket">{{ activity.length }} EVENTS</span>
+              <button type="button" class="dk-link text-[12px]">View all</button>
+            </span>
           </div>
-          <div
-            v-for="(a, i) in activity"
-            :key="i"
-            class="ix-edge flex items-center gap-3 border-b border-border/60 px-5 py-3 last:border-b-0"
-            :class="`ix-edge-${a.level}`"
-          >
-            <Avatar size="sm"><AvatarFallback>{{ a.v.slice(0, 2) }}</AvatarFallback></Avatar>
-            <p class="min-w-0 flex-1 truncate text-[13px]">
-              <span class="font-medium">{{ a.v }}</span>
-              <span class="text-muted-foreground"> {{ a.text }}</span>
-            </p>
-            <span class="font-mono text-[11px] tabular-nums text-muted-foreground">{{ a.time }}</span>
-            <StatusBadge :level="a.level" size="sm" :sr-label="a.level" />
+
+          <div class="p-2" style="--dk-row-cols: auto minmax(0, 1fr) auto auto">
+            <div
+              v-for="(a, i) in activity"
+              :key="i"
+              class="dk-row ix-edge"
+              :class="`ix-edge-${a.level}`"
+            >
+              <Avatar size="sm"><AvatarFallback>{{ a.v.slice(0, 2) }}</AvatarFallback></Avatar>
+              <p class="dk-body min-w-0 truncate">
+                <span class="dk-value">{{ a.v }}</span>
+                {{ a.text }}
+              </p>
+              <span class="dk-label dk-num">{{ a.time }}</span>
+              <StatusBadge :level="a.level" size="sm" :sr-label="a.level" />
+            </div>
           </div>
         </section>
       </div>

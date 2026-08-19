@@ -1,17 +1,25 @@
 <script setup lang="ts">
-/* Hallmark · macrostructure: Workbench (product console) · tone: utilitarian
+/* Hallmark · macrostructure: Editorial (portfolio deck) · tone: measured/declarative
  *
- * "Auterion Suite" — the fleet home page from the Home Page Refactor UI design:
- * a navigation sidebar against a fluid content canvas, with the fleet-health
- * bar, live map, activity feed, pinned groups and quick access.
+ * "Auterion Suite" — the fleet home page from the Home Page Refactor UI design,
+ * now speaking the Deck 07b portfolio grammar (`_deck07b.css`, namespace `dk-`).
  *
- * The LAYOUT is the design's; the palette is the console's own neutral scheme —
- * so the whole surface, sidebar included, flips with `data-theme`, re-resolving
- * BOTH the semantic tokens (Card, Switch, StatusBadge) and the `.bp-*` vars so
- * the two layers stay in step. Colour is reserved for the status ladder.
+ * The LAYOUT is still the design's; the language is 07b's: hue-265 ink ramp,
+ * grotesque speaks / mono measures, hairlines instead of shadows, nothing drawn
+ * in on load. The old page-local blueprint (`.bp-*`) has been retired down to the
+ * handful of devices 07b has no answer for — see the header of `_console.css`.
  *
- * The rail collapses below `lg` into a scrollable chip strip so the console is
- * usable at 320px without a horizontal scrollbar.
+ * ONE mode attribute: `[data-theme]` on the same element as `.dk`. That makes the
+ * DS semantic tokens (Card, StatusBadge, Switch, Avatar) and the `--dk-*` palette
+ * re-resolve together, so they cannot drift out of step. The old `[data-skin]`
+ * third skin is gone — its whole point was the ink ramp, and the ink ramp is now
+ * the grammar's default material.
+ *
+ * Signal budget: blue appears ONCE on this shell — the brand mark, a partner
+ * tile, never state. The Store view spends the surface's second and last one.
+ *
+ * The rail collapses below `lg` into a scrollable strip so the console is usable
+ * at 320px without a horizontal scrollbar.
  */
 import { computed, ref } from 'vue';
 import { Icon } from '@auxiliary/icons';
@@ -21,23 +29,23 @@ import AlertsView from './AlertsView.vue';
 import TeamView from './TeamView.vue';
 import StoreView from './StoreView.vue';
 import SettingsView from './SettingsView.vue';
-import { NAV_MAIN, NAV_UTILITY } from './data';
+import { HEALTH_TOTAL, NAV_MAIN, NAV_UTILITY, SITES } from './data';
 import './_console.css';
 
 type ViewKey = 'overview' | 'fleet' | 'operations' | 'manufacturer' | 'store' | 'settings';
 
 const view = ref<ViewKey>('overview');
 
-/* Three skins. `ink` is NOT a design-system theme name, so the element keeps
- * data-theme="dark" (Card / StatusBadge / Switch resolve their semantic tokens
- * from that) while [data-skin] drives the page-local `.bp-*` palette. */
-type Skin = 'light' | 'dark' | 'ink';
-const skin = ref<Skin>('light');
-const dsTheme = computed(() => (skin.value === 'ink' ? 'dark' : skin.value));
-const SKINS: { key: Skin; label: string }[] = [
+/* The mode axis is the design system's own. `.dk` maps light/sunlight onto the
+ * paper exposure and dark/darknight onto the ink one, so all four DS themes land
+ * somewhere deliberate and every component in the page re-resolves with them. */
+type Theme = 'light' | 'sunlight' | 'dark' | 'darknight';
+const theme = ref<Theme>('light');
+const THEMES: { key: Theme; label: string }[] = [
   { key: 'light', label: 'Light' },
+  { key: 'sunlight', label: 'Sunlight' },
   { key: 'dark', label: 'Dark' },
-  { key: 'ink', label: 'Ink' },
+  { key: 'darknight', label: 'Darknight' },
 ];
 
 const HEADINGS: Record<ViewKey, { title: string; sub: string }> = {
@@ -65,26 +73,29 @@ function go(key: string) {
 </script>
 
 <template>
-  <div :data-theme="dsTheme" :data-skin="skin" class="bp-shell bp-root font-sans antialiased flex min-h-screen">
-    <!-- ── Navigation sidebar (rail ≥ lg) ────────────────────────────────── -->
-    <aside class="bp-sidebar hidden w-[256px] shrink-0 flex-col lg:flex">
-      <!-- brand lockup -->
-      <div class="flex h-[61px] items-center gap-3 px-5">
-        <Icon class="bp-ink-1" name="drone" :size="20" />
-        <span class="bp-ink-1 flex-1 text-[15px] tracking-[-0.2px]">
-          <span class="font-semibold">Auterion</span><span class="font-light">Suite</span>
+  <div :data-theme="theme" class="dk bp-shell flex min-h-screen antialiased">
+    <!-- ── Navigation rail (≥ lg) ────────────────────────────────────────── -->
+    <aside class="bp-sidebar hidden w-[248px] shrink-0 flex-col lg:flex">
+      <!-- brand lockup. The mark is the surface's ONE signal plate: a partner
+           tile in 07b's sense — whose workspace this is — never a state. -->
+      <div class="flex items-center gap-3 px-5 py-4">
+        <span class="dk-plate-signal bp-brand-mark" aria-hidden="true">
+          <Icon name="drone" :size="15" />
         </span>
-        <button type="button" class="bp-icon-btn bp-focus" aria-label="Collapse navigation">
+        <span class="dk-value flex-1 truncate">
+          Auterion<span class="font-normal">Suite</span>
+        </span>
+        <button type="button" class="bp-icon-btn" aria-label="Collapse navigation">
           <Icon name="bars" size="sm" />
         </button>
       </div>
 
       <!-- org switcher -->
-      <div class="px-5 pb-3">
-        <button type="button" class="bp-org bp-focus">
-          <Icon class="bp-nav-ico" name="house" size="sm" />
-          <span class="flex-1 text-left text-[13px] font-medium">Auterion</span>
-          <Icon class="bp-nav-ico" name="chevron-down" size="sm" />
+      <div class="px-3 pb-3">
+        <button type="button" class="dk-cta w-full justify-start">
+          <Icon name="house" size="sm" class="bp-glyph" />
+          <span class="flex-1 text-left">Auterion</span>
+          <Icon name="chevron-down" size="sm" class="bp-glyph" />
         </button>
       </div>
 
@@ -94,14 +105,14 @@ function go(key: string) {
           v-for="item in NAV_MAIN"
           :key="item.key"
           type="button"
-          class="bp-nav-item bp-focus"
+          class="dk-nav-item"
           :data-active="view === item.key ? 'true' : 'false'"
           :aria-current="view === item.key ? 'page' : undefined"
           @click="go(item.key)"
         >
-          <Icon class="bp-nav-ico" :name="item.icon" size="sm" />
-          <span class="flex-1 text-left text-[13px] font-medium">{{ item.label }}</span>
-          <Icon v-if="item.expandable" class="bp-nav-ico" name="chevron-down" size="sm" />
+          <Icon :name="item.icon" size="sm" class="shrink-0" />
+          <span class="dk-label flex-1 text-left">{{ item.label }}</span>
+          <Icon v-if="item.expandable" name="chevron-down" size="sm" class="shrink-0" />
         </button>
       </nav>
 
@@ -111,80 +122,53 @@ function go(key: string) {
           v-for="item in NAV_UTILITY"
           :key="item.key"
           type="button"
-          class="bp-nav-item bp-focus"
+          class="dk-nav-item"
           :data-active="view === item.key ? 'true' : 'false'"
           @click="item.key === 'settings' && go('settings')"
         >
-          <Icon class="bp-nav-ico" :name="item.icon" size="sm" />
-          <span class="flex-1 text-left text-[13px] font-medium">{{ item.label }}</span>
+          <Icon :name="item.icon" size="sm" class="shrink-0" />
+          <span class="dk-label flex-1 text-left">{{ item.label }}</span>
         </button>
       </div>
-      <div class="bp-sidebar-user flex items-center gap-2 px-5 py-3">
-        <Icon class="bp-nav-ico" name="user" size="sm" />
-        <span class="bp-ink-1 flex-1 truncate text-[13px] font-medium">Mariana Ferreira</span>
-        <button type="button" class="bp-icon-btn bp-focus" aria-label="Sign out">
+      <div class="bp-sidebar-user flex items-center gap-3 px-5 py-3">
+        <Icon name="user" size="sm" class="shrink-0" />
+        <span class="dk-value flex-1 truncate">Mariana Ferreira</span>
+        <button type="button" class="bp-icon-btn" aria-label="Sign out">
           <Icon name="arrow-right" size="sm" />
         </button>
       </div>
     </aside>
 
-    <!-- ── Content canvas — fluid ────────────────────────────────────────── -->
+    <!-- ── Content canvas ────────────────────────────────────────────────── -->
     <main class="min-w-0 flex-1">
-      <!-- sticky header: title + the page's action set, all on one control scale -->
-      <header class="bp-header px-4 pb-4 pt-5 sm:px-6 lg:px-8 xl:px-10">
-        <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
+      <!-- Sticky header. The ledger is the last row in it and its hairline is
+           the header's boundary — one rule, not a ledger rule stacked on a
+           header rule. -->
+      <header class="bp-header px-4 pt-5 sm:px-6 lg:px-8 xl:px-10">
+        <div class="flex flex-wrap items-start justify-between gap-x-8 gap-y-4">
           <div class="min-w-0">
-            <h1 class="bp-ink-1 truncate text-[22px] font-semibold leading-tight sm:text-[24px]">
-              {{ heading.title }}
-            </h1>
-            <p class="bp-ink-2 pt-1 text-[13px] leading-4">{{ heading.sub }}</p>
+            <h1 class="dk-h1 truncate">{{ heading.title }}</h1>
+            <p class="dk-body pt-2">{{ heading.sub }}</p>
           </div>
-          <div class="flex shrink-0 items-center gap-2">
-            <!-- skin switcher — inline glyphs: the curated icon set has no
-                 sun/moon/contrast marks, and adding three icons to a shared
-                 package for one demo page would be the wrong trade -->
-            <div class="bp-segment" role="group" aria-label="Colour skin">
+          <div class="flex flex-wrap items-center justify-end gap-2">
+            <div class="dk-segment" role="group" aria-label="Colour theme">
               <button
-                v-for="s in SKINS"
-                :key="s.key"
+                v-for="t in THEMES"
+                :key="t.key"
                 type="button"
-                class="bp-segment-btn bp-focus"
-                :data-active="skin === s.key ? 'true' : 'false'"
-                :aria-pressed="skin === s.key"
-                :title="s.label"
-                @click="skin = s.key"
+                class="dk-segment-btn"
+                :data-active="theme === t.key ? 'true' : 'false'"
+                :aria-pressed="theme === t.key"
+                @click="theme = t.key"
               >
-                <svg
-                  v-if="s.key === 'light'"
-                  width="15" height="15" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"
-                >
-                  <circle cx="12" cy="12" r="4" />
-                  <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-                </svg>
-                <svg
-                  v-else-if="s.key === 'dark'"
-                  width="15" height="15" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"
-                >
-                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
-                </svg>
-                <svg
-                  v-else
-                  width="15" height="15" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" aria-hidden="true"
-                >
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" stroke="none" />
-                </svg>
-                <span class="sr-only">{{ s.label }}</span>
+                {{ t.label }}
               </button>
             </div>
-            <button type="button" class="bp-cta bp-focus">
+            <button type="button" class="dk-cta">
               <Icon name="arrow-up-right-from-square" size="sm" />
               <span class="hidden sm:inline">Export</span>
             </button>
-            <button type="button" class="bp-pill bp-focus">
+            <button type="button" class="dk-cta-solid">
               <Icon name="plus" size="sm" />
               Add vehicle
             </button>
@@ -192,26 +176,46 @@ function go(key: string) {
         </div>
 
         <!-- rail replacement below lg -->
-        <nav class="bp-topbar mt-3" aria-label="Main">
+        <nav class="bp-topbar mt-4" aria-label="Main">
           <button
             v-for="item in NAV_MAIN"
             :key="item.key"
             type="button"
-            class="bp-nav-item bp-focus"
+            class="dk-nav-item"
             :data-active="view === item.key ? 'true' : 'false'"
             :aria-current="view === item.key ? 'page' : undefined"
             @click="go(item.key)"
           >
-            <Icon class="bp-nav-ico" :name="item.icon" size="sm" />
-            <span class="text-[13px] font-medium">{{ item.label }}</span>
+            <Icon :name="item.icon" size="sm" class="shrink-0" />
+            <span class="dk-label">{{ item.label }}</span>
           </button>
         </nav>
+
+        <!-- Device 2 · header ledger. Tops the case layout, carries the facts
+             that hold for every view: who is looking, at what, at what size. -->
+        <div class="dk-ledger">
+          <div class="dk-ledger-cell">
+            <span class="dk-label">Operator</span>
+            <span class="dk-value truncate">Mariana Ferreira</span>
+          </div>
+          <div class="dk-ledger-cell">
+            <span class="dk-label">Workspace</span>
+            <span class="dk-value truncate">Auterion Field Ops</span>
+          </div>
+          <div class="dk-ledger-cell" data-align="end">
+            <span class="dk-label">Tracked</span>
+            <span class="dk-bracket">
+              <span>{{ HEALTH_TOTAL }} vehicles</span>
+              <span aria-hidden="true">·</span>
+              <span>{{ SITES.length }} sites</span>
+            </span>
+          </div>
+        </div>
       </header>
 
       <!-- pb-28 clears the demo Shell's floating page switcher -->
-      <div class="px-4 pb-28 pt-6 sm:px-6 lg:px-8 xl:px-10">
-        <!-- keyed so each view replays the `rise` entrance -->
-        <component :is="VIEWS[view]" :key="view" />
+      <div class="px-4 pb-28 pt-8 sm:px-6 lg:px-8 xl:px-10">
+        <component :is="VIEWS[view]" />
       </div>
     </main>
   </div>

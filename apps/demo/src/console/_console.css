@@ -1,208 +1,88 @@
-/* Hallmark · macrostructure: Workbench (product console) · tone: utilitarian · anchor hue: none (mono)
+/* Hallmark · macrostructure: Editorial (portfolio deck) worn by a product console
+ * tone: measured/declarative · anchor hue: auterion blue (rationed, 1–2 surfaces)
  * pre-emit critique: P5 H5 E5 S5 R5 V4
  *
- * "BLUEPRINT" — the page-local design layer for the Auterion Suite console.
+ * "CONSOLE RESIDUE" — the page-local layer for the Auterion Suite console,
+ * AFTER the surface was migrated onto the Deck 07b grammar (`_deck07b.css`).
  *
- * It carries the stolen product-UI blueprint: a pure-grey three-level text
- * hierarchy, neutral selection, -0.15px tracking, 10/16px radii. The Auxiliary
- * light theme uses BLUE-TINTED neutrals with a two-level hierarchy, so these are
- * scoped overrides, exactly like the Suite `.ix-*` (_instrument.css) layer.
+ * The console used to carry its own complete blueprint: a pure-grey three-level
+ * ink hierarchy, neutral selection, -0.15px tracking, 10/16px radii, and a third
+ * `[data-skin="ink"]` palette. All of that is gone. 07b speaks the same jobs in
+ * one voice — hue-265 ink ramp, 6/8/10 radii, mono measures / grotesque speaks —
+ * and a surface running two grammars at once is the failure mode. So:
  *
- * The page takes its LAYOUT from the Home Page Refactor design, but not its
- * palette: the design's navy rail and blue accents are re-expressed in the
- * console's neutral scheme, so the whole surface — sidebar included — flips with
- * [data-theme].
+ *   · The whole `--bp-*` palette is retired. There is not a single colour value
+ *     in this file that is not a `--dk-*` alias or a design-system status token.
+ *     Every hex literal the old layer carried is gone with it.
+ *   · `[data-skin]` is retired. `.dk` already resolves light/sunlight (paper) and
+ *     dark/darknight (ink) off `[data-theme]`, which is the same attribute the DS
+ *     semantic tokens key off — one attribute, two layers, they cannot drift.
+ *   · `bp-rise` is retired. 07b: nothing draws in on load; an editorial page is
+ *     already finished when you arrive.
  *
- * Every value here is a named token; nothing is improvised at the call site.
- * Colour appears ONLY on the five-level status ladder (--alarm/--warning/
- * --caution/--advisory/--nominal); links, pins and tiles are ink, never hue.
+ * What is left is only what 07b has no device for, restated in the `--dk-*`
+ * ladders so the page still has ONE ladder per axis:
+ *     shell chrome (sidebar · sticky header · mobile nav strip · icon button ·
+ *     search field), the fleet health bar, the live map + its ping, the activity
+ *     feed's scroll + row grid, and the in-sentence status pill.
  *
- * Motion is three primitives and no more — `rise` (entrance), `lift` (hover
- * elevation), `ping` (the live-map pulse). All are transform/opacity only, all
- * use the two named easings, all collapse under prefers-reduced-motion.
+ * A handful of rules below reach into `.dk-*` selectors. They are all scoped
+ * under `.bp-shell` and written at a higher specificity than the grammar's own
+ * rules, so they hold regardless of stylesheet order and cannot leak onto the
+ * other surfaces that share `_deck07b.css`.
  *
  * Namespaced `bp-`. Confined to the Console demo view — NOT a tokens change.
  */
 
-/* ── Shell: sidebar + canvas. Tracking applies across both. ──────────────── */
+/* ── Shell ───────────────────────────────────────────────────────────────── */
 .bp-shell {
-  letter-spacing: -0.15px;
   min-width: 0;
-}
-.bp-shell :is(h1, h2, h3, h4, h5, h6, p, span, a, button, label, li, small, dt, dd, th, td, input) {
-  /* Hold -0.15px against Tailwind's per-size `--text-*--letter-spacing` (which
-   * each text-* utility sets). Specificity (0,1,1) beats the utilities' (0,1,0). */
-  letter-spacing: -0.15px;
-}
-
-/* ── Design tokens ───────────────────────────────────────────────────────── */
-.bp-root,
-.bp-shell {
-  /* Control scale — ONE ladder for every button on the page. The old mix of
-   * 24px CTAs against 32px pills is what made the header look assembled rather
-   * than designed. */
-  --bp-control-sm: 28px; /* dense, inside a card row   */
-  --bp-control-md: 32px; /* page-level actions          */
-
-  /* Radii ladder (8 control · 10 row · 16 card) */
-  --bp-r-ctl: 8px;
-  --bp-r-row: 10px;
-  --bp-r-card: 16px;
-
-  /* Named easings — never the browser default `ease`, never overshoot on UI. */
-  --bp-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --bp-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --bp-dur-fast: 120ms;
-  --bp-dur-base: 180ms;
-}
-
-.bp-root {
-  /* Blueprint palette: pure grey, three-level text hierarchy */
-  --bp-ink-1: #292929;  /* primary   — titles, values          (≈ neutral.800) */
-  --bp-ink-2: #5d5d5d;  /* secondary — body, helper text                       */
-  --bp-ink-3: #9e9e9e;  /* tertiary  — labels, meta            (≈ neutral.400) */
-  --bp-sel: #ededed;    /* neutral active/selected fill                        */
-  --bp-line: #e7e7e7;   /* hairline borders / dividers                         */
-  --bp-line-soft: #f0f0f0;
-  --bp-canvas: #ffffff;
-  --bp-card: #ffffff;
-  --bp-surface: #fafafa;
-  --bp-hover: rgb(0 0 0 / 0.04);
-  --bp-shadow: 0 1px 2px rgb(16 16 16 / 0.05);
-  --bp-shadow-lift: 0 6px 20px -8px rgb(16 16 16 / 0.18);
-  --bp-map-dot: #dcdcdc;
-  --bp-map-pin: #292929;
-
-  color-scheme: light;
-  background: var(--bp-canvas);
-  color: var(--bp-ink-1);
-}
-
-/* Dark: the same three-step hierarchy, inverted. Not a straight negation — the
- * dark inks are lifted so the tertiary step keeps ~5:1 on the card surface (the
- * light blueprint's #9E9E9E is the spec's own value and rides at 2.8:1, so it
- * carries meta only, never body copy). */
-.bp-root[data-theme='dark'] {
-  --bp-ink-1: #ededed;
-  --bp-ink-2: #a3a3a3;
-  --bp-ink-3: #8a8a8a;
-  --bp-sel: #262626;
-  --bp-line: #2a2a2a;
-  --bp-line-soft: #212121;
-  --bp-canvas: #121212;
-  --bp-card: #1a1a1a;
-  --bp-surface: #171717;
-  --bp-hover: rgb(255 255 255 / 0.05);
-  --bp-shadow: none;
-  --bp-shadow-lift: 0 6px 20px -8px rgb(0 0 0 / 0.6);
-  --bp-map-dot: #303030;
-  --bp-map-pin: #ededed;
-
-  color-scheme: dark;
-}
-
-/* Ink — a third skin: the same three-step hierarchy on the design system's own
- * `ink.*` primitive ramp (an ultramarine-tinted dark-UI neutral at 265°, which
- * the DS dark theme already draws its surfaces from). Selected via [data-skin]
- * rather than [data-theme], because `ink` is not a DS theme name — the element
- * still carries data-theme="dark" so Card/StatusBadge/Switch resolve correctly.
- * The two mid inks sit between published ramp steps to hold contrast on ink.900;
- * they are named here rather than improvised at the call site. */
-.bp-root[data-skin='ink'] {
-  --bp-ink-1: oklch(0.968 0.006 265);  /* ink.100 */
-  --bp-ink-2: oklch(0.760 0.016 265);  /* ink.400 ↑ */
-  --bp-ink-3: oklch(0.648 0.018 265);  /* ink spine, 500→400 */
-  --bp-sel: oklch(0.268 0.020 265);    /* ink.850 ↑ */
-  --bp-line: oklch(0.300 0.022 265);   /* ink.800 ↑ */
-  --bp-line-soft: oklch(0.242 0.020 265);
-  --bp-canvas: oklch(0.139 0.014 265); /* ink.950 */
-  --bp-card: oklch(0.196 0.018 265);   /* ink.900 ↓ */
-  --bp-surface: oklch(0.168 0.016 265);/* ink spine, 950→900 */
-  --bp-hover: oklch(1 0 0 / 0.06);
-  --bp-shadow: none;
-  --bp-shadow-lift: 0 6px 20px -8px oklch(0 0 0 / 0.7);
-  --bp-map-dot: oklch(0.320 0.020 265);
-  --bp-map-pin: oklch(0.968 0.006 265);
-
-  color-scheme: dark;
-}
-
-/* ── Text hierarchy ─────────────────────────────────────────────────────── */
-.bp-ink-1 { color: var(--bp-ink-1); }
-.bp-ink-2 { color: var(--bp-ink-2); }
-.bp-ink-3 { color: var(--bp-ink-3); }
-
-/* Section label above a module — the page's one repeating rhythm marker. */
-.bp-section-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 10px;
 }
 
 /* ── Sidebar ─────────────────────────────────────────────────────────────── */
 .bp-sidebar {
-  background: var(--bp-surface);
-  border-right: 1px solid var(--bp-line);
-  color: var(--bp-ink-2);
+  background: var(--dk-bg-2);
+  border-right: var(--dk-rule) solid var(--dk-line);
+  color: var(--dk-fg-2);
+}
+.bp-sidebar-user {
+  border-top: var(--dk-rule) solid var(--dk-line);
+  color: var(--dk-fg-3);
 }
 
-.bp-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  height: 34px;
-  padding: 0 10px;
-  border-radius: var(--bp-r-ctl);
-  color: var(--bp-ink-2);
-  cursor: pointer;
-  transition: background-color var(--bp-dur-fast) var(--bp-ease-out),
-    color var(--bp-dur-fast) var(--bp-ease-out);
+/* The grammar's nav item is a mono label with a hairline-quiet active state, so
+ * the label IS a `.dk-label`. Its own fg-3 would fight the item's hover/active
+ * colour, which is the thing that has to move — so it inherits instead. */
+.bp-shell .dk-nav-item .dk-label {
+  color: inherit;
 }
-.bp-nav-item:hover { background: var(--bp-hover); color: var(--bp-ink-1); }
-.bp-nav-item[data-active='true'] { background: var(--bp-sel); color: var(--bp-ink-1); }
-.bp-nav-item[data-active='true'] .bp-nav-ico { color: var(--bp-ink-1); }
-.bp-nav-ico { color: var(--bp-ink-3); flex-shrink: 0; }
 
-.bp-icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
+/* The brand mark is the surface's one signal plate (see Console.vue): a partner
+ * tile, not state. Sized off the control ladder, never a magic number. */
+.bp-brand-mark {
+  display: grid;
+  place-items: center;
+  width: var(--dk-control-sm);
+  height: var(--dk-control-sm);
   flex-shrink: 0;
-  border-radius: 6px;
-  color: var(--bp-ink-3);
-  cursor: pointer;
-  transition: background-color var(--bp-dur-fast) var(--bp-ease-out),
-    color var(--bp-dur-fast) var(--bp-ease-out);
 }
-.bp-icon-btn:hover { background: var(--bp-hover); color: var(--bp-ink-1); }
 
-.bp-org {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  height: 38px;
-  padding: 0 12px;
-  border-radius: var(--bp-r-ctl);
-  border: 1px solid var(--bp-line);
-  background: var(--bp-canvas);
-  color: var(--bp-ink-1);
-  cursor: pointer;
-  transition: background-color var(--bp-dur-fast) var(--bp-ease-out);
+/* ── Sticky page header ──────────────────────────────────────────────────── */
+/* No border of its own: the header ledger is the last row inside it, and the
+ * ledger's own hairline is the boundary. One rule, not two stacked. */
+.bp-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in oklab, var(--dk-bg) 88%, transparent);
+  backdrop-filter: blur(8px);
 }
-.bp-org:hover { background: var(--bp-sel); }
-
-.bp-sidebar-user { border-top: 1px solid var(--bp-line); color: var(--bp-ink-2); }
 
 /* Mobile nav strip — the rail is hidden below lg; this replaces it.
- * The breakpoint lives HERE, not as a `lg:hidden` utility: this stylesheet is
- * injected after Tailwind, so a local `display: flex` would win over the
- * utility and the strip would leak onto desktop. */
+ * The breakpoint lives HERE, not as a `lg:hidden` utility: this layer is
+ * unlayered CSS and Tailwind's utilities sit in @layer utilities, so a local
+ * `display: flex` would win over the utility and the strip would leak onto
+ * desktop. */
 .bp-topbar {
   display: flex;
   gap: 6px;
@@ -211,213 +91,133 @@
   padding-bottom: 2px;
 }
 .bp-topbar::-webkit-scrollbar { display: none; }
-.bp-topbar .bp-nav-item { width: auto; white-space: nowrap; }
+.bp-topbar .dk-nav-item { width: auto; white-space: nowrap; }
 /* Must come AFTER the base rule: same specificity, so source order decides. */
 @media (min-width: 1024px) { .bp-topbar { display: none; } }
 
-/* ── Sticky page header ──────────────────────────────────────────────────── */
-.bp-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: color-mix(in oklab, var(--bp-canvas) 88%, transparent);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--bp-line);
-}
-
-/* ── Buttons: one control scale, two voices ──────────────────────────────── */
-.bp-cta,
-.bp-pill {
+/* ── Icon-only button ────────────────────────────────────────────────────── */
+/* 07b has two controls and no third; an icon-only affordance is genuinely
+ * missing, so it is defined once here on the small control height. */
+.bp-icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  height: var(--bp-control-md);
-  padding: 0 12px;
+  width: var(--dk-control-sm);
+  height: var(--dk-control-sm);
   flex-shrink: 0;
+  border-radius: var(--dk-r-sm);
+  color: var(--dk-fg-3);
+  cursor: pointer;
+  transition: background-color var(--dk-dur) var(--dk-ease),
+    color var(--dk-dur) var(--dk-ease);
+}
+.bp-icon-btn:hover { background: var(--dk-bg-2); color: var(--dk-fg); }
+
+/* Decorative glyph — one alias for the tertiary ink, not a second ladder.
+ * Icons that carry no meaning of their own sit a step back from the copy. */
+.bp-glyph { color: var(--dk-fg-3); }
+
+/* ── Search field ────────────────────────────────────────────────────────── */
+/* The grammar has no form control. Focus is deliberately NOT restyled — the
+ * `.dk :is(input)` ring in _deck07b.css is the one ring for the whole page. */
+.bp-search {
+  height: var(--dk-control-md);
+  width: 100%;
+  padding: 0 10px 0 30px;
+  border-radius: var(--dk-r-sm);
+  border: var(--dk-rule) solid var(--dk-line);
+  background: transparent;
   font-size: 13px;
-  font-weight: 500;
-  line-height: 1;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color var(--bp-dur-fast) var(--bp-ease-out),
-    border-color var(--bp-dur-fast) var(--bp-ease-out),
-    opacity var(--bp-dur-fast) var(--bp-ease-out);
+  color: var(--dk-fg);
+  transition: border-color var(--dk-dur) var(--dk-ease);
 }
-/* quiet — bordered, on-canvas */
-.bp-cta {
-  border-radius: var(--bp-r-ctl);
-  border: 1px solid var(--bp-line);
-  background: var(--bp-canvas);
-  color: var(--bp-ink-1);
-  box-shadow: var(--bp-shadow);
-}
-.bp-cta:hover { background: var(--bp-sel); border-color: var(--bp-ink-3); }
-/* primary — filled ink pill */
-.bp-pill {
-  border-radius: 9999px;
-  padding: 0 16px;
-  background: var(--bp-ink-1);
-  color: var(--bp-canvas);
-}
-.bp-pill:hover { opacity: 0.85; }
+.bp-search::placeholder { color: var(--dk-fg-3); }
+.bp-search:hover { border-color: var(--dk-fg-3); }
 
-/* Segmented control — a grouped set of equal-weight options (the skin switcher).
- * One bordered well, no gaps, so it reads as one control rather than 3 buttons. */
-.bp-segment {
-  display: inline-flex;
-  align-items: center;
-  height: var(--bp-control-md);
-  padding: 2px;
-  gap: 2px;
-  border-radius: var(--bp-r-ctl);
-  border: 1px solid var(--bp-line);
-  background: var(--bp-canvas);
-  box-shadow: var(--bp-shadow);
-}
-.bp-segment-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 100%;
-  border-radius: 6px;
-  color: var(--bp-ink-3);
-  cursor: pointer;
-  transition: background-color var(--bp-dur-fast) var(--bp-ease-out),
-    color var(--bp-dur-fast) var(--bp-ease-out);
-}
-.bp-segment-btn:hover { color: var(--bp-ink-1); }
-.bp-segment-btn[data-active='true'] { background: var(--bp-sel); color: var(--bp-ink-1); }
-
-/* dense variant for actions living inside a card row */
-.bp-cta-sm { height: var(--bp-control-sm); padding: 0 10px; font-size: 12px; }
-/* square icon-only */
-.bp-icon-only { width: var(--bp-control-md); padding: 0; }
-.bp-cta-sm.bp-icon-only { width: var(--bp-control-sm); }
-
-.bp-cta:disabled,
-.bp-pill:disabled { opacity: 0.5; pointer-events: none; }
-
-/* ── Focus: one ring treatment across the page ───────────────────────────── */
-/* Never transitioned — the ring must appear instantly on focus. */
-.bp-focus:focus-visible,
-.bp-row:focus-visible {
-  outline: 2px solid var(--bp-ink-1);
-  outline-offset: 2px;
-  border-radius: var(--bp-r-ctl);
-}
-
-/* ── Cards ───────────────────────────────────────────────────────────────── */
-.bp-card {
-  border: 1px solid var(--bp-line);
-  border-radius: var(--bp-r-card);
-  background: var(--bp-card);
-  box-shadow: var(--bp-shadow);
-}
-
-.bp-tile {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  background: var(--bp-surface);
-  border: 1px solid var(--bp-line);
-  color: var(--bp-ink-2);
-  transition: border-color var(--bp-dur-base) var(--bp-ease-out),
-    color var(--bp-dur-base) var(--bp-ease-out);
-}
-.bp-tile-sm {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--bp-r-ctl);
-  color: var(--bp-ink-2);
-}
-
-/* ── Fleet health bar ───────────────────────────────────────────────────── */
+/* ── Fleet health bar ────────────────────────────────────────────────────── */
+/* Kept: 07b has no proportional bar. It reads the five-level status ladder,
+ * which is exempt from the signal budget — state, never brand.
+ * The old `bp-grow` entrance is gone: nothing in this grammar draws in on load. */
 .bp-healthbar {
   display: flex;
   width: 100%;
-  height: 5px;
   gap: 2px;
-  border-radius: 9999px;
+  /* the bar is the same weight as the status dot it legends */
+  height: 6px;
+  border-radius: var(--dk-r-pill);
   overflow: hidden;
 }
 .bp-healthbar-seg {
   display: block;
   height: 100%;
-  border-radius: 9999px;
-  /* grows into place on mount; width is the only animated property and the bar
-   * is decorative (the counts are in the legend), so no layout thrash matters */
-  animation: bp-grow var(--bp-dur-base) var(--bp-ease-out) both;
-  transform-origin: left center;
+  border-radius: var(--dk-r-pill);
 }
-@keyframes bp-grow { from { transform: scaleX(0); } to { transform: none; } }
 .bp-bg-alarm { background: var(--alarm); }
 .bp-bg-warning { background: var(--warning); }
 .bp-bg-caution { background: var(--caution); }
 .bp-bg-advisory { background: var(--advisory); }
 .bp-bg-nominal { background: var(--nominal); }
 
-/* ── Tabs ───────────────────────────────────────────────────────────────── */
-.bp-tabs {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  border-bottom: 1px solid var(--bp-line);
-  padding: 0 2px;
+/* ── Live map ────────────────────────────────────────────────────────────── */
+/* "Live" is the module's own claim, so the pin earns a slow pulse. This is not
+ * an entrance and not decoration — it is the claim being kept. */
+.bp-map { width: 100%; }
+.bp-map-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bp-ping 2.8s var(--dk-ease-in-out) infinite;
 }
-.bp-tab {
-  position: relative;
+@keyframes bp-ping {
+  0%, 100% { transform: scale(0.7); opacity: 0.35; }
+  50% { transform: scale(1.15); opacity: 0.08; }
+}
+/* The legend marker stands for a pin, so it is the pin's ink — not the ladder's
+ * tertiary default. Scoped above `.dk-dot` so order can't decide it. */
+.bp-shell .bp-map-pin-dot { background: var(--dk-fg); }
+
+/* ── Activity feed ───────────────────────────────────────────────────────── */
+/* A grid, not a flex row: fixed slots for the glyph and the timestamp mean every
+ * row's copy starts on the same x and every time ends on the same x, however
+ * many lines the middle column runs to. Same reason `.dk-table` is fixed. */
+.bp-feed-row {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: var(--dk-gutter-sm);
   padding: 10px 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--bp-ink-3);
-  cursor: pointer;
-  transition: color var(--bp-dur-fast) var(--bp-ease-out);
 }
-.bp-tab:hover { color: var(--bp-ink-1); }
-.bp-tab[data-active='true'] { color: var(--bp-ink-1); }
-.bp-tab[data-active='true']::after {
-  content: '';
-  position: absolute;
-  inset-inline: 0;
-  bottom: -1px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--bp-ink-1);
+.bp-feed-glyph { color: var(--dk-fg-3); margin-top: 4px; }
+.bp-feed-time {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 21px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dk-fg-3);
+  white-space: nowrap;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
+/* the feed scrolls inside its card so it can match the map's height */
+.bp-feed-scroll { overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--dk-line) transparent; }
+.bp-feed-scroll::-webkit-scrollbar { width: 8px; }
+.bp-feed-scroll::-webkit-scrollbar-thumb { background: var(--dk-line); border-radius: var(--dk-r-pill); }
+.bp-feed-scroll::-webkit-scrollbar-track { background: transparent; }
 
-/* ── Link — neutral. Weight + underline carry it, never hue. ─────────────── */
-.bp-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--bp-ink-1);
-  font-weight: 500;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  text-decoration-color: var(--bp-ink-3);
-  cursor: pointer;
-  transition: text-decoration-color var(--bp-dur-fast) var(--bp-ease-out);
-}
-.bp-link:hover { text-decoration-color: var(--bp-ink-1); }
-
-/* Status pill inside a feed line — level-driven, on the *-emphasis inks (the
- * contrast-gated on-surface tier), so it stays legible in all three skins. */
+/* Status pill inside a feed sentence — level-driven, on the *-emphasis inks (the
+ * contrast-gated on-surface tier), so it stays legible in every theme. Restated
+ * in the mono voice: in this grammar, a measured token is always mono. */
 .bp-pill-status {
   display: inline-flex;
   align-items: center;
   margin: 0 4px;
   padding: 1px 7px;
-  border-radius: 9999px;
-  border: 1px solid currentColor;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  border-radius: var(--dk-r-pill);
+  border: var(--dk-rule) solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -427,187 +227,64 @@
 .bp-pill-advisory { color: var(--advisory-emphasis); }
 .bp-pill-nominal { color: var(--nominal-emphasis); }
 
-/* ── Activity feed ───────────────────────────────────────────────────────
- * A grid, not a flex row: fixed slots for the avatar and the timestamp mean
- * every row's copy starts on the same x and every time ends on the same x,
- * regardless of how many lines the middle column runs to. */
-.bp-feed-row {
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) auto;
+/* ── Page-scoped fill-ins on the grammar ─────────────────────────────────── */
+/* All scoped under `.bp-shell` and above the grammar's own specificity, so they
+ * hold whatever order the two stylesheets land in and never leak sideways. */
+
+/* The DS Card ships `text-card-foreground`; inside this surface the ink ramp is
+ * the 07b one, and the two must not disagree by a step. */
+.bp-shell .dk-card { color: var(--dk-fg); }
+
+/* 18 rows of fleet is a scanning task; the grammar declares the transition for
+ * exactly this and leaves the hover to the consumer. */
+.bp-shell .dk-table tbody tr:hover { background: var(--dk-bg-2); }
+
+/* `.dk-plate-signal` colours the display, value and mono roles against the
+ * signal; body copy on a plate is the one role it doesn't cover. */
+.bp-shell .dk-plate-signal .dk-body {
+  color: color-mix(in oklab, var(--dk-on-signal) 82%, transparent);
+}
+
+/* Alert rows: two lines of copy, so they start-align rather than centre. From
+ * `sm` the badge slot is FIXED — a `auto` track is sized per row, which lets an
+ * ALARM badge push its title 16px right of an ADVISORY one. Every alert title
+ * has to start on the same x, and a fixed track is the only thing that does it.
+ * Below `sm` the fixed track starves the copy, so it reverts to the default. */
+.bp-shell .bp-alert-row {
+  --dk-row-cols: auto minmax(0, 1fr) auto;
   align-items: start;
-  column-gap: 12px;
-  padding: 10px 0;
 }
-.bp-feed-time {
-  font-size: 12px;
-  line-height: 20px;
-  color: var(--bp-ink-3);
-  white-space: nowrap;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-/* the feed scrolls inside its card so it can match the map's height */
-.bp-feed-scroll { overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--bp-line) transparent; }
-.bp-feed-scroll::-webkit-scrollbar { width: 8px; }
-.bp-feed-scroll::-webkit-scrollbar-thumb { background: var(--bp-line); border-radius: 9999px; }
-.bp-feed-scroll::-webkit-scrollbar-track { background: transparent; }
-
-/* ── Interactive cards (pinned groups · quick access) ────────────────────── */
-.bp-group,
-.bp-quick {
-  display: block;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-}
-.bp-group-tile {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  flex-shrink: 0;
-  border-radius: 9999px;
-  background: var(--bp-surface);
-  border: 1px solid var(--bp-line);
-  color: var(--bp-ink-2);
+@media (min-width: 640px) {
+  .bp-shell .bp-alert-row { --dk-row-cols: 96px minmax(0, 1fr) auto; }
 }
 
-/* ── Map ────────────────────────────────────────────────────────────────── */
-.bp-map { width: 100%; }
-.bp-map-ping {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: bp-ping 2.8s var(--bp-ease-in-out) infinite;
-}
-@keyframes bp-ping {
-  0%, 100% { transform: scale(0.7); opacity: 0.35; }
-  50% { transform: scale(1.15); opacity: 0.08; }
-}
-
-/* ── Rows ───────────────────────────────────────────────────────────────── */
-.bp-row {
+/* The measured column of a numeral card drops below the sentence when there is
+ * no room to sit beside it. */
+.bp-health-facts {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 32px;
-  padding: 8px;
-  border-radius: var(--bp-r-row);
-  transition: background-color var(--bp-dur-fast) var(--bp-ease-out);
-}
-.bp-row:hover { background: var(--bp-hover); }
-.bp-row[data-active='true'] { background: var(--bp-sel); }
-
-/* ── Table ──────────────────────────────────────────────────────────────── */
-.bp-table { width: 100%; border-collapse: collapse; }
-.bp-table th {
-  padding: 0 8px 8px;
-  text-align: left;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--bp-ink-3);
-  white-space: nowrap;
-}
-.bp-table td {
-  padding: 8px;
-  font-size: 13px;
-  color: var(--bp-ink-2);
-  border-top: 1px solid var(--bp-line);
-  vertical-align: middle;
-}
-.bp-table tbody tr { transition: background-color var(--bp-dur-fast) var(--bp-ease-out); }
-.bp-table tbody tr:hover { background: var(--bp-hover); }
-.bp-table tbody td:first-child { border-start-start-radius: var(--bp-r-row); border-end-start-radius: var(--bp-r-row); }
-.bp-table tbody td:last-child { border-start-end-radius: var(--bp-r-row); border-end-end-radius: var(--bp-r-row); }
-
-/* ── Status dot: the five-level ladder ───────────────────────────────────── */
-.bp-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  flex-shrink: 0;
-  border-radius: 9999px;
-  background: var(--bp-ink-3);
-}
-.bp-dot-alarm { background: var(--alarm); }
-.bp-dot-warning { background: var(--warning); }
-.bp-dot-caution { background: var(--caution); }
-.bp-dot-advisory { background: var(--advisory); }
-.bp-dot-nominal { background: var(--nominal); }
-
-/* ── Chip ───────────────────────────────────────────────────────────────── */
-.bp-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 20px;
-  padding: 0 8px;
-  border-radius: 9999px;
-  border: 1px solid var(--bp-line);
-  background: transparent;
-  font-size: 12px;
-  color: var(--bp-ink-2);
-  white-space: nowrap;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px var(--dk-gutter);
+  min-width: 0;
+  padding-left: var(--dk-gutter-sm);
 }
 
-/* ── Progress / avatar / rules / search ──────────────────────────────────── */
-.bp-progress { background: var(--bp-sel) !important; }
-.bp-progress > * { background: var(--bp-ink-1) !important; }
-.bp-avatar { background: var(--bp-sel) !important; color: var(--bp-ink-2) !important; }
-.bp-hr { border: 0; border-top: 1px solid var(--bp-line); }
-.bp-divide > * + * { border-top: 1px solid var(--bp-line); }
-
-.bp-search {
-  height: var(--bp-control-md);
-  width: 100%;
-  padding: 0 10px 0 32px;
-  border-radius: var(--bp-r-ctl);
-  border: 1px solid var(--bp-line);
-  background: var(--bp-canvas);
-  font-size: 13px;
-  color: var(--bp-ink-1);
-  transition: border-color var(--bp-dur-fast) var(--bp-ease-out);
-}
-.bp-search::placeholder { color: var(--bp-ink-3); }
-.bp-search:hover { border-color: var(--bp-ink-3); }
-.bp-search:focus { outline: 2px solid var(--bp-ink-1); outline-offset: -1px; }
-
-/* ── Motion primitive 1 · rise (entrance) ────────────────────────────────── */
-.bp-rise {
-  animation: bp-rise var(--bp-dur-base) var(--bp-ease-out) both;
-  animation-delay: calc(var(--i, 0) * 40ms);
-}
-@keyframes bp-rise {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: none; }
+/* The header ledger is three columns of prose-length values; below `sm` they
+ * stack, and the measured cell stops running right because there is nothing
+ * left for it to align against. */
+@media (max-width: 639px) {
+  .bp-shell .dk-ledger { --dk-ledger-cols: 1; gap: 12px; }
+  .bp-shell .dk-ledger-cell[data-align='end'] { align-items: flex-start; text-align: left; }
 }
 
-/* ── Motion primitive 2 · lift (hover elevation) ─────────────────────────── */
-.bp-lift {
-  transition: transform var(--bp-dur-base) var(--bp-ease-out),
-    box-shadow var(--bp-dur-base) var(--bp-ease-out),
-    border-color var(--bp-dur-base) var(--bp-ease-out);
-}
-.bp-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--bp-shadow-lift);
-  border-color: var(--bp-ink-3);
-}
-.bp-lift:hover .bp-tile { border-color: var(--bp-ink-3); color: var(--bp-ink-1); }
-.bp-lift:active { transform: translateY(0); }
+/* Avatar is a DS primitive; only its fill is re-pointed at the 07b ramp. */
+.bp-avatar { background: var(--dk-bg-2) !important; color: var(--dk-fg-2) !important; }
 
-/* ── Reduced motion: spatial motion collapses to a short crossfade ───────── */
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+/* The grammar collapses its own transitions; these are the page's additions. */
 @media (prefers-reduced-motion: reduce) {
-  .bp-rise {
-    animation: bp-fade 150ms var(--bp-ease-out) both;
-    animation-delay: 0ms;
-  }
-  @keyframes bp-fade { from { opacity: 0; } to { opacity: 1; } }
-  .bp-healthbar-seg, .bp-map-ping { animation: none; }
-  .bp-lift:hover { transform: none; }
-  .bp-row, .bp-cta, .bp-pill, .bp-tab, .bp-quick, .bp-group, .bp-nav-item,
-  .bp-lift, .bp-tile, .bp-link, .bp-search, .bp-icon-btn, .bp-org,
-  .bp-table tbody tr {
-    transition: none;
-  }
+  .bp-map-ping { animation: none; }
+  .bp-icon-btn, .bp-search { transition: none; }
 }

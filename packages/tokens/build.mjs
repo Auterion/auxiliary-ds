@@ -3,11 +3,23 @@ import StyleDictionary from 'style-dictionary';
 import { converter, formatHex, parse as parseColor } from 'culori';
 import { assertGtc } from './gtc-validate.mjs';
 
-// Wipe dist entirely before building: cleanAllPlatforms() only removes the
+/**
+ * Output directory, overridable so a test can build somewhere private.
+ *
+ * This matters because the build WIPES its output first (see below), and `dist/` is now
+ * read at test time by downstream suites — packages/css derives its component schema
+ * from figma-native.json + tokens.css. A test that rebuilds in place therefore deletes,
+ * for a few hundred milliseconds, a directory another package's tests are reading, and
+ * turbo runs those suites concurrently. The failure looks like a missing module in an
+ * unrelated package, which is about the worst possible signal.
+ */
+const OUT_DIR = process.env.AUX_TOKENS_OUT ?? 'dist';
+
+// Wipe the output entirely before building: cleanAllPlatforms() only removes the
 // declared destinations, so renamed outputs and stray files (e.g. editor /
 // macOS conflict copies) would otherwise survive — and `files: ["dist"]`
 // publishes everything in here.
-rmSync('dist', { recursive: true, force: true });
+rmSync(OUT_DIR, { recursive: true, force: true });
 
 const THEMES = ['light', 'dark', 'sunlight', 'darknight'];
 
@@ -182,9 +194,9 @@ StyleDictionary.registerFormat({
     let out = '';
     // @theme: globals + light defaults (Tailwind generates utilities from these)
     out += '@theme {\n';
-    out += '  /* Primitives */\n';
+    out += '  /* Global */\n';
     out += renderVars(globals) + '\n\n';
-    out += '  /* Semantic (light defaults) */\n';
+    out += '  /* Theme (light defaults) */\n';
     out += renderVars(byTheme.light) + '\n';
     out += '}\n\n';
 
@@ -457,19 +469,22 @@ StyleDictionary.registerFormat({
 /**
  * Figma-native variable export (ROADMAP Phase 5a — the contract for figma-sync).
  *
- * Emits two collections mapping 1:1 onto the Figma Plugin API variable model, so the
- * `@auxiliary/figma-sync` use_figma push script applies them directly:
- *   - "Primitives" (single mode "Base") — every scalar primitive as a COLOR / FLOAT /
+ * Emits three collections mapping 1:1 onto the Figma Plugin API variable model, so the
+ * `@auxiliary/figma-sync` use_figma push script applies them directly. They are named for
+ * the GTC tiers they carry, so a Figma binding path and a token path read the same:
+ *   - "Global" (single mode "Base") — every scalar global token as a COLOR / FLOAT /
  *     STRING variable. Names use "/" (Figma variable groups).
- *   - "Semantic" (4 modes light/dark/sunlight/darknight) — each semantic role as one
- *     COLOR variable whose per-mode value is a cross-collection alias into Primitives.
+ *   - "Theme" (4 modes light/dark/sunlight/darknight) — each semantic role as one
+ *     COLOR variable whose per-mode value is a cross-collection alias into Global.
+ *   - "Component" (3 modes sm/md/lg) — the component tier's structural tokens, whose
+ *     size axis collapses onto Figma modes.
  *
  * Figma Variables are unitless, so dimension/duration collapse to FLOAT (px for
  * spacing/radius/text, rem for breakpoint, em for tracking, ms for duration). shadow and
  * cubicBezier are NOT representable as variables — skipped here (shadows ship as Effect
  * Styles via figma-sync; easings stay documentation).
  */
-const FIGMA_PRIMITIVES = 'Primitives';
+const FIGMA_GLOBAL = 'Global';
 /** Figma modes for the Component collection — the component tier's size axis. */
 const SIZE_MODES = ['sm', 'md', 'lg'];
 // shadow + cubicBezier aren't variables (shadow → Effect Styles; easings → docs).
@@ -480,14 +495,15 @@ const SIZE_MODES = ['sm', 'md', 'lg'];
 const FIGMA_SKIP = new Set(['shadow', 'cubicBezier', 'typography', 'strokeStyle']);
 const figmaType = (type) =>
   type === 'color' ? 'COLOR' : type === 'fontFamily' ? 'STRING' : 'FLOAT';
-// `{global.color.primitive.red.700}` → `Primitives/color/primitive/red/700`.
+// `{global.color.primitive.red.700}` → `Global/color/primitive/red/700`.
 // The GTC group is carried by the COLLECTION, not the variable path — GTC's own
 // taxonomy rule 2 says so ("in Figma the collection name is the Group and variable
 // paths start at Element"). Stripping it is also what keeps every existing Figma
-// variable path stable across this migration: a renamed path would not move the
-// bound instances, it would ORPHAN them and silently create duplicates.
+// variable path stable: a renamed *path* would not move the bound instances, it
+// would ORPHAN them and silently create duplicates. Renaming a *collection* is
+// safe by contrast — Figma binds by variable id, not by qualified name.
 const aliasToVarRef = (ref) =>
-  `${FIGMA_PRIMITIVES}/${ref.replace(/[{}]/g, '').replace(/^global\./, '').split('.').join('/')}`;
+  `${FIGMA_GLOBAL}/${ref.replace(/[{}]/g, '').replace(/^global\./, '').split('.').join('/')}`;
 
 // Map a resolved fontWeight number → the Figma font style name we'll try first.
 const WEIGHT_STYLE = { 400: 'Regular', 500: 'Medium', 600: 'Semi Bold', 700: 'Bold' };
@@ -497,10 +513,12 @@ const WEIGHT_STYLE = { 400: 'Regular', 500: 'Medium', 600: 'Semi Bold', 700: 'Bo
 const figmaFamilyCandidates = (stack) => {
   const arr = Array.isArray(stack) ? stack : [stack];
   const joined = arr.join(' ');
-  // Inter Display is a distinct Figma family (the opsz=display cut); match it
-  // before the generic Inter case so heading roles get the display optical design.
-  if (/Inter Display/i.test(joined)) return ['Inter Display', 'Inter Variable'];
-  if (/Inter/i.test(joined)) return ['Inter', 'Inter Variable'];
+  // "Inter Display" is deliberately NOT a candidate. The standalone Display binary
+  // ships WITHOUT ss07/ss08 (square punctuation), and square punctuation is
+  // house-wide — so the display voice is reached via the opsz axis instead
+  // (`opsz 32` IS the static Display design). Lead with the VARIABLE family so
+  // both that axis and the full feature set are available in Figma.
+  if (/Inter/i.test(joined)) return ['Inter Variable', 'Inter'];
   if (/Geist Mono/i.test(joined)) return ['Geist Mono', 'Geist'];
   return [arr[0]];
 };
@@ -511,7 +529,7 @@ const dimValue = (v) => {
 };
 
 // Derive Figma Text Styles from the composite `type/*` typography roles. Values
-// are resolved (concrete numbers); fontSize keeps a binding ref to its Primitives
+// are resolved (concrete numbers); fontSize keeps a binding ref to its Global
 // variable when the role aliased one, so the plugin can bind it.
 const toTextStyles = (allTokens) =>
   allTokens
@@ -565,12 +583,12 @@ StyleDictionary.registerFormat({
     // per-size suffix convention; Text Styles already carry lh/ls, so raw
     // FLOAT variables for them would be junk in Figma.
     // Positive filter on the global tier (was `!isTheme && !isRegister`, which would
-    // sweep the component tier into Primitives). SUFFIX_GROUPS now sits at path[1],
+    // sweep the component tier into Global). SUFFIX_GROUPS now sits at path[1],
     // since path[0] is the group.
     const globals = dictionary.allTokens.filter(
       (t) => isGlobal(t) && !FIGMA_SKIP.has(t.$type) && !SUFFIX_GROUPS[t.path[1]],
     );
-    const primitiveVars = globals.map((t) => ({
+    const globalVars = globals.map((t) => ({
       // Group carried by the collection — see aliasToVarRef.
       name: t.path.slice(1).join('/'),
       type: figmaType(t.$type),
@@ -590,7 +608,7 @@ StyleDictionary.registerFormat({
     // Component tier → a third collection with SIZE as Figma modes. The source
     // authors size as a path segment (DTCG has no mode concept we adopted), but
     // Figma models exactly this natively, and collapsing at export is the same
-    // transform the Semantic collection already performs across four theme files.
+    // transform the Theme collection already performs across four theme files.
     // It is what lets a designer flip one frame's mode and have every bound
     // radius/padding/height resize together.
     const componentVars = new Map();
@@ -625,8 +643,8 @@ StyleDictionary.registerFormat({
       JSON.stringify(
         {
           collections: [
-            { name: FIGMA_PRIMITIVES, modes: ['Base'], variables: primitiveVars },
-            { name: 'Semantic', modes: THEMES, variables: [...roles.values()] },
+            { name: FIGMA_GLOBAL, modes: ['Base'], variables: globalVars },
+            { name: 'Theme', modes: THEMES, variables: [...roles.values()] },
             ...(componentVars.size
               ? [{ name: 'Component', modes: SIZE_MODES, variables: [...componentVars.values()] }]
               : []),
@@ -906,17 +924,17 @@ const sd = new StyleDictionary({
   platforms: {
     'tailwind-v4': {
       transformGroup: 'css',
-      buildPath: 'dist/',
+      buildPath: OUT_DIR + '/',
       files: [{ destination: 'tailwind-v4.css', format: 'css/auxiliary-tailwind-themes' }],
     },
     css: {
       transformGroup: 'css',
-      buildPath: 'dist/',
+      buildPath: OUT_DIR + '/',
       files: [{ destination: 'tokens.css', format: 'css/auxiliary-vars' }],
     },
     js: {
       transformGroup: 'js',
-      buildPath: 'dist/',
+      buildPath: OUT_DIR + '/',
       files: [
         { destination: 'tokens.js', format: 'javascript/tokens-const' },
         { destination: 'tokens.d.ts', format: 'typescript/tokens-dts' },
@@ -924,12 +942,12 @@ const sd = new StyleDictionary({
     },
     dtcg: {
       transformGroup: 'js',
-      buildPath: 'dist/',
+      buildPath: OUT_DIR + '/',
       files: [{ destination: 'tokens.json', format: 'json/dtcg' }],
     },
     figma: {
       transformGroup: 'js',
-      buildPath: 'dist/',
+      buildPath: OUT_DIR + '/',
       files: [{ destination: 'figma-native.json', format: 'json/figma-native' }],
     },
   },

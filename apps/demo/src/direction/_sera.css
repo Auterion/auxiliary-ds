@@ -1,0 +1,110 @@
+/*
+ * Candidate C — "Sera", from the shadcn/ui preset `beXRTDCy`.
+ *
+ * WHAT THE PRESET ACTUALLY IS
+ * ---------------------------
+ * Read off its own control panel rather than guessed: Style **Sera**, base
+ * colour **Zinc**, theme Zinc, chart Zinc, heading/body **Inter**, icon library
+ * **Lucide**, radius **None**, menu Default/Solid with a Subtle accent.
+ * Rendered, that is: zero radius, hairline borders, a very light neutral card
+ * on white, near-black solid buttons with uppercase labels, ALL-CAPS
+ * letterspaced section headings, large bold numerals, and — across an entire
+ * dashboard — exactly one chromatic element, an amber "pending" dot.
+ *
+ * THE AWKWARD PART, STATED UP FRONT
+ * ---------------------------------
+ * On geometry this **converges** with the two candidates already on the board.
+ * Zero radius is Anno 1965's opening move; neutral-carries-everything and
+ * hairlines-over-shadows are the incumbent's. Sera is not a third shape so much
+ * as a third accent on the same shape, and the review should treat it that way:
+ * what C actually contributes is the ecosystem-default question — does the
+ * house want to look like what every shadcn app looks like? — plus the accent
+ * axis, which is broken out separately in `_accents.css` precisely so it can be
+ * judged on its own.
+ *
+ * Structured like `_anno1965.css`, in two halves, for the same reason: the
+ * count is the finding.
+ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   PART 1 — expressible as token overrides
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-direction='sera'] {
+  /* Radius: None. Same override as 1965 reaches for, arrived at from the
+     opposite direction — 1965 because a corner is where two rules meet, Sera
+     because the preset's slider is at zero. */
+  --radius-none: 0px;
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+
+  /* Zinc + Sera lean on flat fills and hairlines, not elevation. */
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+
+  /* The card is a *tint* of the ground rather than a raised plane — the
+     "very light grey card on white" that gives the preset its flat, filled
+     look. Reusing the muted role keeps it re-resolving per theme. */
+  --card: var(--muted);
+}
+
+/*
+ * Inter is already the house sans (AD-D-011), so the preset's type choice costs
+ * nothing to honour — it is a token override of zero lines. Worth recording as
+ * a *pass* rather than silently omitting: it is the one place where the
+ * ecosystem default and the house already agree.
+ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   PART 2 — NOT expressible. Same two gaps as Anno 1965, independently hit.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/*
+ * GAP 1 — no tracking or case tokens. Identical to the 1965 finding, reached by
+ * a completely different route: Sera's signature is the ALL-CAPS letterspaced
+ * section heading and the uppercase button label. Two unrelated candidates
+ * breaking on the same missing token family is the strongest evidence yet that
+ * `global.tracking.*` (and a decision about whether case is a token at all)
+ * is owed.
+ */
+[data-direction='sera'] .dir-cover-title,
+[data-direction='sera'] .dir-divider-title,
+[data-direction='sera'] .dir-mobile-title {
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+[data-direction='sera'] .dir-piece-tag {
+  letter-spacing: 0.1em;
+}
+
+/* Sera's buttons are uppercase and letterspaced — again, no case token. */
+[data-direction='sera'] button {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/*
+ * GAP 2 — the numerals. Sera sets its figures large and heavy against a small
+ * uppercase label, which is a *type-role pairing* ("stat") the scale has no
+ * name for. The house has `--text-*` sizes and `--font-weight-*` but no
+ * composite that says "this is a readout". TelemetryValue solves it per
+ * component; the language has no way to state it.
+ */
+[data-direction='sera'] .dir-cover-title {
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0;
+}
+
+/*
+ * GAP 3 — Lucide. The preset specifies an icon library, and the house ships its
+ * own (`@auxiliary/icons`, built on Font Awesome Pro Sharp plus a custom kit).
+ * This is not a token gap and not fixable with one: adopting Sera wholesale
+ * would mean adopting a second icon vocabulary, which the restraint principle
+ * refuses. Recorded as a hard incompatibility, not a missing token — the
+ * specimens keep the house icons.
+ */

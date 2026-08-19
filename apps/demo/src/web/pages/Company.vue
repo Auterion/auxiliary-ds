@@ -1,7 +1,11 @@
-/* Hallmark · macrostructure: Swiss-Minimal · tone: clean-professional · anchor: white+blue-accent */
+<!--
+  Hallmark · macrostructure: Editorial (portfolio deck) · tone: measured/declarative
+  anchor hue: auterion blue (rationed — none on this page; the masthead mark is
+  the view's only signal)
+  pre-emit critique: P5 H5 E5 S5 R5 V4
+-->
 <script setup lang="ts">
 import { inject } from 'vue';
-import { Button } from '@auxiliary/vue';
 import { Icon } from '@auxiliary/icons';
 import WebHero from '../WebHero.vue';
 
@@ -37,130 +41,126 @@ const news = [
 </script>
 
 <template>
-  <div class="overflow-x-clip" style="background: var(--background)">
+  <div>
 
-    <!-- 1. HERO -->
+    <!-- ╭─ Cover ────────────────────────────────────────────────────╮ -->
     <WebHero
       eyebrow="Company"
       title="Software for the robotic age."
       subtitle="We're building the open operating system that lets any organization deploy autonomous robots — safely, at scale, anywhere."
+      facts="FOUNDED 2017 · 450+ TEAM · 6 OFFICES"
       primary="Join us"
       secondary="Our story"
       @primary="navigate('developers')"
       @secondary="navigate('home')"
     />
 
-    <!-- 2. STATS (dark) -->
-    <section style="background: #0d1117">
-      <div class="mx-auto max-w-6xl px-6 py-20">
-        <div class="grid grid-cols-2 gap-10 text-center lg:grid-cols-4">
-          <div v-for="s in stats" :key="s.label">
-            <p class="text-5xl font-medium tabular-nums tracking-tight" style="color: var(--brand)">{{ s.value }}</p>
-            <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">{{ s.label }}</p>
+    <!-- ╭─ Header ledger ────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block-sm">
+        <div class="dk-ledger wb-ledger-4">
+          <div
+            v-for="(s, i) in stats"
+            :key="s.label"
+            class="dk-ledger-cell"
+            :data-align="i === stats.length - 1 ? 'end' : undefined"
+          >
+            <span class="dk-pointer">{{ s.label }}</span>
+            <span class="wb-figure-num">{{ s.value }}</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 3. VALUES -->
-    <section class="border-b border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-6xl px-6 py-20">
-        <div class="mb-10 max-w-xl">
-          <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">What we believe</p>
-          <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-            Principles that <span style="color: var(--brand)">guide the work.</span>
-          </h2>
+    <!-- ╭─ Values ───────────────────────────────────────────────────╮ -->
+    <section>
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">What we believe</span>
+          <span class="dk-bracket">3 PRINCIPLES</span>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">Principles that guide the work.</h2>
         </div>
 
-        <div class="grid gap-5 md:grid-cols-3">
-          <div v-for="v in values" :key="v.name" class="rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md">
-            <div class="mb-4 border-b-2" style="border-color: var(--brand); width: 2rem" />
-            <h3 class="text-[17px] font-medium" style="color: var(--foreground)">{{ v.name }}</h3>
-            <p class="mt-2 text-[14px] leading-relaxed text-muted-foreground">{{ v.blurb }}</p>
+        <div class="wb-grid" data-cols="3">
+          <div v-for="(v, i) in values" :key="v.name" class="dk-card wb-tile">
+            <span class="dk-label dk-num">{{ String(i + 1).padStart(2, '0') }}</span>
+            <h3 class="dk-h2">{{ v.name }}</h3>
+            <p class="dk-body">{{ v.blurb }}</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 4. LEADERSHIP -->
-    <section class="border-b border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-6xl px-6 py-20">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Leadership</p>
-        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-          The team behind the stack.
-        </h2>
+    <!-- ╭─ Leadership ───────────────────────────────────────────────╮ -->
+    <section class="wb-band wb-band-alt">
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">Leadership</span>
+          <span class="dk-bracket">6 OFFICERS</span>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">The team behind the stack.</h2>
+        </div>
 
-        <div class="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
-          <div v-for="t in team" :key="t.name" class="flex flex-col items-center rounded-xl border border-border bg-card p-5 text-center">
-            <span
-              class="flex h-12 w-12 items-center justify-center rounded-full font-mono text-[13px] font-medium"
-              style="border: 1.5px solid var(--brand); color: var(--brand); background: color-mix(in oklab, var(--brand) 6%, white)"
-            >{{ t.initials }}</span>
-            <p class="mt-3 text-[14px] font-medium" style="color: var(--foreground)">{{ t.name }}</p>
-            <p class="text-[12px] text-muted-foreground">{{ t.role }}</p>
+        <div class="wb-grid" data-cols="6">
+          <div v-for="t in team" :key="t.name" class="dk-card wb-tile">
+            <span class="wb-initials">{{ t.initials }}</span>
+            <span class="dk-value">{{ t.name }}</span>
+            <span class="dk-label">{{ t.role }}</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 5. NEWSROOM -->
-    <section class="border-b border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-6xl px-6 py-20">
-        <div class="mb-10 flex items-end justify-between">
-          <div>
-            <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Newsroom</p>
-            <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-              Latest from Auterion.
-            </h2>
-          </div>
-          <button class="hidden text-[14px] text-muted-foreground hover:text-foreground sm:block">All news</button>
+    <!-- ╭─ Newsroom ─────────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">Newsroom</span>
+          <button type="button" class="dk-link">All news</button>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">Latest from Auterion.</h2>
         </div>
 
-        <div class="grid gap-5 md:grid-cols-3">
-          <a v-for="n in news" :key="n.title" class="group flex flex-col rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md">
-            <span class="self-start rounded-full border border-border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{{ n.tag }}</span>
-            <h3 class="mt-4 flex-1 text-[16px] font-medium leading-snug" style="color: var(--foreground)">{{ n.title }}</h3>
-            <p class="mt-5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{{ n.date }}</p>
+        <div class="wb-grid" data-cols="3">
+          <a v-for="n in news" :key="n.title" class="dk-card dk-lift wb-tile" tabindex="0">
+            <div class="wb-tile-head">
+              <span class="dk-label">{{ n.tag }}</span>
+              <span class="dk-label dk-num">{{ n.date }}</span>
+            </div>
+            <h3 class="dk-h2">{{ n.title }}</h3>
+            <span class="wb-tile-foot">
+              <span class="dk-label">Read</span>
+              <Icon name="arrow-right" size="xs" class="wb-tile-go" />
+            </span>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- 6. CAREERS CTA -->
-    <section class="border-t border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-2xl px-6 py-24 text-center">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Careers</p>
-        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-          Come build the future of autonomy.
-        </h2>
-        <p class="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-muted-foreground">
-          We're hiring across engineering, product, defense and operations — worldwide.
-        </p>
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <button
-            class="cta-btn inline-flex items-center gap-2 rounded-lg px-6 py-3 text-[14px] font-semibold"
-            style="background: var(--brand); color: var(--brand-foreground)"
-          >
-            See open roles
-            <Icon name="arrow-right" size="xs" />
-          </button>
-          <Button variant="ghost" size="md" class="gap-2 text-[14px]" @click="navigate('home')">
-            Back to home
-          </Button>
+    <!-- ╭─ Proof close ──────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-plate wb-cover">
+          <div class="wb-cover-copy">
+            <p class="dk-h2 dk-ghost">Careers</p>
+            <h2 class="dk-display">Come build the future of autonomy.</h2>
+          </div>
+          <p class="dk-body-lg wb-cover-lede">
+            We're hiring across engineering, product, defense and operations — worldwide.
+          </p>
+          <div class="wb-actions">
+            <button type="button" class="dk-cta-solid">
+              See open roles <Icon name="arrow-right" size="xs" />
+            </button>
+            <button type="button" class="dk-cta" @click="navigate('home')">Back to home</button>
+          </div>
         </div>
       </div>
     </section>
 
   </div>
 </template>
-
-<style scoped>
-.cta-btn:hover {
-  background: color-mix(in oklab, var(--brand) 88%, black) !important;
-}
-
-.cta-btn:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
-</style>

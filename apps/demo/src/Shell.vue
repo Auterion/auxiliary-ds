@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import SuiteApp from './suite/SuiteApp.vue';
 import MissionControl from './amc/MissionControl.vue';
+import Amc27 from './amc27/Amc27.vue';
 import DeviceConsole from './os/DeviceConsole.vue';
 import Site from './web/Site.vue';
 import Brand from './brand/Brand.vue';
@@ -14,6 +15,7 @@ import Gallery from './App.vue';
 type View =
   | 'suite'
   | 'amc'
+  | 'amc27'
   | 'os'
   | 'web'
   | 'brand'
@@ -33,6 +35,7 @@ const PAGES: { key: View; label: string }[] = [
   { key: 'web', label: 'auterion.com' },
   { key: 'suite', label: 'Suite' },
   { key: 'amc', label: 'Mission Control' },
+  { key: 'amc27', label: 'AMC27' },
   { key: 'os', label: 'AuterionOS' },
   { key: 'gallery', label: 'Gallery' },
 ];
@@ -46,6 +49,7 @@ const PAGES: { key: View; label: string }[] = [
   <DirectionStudio v-else-if="view === 'direction'" />
   <SuiteApp v-else-if="view === 'suite'" />
   <MissionControl v-else-if="view === 'amc'" />
+  <Amc27 v-else-if="view === 'amc27'" />
   <DeviceConsole v-else-if="view === 'os'" />
   <Site v-else-if="view === 'web'" />
   <Gallery v-else />

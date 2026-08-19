@@ -66,6 +66,7 @@ export default defineConfig({
             { text: 'Motion', link: '/foundations/motion' },
             { text: 'Layering & breakpoints', link: '/foundations/layering' },
             { text: 'Input & touch', link: '/foundations/input-and-touch' },
+            { text: 'Designing in Figma', link: '/foundations/figma' },
             { text: 'Conformance', link: '/foundations/conformance' },
           ],
         },

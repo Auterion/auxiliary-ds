@@ -1,74 +1,90 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+/**
+ * AMC · the tablet GCS stage.
+ *
+ * ONE attribute drives BOTH layers. `.dk` keys its palette off [data-theme],
+ * exactly as the DS semantic tokens do, so the deck grammar and Card / Switch /
+ * StatusBadge can never re-resolve out of step. `day` / `night` is NOT a second
+ * mode axis — it is [data-theme], mapped onto the two operational themes:
+ * `dark` for daylight use, `darknight` for the scotopic low-blue exposure.
+ */
+import { computed, ref } from 'vue';
 import MapView from './MapView.vue';
 import CameraView from './CameraView.vue';
 import SettingsView from './SettingsView.vue';
+import InteropView from './InteropView.vue';
 import './amc.css';
 
+type Layout = 'map' | 'camera' | 'interop' | 'settings';
+
 const mode = ref<'day' | 'night'>('day');
-const layout = ref<'map' | 'camera' | 'settings'>('camera');
-const theme = () => (mode.value === 'day' ? 'dark' : 'darknight');
+const layout = ref<Layout>('interop');
+const theme = computed(() => (mode.value === 'day' ? 'dark' : 'darknight'));
+
+const TITLES: Record<Layout, string> = {
+  map: 'MAP',
+  camera: 'GIMBAL FEED',
+  interop: 'STANAG 4817 · CATL REPORTING',
+  settings: 'SETTINGS',
+};
 </script>
 
 <template>
-  <div class="amc-stage flex min-h-dvh w-full items-center justify-center overflow-hidden p-6">
-    <div class="pointer-events-none absolute left-8 top-8 z-10 select-none">
-      <p class="text-[13px] font-medium text-white/90">Auterion Mission Control</p>
-      <p class="ix-label mt-1 text-white/45">TABLET GCS · {{ layout === 'camera' ? 'GIMBAL FEED' : layout === 'map' ? 'MAP' : 'SETTINGS' }}</p>
+  <!-- The stage is presentation chrome, not product: always the ink exposure,
+       and the only place on this surface carrying the display cut. -->
+  <div
+    data-theme="dark"
+    class="dk amc-root amc-stage flex min-h-dvh w-full items-center justify-center overflow-hidden p-6"
+  >
+    <div class="amc-caption">
+      <p class="dk-h2">Auterion Mission Control</p>
+      <p class="dk-label mt-1.5">TABLET GCS · {{ TITLES[layout] }}</p>
     </div>
 
-    <div data-theme="dark" class="absolute right-8 top-8 z-10 flex items-end gap-3">
-      <div class="flex flex-col items-end gap-1">
-        <span class="ix-label-sm text-white/40">VIEW</span>
-        <div class="flex items-center gap-0.5 rounded-full border border-border bg-card/70 p-1 backdrop-blur">
+    <div class="amc-controls">
+      <div class="amc-control-group">
+        <span class="dk-label">View</span>
+        <div class="dk-segment">
           <button
-            v-for="opt in (['map', 'camera', 'settings'] as const)"
+            v-for="opt in (['map', 'camera', 'interop', 'settings'] as const)"
             :key="opt"
             type="button"
-            class="ix-label rounded-full px-3 py-1.5 transition-colors"
-            :class="layout === opt ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'"
+            class="dk-segment-btn"
+            :data-active="layout === opt"
+            :aria-current="layout === opt ? 'page' : undefined"
             @click="layout = opt"
-          >
-            {{ opt }}
-          </button>
+          >{{ opt }}</button>
         </div>
       </div>
-      <div class="flex flex-col items-end gap-1">
-        <span class="ix-label-sm text-white/40">MODE</span>
-        <div class="flex items-center gap-0.5 rounded-full border border-border bg-card/70 p-1 backdrop-blur">
+      <div class="amc-control-group">
+        <span class="dk-label">Mode</span>
+        <div class="dk-segment">
           <button
             v-for="opt in (['day', 'night'] as const)"
             :key="opt"
             type="button"
-            class="ix-label rounded-full px-3 py-1.5 transition-colors"
-            :class="mode === opt ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'"
+            class="dk-segment-btn"
+            :data-active="mode === opt"
             @click="mode = opt"
-          >
-            {{ opt }}
-          </button>
+          >{{ opt }}</button>
         </div>
       </div>
     </div>
 
-    <!-- iPad (landscape) -->
-    <div class="relative rounded-[34px] bg-black p-3 shadow-2xl ring-1 ring-white/10">
-      <span class="absolute left-1/2 top-[18px] z-10 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-white/15" />
+    <!-- iPad (landscape). Hairline, not a drop shadow — the stage falloff is
+         what separates the device from the desk. -->
+    <div class="amc-bezel">
+      <span class="amc-lens" aria-hidden="true" />
       <div
-        :data-theme="theme()"
+        :data-theme="theme"
         data-register="operational"
-        class="relative h-[760px] w-[1160px] overflow-hidden rounded-[22px] text-foreground"
+        class="dk amc-root amc-screen"
       >
         <MapView v-if="layout === 'map'" :mode="mode" />
         <CameraView v-else-if="layout === 'camera'" :mode="mode" />
+        <InteropView v-else-if="layout === 'interop'" />
         <SettingsView v-else />
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.amc-stage {
-  position: relative;
-  background: radial-gradient(80% 60% at 50% 0%, #1b1f24 0%, #0b0d10 60%, #050608 100%);
-}
-</style>

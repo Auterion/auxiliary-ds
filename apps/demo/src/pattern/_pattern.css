@@ -1,0 +1,335 @@
+/* Hallmark · macrostructure: Editorial (portfolio deck) worn by a studio tool
+ * tone: measured/declarative · anchor hue: auterion blue (rationed to ONE surface)
+ * pre-emit critique: P5 H5 E5 S5 R5 V4
+ *
+ * "PLATE ROOM" — the generative Pattern Studio, written in the Deck 07b grammar.
+ *
+ * The page is one exhibit and its apparatus. The canvas is the artwork and the
+ * grammar has no opinion about what is inside it; everything AROUND it — the
+ * parameter rail, the section heads, the readouts, the caption — is chrome, and
+ * chrome speaks 07b.
+ *
+ * This file adds NOTHING to the grammar. Every colour, radius, duration and
+ * easing resolves through a `--dk-*` alias declared in `_deck07b.css`. There is
+ * no hex, no rgb, no oklch here: a raw literal in a `.ps-*` rule is a bug,
+ * exactly as it is in a `.dk-*` rule. (The tone ramps the sketch paints with are
+ * INPUTS to p5 — content, not styling — and live in the component, not here.)
+ *
+ * Written to the Console method:
+ *   · ONE ladder per axis, named here, never improvised at the call site. This
+ *     layer adds five surface dimensions (rail width, mark, slider track and
+ *     thumb, seed field) and one clearance; everything else steps to `--dk-*`.
+ *   · The mode is [data-theme], on the SAME element as `.dk` — one attribute
+ *     driving both the `--dk-*` palette and the DS semantic tokens, so they can
+ *     never drift out of step. There is no second mode attribute on this surface.
+ *   · A parameter panel is a LEDGER: `.ps-param` is a grid with fixed slots, so
+ *     every label starts on the same x and every value ends on the same x, down
+ *     the whole rail — sliders, checkboxes and the seed field alike.
+ *   · Hairlines, never shadows. The canvas used to sit on a 80px drop shadow;
+ *     it now sits on a 1px rule, which is also how the drawing gets to be the
+ *     only thing on the page with any weight.
+ *   · Motion only on state change, never on load, inheriting the grammar's
+ *     durations and easings rather than declaring its own.
+ *
+ * Namespaced `ps-`; sits alongside `dk-` (grammar), `os-`, `ix-` and `bp-`
+ * without collision. Demo layer — NOT a tokens or recipe change.
+ */
+
+/* ═══ Surface ladder ══════════════════════════════════════════════════════ */
+
+.ps-root {
+  --ps-rail-w: 320px;
+  --ps-mark: 30px; /* the identity tile — the view's one signal surface */
+  --ps-track: 2px; /* slider rail — the one track weight on the page     */
+  --ps-thumb: 12px; /* and the one thumb                                 */
+  --ps-field-w: 96px; /* the seed field, sized to a 5-digit tabular read  */
+  /* The demo shell floats a page switcher at bottom centre; the stage keeps
+   * clear of it rather than letting the caption slide underneath. Sized to the
+   * switcher's two-line height, which is what it wraps to below ~1400px. */
+  --ps-dock: 78px;
+
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ═══ Parameter rail ══════════════════════════════════════════════════════ */
+
+.ps-rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dk-gutter);
+  width: var(--ps-rail-w);
+  flex-shrink: 0;
+  padding: var(--dk-gutter-sm);
+  padding-bottom: var(--dk-gutter);
+  border-right: var(--dk-rule) solid var(--dk-line);
+  background: var(--dk-bg);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--dk-line) transparent;
+}
+
+/* 24 between blocks, 16 inside one. Two rungs, no third. */
+.ps-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dk-gutter-sm);
+  min-width: 0;
+}
+.ps-tight {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* ═══ Identity ════════════════════════════════════════════════════════════
+ * The signal budget, spent: this tile is the ONLY blue surface in the view.
+ * It is a partner tile — the mark the generator itself scatters, shown once at
+ * full strength — which is the permission slip `.dk-plate-signal` carries.
+ * Nothing else on this page is allowed to be blue; the active state of a
+ * control is a hairline and a ground, the way the editorial school marks it. */
+
+.ps-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: var(--dk-gutter-sm);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+.ps-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ps-mark);
+  height: var(--ps-mark);
+  flex-shrink: 0;
+}
+.ps-mark > svg {
+  width: 62%;
+  height: 62%;
+}
+
+/* ═══ Choice well ═════════════════════════════════════════════════════════
+ * A segmented control that wraps. `.dk-segment` is one bordered well of mono
+ * buttons; ten geometries will not sit on one line in a 320px rail, so the well
+ * becomes a grid and keeps every other property of the device — one border, 2px
+ * gutters, hairline-quiet active state, no fill and no pill.
+ *
+ * Compound selectors below are deliberate: `_deck07b.css` is imported from the
+ * app entry and this file from the view, so the grammar's sheet can land AFTER
+ * this one. Anything that has to beat a `.dk-*` declaration is written at (0,2,0)
+ * so source order stops mattering. */
+
+.ps-choice {
+  display: grid;
+  /* Two columns by default — a preset name needs the width. The three
+   * single-word wells take three, which is the only reason the switch exists. */
+  grid-template-columns: repeat(var(--ps-choice-cols, 2), minmax(0, 1fr));
+  grid-auto-rows: var(--dk-control-sm);
+  gap: 2px;
+  padding: 2px;
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: var(--dk-r-sm);
+}
+.ps-choice-3 {
+  --ps-choice-cols: 3;
+}
+/* Block, not inline-flex: a flex box cannot ellipsize its own text, and a preset
+ * name has to be allowed to run out of room rather than out of the well. */
+.ps-choice .dk-segment-btn {
+  display: block;
+  min-width: 0;
+  padding-inline: 6px;
+  line-height: var(--dk-control-sm);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ═══ The ledger ══════════════════════════════════════════════════════════
+ * Every parameter — slider, toggle, seed — is one row of the same grid: the
+ * pointer-label in the first slot, the measured value hard right in the second.
+ * The control spans both slots on a second line where it needs the width. This
+ * is the whole reason the rail reads as a ledger and not as a stack of widgets. */
+
+.ps-params {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dk-gutter-sm);
+}
+.ps-param {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--dk-gutter-sm);
+  row-gap: 6px;
+  min-height: var(--dk-control-sm);
+  min-width: 0;
+}
+.ps-param > .dk-value {
+  justify-self: end;
+  text-align: right;
+}
+.ps-param-check {
+  cursor: pointer;
+}
+
+/* ═══ Controls ════════════════════════════════════════════════════════════
+ * The grammar has two buttons and a segment; it has no range, no checkbox and
+ * no field. Those three are defined once, here, on the grammar's own ladders. */
+
+.ps-range {
+  grid-column: 1 / -1;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: var(--ps-track);
+  border-radius: var(--dk-r-pill);
+  background: var(--dk-line);
+  cursor: pointer;
+}
+.ps-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: var(--ps-thumb);
+  height: var(--ps-thumb);
+  border-radius: var(--dk-r-pill);
+  background: var(--dk-fg);
+  cursor: pointer;
+}
+.ps-range::-moz-range-thumb {
+  width: var(--ps-thumb);
+  height: var(--ps-thumb);
+  border: 0;
+  border-radius: var(--dk-r-pill);
+  background: var(--dk-fg);
+  cursor: pointer;
+}
+
+/* The native tick is ink, not signal — a checked box is not a brand moment. */
+.ps-check {
+  justify-self: end;
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  accent-color: var(--dk-fg);
+  cursor: pointer;
+}
+
+/* Focus is deliberately NOT restyled: the `.dk :is(input)` ring in
+ * `_deck07b.css` is the one ring for this page, as it is for every other. */
+.ps-field {
+  justify-self: end;
+  width: var(--ps-field-w);
+  height: var(--dk-control-sm);
+  padding: 0 8px;
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: var(--dk-r-sm);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--dk-fg);
+  transition: border-color var(--dk-dur) var(--dk-ease);
+}
+.ps-field:hover {
+  border-color: var(--dk-fg-3);
+}
+
+.ps-actions {
+  gap: 8px;
+}
+.ps-actions-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.dk-cta.ps-cta-block,
+.dk-cta-solid.ps-cta-block {
+  width: 100%;
+}
+.dk-cta.ps-cta-block:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.dk-cta.ps-cta-block:disabled:hover {
+  background: transparent;
+  border-color: var(--dk-line);
+}
+
+/* ═══ Stage ═══════════════════════════════════════════════════════════════
+ * The exhibit and its two lines of apparatus: a bracketed set of measured facts
+ * above it, a spread caption naming what the plate IS below it. */
+
+.ps-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--dk-gutter);
+  padding-bottom: var(--ps-dock);
+}
+
+.ps-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--dk-gutter);
+  padding-bottom: var(--dk-gutter-sm);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+  flex-shrink: 0;
+}
+.ps-head-end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.ps-eyebrow {
+  padding-bottom: 6px;
+}
+
+/* The frame is absolutely inset so it has a DEFINITE height whatever the header
+ * wraps to — which is what lets the canvas cap itself at `max-height: 100%` and
+ * stay on its own aspect ratio instead of being told a viewport fraction. */
+.ps-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.ps-frame {
+  position: absolute;
+  inset: var(--dk-gutter) 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* p5 writes the pixel size inline; both axes are released to auto so the two
+ * max-* constraints can size the drawing on its own ratio. A hairline, not the
+ * shadow this used to sit on. */
+.ps-frame canvas {
+  display: block;
+  width: auto !important;
+  height: auto !important;
+  max-width: 100%;
+  max-height: 100%;
+  border: var(--dk-rule) solid var(--dk-line);
+}
+
+.ps-foot {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+/* ═══ Reduced motion ══════════════════════════════════════════════════════
+ * The grammar collapses its own transitions; this is the page's one addition. */
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-field {
+    transition: none;
+  }
+}

@@ -1,9 +1,13 @@
-/* Hallmark · macrostructure: Swiss-Minimal · tone: clean-professional · anchor: white+blue-accent */
+<!--
+  Hallmark · macrostructure: Editorial (portfolio deck) · tone: measured/declarative
+  anchor hue: auterion blue (rationed — none on this page; the masthead mark is
+  the view's only signal)
+  pre-emit critique: P5 H5 E5 S5 R5 V4
+-->
 <script setup lang="ts">
 import { inject } from 'vue';
 import WebHero from '../WebHero.vue';
-import { Button } from '@auxiliary/vue';
-import { Icon } from '@auxiliary/icons';
+import { Icon, type IconName } from '@auxiliary/icons';
 
 const navigate = inject<(p: string) => void>('navigate', () => {});
 
@@ -14,28 +18,28 @@ const trustItems = [
   { label: '0 cloud required' },
 ];
 
-const capabilities = [
+const capabilities: { icon: IconName; title: string; description: string }[] = [
   {
-    icon: 'bars' as const,
+    icon: 'bars',
     title: 'Contested Environments',
     description: 'Full autonomy under GPS denial, jamming, and lost-link conditions. On-board intelligence keeps missions on task when connectivity drops.',
   },
   {
-    icon: 'gear' as const,
+    icon: 'gear',
     title: 'On-device AI',
     description: 'Detection, tracking, and re-identification execute entirely at the edge — no cloud dependency, no round-trip latency, no single point of failure.',
   },
   {
-    icon: 'lock' as const,
+    icon: 'lock',
     title: 'Secure Datalink',
     description: 'AES-256 end-to-end C2 and video. Spectrum-agile mesh with anti-tamper key management and zero-trust node authentication.',
   },
   {
-    icon: 'circle-info' as const,
+    icon: 'circle-info',
     title: 'Open Architecture',
     description: 'Standards-based interfaces (STANAG 4586, MAVLink) enable fast integration with existing force assets and allied systems.',
   },
-] as const;
+];
 
 const nodes = [
   { id: 'hq',    x: 80,  y: 100, label: 'HQ',     primary: true },
@@ -54,184 +58,177 @@ const edges: [string, string][] = [
   ['gs2', 'ugv1'],
 ];
 
+const facts = [
+  { value: '30+', label: 'Allied nations' },
+  { value: 'AES-256', label: 'Encryption standard' },
+  { value: '0', label: 'Cloud required' },
+];
+
 function nodePos(id: string) {
   return nodes.find(n => n.id === id)!;
 }
 </script>
 
 <template>
-  <div class="overflow-x-clip">
+  <div>
 
-    <!-- 1. HERO -->
+    <!-- ╭─ Cover ────────────────────────────────────────────────────╮ -->
     <WebHero
       eyebrow="Defense"
       title="Autonomy for allied forces."
       subtitle="NDAA-compliant. On-device AI. Zero cloud dependency."
+      facts="30+ ALLIED NATIONS · AES-256 · 0 CLOUD REQUIRED"
       primary="Request briefing"
       secondary="View documentation"
       @primary="navigate('company')"
       @secondary="navigate('developers')"
     />
 
-    <!-- 2. TRUST INDICATORS -->
-    <section class="border-b border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-5xl px-6 py-14">
-        <ul class="grid grid-cols-2 gap-x-10 gap-y-5 sm:grid-cols-4">
-          <li
-            v-for="item in trustItems"
-            :key="item.label"
-            class="flex items-center gap-3 text-[14px] font-medium"
-            style="color: var(--foreground)"
-          >
-            <Icon name="circle-check" size="sm" style="color: var(--brand); flex-shrink: 0" />
-            {{ item.label }}
-          </li>
-        </ul>
+    <!-- ╭─ Assurances ───────────────────────────────────────────────╮
+         Ruled rows, not a ledger: these are four flat claims with no
+         label/value split to hang a pointer on. -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block-sm">
+        <div class="wb-grid" data-cols="4">
+          <span v-for="item in trustItems" :key="item.label" class="wb-rule-row wb-row-lead">
+            <Icon name="circle-check" size="xs" class="wb-glyph" />
+            <span class="dk-value dk-num">{{ item.label }}</span>
+          </span>
+        </div>
       </div>
     </section>
 
-    <!-- 3. CAPABILITIES -->
-    <section class="border-b border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-5xl px-6 py-20">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Capabilities</p>
-        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-          Built for the <span style="color: var(--brand)">mission.</span>
-        </h2>
-        <p class="mt-4 max-w-xl text-[15px] leading-relaxed" style="color: var(--muted-foreground)">
-          Four core capabilities that make Auterion the platform of choice for autonomous defense operations.
-        </p>
+    <!-- ╭─ Capabilities ─────────────────────────────────────────────╮ -->
+    <section>
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">Capabilities</span>
+          <span class="dk-bracket">4 CORE CAPABILITIES</span>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">Built for the mission.</h2>
+          <p class="dk-body-lg wb-measure-text">
+            Four core capabilities that make Auterion the platform of choice for autonomous defense operations.
+          </p>
+        </div>
 
-        <div class="mt-10 grid gap-5 sm:grid-cols-2">
-          <div
-            v-for="cap in capabilities"
-            :key="cap.title"
-            class="rounded-xl border border-border bg-card p-6 hover:shadow-md transition-shadow"
-          >
-            <div
-              class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg"
-              style="background: color-mix(in oklch, var(--brand) 8%, transparent)"
-            >
-              <Icon :name="cap.icon" size="sm" style="color: var(--brand)" />
+        <div class="wb-grid" data-cols="2">
+          <div v-for="cap in capabilities" :key="cap.title" class="dk-card dk-lift wb-tile">
+            <div class="wb-tile-head">
+              <span class="wb-tile-mark"><Icon :name="cap.icon" size="xs" /></span>
             </div>
-            <div class="mb-px border-b-2" style="border-color: var(--brand); width: 2rem; margin-bottom: 0.75rem" />
-            <h3 class="text-[16px] font-medium" style="color: var(--foreground)">{{ cap.title }}</h3>
-            <p class="mt-2 text-[14px] leading-relaxed" style="color: var(--muted-foreground)">{{ cap.description }}</p>
+            <h3 class="dk-h2">{{ cap.title }}</h3>
+            <p class="dk-body">{{ cap.description }}</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 4. DEPLOYMENT DIAGRAM -->
-    <section class="border-b border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-5xl px-6 py-20">
-        <div class="grid items-center gap-14 lg:grid-cols-2">
+    <!-- ╭─ Architecture ─────────────────────────────────────────────╮ -->
+    <section class="wb-band wb-band-alt">
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">Architecture</span>
+          <span class="dk-bracket">1 HQ · 2 GCS · 3 VEHICLES</span>
+        </div>
+
+        <div class="wb-split wb-stack">
           <div>
-            <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Architecture</p>
-            <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-              Connected from HQ<br>to the <span style="color: var(--brand)">last node.</span>
-            </h2>
-            <p class="mt-4 text-[15px] leading-relaxed" style="color: var(--muted-foreground)">
-              A unified command architecture linking headquarters, ground control stations, and autonomous vehicles — all encrypted, all sovereign.
+            <h2 class="dk-h1">Connected from HQ to the last node.</h2>
+            <p class="dk-body-lg wb-measure-text wb-stack">
+              A unified command architecture linking headquarters, ground control stations, and autonomous
+              vehicles — all encrypted, all sovereign.
             </p>
           </div>
 
-          <!-- Network diagram SVG -->
-          <div class="rounded-xl border border-border bg-card p-6">
-            <svg viewBox="0 0 500 230" class="w-full" role="img" aria-label="Deployment network: HQ to vehicles via ground control stations">
+          <figure class="dk-card wb-figure">
+            <div class="wb-figure-bar">
+              <span class="dk-label">Deployment topology</span>
+              <span class="dk-bracket wb-push">6 NODES · 5 LINKS</span>
+            </div>
+            <div class="wb-figure-body">
+              <svg viewBox="0 0 500 232" class="w-full" role="img" aria-label="Deployment network: HQ to vehicles via ground control stations">
+                <g v-for="[a, b] in edges" :key="`${a}-${b}`">
+                  <line
+                    :x1="nodePos(a).x" :y1="nodePos(a).y"
+                    :x2="nodePos(b).x" :y2="nodePos(b).y"
+                    stroke="var(--dk-line)"
+                    stroke-width="1.5"
+                    stroke-dasharray="4 3"
+                  />
+                </g>
 
-              <!-- Connecting edges -->
-              <g v-for="[a, b] in edges" :key="`${a}-${b}`">
-                <line
-                  :x1="nodePos(a).x" :y1="nodePos(a).y"
-                  :x2="nodePos(b).x" :y2="nodePos(b).y"
-                  stroke-width="1.5"
-                  style="stroke: var(--brand)"
-                  opacity="0.35"
-                  stroke-dasharray="4 3"
-                />
-              </g>
+                <g v-for="n in nodes" :key="n.id">
+                  <circle
+                    v-if="n.primary"
+                    :cx="n.x" :cy="n.y" r="22"
+                    fill="none"
+                    stroke="var(--dk-line)"
+                    stroke-width="1"
+                  />
+                  <circle
+                    :cx="n.x" :cy="n.y"
+                    :r="n.primary ? 16 : 11"
+                    :fill="n.primary ? 'var(--dk-fg)' : 'var(--dk-bg)'"
+                    stroke="var(--dk-fg-3)"
+                    stroke-width="1.5"
+                  />
+                  <text
+                    :x="n.x"
+                    :y="n.primary ? n.y + 38 : n.y + 26"
+                    text-anchor="middle"
+                    class="dk-micro"
+                    :fill="n.primary ? 'var(--dk-fg)' : 'var(--dk-fg-3)'"
+                  >{{ n.label }}</text>
+                  <text
+                    v-if="n.primary"
+                    :x="n.x" :y="n.y + 3"
+                    text-anchor="middle"
+                    class="dk-micro"
+                    fill="var(--dk-bg)"
+                  >HQ</text>
+                </g>
+              </svg>
+            </div>
+          </figure>
+        </div>
+      </div>
+    </section>
 
-              <!-- Nodes -->
-              <g v-for="n in nodes" :key="n.id">
-                <!-- Outer ring for primary node -->
-                <circle
-                  v-if="n.primary"
-                  :cx="n.x" :cy="n.y" r="22"
-                  fill="none"
-                  style="stroke: var(--brand)"
-                  stroke-width="1"
-                  opacity="0.2"
-                />
-                <!-- Node circle -->
-                <circle
-                  :cx="n.x" :cy="n.y"
-                  :r="n.primary ? 16 : 11"
-                  :style="n.primary
-                    ? 'fill: var(--brand)'
-                    : 'fill: var(--card); stroke: var(--brand); stroke-width: 1.5'"
-                  :opacity="n.primary ? '1' : '0.85'"
-                />
-                <!-- Label -->
-                <text
-                  :x="n.x"
-                  :y="n.primary ? n.y + 38 : n.y + 26"
-                  text-anchor="middle"
-                  font-family="ui-monospace, monospace"
-                  font-size="9"
-                  :style="n.primary ? 'fill: var(--brand)' : 'fill: var(--muted-foreground)'"
-                  font-weight="600"
-                  letter-spacing="0.05em"
-                >{{ n.label }}</text>
-                <!-- Icon text for primary -->
-                <text
-                  v-if="n.primary"
-                  :x="n.x" :y="n.y + 4"
-                  text-anchor="middle"
-                  font-family="ui-monospace, monospace"
-                  font-size="9"
-                  fill="white"
-                  font-weight="700"
-                >HQ</text>
-              </g>
-            </svg>
+    <!-- ╭─ Measured facts ───────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block-sm">
+        <div class="dk-ledger">
+          <div
+            v-for="(f, i) in facts"
+            :key="f.label"
+            class="dk-ledger-cell"
+            :data-align="i === facts.length - 1 ? 'end' : undefined"
+          >
+            <span class="dk-pointer">{{ f.label }}</span>
+            <span class="wb-figure-num">{{ f.value }}</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 5. STATS DARK SECTION -->
-    <section style="background: #0d1117">
-      <div class="mx-auto max-w-5xl px-6 py-20">
-        <div class="grid grid-cols-3 gap-10 text-center">
-          <div>
-            <p class="text-5xl font-medium tabular-nums tracking-tight" style="color: var(--brand)">30+</p>
-            <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">Allied nations</p>
+    <!-- ╭─ Proof close ──────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-plate wb-cover">
+          <div class="wb-cover-copy">
+            <p class="dk-h2 dk-ghost">Get started</p>
+            <h2 class="dk-display">Ready to deploy?</h2>
           </div>
-          <div>
-            <p class="text-5xl font-medium tabular-nums tracking-tight" style="color: #e5e7eb">AES-256</p>
-            <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">Encryption standard</p>
+          <p class="dk-body-lg wb-cover-lede">
+            Defense programs are invite-only. Contact our team to discuss requirements and your operational environment.
+          </p>
+          <div class="wb-actions">
+            <button type="button" class="dk-cta-solid" @click="navigate('company')">
+              Request briefing <Icon name="arrow-right" size="xs" />
+            </button>
+            <button type="button" class="dk-cta" @click="navigate('developers')">View documentation</button>
           </div>
-          <div>
-            <p class="text-5xl font-medium tabular-nums tracking-tight" style="color: #e5e7eb">0</p>
-            <p class="mt-2 font-mono text-[11px] uppercase tracking-[0.12em]" style="color: #6b7280">Cloud required</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. CTA -->
-    <section class="border-t border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-5xl px-6 py-24 text-center">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Get started</p>
-        <h2 class="mt-4 text-4xl font-medium" style="color: var(--foreground)">
-          Ready to deploy?
-        </h2>
-        <p class="mx-auto mt-4 max-w-md text-[15px] leading-relaxed" style="color: var(--muted-foreground)">
-          Defense programs are invite-only. Contact our team to discuss requirements and your operational environment.
-        </p>
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Button size="lg" @click="navigate('company')">Request briefing</Button>
-          <Button size="lg" variant="ghost" @click="navigate('developers')">View documentation</Button>
         </div>
       </div>
     </section>

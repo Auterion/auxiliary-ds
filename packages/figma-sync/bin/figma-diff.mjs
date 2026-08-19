@@ -20,9 +20,11 @@
  *   --check   exit 1 when there is drift (for a session gate; CI cannot fetch)
  *   --json    emit the raw report instead of the formatted one
  *   --map     rename Figma collections onto contract names, e.g.
- *             --map Global=Primitives,Theme=Semantic
- *             Needed when a file's collections were renamed by hand; without it the
- *             report is three missing collections and nothing else.
+ *             --map Foundations=Global,Colours=Theme
+ *             The contract emits Global / Theme / Component, which is what the
+ *             auxiliary-ds file carries — so this is normally unnecessary. Reach for it
+ *             against a file whose collections were renamed by hand: without it the
+ *             report is N missing collections and nothing else.
  */
 import { readFileSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -65,7 +67,7 @@ if (!existsSync(actualPath)) {
 const expected = JSON.parse(readFileSync(expectedPath, 'utf8'));
 const rawActual = JSON.parse(readFileSync(actualPath, 'utf8'));
 
-/** --map Global=Primitives,Theme=Semantic → { Global: 'Primitives', Theme: 'Semantic' } */
+/** --map Foundations=Global,Colours=Theme → { Foundations: 'Global', Colours: 'Theme' } */
 const mapping = Object.fromEntries(
   (flag('map', '') || '')
     .split(',')

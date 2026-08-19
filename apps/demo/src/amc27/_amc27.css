@@ -1,0 +1,1180 @@
+/* AMC27 — "instrument frame"
+ * A redesign of the Auterion Mission Control desktop GCS.
+ *
+ * ── What was wrong with the incumbent, and what this layer does about it ────
+ *
+ * 1. THE CHROME WAS ISLANDS, NOT A FRAME. The incumbent floats six unrelated
+ *    control shapes on the video: grey circles, black label boxes, rounded
+ *    chips, two big saturated circles, a boxed telemetry cluster and a round
+ *    compass. Nothing shares an edge, a baseline or a radius, so the eye has
+ *    no structure to fall back on when the picture underneath moves.
+ *    → Here the video is FRAMED: an opaque command bar, two docked rails and
+ *      an instrument strip, all on ONE grid (`--a27-bar`, `--a27-rail-*`).
+ *      Exactly two things are still allowed to float over the picture — the
+ *      sensor status line and the PiP — because they belong to the picture.
+ *
+ * 2. COLOUR WAS DECORATION. Orange selector, blue link glyph, yellow and green
+ *    action circles, magenta reticle, red FPS, green TRACKING. In a cockpit
+ *    every one of those hues reads as a claim about severity, and none of them
+ *    was one.
+ *    → Signal budget: ink carries structure and state. The five-level ladder
+ *      (`--alarm … --nominal`) is spent ONLY on severity. `--brand` is spent
+ *      only on ownship/selection. Weapons state is the one alarm on the
+ *      surface, and it is guarded.
+ *
+ * 3. DEBUG TEXT SHIPPED TO AN OPERATOR. "FPS:19.0 Z:2.0 DEGRADED" in a
+ *    pixelated bitmap face, burned into the frame, with nowhere to acknowledge
+ *    it. → `.a27-osd` is a quiet mono status line; the degraded link is an
+ *    entry in an alert list with a level, a time and an ack.
+ *
+ * 4. NO WEIGHT WHERE IT MATTERS. Zoom ± and STRIKE were the same size in the
+ *    same corner. → `.a27-armed` / `.a27-engage` are the only heavy plates on
+ *    the surface, and they sit alone in a ruled section.
+ *
+ * ── House rules this layer is held to ──────────────────────────────────────
+ *   · No raw hex/rgb/oklch. Every colour resolves through a DS semantic token.
+ *     The one exception is the simulated sensor imagery and map raster in the
+ *     views' scoped blocks, which is photography standing in for a video
+ *     frame, not UI — labelled there.
+ *   · Hairlines, never drop shadows. The single shadow on the surface is the
+ *     OSD legibility shadow, which is load-bearing.
+ *   · One ladder per axis, named here, never improvised at a call site.
+ *   · Motion only on state change. Nothing draws in on load. Everything
+ *     collapses under `prefers-reduced-motion`.
+ *
+ * Namespaced `a27-`; sits alongside `dk-` (07b grammar), `amc-` (tablet GCS),
+ * `bp-` (Console) and `ix-` (Suite) without collision. Demo layer — NOT a
+ * tokens or recipe change.
+ */
+
+/* ═══ Ladders ══════════════════════════════════════════════════════════════
+ * Only the dimensions the design system has no opinion about. Radius,
+ * duration, easing, control height, spacing and every colour come from tokens.
+ */
+
+.a27 {
+  /* The console. 16:10 desktop, the aspect a GCS actually runs at. */
+  --a27-screen-w: 1400px;
+  --a27-screen-h: 875px;
+
+  /* The frame. One gutter, one bar height, two rail widths — every panel on
+   * every view steps to these, so changing the bar moves the whole surface. */
+  --a27-gap: 10px;
+  --a27-bar: 46px;
+  --a27-strip: 92px;
+  --a27-rail-l: 236px;
+  --a27-rail-r: 244px;
+
+  /* Control ladder. Two heights and no third: the row control and the dense
+   * control that lives inside another panel. */
+  --a27-ctl: var(--control-height-md);
+  --a27-ctl-sm: var(--control-height-sm);
+
+  /* Ink ramp. Three levels, derived from the theme's own foreground so all
+   * four themes (light · dark · sunlight · darknight) re-resolve together. */
+  --a27-ink: var(--foreground);
+  --a27-ink-2: var(--muted-foreground);
+  --a27-ink-3: color-mix(in oklab, var(--muted-foreground) 72%, transparent);
+
+  /* Surfaces. The chrome is opaque so it never competes with the picture. */
+  --a27-chrome: var(--card);
+  --a27-well: color-mix(in oklab, var(--foreground) 6%, var(--card));
+  --a27-line: var(--border);
+  --a27-line-2: color-mix(in oklab, var(--border) 55%, transparent);
+  --a27-rule: 1px;
+
+  /* The one glass, for the two things allowed to float on the picture. */
+  --a27-glass: color-mix(in oklab, var(--card) 82%, transparent);
+  --a27-glass-blur: 14px;
+
+  /* Motion. Register-aware: `operational` shortens all three. */
+  --a27-dur: var(--duration-fast);
+  --a27-ease: var(--ease-out);
+
+  /* DS components on this surface ring off the surface ink, not brand blue —
+   * a blue ring would be a second spend of the one signal colour. */
+  --ring: var(--foreground);
+}
+
+/* ═══ Stage ════════════════════════════════════════════════════════════════
+ * The desk the console sits on. Presentation chrome, deliberately not product.
+ */
+
+.a27-stage {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 92px 32px 104px;
+  background:
+    radial-gradient(90% 70% at 50% -10%, var(--card) 0%, var(--background) 60%);
+}
+
+.a27-console {
+  position: relative;
+  width: var(--a27-screen-w);
+  height: var(--a27-screen-h);
+  max-width: 100%;
+  display: grid;
+  grid-template-rows: var(--a27-bar) minmax(0, 1fr) var(--a27-strip);
+  overflow: hidden;
+  border: var(--a27-rule) solid var(--a27-line);
+  border-radius: var(--radius-md);
+  background: var(--background);
+  color: var(--a27-ink);
+}
+
+.a27-caption {
+  position: absolute;
+  left: 32px;
+  top: 28px;
+  user-select: none;
+}
+.a27-controls {
+  position: absolute;
+  right: 32px;
+  top: 24px;
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+}
+.a27-control-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+/* ═══ Type ═════════════════════════════════════════════════════════════════
+ * Four roles and no fifth. Measures are mono and tabular without exception —
+ * the incumbent sets airspeed in a proportional face next to a bitmap face,
+ * which is why its numbers jitter as they update.
+ */
+
+.a27-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: var(--font-weight-medium);
+  color: var(--a27-ink-2);
+  white-space: nowrap;
+}
+.a27-micro {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  color: var(--a27-ink-2);
+}
+/* A measured fact. Never proportional, never coloured except by the ladder. */
+.a27-meas {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-medium);
+  color: var(--a27-ink);
+}
+.a27-meas-lg {
+  font-size: 21px;
+  letter-spacing: -0.01em;
+  font-weight: var(--font-weight-semibold);
+}
+/* A name: a callsign, a command, a heading. Grotesque, because it is language. */
+.a27-name {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  line-height: 1.25;
+  font-weight: var(--font-weight-medium);
+  color: var(--a27-ink);
+}
+.a27-unit {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--a27-ink-3);
+  letter-spacing: 0.04em;
+}
+
+/* ═══ Frame parts ══════════════════════════════════════════════════════════ */
+
+.a27-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  height: var(--a27-bar);
+  background: var(--a27-chrome);
+  border-bottom: var(--a27-rule) solid var(--a27-line);
+}
+/* Bar cells are separated by the rule itself, not by padding — so the bar
+ * reads as a row of instruments rather than a soup of floating chips. */
+.a27-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-inline: 12px;
+  border-right: var(--a27-rule) solid var(--a27-line-2);
+}
+.a27-cell:last-child { border-right: none; }
+.a27-cell-grow { flex: 1; min-width: 0; }
+
+.a27-main {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--a27-rail-l) minmax(0, 1fr) var(--a27-rail-r);
+  min-height: 0;
+}
+/* A view that wants the full width (Plan) opts out of the rails. */
+.a27-main-wide { grid-template-columns: minmax(0, 1fr); }
+
+.a27-rail {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--a27-chrome);
+  overflow: hidden;
+}
+.a27-rail-left { border-right: var(--a27-rule) solid var(--a27-line); }
+.a27-rail-right { border-left: var(--a27-rule) solid var(--a27-line); }
+
+.a27-viewport {
+  position: relative;
+  overflow: hidden;
+  background: var(--background);
+}
+
+.a27-strip {
+  display: grid;
+  grid-template-columns: 148px minmax(0, 1fr) 300px;
+  height: var(--a27-strip);
+  background: var(--a27-chrome);
+  border-top: var(--a27-rule) solid var(--a27-line);
+}
+
+/* ═══ Sections ═════════════════════════════════════════════════════════════
+ * A rail is a stack of ruled sections. The rule between them IS the boundary —
+ * one line, never a line plus a gap plus a card edge.
+ */
+
+.a27-sec {
+  padding: 10px 12px;
+  border-bottom: var(--a27-rule) solid var(--a27-line-2);
+}
+.a27-sec:last-child { border-bottom: none; }
+.a27-sec-flex { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.a27-sec-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.a27-scroll {
+  overflow: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--a27-line) transparent;
+}
+
+/* ═══ Controls ═════════════════════════════════════════════════════════════ */
+
+/* The command row — the incumbent's naked circle plus a detached black label
+ * box, rejoined into one control. The hit target is the whole row, the label
+ * is inside it, and the hint sits under the label instead of nowhere. */
+.a27-cmd {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 8px;
+  text-align: left;
+  border: var(--a27-rule) solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--a27-ink);
+  cursor: pointer;
+  transition: background-color var(--a27-dur) var(--a27-ease),
+    border-color var(--a27-dur) var(--a27-ease);
+}
+.a27-cmd:hover { background: var(--a27-well); border-color: var(--a27-line); }
+.a27-cmd-glyph { display: grid; place-items: center; color: var(--a27-ink-2); }
+.a27-cmd:hover .a27-cmd-glyph { color: var(--a27-ink); }
+
+/* A square icon control. One radius, one border, two sizes. */
+.a27-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--a27-ctl);
+  height: var(--a27-ctl);
+  border: var(--a27-rule) solid var(--a27-line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--a27-ink);
+  cursor: pointer;
+  transition: background-color var(--a27-dur) var(--a27-ease),
+    border-color var(--a27-dur) var(--a27-ease);
+}
+.a27-btn:hover { background: var(--a27-well); }
+.a27-btn-sm { width: var(--a27-ctl-sm); height: var(--a27-ctl-sm); }
+.a27-btn-wide { width: auto; padding-inline: 10px; gap: 7px; }
+/* Selected state is INK — a filled well and a full-contrast rule. Tried a
+ * brand fill and rejected it: over a moving picture the selected zoom button
+ * became the loudest mark on the view, louder than the ownship it is
+ * subordinate to. */
+.a27-btn[data-active='true'] {
+  background: var(--a27-well);
+  border-color: var(--a27-ink);
+  color: var(--a27-ink);
+}
+
+/* A stack of buttons reading as one control (zoom ±, gimbal ±). Written as a
+ * modifier, not a flex utility: this layer is unlayered and would win anyway. */
+.a27-stack {
+  display: flex;
+  overflow: hidden;
+  border: var(--a27-rule) solid var(--a27-line);
+  border-radius: var(--radius-sm);
+}
+.a27-stack-v { flex-direction: column; }
+.a27-stack > button { border: 0; border-radius: 0; background: transparent; }
+.a27-stack > button + button { border-left: var(--a27-rule) solid var(--a27-line); }
+.a27-stack-v > button + button {
+  border-left: 0;
+  border-top: var(--a27-rule) solid var(--a27-line);
+}
+
+/* Segmented control — the surface's one view/mode picker. */
+.a27-seg {
+  display: inline-flex;
+  padding: 2px;
+  gap: 2px;
+  border: var(--a27-rule) solid var(--a27-line);
+  border-radius: var(--radius-sm);
+  background: var(--a27-chrome);
+}
+.a27-seg-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: calc(var(--radius-sm) - 1px);
+  background: transparent;
+  color: var(--a27-ink-2);
+  cursor: pointer;
+  transition: background-color var(--a27-dur) var(--a27-ease),
+    color var(--a27-dur) var(--a27-ease);
+}
+.a27-seg-btn:hover { color: var(--a27-ink); }
+.a27-seg-btn[data-active='true'] { background: var(--a27-well); color: var(--a27-ink); }
+
+/* ═══ Plates ═══════════════════════════════════════════════════════════════
+ * Two facts on this surface are consequential enough to be heavier than
+ * everything else, and no third one is: whether the aircraft is armed, and
+ * whether the payload is authorised to engage. Both are plates.
+ */
+
+.a27-plate {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: var(--a27-ctl);
+  padding-inline: 10px;
+  border: var(--a27-rule) solid var(--a27-line);
+  border-radius: var(--radius-sm);
+  background: var(--a27-well);
+}
+.a27-plate-armed {
+  border-color: var(--warning-emphasis);
+  color: var(--warning-emphasis);
+  background: color-mix(in oklab, var(--warning) 12%, transparent);
+}
+.a27-plate-safe { color: var(--a27-ink-2); }
+
+/* GuardedAction's root is an inline-flex `<span>` and its `class` prop lands on
+ * the button INSIDE that span. So a consumer that wants the control to fill a
+ * column has to stretch the span too — and its rules must be global, because a
+ * scoped selector never reaches a non-root element of a child component. */
+.a27-guard-block { display: flex; }
+.a27-guard-block > span { flex: 1; }
+.a27-guard-block > span > button { width: 100%; }
+
+/* The handheld's engage control, on the HUD's pill geometry. `!important` is
+ * the only lever a consumer has over a recipe's own sizing. */
+.a27-hh-strike {
+  height: var(--a27-touch, 44px) !important;
+  padding-inline: 16px !important;
+  border-radius: var(--radius-full) !important;
+}
+/* The tablet's two guarded controls, cut to the HUD's action discs so they sit
+ * in the fire stack without becoming rectangles in a column of circles. */
+.a27-tb-abort {
+  width: var(--a27-act-md) !important;
+  height: var(--a27-act-md) !important;
+  padding: 0 !important;
+  border-radius: var(--radius-full) !important;
+}
+.a27-tb-strike {
+  width: var(--a27-act-xl) !important;
+  height: var(--a27-act-xl) !important;
+  padding: 0 !important;
+  border-radius: var(--radius-full) !important;
+}
+/* Both sit inside `.a27-guard-block`, whose stretch rules are meant for a
+ * column-filling control; a disc must not stretch. */
+.a27-guard-block:has(.a27-tb-abort),
+.a27-guard-block:has(.a27-tb-strike) { display: block; }
+
+/* The mission abort: a WARNING on the reserved ladder, not an alarm. The DS
+ * guarded control ships one destructive variant and no ladder-aware one, so
+ * the level is applied here — see the note at its call site in MissionRail. */
+.a27-abort {
+  border: var(--a27-rule) solid var(--warning-emphasis) !important;
+  border-left-width: 2px !important;
+  color: var(--warning-emphasis) !important;
+  background: color-mix(in oklab, var(--warning) 10%, transparent) !important;
+}
+.a27-abort:hover { background: color-mix(in oklab, var(--warning) 20%, transparent) !important; }
+
+/* ═══ Well ═════════════════════════════════════════════════════════════════
+ * An inset field inside a section — the readout groups, the PiP mount. */
+
+.a27-well-box {
+  background: var(--a27-well);
+  border: var(--a27-rule) solid var(--a27-line-2);
+  border-radius: var(--radius-sm);
+}
+
+/* ═══ Field grid ═══════════════════════════════════════════════════════════
+ * label-over-value, in fixed slots. Every value in the surface starts on a
+ * slot boundary, so a number changing width never shifts its neighbours —
+ * the incumbent's cluster reflows as the numbers tick.
+ */
+
+.a27-fields {
+  display: grid;
+  grid-template-columns: repeat(var(--a27-cols, 2), minmax(0, 1fr));
+  gap: 1px;
+  background: var(--a27-line-2);
+  border: var(--a27-rule) solid var(--a27-line-2);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.a27-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 7px 9px;
+  background: var(--a27-chrome);
+  min-width: 0;
+}
+.a27-field-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* ═══ Severity ═════════════════════════════════════════════════════════════
+ * The ladder bound to a row's structure. State, never brand. Exempt from the
+ * signal budget and never dimmed to fit the palette.
+ */
+
+.a27-edge { border-left: 2px solid transparent; }
+.a27-edge-alarm { border-left-color: var(--alarm); }
+.a27-edge-warning { border-left-color: var(--warning); }
+.a27-edge-caution { border-left-color: var(--caution); }
+.a27-edge-advisory { border-left-color: var(--advisory); }
+.a27-edge-nominal { border-left-color: var(--nominal); }
+
+.a27-ink-alarm { color: var(--alarm-emphasis); }
+.a27-ink-warning { color: var(--warning-emphasis); }
+.a27-ink-caution { color: var(--caution-emphasis); }
+.a27-ink-advisory { color: var(--advisory-emphasis); }
+.a27-ink-nominal { color: var(--nominal-emphasis); }
+
+.a27-dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: currentcolor;
+}
+
+/* An alert row: severity rail, code, sentence, time. A grid, so the time
+ * column is a column and not wherever the sentence happened to end. */
+.a27-alert {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 2px 8px;
+  padding: 6px 8px 6px 9px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  transition: background-color var(--a27-dur) var(--a27-ease);
+}
+.a27-alert:hover { background: var(--a27-well); }
+
+/* ═══ Vehicle slot ═════════════════════════════════════════════════════════
+ * The fleet, once, in the command bar. Selection is a brand rule under the
+ * slot — the one non-status use of the signal colour, and it marks WHICH,
+ * never HOW BAD. The incumbent used a saturated orange fill for exactly this,
+ * which is indistinguishable from a caution at a glance.
+ */
+
+.a27-veh {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  padding-inline: 11px;
+  border: 0;
+  border-right: var(--a27-rule) solid var(--a27-line-2);
+  background: transparent;
+  color: var(--a27-ink-2);
+  cursor: pointer;
+  transition: background-color var(--a27-dur) var(--a27-ease),
+    color var(--a27-dur) var(--a27-ease);
+}
+.a27-veh:hover { background: var(--a27-well); color: var(--a27-ink); }
+.a27-veh[data-active='true'] { color: var(--a27-ink); background: var(--a27-well); }
+.a27-veh[data-active='true']::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--brand);
+}
+
+/* ═══ Over the picture ═════════════════════════════════════════════════════
+ * The two things that belong to the image rather than to the frame. */
+
+.a27-glass {
+  background: var(--a27-glass);
+  backdrop-filter: blur(var(--a27-glass-blur));
+  border: var(--a27-rule) solid color-mix(in oklab, var(--foreground) 18%, transparent);
+  border-radius: var(--radius-sm);
+  color: var(--a27-ink);
+}
+
+/* OSD burn-in sits directly on the sensor image with nothing behind it, so it
+ * carries a shadow. Load-bearing, not decoration — the only shadow here. */
+.a27-osd {
+  color: var(--a27-ink);
+  text-shadow: 0 1px 4px color-mix(in oklab, var(--color-primitive-ink-950) 88%, transparent);
+}
+
+/* Corner ticks — the surface's signature. A reticle motif borrowed from the
+ * sensor and used to mark the picture's live area without drawing a box round
+ * it. Decorative-structural; never carries state. */
+.a27-ticks::before,
+.a27-ticks::after {
+  content: '';
+  position: absolute;
+  z-index: 5;
+  width: 18px;
+  height: 18px;
+  border: var(--a27-rule) solid color-mix(in oklab, var(--foreground) 45%, transparent);
+  pointer-events: none;
+}
+.a27-ticks::before { left: 10px; top: 10px; border-right: 0; border-bottom: 0; }
+.a27-ticks::after { right: 10px; bottom: 10px; border-left: 0; border-top: 0; }
+
+/* ═══ Table ════════════════════════════════════════════════════════════════
+ * Plan view. Hairline heads, tabular body, sticky column heads. */
+
+.a27-table { width: 100%; border-collapse: collapse; }
+.a27-table th {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: var(--font-weight-medium);
+  color: var(--a27-ink-2);
+  text-align: left;
+  padding: 0 12px 7px;
+  position: sticky;
+  top: 0;
+  background: var(--background);
+  z-index: 1;
+}
+/* `border-collapse: collapse` drops a sticky cell's border, so the head's
+ * hairline is redrawn on the padding edge. Still one hairline, still --border. */
+.a27-table th::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  border-bottom: var(--a27-rule) solid var(--a27-line);
+}
+.a27-table td {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--a27-ink);
+  padding: 7px 12px;
+  border-bottom: var(--a27-rule) solid var(--a27-line-2);
+  vertical-align: middle;
+}
+.a27-table tbody tr { transition: background-color var(--a27-dur) var(--a27-ease); }
+.a27-table tbody tr:hover { background: var(--a27-well); }
+.a27-table tbody tr[data-current='true'] { background: var(--a27-well); }
+
+/* ═══ Handheld · the HUD idiom ═════════════════════════════════════════════
+ * The console frames the picture because a desk has room to spare. A handheld
+ * does not: framing a 932 × 430 screen with a bar, two rails and a strip would
+ * leave a postage stamp of video. So the handheld inverts the relationship —
+ * the picture is full-bleed and the controls float on it.
+ *
+ * The floating rules, borrowed from the shooter HUDs that solved this first
+ * (Call of Duty Mobile and its neighbours), and why each one is right for a
+ * ground control station too:
+ *
+ *   · THUMB ZONES. Two hands hold the device at the bottom corners. Every
+ *     control that gets used in flight sits inside `--a27-thumb` of a bottom
+ *     corner; the middle and the top are for LOOKING, not touching. This is
+ *     the one thing the incumbent desktop UI gets most wrong when it is put on
+ *     a tablet — its rails run down the left edge, where no thumb reaches.
+ *   · ONE PRIMARY, SATELLITES FANNED. Not a grid of equal buttons. The thing
+ *     you do constantly is big and under the thumb; the things you do
+ *     occasionally arc around it, smaller, further out.
+ *   · TRANSLUCENT, NOT PANELLED. A HUD control is a disc of ink over the
+ *     picture, not a card. Cards stack up and eat the frame.
+ *   · TARGETS, NOT PIXELS. 44 px is the floor; the primary is 76 px. Under
+ *     gloves and vibration the desktop's 28 px control is a miss.
+ *
+ * What does NOT change: the signal budget, the reserved ladder, the type
+ * roles, and every token this file already resolves. It is the same design
+ * system speaking at a different scale — not a second design.
+ */
+
+.a27-handheld {
+  /* The device: a phone in landscape, held two-handed. */
+  --a27-hh-w: 932px;
+  --a27-hh-h: 430px;
+
+  /* Touch ladder. Three sizes and no fourth. */
+  --a27-touch: 44px;
+  --a27-touch-lg: 56px;
+  --a27-touch-xl: 76px;
+
+  /* How far a fanned satellite sits from its primary, and how far into the
+   * screen a thumb comfortably reaches from the corner it grips. */
+  --a27-fan-r: 86px;
+  --a27-thumb: 230px;
+
+  /* HUD edge inset — one value, so nothing on the picture is hand-placed. */
+  --a27-hud-gap: 12px;
+}
+
+/* A HUD control. Disc, translucent ink, hairline, no shadow. */
+.a27-hud {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
+  width: var(--a27-touch);
+  height: var(--a27-touch);
+  padding: 0;
+  border: var(--a27-rule) solid color-mix(in oklab, var(--foreground) 26%, transparent);
+  border-radius: var(--radius-full);
+  background: color-mix(in oklab, var(--card) 72%, transparent);
+  backdrop-filter: blur(var(--a27-glass-blur));
+  color: var(--a27-ink);
+  cursor: pointer;
+  transition: background-color var(--a27-dur) var(--a27-ease),
+    border-color var(--a27-dur) var(--a27-ease), transform var(--a27-dur) var(--a27-ease);
+}
+.a27-hud:hover { background: color-mix(in oklab, var(--card) 92%, transparent); }
+.a27-hud:active { transform: scale(0.94); }
+.a27-hud-lg { width: var(--a27-touch-lg); height: var(--a27-touch-lg); }
+.a27-hud-xl { width: var(--a27-touch-xl); height: var(--a27-touch-xl); }
+/* A HUD control carrying words rather than a glyph stretches, keeping height. */
+.a27-hud-pill { width: auto; padding-inline: 14px; border-radius: var(--radius-full); }
+/* Engaged state is INK — a filled disc and a full-contrast rule. Same rule as
+ * the console: over a moving picture, a brand fill out-shouts the ownship. */
+.a27-hud[data-active='true'] {
+  background: color-mix(in oklab, var(--foreground) 88%, transparent);
+  border-color: var(--foreground);
+  color: var(--background);
+}
+/* The one HUD control that may carry the ladder: engage authority. */
+.a27-hud-alarm {
+  border-color: var(--alarm);
+  color: var(--alarm-emphasis);
+  background: color-mix(in oklab, var(--alarm) 22%, transparent);
+}
+.a27-hud-warning {
+  border-color: var(--warning-emphasis);
+  color: var(--warning-emphasis);
+  background: color-mix(in oklab, var(--warning) 18%, transparent);
+}
+
+/* A translucent readout strip — the top band and the bottom measure ribbon.
+ * Not a bar: it has no background of its own beyond the blur, and it never
+ * reserves height from the picture. */
+.a27-hud-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: var(--a27-rule) solid color-mix(in oklab, var(--foreground) 20%, transparent);
+  border-radius: var(--radius-full);
+  background: color-mix(in oklab, var(--card) 70%, transparent);
+  backdrop-filter: blur(var(--a27-glass-blur));
+}
+
+/* The fan. Satellites are absolutely placed around their primary by a per-item
+ * `--a27-a` angle, so adding one is a number and not a new layout. Closed, they
+ * collapse onto the primary and fade — the same motion in reverse. */
+/* The fan sets NO position of its own. This file is unlayered CSS and
+ * Tailwind's utilities live in @layer utilities, so a `position: relative`
+ * here would silently beat an `absolute` utility at the call site and drop
+ * both thumb clusters into the document flow. The dock modifier is what
+ * positions it, and `--a27-a` is what places each satellite. */
+.a27-fan-dock { position: absolute; }
+.a27-fan-item {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: calc(var(--a27-touch) / -2);
+  margin-top: calc(var(--a27-touch) / -2);
+  transform: translate(
+      calc(cos(var(--a27-a)) * var(--a27-fan-r)),
+      calc(sin(var(--a27-a)) * var(--a27-fan-r) * -1)
+    )
+    scale(1);
+  opacity: 1;
+  transition: transform var(--duration-base) var(--ease-out),
+    opacity var(--duration-base) var(--ease-out);
+}
+.a27-fan[data-open='false'] .a27-fan-item {
+  transform: translate(0, 0) scale(0.6);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* A sheet that rises from the bottom edge for anything not needed in the next
+ * two seconds — the alert list, the plan, the payload detail. On a handheld
+ * this replaces the console's rails entirely. */
+.a27-sheet {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  max-height: 78%;
+  display: flex;
+  flex-direction: column;
+  border-top: var(--a27-rule) solid var(--a27-line);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: color-mix(in oklab, var(--card) 94%, transparent);
+  backdrop-filter: blur(calc(var(--a27-glass-blur) * 1.5));
+  transition: transform var(--duration-base) var(--ease-out);
+}
+.a27-sheet[data-open='false'] { transform: translateY(100%); }
+.a27-sheet-grab {
+  width: 44px;
+  height: 4px;
+  margin: 8px auto 4px;
+  border-radius: var(--radius-full);
+  background: var(--a27-ink-3);
+}
+
+/* The device shell. A phone bezel, drawn with the same hairline as the
+ * console's frame — presentation chrome, not product. */
+.a27-device {
+  position: relative;
+  padding: 14px;
+  border: var(--a27-rule) solid var(--a27-line);
+  border-radius: 42px;
+  background: var(--card);
+}
+.a27-device-screen {
+  position: relative;
+  width: var(--a27-hh-w);
+  height: var(--a27-hh-h);
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 30px;
+  background: var(--background);
+  color: var(--a27-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a27-hud,
+  .a27-fan-item,
+  .a27-sheet { transition: none; }
+}
+
+/* ═══ Tablet · the HUD ═════════════════════════════════════════════════════
+ * The third device, and the one the incumbent screenshots actually describe:
+ * a rugged tablet flown two-handed in the field.
+ *
+ * The console and the handheld both FRAME the picture. This one does not
+ * frame anything — it is built on the convention set by mobile shooter HUDs
+ * (Call of Duty Mobile and its neighbours), which solved "one live world, two
+ * thumbs, no time to look away" long before anyone tried it on a ground
+ * control station. The documented conventions, and what each one becomes here:
+ *
+ *   · THE WORLD IS THE BACKGROUND. Not a panel, not a pane inside a frame —
+ *     the whole screen. For a GCS the world is the tactical map, so the map is
+ *     the ground layer and the sensor feed becomes the corner window, which is
+ *     the exact inverse of the desktop console. Tap it to swap the two.
+ *   · EVERYTHING ELSE OVERLAYS, SEMI-TRANSPARENT. A shooter HUD lets players
+ *     tune element opacity precisely because the scene has to stay readable
+ *     through the controls. `--a27-hud-veil` is that one number here.
+ *   · SIZE IS THE HIERARCHY. The joystick and the fire button are huge;
+ *     reload and grenade are medium; chat and settings are small. Nothing on a
+ *     HUD is the same size as anything else unless it matters the same amount.
+ *   · CORNERS ARE ASSIGNED, NOT AVAILABLE. Identity and score top-left, the
+ *     minimap in its corner, streaks down one edge, the movement stick
+ *     bottom-left, the action stack bottom-right, ammo and health bottom-centre.
+ *     Every one of those has a GCS equivalent, and they map cleanly.
+ *   · CONTEXT-SENSITIVE CONTROLS APPEAR AND LEAVE. A shooter shows "cancel
+ *     grenade" only while a grenade is cooking. Here: the strike control does
+ *     not exist until authority is armed, and the alert pill exists only while
+ *     something is latched.
+ *
+ * What does NOT come from the reference: the reserved severity ladder, the
+ * one-brand-colour budget, the mono tabular measures and every token. A game
+ * HUD can spend colour freely because nothing on it is a claim about safety.
+ * This surface cannot.
+ */
+
+.a27-tablet {
+  /* Rugged 12-inch tablet, landscape. */
+  --a27-tb-w: 1194px;
+  --a27-tb-h: 834px;
+
+  /* One inset for every HUD element, so nothing is hand-placed. */
+  --a27-hud-pad: 14px;
+
+  /* Size IS the hierarchy — four steps, and a control's step is decided by how
+   * much it matters, not by what fits. */
+  --a27-joy: 148px;      /* the stick: continuous, two-handed, always there */
+  --a27-act-xl: 92px;    /* fire: the one irreversible commit */
+  --a27-act-lg: 66px;    /* primary actions */
+  --a27-act-md: 54px;    /* secondary actions */
+  --a27-act-sm: 44px;    /* tertiary — the gloved-hand floor, never smaller */
+
+  /* The veil. One number for every overlay on this device, because the whole
+   * point is that the world stays readable through all of them at once. */
+  --a27-hud-veil: color-mix(in oklab, var(--card) 62%, transparent);
+  --a27-hud-veil-solid: color-mix(in oklab, var(--card) 88%, transparent);
+  --a27-hud-edge: color-mix(in oklab, var(--foreground) 22%, transparent);
+}
+
+.a27-tablet-screen {
+  position: relative;
+  width: var(--a27-tb-w);
+  height: var(--a27-tb-h);
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 22px;
+  background: var(--background);
+  color: var(--a27-ink);
+}
+
+/* ── The overlay surface ──────────────────────────────────────────────────
+ * Every strip, card and readout on this device is one of these. Blur plus a
+ * veiled fill plus a hairline — never an opaque panel, because an opaque
+ * panel on a HUD is a hole cut in the world. */
+.a27-hud-card {
+  border: var(--a27-rule) solid var(--a27-hud-edge);
+  border-radius: var(--radius-md);
+  background: var(--a27-hud-veil);
+  backdrop-filter: blur(var(--a27-glass-blur));
+  color: var(--a27-ink);
+}
+.a27-hud-card-solid { background: var(--a27-hud-veil-solid); }
+
+/* ── Action ───────────────────────────────────────────────────────────────
+ * A round HUD control. `--a27-act-*` decides which one; nothing else does. */
+.a27-act {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex-shrink: 0;
+  width: var(--a27-act-md);
+  height: var(--a27-act-md);
+  padding: 0;
+  border: var(--a27-rule) solid var(--a27-hud-edge);
+  border-radius: var(--radius-full);
+  background: var(--a27-hud-veil);
+  backdrop-filter: blur(var(--a27-glass-blur));
+  color: var(--a27-ink);
+  cursor: pointer;
+  transition: background-color var(--a27-dur) var(--a27-ease),
+    border-color var(--a27-dur) var(--a27-ease), transform var(--a27-dur) var(--a27-ease);
+}
+.a27-act:hover { background: var(--a27-hud-veil-solid); }
+.a27-act:active { transform: scale(0.94); }
+.a27-act-sm { width: var(--a27-act-sm); height: var(--a27-act-sm); }
+.a27-act-lg { width: var(--a27-act-lg); height: var(--a27-act-lg); }
+.a27-act-xl { width: var(--a27-act-xl); height: var(--a27-act-xl); }
+/* Engaged reads from across the cockpit, so it INVERTS. Still ink, never
+ * brand — a brand fill over a map out-shouts the ownship it is subordinate to. */
+.a27-act[data-active='true'] {
+  background: var(--a27-ink);
+  border-color: var(--a27-ink);
+  color: var(--background);
+}
+/* The two ladder-bearing actions on the device, and no third. */
+.a27-act-alarm {
+  border-color: var(--alarm);
+  color: var(--alarm-emphasis);
+  background: color-mix(in oklab, var(--alarm) 26%, transparent);
+}
+.a27-act-warning {
+  border-color: var(--warning-emphasis);
+  color: var(--warning-emphasis);
+  background: color-mix(in oklab, var(--warning) 20%, transparent);
+}
+.a27-act-label {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: currentcolor;
+  line-height: 1;
+}
+
+/* ── The stick ────────────────────────────────────────────────────────────
+ * The shooter's movement joystick; here, continuous gimbal slew. The largest
+ * thing on the device because it is the only control under a thumb the entire
+ * flight. */
+.a27-joy {
+  position: relative;
+  width: var(--a27-joy);
+  height: var(--a27-joy);
+  border-radius: var(--radius-full);
+  border: var(--a27-rule) solid var(--a27-hud-edge);
+  background: var(--a27-hud-veil);
+  backdrop-filter: blur(var(--a27-glass-blur));
+}
+.a27-joy-nub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 58px;
+  height: 58px;
+  transform: translate(-50%, -50%);
+  border-radius: var(--radius-full);
+  border: calc(var(--a27-rule) * 2) solid var(--a27-ink);
+  background: color-mix(in oklab, var(--card) 80%, transparent);
+}
+.a27-joy-tick {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  color: var(--a27-ink-2);
+}
+
+/* ── Full-screen overlay ──────────────────────────────────────────────────
+ * A shooter's scoreboard and loadout take the whole screen, veiled, and leave
+ * again. That is what the fleet, the alerts and the plan get here — not a
+ * docked rail and not a dragged sheet. */
+.a27-overlay {
+  position: absolute;
+  z-index: 46;
+  inset: var(--a27-hud-pad);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: var(--a27-rule) solid var(--a27-hud-edge);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--card) 93%, transparent);
+  backdrop-filter: blur(calc(var(--a27-glass-blur) * 2));
+  transition: opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+.a27-overlay[data-open='false'] {
+  opacity: 0;
+  transform: scale(0.985);
+  pointer-events: none;
+}
+.a27-overlay-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: var(--a27-rule) solid var(--a27-line);
+}
+
+/* ── Scrim ────────────────────────────────────────────────────────────────
+ * `--overlay` is the token that is black at fixed alpha in EVERY theme — a
+ * surface-derived scrim goes white-on-white in sunlight and floods darknight. */
+.a27-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: var(--overlay);
+  opacity: 0.5;
+  transition: opacity var(--duration-base) var(--ease-out);
+}
+/* A popover menu is a choice, not an interruption: its scrim is a tap-catcher
+ * that keeps the world readable underneath. Only the action sheet — which asks
+ * about flight termination — earns the full dim. */
+.a27-scrim-light { opacity: 0.2; }
+
+/* ── Touch menu (popover) ─────────────────────────────────────────────────
+ * What the incumbent's `Vehicle 2 ▾` and `Mission ▾` dropdowns become. A
+ * dropdown built for a mouse is a list of 22 px rows; this is a list of 54 px
+ * rows that each say what they will do. */
+.a27-menu {
+  position: absolute;
+  z-index: 50;
+  min-width: 268px;
+  overflow: hidden;
+  border: var(--a27-rule) solid var(--a27-line);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--card) 96%, transparent);
+  backdrop-filter: blur(calc(var(--a27-glass-blur) * 1.5));
+}
+.a27-menu-head {
+  padding: 10px 14px;
+  border-bottom: var(--a27-rule) solid var(--a27-line);
+}
+.a27-menu-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 54px;
+  padding: 9px 14px;
+  text-align: left;
+  border: 0;
+  border-bottom: var(--a27-rule) solid var(--a27-line-2);
+  background: transparent;
+  color: var(--a27-ink);
+  cursor: pointer;
+  transition: background-color var(--a27-dur) var(--a27-ease);
+}
+.a27-menu-row:last-child { border-bottom: 0; }
+.a27-menu-row:hover,
+.a27-menu-row:active,
+.a27-menu-row[data-active='true'] { background: var(--a27-well); }
+
+/* ── Action sheet ─────────────────────────────────────────────────────────
+ * For a small set of consequential choices — the incumbent's `Emergency ▾`.
+ * A menu lists what you can do; an action sheet asks which of these serious
+ * things you mean, blocks the world while it asks, and always offers the way
+ * out. */
+.a27-actions {
+  position: absolute;
+  z-index: 50;
+  left: 50%;
+  top: 50%;
+  width: 440px;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  border: var(--a27-rule) solid var(--a27-line);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--card) 97%, transparent);
+  backdrop-filter: blur(calc(var(--a27-glass-blur) * 1.5));
+}
+
+/* ── Touch control ────────────────────────────────────────────────────────
+ * The tablet's own rectangular control, for chips and overlay rows. The
+ * console's `--a27-ctl` is a mouse target and must not be reused here. */
+.a27-tb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex-shrink: 0;
+  min-width: var(--a27-act-sm);
+  height: var(--a27-act-sm);
+  padding-inline: 11px;
+  border: var(--a27-rule) solid var(--a27-hud-edge);
+  border-radius: var(--radius-md);
+  background: var(--a27-hud-veil);
+  backdrop-filter: blur(var(--a27-glass-blur));
+  color: var(--a27-ink);
+  cursor: pointer;
+  transition: background-color var(--a27-dur) var(--a27-ease),
+    border-color var(--a27-dur) var(--a27-ease);
+}
+.a27-tb-btn:hover,
+.a27-tb-btn:active { background: var(--a27-hud-veil-solid); }
+.a27-tb-btn[data-active='true'] { background: var(--a27-well); border-color: var(--a27-ink); }
+.a27-tb-btn-square { padding-inline: 0; width: var(--a27-act-sm); }
+
+/* ═══ Design notes ═════════════════════════════════════════════════════════
+ * The stage's annotation overlay. Presentation chrome for this demo only —
+ * it is not part of the product surface and is off by default.
+ */
+
+.a27-note {
+  position: absolute;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--brand);
+  color: var(--brand-foreground);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.a27-legend {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.a27-legend-row {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+}
+.a27-legend-n {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--brand);
+  color: var(--brand-foreground);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ═══ Liveness ═════════════════════════════════════════════════════════════
+ * "Recording" and "link live" are claims about right now, so the markers keep
+ * them. Not entrances, not decoration. */
+
+.a27-pulse { animation: a27-pulse 2.4s var(--ease-in-out) infinite; }
+@keyframes a27-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a27-pulse { animation: none; }
+  .a27-cmd,
+  .a27-btn,
+  .a27-seg-btn,
+  .a27-veh,
+  .a27-alert,
+  .a27-table tbody tr { transition: none; }
+}

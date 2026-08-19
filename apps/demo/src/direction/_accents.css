@@ -1,0 +1,91 @@
+/*
+ * The accent axis for the direction review.
+ *
+ * Orthogonal to direction, exactly as theme and register are to each other
+ * (AD-D-020). A candidate is a *language*; an accent is a *hue decision*. Held
+ * together they'd confound the review — if a candidate won you would not know
+ * whether it won on the language or on the colour — so the studio varies them
+ * independently and this layer applies to all three candidates.
+ *
+ * AD-D-010 ratified two directions, Mono and Ultramarine, and dropped amber
+ * because it collides with the caution/warning vocabulary. Sky and Teal are
+ * here as challengers, and Teal is here specifically because it is the one
+ * that fails: see the separation readout in the studio, which measures each
+ * accent against the reserved ladder in plain sight and under simulated
+ * dichromacy.
+ *
+ * STEPS ARE NOT EYEBALLED. `--primary` is a fill and `--primary-foreground` is
+ * ink on that fill, so every pair below clears 4.5:1 — measured with the
+ * repo's own contrastRatio() before being written here:
+ *
+ *   light ground (light · sunlight), white ink     dark ground (dark · darknight), ink ink
+ *   auterion-blue.600  5.01                        auterion-blue.400  7.38
+ *   sky.700            5.61                        sky.400            9.07
+ *   teal.700           5.16                        teal.400          10.61
+ *
+ * sky.600 (3.85) and teal.600 (3.50) do NOT clear it and are deliberately not
+ * used, which is why the light-ground steps are not uniform across families.
+ *
+ * `mono` sets nothing: it *is* the shipped default, where `--primary` resolves
+ * to a neutral and the status ladder is the only chromatic thing on screen.
+ *
+ * KNOWN WEAKNESS — SUNLIGHT SHARES THE LIGHT-GROUND STEP, AND PROBABLY SHOULDN'T
+ * -----------------------------------------------------------------------------
+ * The studio's separation matrix says every accent collapses toward `advisory`
+ * under `sunlight`: ultramarine 0.078, sky 0.037, teal 0.017 ΔEok at worst
+ * dichromacy, against 0.16–0.24 on the other three themes. The cause is
+ * structural, not accidental — `sunlight` is glare-hardened, so it darkens and
+ * desaturates advisory to oklch(0.45 0.085 224), which is the same lightness
+ * band these 600/700 steps sit in, roughly 20° away in hue.
+ *
+ * Fixing it means giving `sunlight` its own accent step rather than inheriting
+ * the light-ground one. That is not done here on purpose: it is a token
+ * decision, it belongs to whatever AD-D-010 becomes after the review, and
+ * shipping a quiet fix would hide the finding the studio exists to surface.
+ */
+
+/* ── Light grounds ─────────────────────────────────────────────────────────
+   One attribute (0,1,0). The dark-ground block below carries two and wins. */
+
+[data-accent='ultramarine'] {
+  --primary: var(--color-primitive-auterion-blue-600);
+  --primary-foreground: var(--color-primitive-mono-50);
+  --ring: var(--color-primitive-auterion-blue-600);
+}
+
+[data-accent='sky'] {
+  --primary: var(--color-primitive-sky-700);
+  --primary-foreground: var(--color-primitive-mono-50);
+  --ring: var(--color-primitive-sky-700);
+}
+
+[data-accent='teal'] {
+  --primary: var(--color-primitive-teal-700);
+  --primary-foreground: var(--color-primitive-mono-50);
+  --ring: var(--color-primitive-teal-700);
+}
+
+/* ── Dark grounds ─────────────────────────────────────────────────────────
+   A 600-step accent on a near-black card reads as a hole rather than an
+   action, so the fill lightens and the ink inverts. */
+
+[data-theme='dark'][data-accent='ultramarine'],
+[data-theme='darknight'][data-accent='ultramarine'] {
+  --primary: var(--color-primitive-auterion-blue-400);
+  --primary-foreground: var(--color-primitive-ink-950);
+  --ring: var(--color-primitive-auterion-blue-400);
+}
+
+[data-theme='dark'][data-accent='sky'],
+[data-theme='darknight'][data-accent='sky'] {
+  --primary: var(--color-primitive-sky-400);
+  --primary-foreground: var(--color-primitive-ink-950);
+  --ring: var(--color-primitive-sky-400);
+}
+
+[data-theme='dark'][data-accent='teal'],
+[data-theme='darknight'][data-accent='teal'] {
+  --primary: var(--color-primitive-teal-400);
+  --primary-foreground: var(--color-primitive-ink-950);
+  --ring: var(--color-primitive-teal-400);
+}

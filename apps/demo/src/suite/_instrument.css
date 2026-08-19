@@ -1,27 +1,141 @@
-/* Hallmark · macrostructure: Workbench (app console) · tone: utilitarian/technical · anchor hue: none (mono)
- * pre-emit critique: P5 H4 E4 S4 R5 V4
+/* Hallmark · macrostructure: Editorial (portfolio deck) · tone: measured/declarative · anchor hue: auterion blue (rationed)
+ * pre-emit critique: P5 H5 E5 S5 R5 V4
  *
- * "INSTRUMENT" — the Auterion Suite design language. A GCS/instrument panel
- * voice built ENTIRELY from the @auxiliary semantic tokens. Color appears only
- * on the five-level status ladder; everything else is neutral. These classes are
- * the cohesion anchor: every Suite view composes them rather than hand-rolling
- * panel/label/grid styling, so the parallel redesign stays one system.
+ * "INSTRUMENT" — WHAT IS LEFT OF IT.
  *
- * Namespaced `ix-` to avoid collision with the AMC / OS surfaces.
- * Token-locked: no inline hex/oklch — every value derives from a semantic var.
+ * Suite used to speak the INSTRUMENT voice: machined bezels with inset
+ * highlights, wide-tracked mono micro-labels, hanging section heads, a hover
+ * lift on a shadow. Suite now speaks DECK 07b (`.dk-*`, ../_deck07b.css) —
+ * an editorial language: hairlines instead of bezels, display type at tight
+ * negative tracking, mono pointer-labels, rationed blue, numerals hard right.
+ *
+ * A surface speaking two languages is the failure mode, so the Suite markup
+ * was migrated wholesale:
+ *
+ *     .ix-panel  → .dk-card        .ix-label   → .dk-label
+ *     .ix-head   → .dk-section     .ix-label-sm→ .dk-label / .dk-micro
+ *     .ix-active → [data-active]   .ix-lift    → .dk-lift  (hairline, no shadow)
+ *     .ix-plot   → .ix-grid        .ix-live    → retired (decorative motion)
+ *
+ * TWO devices survive in Suite because 07b has no answer for them and the
+ * surface genuinely needs them:
+ *
+ *   1. `.ix-edge-*` — the severity left-rail. 07b carries the status ladder as
+ *      dots and inks, but has no way to tie a level to a row's *structure*.
+ *   2. `.ix-grid`   — the chart baseline grid. 07b has no data-viz backdrop.
+ *
+ * Both are restated below in terms of the `--dk-*` ladders, so the page runs
+ * ONE ladder per axis, not two. The fallbacks in the `var()` calls are the
+ * pre-migration values, and exist only so the surfaces further down this file
+ * keep rendering outside a `.dk` root.
+ *
+ * NOT-YET-DEAD CSS: `.ix-panel`, `.ix-label`, `.ix-label-sm`, `.ix-head`,
+ * `.ix-active`, `.ix-lift`, `.ix-live` and `.ix-plot` have no callers left in
+ * `suite/`, but `amc/*.vue` (5 files) and `os/DeviceConsole.vue` still compose
+ * them and this stylesheet is imported globally from `main.ts`. Those
+ * directories are outside this change's write scope, so the rules stay, fenced
+ * off below. Delete the fence — and this note — once AMC and OS have migrated.
  */
 
-/* ── Panel: the machined bezel ─────────────────────────────────────────── */
+/* ═══ Kept · restated on the `--dk-*` ladders ══════════════════════════════ */
+
+/* Severity edge: ties the status ladder to structure. Two hairlines wide, so
+ * the rail steps to the same `--dk-rule` every other line on the page uses. */
+.ix-edge { border-left: calc(var(--dk-rule, 1px) * 2) solid transparent; }
+.ix-edge-alarm { border-left-color: var(--alarm); }
+.ix-edge-warning { border-left-color: var(--warning); }
+.ix-edge-caution { border-left-color: var(--caution); }
+.ix-edge-advisory { border-left-color: var(--advisory); }
+.ix-edge-nominal { border-left-color: var(--nominal); }
+
+/* Data-viz backdrop: a faint baseline grid behind charts, on the deck's own
+ * soft line ink so it can never drift from the hairlines around it. */
+.ix-grid {
+  background-image: repeating-linear-gradient(
+    to top,
+    var(--dk-line-2, color-mix(in oklab, var(--foreground) 7%, transparent)) 0 var(--dk-rule, 1px),
+    transparent var(--dk-rule, 1px) 25%
+  );
+}
+
+/* ═══ Shell gaps · the four rules 07b does not name ════════════════════════
+ * 07b is a page grammar; Suite is an app shell. `.dk-rule` draws a hairline on
+ * top of a block, `.dk-divide` draws one between stacked children — neither
+ * can rule the edge of a full-height rail or a fixed-height topbar. Same 1px,
+ * same `--dk-line`, no second ladder. */
+
+.ix-hair-t { border-top: var(--dk-rule) solid var(--dk-line); }
+.ix-hair-r { border-right: var(--dk-rule) solid var(--dk-line); }
+.ix-hair-b { border-bottom: var(--dk-rule) solid var(--dk-line); }
+
+/* The two quiet inks, as classes. 07b sets them inside `.dk-body`/`.dk-label`
+ * but never exposes them for an icon or an SVG stroke. (This is the same move
+ * `_console.css` makes with `.bp-ink-1|2|3`.) */
+.ix-ink-2 { color: var(--dk-fg-2); }
+.ix-ink-3 { color: var(--dk-fg-3); }
+
+/* `.dk-table` is `table-layout: fixed` and strictly aligned but stateless —
+ * 07b ships hover/selection on `.dk-row` (a grid), not on `<tr>`. Same values,
+ * same easing, same duration. */
+.ix-tr { cursor: pointer; transition: background-color var(--dk-dur) var(--dk-ease); }
+.ix-tr:hover { background: var(--dk-bg-2); }
+.ix-tr[data-selected='true'] { background: var(--dk-bg-2); }
+/* Column head that stays put while the roster scrolls under it. `border-collapse:
+ * collapse` drops a sticky cell's own border, so the hairline is redrawn as a
+ * pseudo-element on the cell's padding edge — still a hairline, still --dk-line. */
+.ix-sticky > th { position: sticky; top: 0; z-index: 1; background: var(--dk-bg); }
+.ix-sticky > th::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+
+/* Bare field input living inside a `.dk-cta` well (search boxes). */
+.ix-input {
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  font-size: 13px;
+  color: var(--dk-fg);
+  outline: none;
+}
+.ix-input::placeholder { color: var(--dk-fg-3); }
+
+/* Keycap for command affordances — mono, on the deck's small radius. Drawn in
+ * currentColor so it reads on the quiet CTA and on the solid ink one alike. */
+.ix-kbd {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  padding: 3px 5px;
+  border-radius: var(--dk-r-sm);
+  border: var(--dk-rule) solid color-mix(in oklab, currentColor 28%, transparent);
+  color: color-mix(in oklab, currentColor 68%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ix-tr { transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * ▼ FENCE · pre-07b INSTRUMENT rules. No callers in `suite/`. Retained only
+ *   for `amc/*.vue` and `os/DeviceConsole.vue`, which are outside this
+ *   change's write scope. Delete on their migration.
+ * ═════════════════════════════════════════════════════════════════════════ */
+
 .ix-panel {
   position: relative;
   border: 1px solid var(--border);
   background: var(--card);
   border-radius: 10px;
-  /* inner top highlight = a machined edge catching light */
   box-shadow: inset 0 1px 0 color-mix(in oklab, var(--foreground) 6%, transparent);
 }
 
-/* ── Micro-label: mono, uppercase, wide-tracked. The instrument voice. ──── */
 .ix-label {
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 10px;
@@ -32,8 +146,6 @@
 }
 .ix-label-sm { font-size: 9px; letter-spacing: 0.18em; }
 
-/* A section header: a mono label sitting on a hairline rule that runs to the
- * panel edge. Stack content BELOW — never a hanging tag-left/heading-right. */
 .ix-head {
   display: flex;
   align-items: center;
@@ -42,29 +154,8 @@
   border-bottom: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
 }
 
-/* ── Severity edge: ties the status ladder to structure. A 2px left rail. ── */
-.ix-edge { border-left: 2px solid transparent; }
-.ix-edge-alarm { border-left-color: var(--alarm); }
-.ix-edge-warning { border-left-color: var(--warning); }
-.ix-edge-caution { border-left-color: var(--caution); }
-.ix-edge-advisory { border-left-color: var(--advisory); }
-.ix-edge-nominal { border-left-color: var(--nominal); }
-
-/* ── Active/selected marker: bg fill only (non-status). ──────────────────────
- * No left rail, no ring — selection reads purely through bg-secondary fill +
- * the icon tinting to brand. Decoupled from ix-edge-* severity rails, so a
- * selected alarm row keeps its red edge and the fill together. */
 .ix-active {}
 
-/* ── Data-viz backdrop: faint baseline grid behind charts. ─────────────── */
-.ix-grid {
-  background-image: repeating-linear-gradient(
-    to top,
-    color-mix(in oklab, var(--foreground) 7%, transparent) 0 1px,
-    transparent 1px 25%
-  );
-}
-/* a coordinate cross-tick field (sparser), for map/plot regions */
 .ix-plot {
   background-image:
     linear-gradient(color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px),
@@ -72,7 +163,6 @@
   background-size: 32px 32px, 32px 32px;
 }
 
-/* ── Micro-interactions (≤3 primitives, transform/opacity, named easing). ─ */
 .ix-lift {
   transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -83,23 +173,10 @@
   box-shadow: 0 10px 30px -12px color-mix(in oklab, var(--foreground) 18%, transparent);
 }
 
-/* a steady "live" pulse for streaming indicators */
 .ix-live { animation: ix-live 2s ease-in-out infinite; }
 @keyframes ix-live {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
-}
-
-/* keycap for command affordances */
-.ix-kbd {
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 10px;
-  line-height: 1;
-  padding: 2px 5px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--secondary) 60%, transparent);
-  color: var(--muted-foreground);
 }
 
 @media (prefers-reduced-motion: reduce) {

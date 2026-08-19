@@ -201,10 +201,16 @@ Full procedure lives in the **`figma-sync` skill** (`.claude/skills/figma-sync/`
 - **Build the program:** `pnpm --filter @auxiliary/tokens build` then
   `pnpm --filter @auxiliary/figma-sync build` → `packages/figma-sync/dist/push.figma.js`
   (self-contained, data inlined; idempotent + atomic).
-- **What it pushes:** two Variable collections (Primitives ~395, Semantic ~31 × 4 theme
-  modes), **Effect Styles** (`shadow/*`), and **Text Styles** (`Type/*`, generated from the
+- **What it pushes:** three Variable collections named for the GTC tiers — `Global` (412,
+  one `Base` mode), `Theme` (53 × 4 theme modes), `Component` (152 × `sm`/`md`/`lg`) —
+  plus **Effect Styles** (`shadow/*`) and **Text Styles** (`Type/*`, generated from the
   `type/*` typography composites). Push summary:
   `{ collections, valuesSet, effectStyles, textStyles }`.
+- **Components too:** `dist/push-components.figma.js`, built from `@auxiliary/css`'s
+  generated `component-schema.json`. **Run it AFTER the token push** — every binding
+  addresses a variable by qualified name, and one that doesn't exist yet can't be bound.
+  Nine flat recipes, 88 variants, idempotent. Slotted recipes get schema coverage but no
+  generated component (a slotted frame tree can't be derived — Card is six Vue components).
 - **Gotcha — `use_figma` isn't always available.** The skill assumes a plugin-API Figma MCP
   (`use_figma` + `whoami`). In this environment the connected Figma MCP is often the
   **read-only Dev Mode** server (no `use_figma`/`whoami`). To actually write when that's the

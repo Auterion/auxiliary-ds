@@ -93,11 +93,11 @@ export function decodePull(raw) {
 /**
  * Rename collections on the Figma side to the names the contract uses.
  *
- * Needed the moment this tool met a real file: the exporter writes collections named
- * Primitives / Semantic / Component, while auxiliary-ds carries Global / Theme — someone
- * renamed them in Figma to match the GTC tiers. Without a mapping the comparator would
- * correctly, and uselessly, report three missing collections and ignore the 399
- * variables actually sitting there.
+ * The exporter now emits Global / Theme / Component, matching both the GTC tiers and the
+ * auxiliary-ds file, so the primary target needs no mapping. This stays because the
+ * mismatch it solves is generic: a file whose collections were renamed by hand reports
+ * as N missing collections plus every variable "new in Figma" — correct, and useless.
+ * One rename on the read side turns that back into a real diff.
  *
  * This renames only the collection, never a variable path, and only on the READ side —
  * it changes what we compare against, never the file.

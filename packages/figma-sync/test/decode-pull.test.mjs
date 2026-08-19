@@ -15,11 +15,11 @@ const doc = (over = {}) => ({
   more: false,
   collections: [
     {
-      name: 'Semantic',
+      name: 'Theme',
       modes: ['light', 'dark'],
       total: 2,
       rows: [
-        'background\tCOLOR\t@Primitives/color/base/white\t@Primitives/color/ink/950',
+        'background\tCOLOR\t@Global/color/base/white\t@Global/color/ink/950',
         'card\tCOLOR\t#ffffff\t#0d0e10',
       ],
     },
@@ -32,15 +32,15 @@ const doc = (over = {}) => ({
 describe('decodePull', () => {
   it('expands positional rows into the figma-native shape', () => {
     expect(decodePull(doc()).collections[0]).toEqual({
-      name: 'Semantic',
+      name: 'Theme',
       modes: ['light', 'dark'],
       variables: [
         {
           name: 'background',
           type: 'COLOR',
           valuesByMode: {
-            light: { alias: 'Primitives/color/base/white' },
-            dark: { alias: 'Primitives/color/ink/950' },
+            light: { alias: 'Global/color/base/white' },
+            dark: { alias: 'Global/color/ink/950' },
           },
         },
         { name: 'card', type: 'COLOR', valuesByMode: { light: '#ffffff', dark: '#0d0e10' } },
@@ -52,7 +52,7 @@ describe('decodePull', () => {
     const d = doc({
       collections: [
         {
-          name: 'Primitives',
+          name: 'Global',
           modes: ['Base'],
           total: 3,
           rows: ['spacing/4\tFLOAT\t16', 'font/weight\tSTRING\t0080', 'flag/on\tBOOLEAN\ttrue'],
@@ -68,7 +68,7 @@ describe('decodePull', () => {
 
   it('treats an empty cell as a mode genuinely unset, not as empty string', () => {
     const d = doc({
-      collections: [{ name: 'Semantic', modes: ['light', 'dark'], total: 1, rows: ['x\tCOLOR\t#fff\t'] }],
+      collections: [{ name: 'Theme', modes: ['light', 'dark'], total: 1, rows: ['x\tCOLOR\t#fff\t'] }],
     });
     expect(decodePull(d).collections[0].variables[0].valuesByMode).toEqual({ light: '#fff' });
   });
@@ -76,7 +76,7 @@ describe('decodePull', () => {
   it('round-trips tabs and backslashes in names', () => {
     const d = doc({
       collections: [
-        { name: 'Primitives', modes: ['Base'], total: 1, rows: ['odd\\tname\\\\x\tSTRING\tv'] },
+        { name: 'Global', modes: ['Base'], total: 1, rows: ['odd\\tname\\\\x\tSTRING\tv'] },
       ],
     });
     expect(decodePull(d).collections[0].variables[0].name).toBe('odd\tname\\x');
@@ -85,7 +85,7 @@ describe('decodePull', () => {
   it('preserves a dangling alias marker rather than smoothing it over', () => {
     const d = doc({
       collections: [
-        { name: 'Semantic', modes: ['light'], total: 1, rows: ['x\tCOLOR\t@UNRESOLVED:VariableID:9:9'] },
+        { name: 'Theme', modes: ['light'], total: 1, rows: ['x\tCOLOR\t@UNRESOLVED:VariableID:9:9'] },
       ],
     });
     expect(decodePull(d).collections[0].variables[0].valuesByMode.light).toEqual({
@@ -123,19 +123,19 @@ describe('mapCollectionNames', () => {
         ],
       }),
     );
-    const mapped = mapCollectionNames(decoded, { Theme: 'Semantic', Global: 'Primitives' });
-    expect(mapped.collections[0].name).toBe('Semantic');
+    const mapped = mapCollectionNames(decoded, { Theme: 'Theme', Global: 'Global' });
+    expect(mapped.collections[0].name).toBe('Theme');
     // The alias is collection-qualified too — renaming only the collection would leave
     // every alias pointing at a name that no longer exists, reporting all of them changed.
     expect(mapped.collections[0].variables[0].valuesByMode.light).toEqual({
-      alias: 'Primitives/color/base/white',
+      alias: 'Global/color/base/white',
     });
   });
 
   it('leaves unmapped collections and literal values alone', () => {
     const decoded = decodePull(doc());
-    const mapped = mapCollectionNames(decoded, { Global: 'Primitives' });
-    expect(mapped.collections[0].name).toBe('Semantic');
+    const mapped = mapCollectionNames(decoded, { Global: 'Global' });
+    expect(mapped.collections[0].name).toBe('Theme');
     expect(mapped.collections[0].variables[1].valuesByMode.light).toBe('#ffffff');
   });
 

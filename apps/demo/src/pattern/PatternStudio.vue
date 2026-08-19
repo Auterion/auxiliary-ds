@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, reactive, watch, ref, nextTick } from 'vue';
+import { computed, onMounted, onBeforeUnmount, reactive, watch, ref, nextTick } from 'vue';
 import p5 from 'p5';
+import './_pattern.css';
 
 /* ---------- palettes (from @auxiliary/tokens — blue ramp, cadet oklch→hex, ink, field) ---------- */
 const PALETTES: Record<string, { tones: string[]; accent: string; ground: string }> = {
@@ -29,16 +30,19 @@ function ramp(tones: string[], i: number): string {
 
 const W = 760, H = 960;
 
-const GEOMS = [
+/** A pickable option in one of the three choice wells. */
+type Option = { v: string; label: string };
+
+const GEOMS: Option[] = [
   { v: 'tri', label: 'Triangles' }, { v: 'square', label: 'Squares' }, { v: 'shard', label: 'Shards' },
   { v: 'logo', label: 'Logo' }, { v: 'mash', label: 'Mash' }, { v: 'insignia', label: 'Insignia' },
   { v: 'mil', label: 'Military' }, { v: 'tricamo', label: 'Tri Camo' }, { v: 'three', label: 'Three' }, { v: 'swarm', label: 'Swarm' },
 ];
-const PAL_OPTS = [
+const PAL_OPTS: Option[] = [
   { v: 'blue', label: 'Blue' }, { v: 'cadet', label: 'Cadet' }, { v: 'ink', label: 'Ink' },
   { v: 'mixed', label: 'Mixed' }, { v: 'field', label: 'Field' },
 ];
-const LOGO_OPTS = [
+const LOGO_OPTS: Option[] = [
   { v: 'none', label: 'None' }, { v: 'emerge', label: 'Emerge' }, { v: 'mark', label: 'Mark' },
   { v: 'knockout', label: 'Knock' }, { v: 'scatter', label: 'Scatter' },
 ];
@@ -46,7 +50,30 @@ const LOGO_OPTS = [
 const cfg = reactive({ geom: 'three', palette: 'blue', logo: 'none' });
 const params = reactive({ cell: 30, acc: 0.06, step: 7, rl: 0.34, rt: 0.24, rd: 0.14, fr: 0.55, logon: 18, tile: true, micro: true, lift: false, seed: 1024 });
 
-const PRESETS = [
+/**
+ * A named starting point. `geom`/`palette`/`logo`/`cell`/`acc` are set by every
+ * preset; the rest are optional overrides and fall back to the defaults in
+ * `applyPreset`. Declaring that here — rather than leaving the array `as const`
+ * and reaching into it through `any` — is what lets `pr.rl` be read at all: on a
+ * union of literal object types, a key that only some members carry is not
+ * readable, which is exactly the shape the `any` was papering over.
+ */
+type Preset = {
+  readonly name: string;
+  readonly label: string;
+  readonly geom: string;
+  readonly palette: string;
+  readonly logo: string;
+  readonly cell: number;
+  readonly acc: number;
+  readonly rl?: number;
+  readonly rt?: number;
+  readonly rd?: number;
+  readonly logon?: number;
+  readonly micro?: boolean;
+};
+
+const PRESETS: readonly Preset[] = [
   { name: 'insignia-blue', label: 'Insignia·Blue', geom: 'insignia', palette: 'blue', logo: 'none', cell: 30, acc: 0.05, micro: false },
   { name: 'insignia-cadet', label: 'Insignia·Cadet', geom: 'insignia', palette: 'cadet', logo: 'none', cell: 30, acc: 0.05, micro: false },
   { name: 'camo-blue', label: 'Camo·Blue', geom: 'tri', palette: 'blue', logo: 'none', cell: 24, acc: 0.06, micro: false },
@@ -62,9 +89,26 @@ const PRESETS = [
   { name: 'scatter-blue', label: 'Scatter·Blue', geom: 'three', palette: 'blue', logo: 'scatter', logon: 24, cell: 30, acc: 0.06, micro: false },
   { name: 'swarm-blue', label: 'Swarm·Blue', geom: 'swarm', palette: 'blue', logo: 'none', cell: 26, acc: 0.07, micro: false },
   { name: 'tricamo-field', label: 'TriCamo·Field', geom: 'tricamo', palette: 'field', logo: 'none', cell: 22, acc: 0.04, rl: 0.5, rt: 0.3, rd: 0.16, micro: true },
-] as const;
+];
 
-const SLIDERS = [
+/**
+ * The numeric axes of `params` that get a slider. Naming the union here is the
+ * whole type contract of the parameter ledger: `params[s.id]` is checked against
+ * the reactive object, so a slider whose `id` drifts from `params` is a compile
+ * error rather than a control that silently does nothing.
+ */
+type SliderId = 'cell' | 'acc' | 'step' | 'logon' | 'rl' | 'rt' | 'rd';
+type Slider = {
+  readonly id: SliderId;
+  readonly label: string;
+  readonly min: number;
+  readonly max: number;
+  readonly step: number;
+  /** integer axis — shown without decimals */
+  readonly int: boolean;
+};
+
+const SLIDERS: readonly Slider[] = [
   { id: 'cell', label: 'Cell size', min: 12, max: 90, step: 2, int: true },
   { id: 'acc', label: 'Accent rarity', min: 0, max: 0.35, step: 0.01, int: false },
   { id: 'step', label: 'Tone steps', min: 3, max: 7, step: 1, int: true },
@@ -72,7 +116,22 @@ const SLIDERS = [
   { id: 'rl', label: 'Repeat left', min: 0, max: 0.92, step: 0.01, int: false },
   { id: 'rt', label: 'Repeat up', min: 0, max: 0.92, step: 0.01, int: false },
   { id: 'rd', label: 'Repeat diagonal', min: 0, max: 0.92, step: 0.01, int: false },
-] as const;
+];
+
+/* The readout and the write-back, so the template carries no cast and no
+ * parse. A non-numeric input value is dropped rather than poisoning `params`
+ * with NaN, which would take the whole sketch down to a blank canvas. */
+function readSlider(s: Slider): string {
+  const v = params[s.id];
+  return s.int ? String(v) : v.toFixed(2);
+}
+function writeSlider(id: SliderId, event: Event): void {
+  const el = event.target;
+  if (!(el instanceof HTMLInputElement)) return;
+  const v = Number.parseFloat(el.value);
+  if (Number.isNaN(v)) return;
+  params[id] = v;
+}
 
 const holder = ref<HTMLElement | null>(null);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -427,13 +486,11 @@ function makeSketch() {
 
 function redrawNow() { if (inst) inst.redraw(); }
 
-function applyPreset(pr: typeof PRESETS[number]) {
+function applyPreset(pr: Preset) {
   cfg.geom = pr.geom; cfg.palette = pr.palette; cfg.logo = pr.logo;
   params.cell = pr.cell; params.acc = pr.acc;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const any = pr as any;
-  params.rl = any.rl ?? 0.34; params.rt = any.rt ?? 0.24; params.rd = any.rd ?? 0.14;
-  params.micro = !!any.micro; params.logon = any.logon ?? 18;
+  params.rl = pr.rl ?? 0.34; params.rt = pr.rt ?? 0.24; params.rd = pr.rd ?? 0.14;
+  params.micro = pr.micro ?? false; params.logon = pr.logon ?? 18;
 }
 function regenerate() { params.seed = Math.floor(Math.random() * 99999); }
 function savePng() { if (inst) inst.saveCanvas('auxiliary-' + cfg.geom + '-' + cfg.palette + '-' + params.seed, 'png'); }
@@ -449,107 +506,216 @@ async function exportSheet() {
 watch([cfg, params], redrawNow, { deep: true });
 onMounted(() => { inst = new p5(makeSketch()); });
 onBeforeUnmount(() => { inst?.remove?.(); inst = null; });
+
+/* ── Chrome ───────────────────────────────────────────────────────────────
+ * One attribute drives BOTH layers: `.dk` keys its palette off [data-theme],
+ * exactly as the DS semantic tokens do, so the deck grammar and anything
+ * semantic can never re-resolve out of step. There is no second mode axis.
+ * The exposure is chrome only — the sketch paints its own ramps and is
+ * identical in either. */
+const THEMES = ['dark', 'light'] as const;
+const theme = ref<typeof THEMES[number]>('dark');
+
+const labelOf = (opts: Option[], v: string) => opts.find((o) => o.v === v)?.label ?? v;
+
+/* Measured facts, counted from the sketch's own inputs rather than typed, so
+ * the bracket cannot go stale against the plate beside it. */
+const toneCount = computed(() => {
+  const P = PALETTES[cfg.palette];
+  return P ? Math.min(P.tones.length, params.step) : params.step;
+});
+const exhibit = computed(
+  () => `${W} × ${H} px · ${toneCount.value} tones · seed ${params.seed}`,
+);
+/* A spread caption names what the block IS — study context, which is precisely
+ * what a plate room is. It is not a measured fact, so it takes no brackets. */
+const caption = computed(
+  () => `${labelOf(GEOMS, cfg.geom)} on ${labelOf(PAL_OPTS, cfg.palette)}`
+    + ` — logo ${labelOf(LOGO_OPTS, cfg.logo)}${params.tile ? ' · seamless' : ''}`,
+);
 </script>
 
 <template>
-  <div data-theme="dark" class="flex min-h-dvh bg-background text-foreground">
-    <!-- control panel -->
-    <aside class="w-[300px] shrink-0 overflow-y-auto border-r border-border bg-card px-5 py-6 [scrollbar-width:thin]">
-      <div class="border-b-2 border-primary pb-4">
-        <div class="font-display text-[15px] leading-tight text-foreground">Auxiliary</div>
-        <div class="mt-1 text-[9.5px] uppercase tracking-[0.22em] text-muted-foreground">Brand Pattern Generator</div>
+  <!-- One attribute, two layers: [data-theme] resolves the `--dk-*` palette and
+       the DS semantic tokens together. No second mode axis on this surface. -->
+  <div :data-theme="theme" class="dk ps-root">
+    <!-- ╭─ Parameter rail — a ledger, not a stack of widgets ─────────────╮ -->
+    <aside class="ps-rail" aria-label="Pattern parameters">
+      <!-- The view's ONE signal surface: the mark the generator scatters,
+           shown once at full strength. Everything else is ink. -->
+      <div class="ps-brand">
+        <span class="ps-mark dk-plate-signal">
+          <svg viewBox="0 0 380 380" aria-hidden="true"><path :d="LOGO_D" fill="currentColor" /></svg>
+        </span>
+        <span class="ps-tight">
+          <span class="dk-value">Auxiliary</span>
+          <span class="dk-label">Brand pattern generator</span>
+        </span>
       </div>
 
-      <div class="mt-5 space-y-1.5">
-        <div class="text-[9.5px] uppercase tracking-[0.2em] text-muted-foreground">Geometry</div>
-        <div class="flex flex-wrap gap-1">
-          <button
-v-for="g in GEOMS" :key="g.v" type="button"
-            class="min-w-[54px] flex-auto border px-1.5 py-2 text-[10px] uppercase tracking-[0.1em] transition-colors"
-            :class="cfg.geom === g.v ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-background text-muted-foreground hover:text-foreground'"
-            @click="cfg.geom = g.v">{{ g.label }}</button>
+      <section class="ps-block">
+        <div class="dk-section">
+          <span class="dk-label">Geometry</span>
+          <span class="dk-bracket">{{ GEOMS.length }} forms</span>
         </div>
-      </div>
-
-      <div class="mt-5 space-y-1.5">
-        <div class="text-[9.5px] uppercase tracking-[0.2em] text-muted-foreground">Palette</div>
-        <div class="flex flex-wrap gap-1">
+        <div class="ps-choice ps-choice-3" role="group" aria-label="Geometry">
           <button
-v-for="pp in PAL_OPTS" :key="pp.v" type="button"
-            class="min-w-[54px] flex-auto border px-1.5 py-2 text-[10px] uppercase tracking-[0.1em] transition-colors"
-            :class="cfg.palette === pp.v ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-background text-muted-foreground hover:text-foreground'"
-            @click="cfg.palette = pp.v">{{ pp.label }}</button>
+            v-for="g in GEOMS"
+            :key="g.v"
+            type="button"
+            class="dk-segment-btn"
+            :data-active="cfg.geom === g.v"
+            :aria-pressed="cfg.geom === g.v"
+            @click="cfg.geom = g.v"
+          >{{ g.label }}</button>
         </div>
-      </div>
+      </section>
 
-      <div class="mt-5 space-y-1.5">
-        <div class="text-[9.5px] uppercase tracking-[0.2em] text-muted-foreground">Logo</div>
-        <div class="flex flex-wrap gap-1">
+      <section class="ps-block">
+        <div class="dk-section">
+          <span class="dk-label">Palette</span>
+          <span class="dk-bracket">{{ PAL_OPTS.length }} ramps</span>
+        </div>
+        <div class="ps-choice ps-choice-3" role="group" aria-label="Palette">
           <button
-v-for="lo in LOGO_OPTS" :key="lo.v" type="button"
-            class="min-w-[52px] flex-auto border px-1.5 py-2 text-[10px] uppercase tracking-[0.1em] transition-colors"
-            :class="cfg.logo === lo.v ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-background text-muted-foreground hover:text-foreground'"
-            @click="cfg.logo = lo.v">{{ lo.label }}</button>
+            v-for="pp in PAL_OPTS"
+            :key="pp.v"
+            type="button"
+            class="dk-segment-btn"
+            :data-active="cfg.palette === pp.v"
+            :aria-pressed="cfg.palette === pp.v"
+            @click="cfg.palette = pp.v"
+          >{{ pp.label }}</button>
         </div>
-      </div>
+      </section>
 
-      <div class="mt-5 space-y-1.5">
-        <div class="text-[9.5px] uppercase tracking-[0.2em] text-muted-foreground">Presets</div>
-        <div class="flex flex-wrap gap-1">
+      <section class="ps-block">
+        <div class="dk-section">
+          <span class="dk-label">Logo</span>
+          <span class="dk-bracket">{{ LOGO_OPTS.length }} modes</span>
+        </div>
+        <div class="ps-choice ps-choice-3" role="group" aria-label="Logo treatment">
           <button
-v-for="pr in PRESETS" :key="pr.name" type="button"
-            class="flex-[1_1_46%] border border-border bg-background px-1.5 py-2 text-[10px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground"
-            @click="applyPreset(pr)">{{ pr.label }}</button>
+            v-for="lo in LOGO_OPTS"
+            :key="lo.v"
+            type="button"
+            class="dk-segment-btn"
+            :data-active="cfg.logo === lo.v"
+            :aria-pressed="cfg.logo === lo.v"
+            @click="cfg.logo = lo.v"
+          >{{ lo.label }}</button>
         </div>
-      </div>
+      </section>
 
-      <div class="mt-5 space-y-3">
-        <div class="text-[9.5px] uppercase tracking-[0.2em] text-muted-foreground">Controls</div>
-        <div v-for="s in SLIDERS" :key="s.id" class="space-y-1">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] uppercase tracking-[0.06em] text-foreground">{{ s.label }}</span>
-            <span class="font-mono text-[10px] tabular-nums text-primary">{{ s.int ? (params as any)[s.id] : (params as any)[s.id].toFixed(2) }}</span>
+      <section class="ps-block">
+        <div class="dk-section">
+          <span class="dk-label">Presets</span>
+          <span class="dk-bracket">{{ PRESETS.length }} plates</span>
+        </div>
+        <!-- Actions, not a toggle group: a preset writes the whole parameter
+             set and then stops being a state, so no `aria-pressed`. -->
+        <div class="ps-choice" role="group" aria-label="Presets">
+          <button
+            v-for="pr in PRESETS"
+            :key="pr.name"
+            type="button"
+            class="dk-segment-btn"
+            :title="pr.label"
+            @click="applyPreset(pr)"
+          >{{ pr.label }}</button>
+        </div>
+      </section>
+
+      <!-- ═══ The ledger proper — pointer-label left, value hard right ═══ -->
+      <section class="ps-block">
+        <div class="dk-section">
+          <span class="dk-label">Parameters</span>
+          <span class="dk-bracket">{{ SLIDERS.length }} axes</span>
+        </div>
+        <div class="ps-params">
+          <div v-for="s in SLIDERS" :key="s.id" class="ps-param">
+            <label class="dk-pointer" :for="`ps-${s.id}`">{{ s.label }}</label>
+            <span class="dk-value dk-num">{{ readSlider(s) }}</span>
+            <input
+              :id="`ps-${s.id}`"
+              type="range"
+              class="ps-range"
+              :min="s.min"
+              :max="s.max"
+              :step="s.step"
+              :value="params[s.id]"
+              @input="writeSlider(s.id, $event)"
+            >
           </div>
-          <input
-type="range" class="ax-range w-full" :min="s.min" :max="s.max" :step="s.step"
-            :value="(params as any)[s.id]" @input="(params as any)[s.id] = parseFloat(($event.target as HTMLInputElement).value)" />
         </div>
-      </div>
+      </section>
 
-      <div class="mt-5 space-y-2 text-[10px] uppercase tracking-[0.08em]">
-        <label class="flex cursor-pointer items-center gap-2"><input v-model="params.tile" type="checkbox" class="accent-[var(--color-primary)]" /> Seamless tile</label>
-        <label class="flex cursor-pointer items-center gap-2"><input v-model="params.micro" type="checkbox" class="accent-[var(--color-primary)]" /> Micro-noise <span class="text-muted-foreground">(military)</span></label>
-        <label class="flex cursor-pointer items-center gap-2"><input v-model="params.lift" type="checkbox" class="accent-[var(--color-primary)]" /> Logo lift <span class="text-muted-foreground">(peek)</span></label>
-        <div class="flex items-center gap-2 pt-1">
-          <span class="text-foreground">Seed</span>
-          <input v-model.number="params.seed" type="number" class="w-full border border-border bg-background px-2 py-1.5 font-mono text-[11px] normal-case text-foreground" />
+      <section class="ps-block">
+        <div class="dk-section">
+          <span class="dk-label">Options</span>
         </div>
-      </div>
+        <div class="ps-params">
+          <label class="ps-param ps-param-check">
+            <span class="dk-pointer">Seamless tile</span>
+            <input v-model="params.tile" type="checkbox" class="ps-check">
+          </label>
+          <label class="ps-param ps-param-check">
+            <span class="dk-pointer">Micro-noise · military</span>
+            <input v-model="params.micro" type="checkbox" class="ps-check">
+          </label>
+          <label class="ps-param ps-param-check">
+            <span class="dk-pointer">Logo lift · peek</span>
+            <input v-model="params.lift" type="checkbox" class="ps-check">
+          </label>
+          <div class="ps-param">
+            <label class="dk-pointer" for="ps-seed">Seed</label>
+            <input id="ps-seed" v-model.number="params.seed" type="number" class="ps-field">
+          </div>
+        </div>
+      </section>
 
-      <div class="mt-5 flex gap-2">
-        <button type="button" class="flex-1 bg-primary px-2 py-2.5 text-[10px] uppercase tracking-[0.14em] text-primary-foreground hover:brightness-110" @click="regenerate">Regenerate</button>
-        <button type="button" class="flex-1 border border-border px-2 py-2.5 text-[10px] uppercase tracking-[0.14em] text-foreground hover:bg-accent" @click="savePng">PNG</button>
-        <button type="button" class="flex-1 border border-border px-2 py-2.5 text-[10px] uppercase tracking-[0.14em] text-foreground hover:bg-accent disabled:opacity-50" :disabled="sheeting" @click="exportSheet">{{ sheeting ? '…' : 'Sheet' }}</button>
+      <div class="ps-block ps-actions">
+        <button type="button" class="dk-cta-solid ps-cta-block" @click="regenerate">Regenerate</button>
+        <div class="ps-actions-row">
+          <button type="button" class="dk-cta dk-lift ps-cta-block" @click="savePng">Save PNG</button>
+          <button
+            type="button"
+            class="dk-cta dk-lift ps-cta-block"
+            :disabled="sheeting"
+            @click="exportSheet"
+          >{{ sheeting ? 'Exporting…' : 'Sheet' }}</button>
+        </div>
       </div>
     </aside>
 
-    <!-- canvas stage -->
-    <main class="flex min-w-0 flex-1 items-center justify-center p-9 pb-20">
-      <div ref="holder" class="ax-stage" />
+    <!-- ╭─ Stage — the exhibit. The grammar frames it; it does not enter it ─╮ -->
+    <main class="ps-main">
+      <header class="ps-head">
+        <div class="min-w-0">
+          <p class="dk-label ps-eyebrow">Auxiliary · Generative</p>
+          <h1 class="dk-display">Pattern Studio</h1>
+        </div>
+        <div class="ps-head-end">
+          <div class="dk-segment">
+            <button
+              v-for="t in THEMES"
+              :key="t"
+              type="button"
+              class="dk-segment-btn"
+              :data-active="theme === t"
+              :aria-pressed="theme === t"
+              @click="theme = t"
+            >{{ t }}</button>
+          </div>
+          <span class="dk-bracket">{{ exhibit }}</span>
+        </div>
+      </header>
+
+      <div class="ps-stage">
+        <div ref="holder" class="ps-frame" />
+      </div>
+
+      <p class="dk-caption ps-foot">{{ caption }}</p>
     </main>
   </div>
 </template>
-
-<style scoped>
-.ax-stage :deep(canvas) {
-  display: block;
-  max-height: 84vh;
-  width: auto !important;
-  height: auto;
-  outline: 1px solid var(--color-border);
-  box-shadow: 0 24px 80px rgb(0 0 0 / 0.6);
-}
-.ax-range { -webkit-appearance: none; appearance: none; height: 2px; background: var(--color-border); outline: none; }
-.ax-range::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--color-primary); cursor: pointer; }
-.ax-range::-moz-range-thumb { width: 12px; height: 12px; background: var(--color-primary); cursor: pointer; border: 0; }
-</style>

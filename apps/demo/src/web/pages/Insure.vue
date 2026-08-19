@@ -1,7 +1,12 @@
-/* Hallmark · macrostructure: Workbench · tone: clean-professional · anchor: white+blue-accent */
+<!--
+  Hallmark · macrostructure: Editorial (portfolio deck) worn by a workbench
+  tone: measured/declarative · anchor hue: auterion blue (rationed — none on
+  this page; the masthead mark is the view's only signal. The five-level status
+  ladder is exempt throughout: risk is state, not brand.)
+  pre-emit critique: P5 H5 E5 S5 R5 V4
+-->
 <script setup lang="ts">
 import { computed, inject } from 'vue';
-import { Button } from '@auxiliary/vue';
 import { Icon } from '@auxiliary/icons';
 import Sparkline from '../../suite/Sparkline.vue';
 
@@ -20,15 +25,9 @@ function series(seed: number, n: number, base: number, amp: number): number[] {
   return out;
 }
 
-/* ── Status ladder → tokens (the reserved severity ladder) ───────────── */
+/* ── The reserved severity ladder ─────────────────────────────────────── */
 type Level = 'nominal' | 'caution' | 'warning' | 'alarm';
-const token: Record<Level, string> = {
-  nominal: 'var(--nominal)',
-  caution: 'var(--caution)',
-  warning: 'var(--warning)',
-  alarm: 'var(--alarm)',
-};
-const tint = (t: string, pct = 14) => `color-mix(in oklab, ${t} ${pct}%, transparent)`;
+
 /* Risk score 0–100 (higher = worse) → ladder level. */
 function riskLevel(score: number): Level {
   if (score >= 70) return 'alarm';
@@ -38,11 +37,11 @@ function riskLevel(score: number): Level {
 }
 
 /* ── Panel 1 · Fleet risk overview ───────────────────────────────────── */
-const kpis: { label: string; value: string; delta: string; good: boolean }[] = [
-  { label: 'Fleet safety score', value: '94', delta: '+2 pt', good: true },
-  { label: 'Insured airframes', value: '142', delta: '+6', good: true },
-  { label: 'Open claims', value: '3', delta: '−2', good: true },
-  { label: 'Avg premium · /mo', value: '€184', delta: '−6%', good: true },
+const kpis: { label: string; value: string; delta: string }[] = [
+  { label: 'Fleet safety score', value: '94', delta: '+2 pt' },
+  { label: 'Insured airframes', value: '142', delta: '+6' },
+  { label: 'Open claims', value: '3', delta: '−2' },
+  { label: 'Avg premium · /mo', value: '€184', delta: '−6%' },
 ];
 
 const riskTrend = series(42, 90, 38, 7);
@@ -60,16 +59,16 @@ const donut = computed(() => {
   let offset = 0;
   return bands.map((b) => {
     const frac = b.count / insured;
-    const seg = { ...b, dash: frac * C, gap: C - frac * C, off: -offset * C, color: token[b.level] };
+    const seg = { ...b, dash: frac * C, gap: C - frac * C, off: -offset * C };
     offset += frac;
     return seg;
   });
 });
 
-const mini: { label: string; value: string; delta: string; good: boolean; spark: number[]; variant: 'line' | 'bar' }[] = [
-  { label: 'Flight hours · 30d', value: '4,820', delta: '+9%', good: true, spark: series(7, 24, 30, 9), variant: 'line' },
-  { label: 'Incidents / 1k h', value: '0.7', delta: '−0.2', good: true, spark: series(3, 24, 12, 7), variant: 'line' },
-  { label: 'Geofence breaches', value: '5', delta: '−3', good: true, spark: series(11, 16, 8, 6), variant: 'bar' },
+const mini: { label: string; value: string; delta: string; spark: number[]; variant: 'line' | 'bar' }[] = [
+  { label: 'Flight hours · 30d', value: '4,820', delta: '+9%', spark: series(7, 24, 30, 9), variant: 'line' },
+  { label: 'Incidents / 1k h', value: '0.7', delta: '−0.2', spark: series(3, 24, 12, 7), variant: 'line' },
+  { label: 'Geofence breaches', value: '5', delta: '−3', spark: series(11, 16, 8, 6), variant: 'bar' },
 ];
 
 /* ── Panel 2 · Incidents & claims ────────────────────────────────────── */
@@ -106,302 +105,309 @@ const fleet: { id: string; model: string; hours: string; risk: number; incidents
   { id: 'Osprey-01', model: 'Skynode X', hours: '742', risk: 33, incidents: 1, premium: '€184', spark: series(18, 18, 18, 6) },
   { id: 'Merlin-02', model: 'Skynode', hours: '1,560', risk: 18, incidents: 0, premium: '€152', spark: series(5, 18, 14, 5) },
 ];
+
+const header = [
+  { label: 'Underwriting period', value: 'Q2 2026' },
+  { label: 'Airframes insured', value: '142' },
+  { label: 'Carrier', value: 'Auterion Re' },
+];
 </script>
 
 <template>
-  <div class="overflow-x-clip" style="background: var(--background)">
+  <div>
 
-    <!-- ── PAGE HEADER (compact, dashboard-led — not a marketing hero) ── -->
-    <section class="border-b border-border">
-      <div class="mx-auto max-w-6xl px-6 pb-12 pt-16 md:pt-20">
-        <p class="font-mono text-[11px] uppercase tracking-[0.14em]" style="color: var(--brand)">Auterion Insure</p>
-        <div class="mt-3 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <h1 class="max-w-2xl text-4xl font-medium leading-[1.05] md:text-5xl" style="color: var(--foreground)">
-            Underwrite your fleet on <span style="color: var(--brand)">live flight data.</span>
-          </h1>
-          <p class="max-w-sm text-[15px] leading-relaxed text-muted-foreground">
+    <!-- ╭─ Page head — dashboard-led, not a marketing cover ─────────╮ -->
+    <section>
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">Auterion Insure</span>
+          <span class="dk-bracket">142 AIRFRAMES · Q2 2026</span>
+        </div>
+        <div class="wb-head">
+          <h1 class="dk-display">Underwrite your fleet on live flight data.</h1>
+          <p class="dk-body-lg wb-measure-text">
             Risk scoring, claims and premiums in one console — priced from the telemetry your airframes already stream.
           </p>
         </div>
-        <!-- meta strip -->
-        <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
-          <span class="flex items-center gap-2">
-            <span class="h-1.5 w-1.5 rounded-full" style="background: var(--nominal)" />
-            Underwriting period · Q2 2026
-          </span>
-          <span>142 airframes insured</span>
-          <span>Carrier · Auterion Re</span>
+
+        <!-- Header ledger — tops the case layout below. -->
+        <div class="dk-ledger">
+          <div
+            v-for="(h, i) in header"
+            :key="h.label"
+            class="dk-ledger-cell"
+            :data-align="i === header.length - 1 ? 'end' : undefined"
+          >
+            <span class="dk-pointer">{{ h.label }}</span>
+            <span class="dk-value dk-num">{{ h.value }}</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ════════ LAYOUT 1 · RISK OVERVIEW ════════ -->
-    <section class="mx-auto max-w-6xl px-6 pt-16">
-      <div class="mb-5 flex items-baseline justify-between">
-        <h2 class="text-[15px] font-medium tracking-tight" style="color: var(--foreground)">Risk overview</h2>
-        <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Layout · 01</span>
-      </div>
-
-      <div class="overflow-hidden rounded-2xl border border-border shadow-sm" style="background: var(--card)">
-        <!-- toolbar -->
-        <div class="flex items-center gap-3 border-b border-border px-5 py-3">
-          <span class="flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full animate-pulse" style="background: var(--nominal)" />
-            <span class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--foreground)">Fleet risk · live</span>
-          </span>
-          <span class="ml-auto font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Region · EU-Central</span>
+    <!-- ╭─ 01 · Risk overview ───────────────────────────────────────╮ -->
+    <section>
+      <div class="wb-wrap wb-block-sm">
+        <div class="dk-section">
+          <span class="dk-label">Risk overview</span>
+          <span class="dk-bracket">LAYOUT 01 · 90 DAYS</span>
         </div>
 
-        <!-- KPI row -->
-        <div class="grid grid-cols-2 gap-px md:grid-cols-4" style="background: var(--border)">
-          <div v-for="k in kpis" :key="k.label" class="px-5 py-6" style="background: var(--card)">
-            <p class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{{ k.label }}</p>
-            <p class="mt-2 text-4xl font-medium tabular-nums tracking-tight" style="color: var(--foreground)">{{ k.value }}</p>
-            <p class="mt-1 font-mono text-[11px] tabular-nums" :style="`color: ${k.good ? 'var(--nominal)' : 'var(--alarm)'}`">{{ k.delta }}</p>
+        <div class="dk-card wb-figure wb-stack">
+          <div class="wb-figure-bar">
+            <span class="wb-live">
+              <span class="dk-dot dk-dot-nominal" />
+              <span class="dk-label">Fleet risk · live</span>
+            </span>
+            <span class="dk-label wb-push">Region · EU-Central</span>
           </div>
-        </div>
 
-        <!-- chart + donut -->
-        <div class="grid grid-cols-1 gap-px border-t border-border lg:grid-cols-3" style="background: var(--border)">
-          <!-- area chart -->
-          <div class="px-5 py-6 lg:col-span-2" style="background: var(--card)">
-            <div class="flex items-baseline justify-between">
-              <p class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Fleet risk index · 90 days</p>
-              <p class="font-mono text-[11px] tabular-nums" style="color: var(--nominal)">−14% vs prior</p>
-            </div>
-            <div class="relative mt-5 h-[160px]">
-              <div
-                v-for="g in [0, 1, 2, 3]"
-                :key="g"
-                class="absolute inset-x-0 border-t border-border/60"
-                :style="`top: ${(g / 3) * 100}%`"
-              />
-              <Sparkline :data="riskTrend" stroke="var(--brand)" :width="800" :height="160" class="relative" />
-            </div>
-            <div class="mt-3 flex justify-between font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/70">
-              <span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+          <!-- KPI strip -->
+          <div class="wb-metrics" data-cols="4">
+            <div v-for="k in kpis" :key="k.label" class="wb-metric">
+              <span class="dk-pointer">{{ k.label }}</span>
+              <span class="wb-figure-num">{{ k.value }}</span>
+              <span class="dk-label dk-num">{{ k.delta }}</span>
             </div>
           </div>
 
-          <!-- exposure donut -->
-          <div class="flex flex-col px-5 py-6" style="background: var(--card)">
-            <p class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Exposure by risk band</p>
-            <div class="mt-4 flex items-center gap-5">
-              <svg viewBox="0 0 140 140" class="h-[120px] w-[120px] shrink-0 -rotate-90">
-                <circle cx="70" cy="70" r="54" fill="none" stroke="var(--muted)" stroke-width="14" />
-                <circle
-                  v-for="s in donut"
-                  :key="s.label"
-                  cx="70"
-                  cy="70"
-                  r="54"
-                  fill="none"
-                  :stroke="s.color"
-                  stroke-width="14"
-                  :stroke-dasharray="`${s.dash} ${s.gap}`"
-                  :stroke-dashoffset="s.off"
-                />
-                <text x="70" y="66" text-anchor="middle" class="rotate-90" style="transform-origin: 70px 70px; font: 600 26px var(--font-sans); fill: var(--foreground)" >{{ insured }}</text>
-                <text x="70" y="84" text-anchor="middle" class="rotate-90" style="transform-origin: 70px 70px; font: 500 9px var(--font-mono); letter-spacing: 0.1em; fill: var(--muted-foreground)">INSURED</text>
-              </svg>
-              <ul class="flex-1 space-y-2">
-                <li v-for="b in bands" :key="b.label" class="flex items-center gap-2 text-[12px]">
-                  <span class="h-2 w-2 rounded-full" :style="`background: ${token[b.level]}`" />
-                  <span style="color: var(--foreground)">{{ b.label }}</span>
-                  <span class="ml-auto font-mono tabular-nums text-muted-foreground">{{ b.count }}</span>
-                </li>
-              </ul>
+          <!-- Trend + exposure -->
+          <div class="wb-metrics" data-cols="3">
+            <div class="wb-metric wb-span-2">
+              <div class="flex items-baseline justify-between gap-4">
+                <span class="dk-pointer">Fleet risk index · 90 days</span>
+                <span class="dk-label dk-num">−14% vs prior</span>
+              </div>
+              <Sparkline :data="riskTrend" :width="800" :height="150" class="wb-spark" />
+              <div class="flex justify-between">
+                <span v-for="m in ['Mar','Apr','May','Jun']" :key="m" class="dk-micro">{{ m }}</span>
+              </div>
+            </div>
+
+            <div class="wb-metric">
+              <span class="dk-pointer">Exposure by risk band</span>
+              <div class="flex items-center gap-4">
+                <svg viewBox="0 0 140 140" class="wb-donut -rotate-90" role="img" aria-label="Insured airframes by risk band">
+                  <circle cx="70" cy="70" r="54" fill="none" stroke="var(--dk-line)" stroke-width="12" />
+                  <circle
+                    v-for="s in donut"
+                    :key="s.label"
+                    cx="70"
+                    cy="70"
+                    r="54"
+                    fill="none"
+                    :stroke="`var(--${s.level})`"
+                    stroke-width="12"
+                    :stroke-dasharray="`${s.dash} ${s.gap}`"
+                    :stroke-dashoffset="s.off"
+                  />
+                </svg>
+                <ul class="flex-1">
+                  <li v-for="b in bands" :key="b.label" class="wb-rule-row">
+                    <span class="wb-status" :class="`dk-ink-${b.level}`">
+                      <span class="dk-dot" :class="`dk-dot-${b.level}`" />
+                      {{ b.label }}
+                    </span>
+                    <span class="dk-label dk-num">{{ b.count }}</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- mini stats with sparklines -->
-        <div class="grid grid-cols-1 gap-px border-t border-border sm:grid-cols-3" style="background: var(--border)">
-          <div v-for="m in mini" :key="m.label" class="px-5 py-5" style="background: var(--card)">
-            <div class="flex items-baseline justify-between">
-              <p class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{{ m.label }}</p>
-              <p class="font-mono text-[11px] tabular-nums" :style="`color: ${m.good ? 'var(--nominal)' : 'var(--alarm)'}`">{{ m.delta }}</p>
-            </div>
-            <p class="mt-1 text-2xl font-medium tabular-nums tracking-tight" style="color: var(--foreground)">{{ m.value }}</p>
-            <div class="mt-3 h-9" style="color: var(--brand)">
-              <Sparkline :data="m.spark" :variant="m.variant" :width="240" :height="36" />
+          <!-- Mini series -->
+          <div class="wb-metrics" data-cols="3">
+            <div v-for="m in mini" :key="m.label" class="wb-metric">
+              <div class="flex items-baseline justify-between gap-4">
+                <span class="dk-pointer">{{ m.label }}</span>
+                <span class="dk-label dk-num">{{ m.delta }}</span>
+              </div>
+              <span class="wb-figure-num">{{ m.value }}</span>
+              <Sparkline :data="m.spark" :variant="m.variant" :width="240" :height="34" class="wb-spark" />
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ════════ LAYOUT 2 · INCIDENTS & CLAIMS ════════ -->
-    <section class="mx-auto max-w-6xl px-6 pt-20">
-      <div class="mb-5 flex items-baseline justify-between">
-        <h2 class="text-[15px] font-medium tracking-tight" style="color: var(--foreground)">Claims &amp; incidents</h2>
-        <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Layout · 02</span>
-      </div>
+    <!-- ╭─ 02 · Claims & incidents ──────────────────────────────────╮ -->
+    <section>
+      <div class="wb-wrap wb-block-sm">
+        <div class="dk-section">
+          <span class="dk-label">Claims &amp; incidents</span>
+          <span class="dk-bracket">LAYOUT 02 · 39 REPORTED · 18 PAID</span>
+        </div>
 
-      <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
-        <!-- incidents table -->
-        <div class="overflow-hidden rounded-2xl border border-border shadow-sm lg:col-span-2" style="background: var(--card)">
-          <div class="flex items-center gap-3 border-b border-border px-5 py-3">
-            <span class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--foreground)">Recent incidents</span>
-            <span class="ml-auto font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Last 30 days</span>
+        <div class="wb-split wb-stack" data-lead="wide">
+          <!-- Incidents ledger table -->
+          <div class="dk-card wb-figure">
+            <div class="wb-figure-bar">
+              <span class="dk-label">Recent incidents</span>
+              <span class="dk-label wb-push">Last 30 days</span>
+            </div>
+            <div class="wb-figure-body wb-figure-scroll">
+              <table class="dk-table wb-table-wide">
+                <colgroup>
+                  <col class="wb-col-md">
+                  <col class="wb-col-md">
+                  <col>
+                  <col class="wb-col-sm">
+                  <col class="wb-col-md">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">Ref</th>
+                    <th scope="col">Airframe</th>
+                    <th scope="col">Cause</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" data-align="end">Payout</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="r in incidents" :key="r.id">
+                    <td data-lead="true" class="dk-num">{{ r.id }}</td>
+                    <!-- The dot carries the severity hue; the airframe name is
+                         not a severity label, so it stays on the ink ramp. -->
+                    <td>
+                      <span class="flex items-center gap-2">
+                        <span class="dk-dot" :class="`dk-dot-${r.sev}`" />
+                        <span class="dk-value">{{ r.airframe }}</span>
+                      </span>
+                      <span class="dk-micro block">{{ r.date }}</span>
+                    </td>
+                    <td>{{ r.type }}</td>
+                    <td><span class="dk-label">{{ r.status }}</span></td>
+                    <td data-align="end" class="dk-num">{{ r.payout }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full min-w-[560px] border-collapse text-left">
+
+          <div class="flex flex-col gap-4">
+            <!-- Claims by cause -->
+            <div class="dk-card wb-figure">
+              <div class="wb-figure-bar">
+                <span class="dk-label">Claims by cause · 12 mo</span>
+              </div>
+              <div class="wb-figure-body">
+                <ul>
+                  <li v-for="c in claimTypes" :key="c.label" class="wb-rule-row wb-row-bar">
+                    <span class="dk-small">{{ c.label }}</span>
+                    <span class="wb-bar">
+                      <span class="wb-bar-fill" :class="`wb-bar-${c.level}`" :style="{ width: `${(c.count / claimMax) * 100}%` }" />
+                    </span>
+                    <span class="dk-label dk-num">{{ c.count }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Claims pipeline -->
+            <div class="dk-card wb-figure">
+              <div class="wb-figure-bar">
+                <span class="dk-label">Claims pipeline</span>
+              </div>
+              <div class="wb-figure-body">
+                <ul>
+                  <li v-for="f in funnel" :key="f.stage" class="wb-rule-row wb-row-stage">
+                    <span class="dk-label">{{ f.stage }}</span>
+                    <span class="wb-bar">
+                      <span class="wb-bar-fill wb-bar-ink" :style="{ width: `${(f.n / funnelMax) * 100}%` }" />
+                    </span>
+                    <span class="dk-label dk-num">{{ f.n }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ╭─ 03 · Airframe risk leaderboard ───────────────────────────╮ -->
+    <section>
+      <div class="wb-wrap wb-block-sm">
+        <div class="dk-section">
+          <span class="dk-label">Airframe risk leaderboard</span>
+          <span class="dk-bracket">LAYOUT 03 · 5 AIRFRAMES</span>
+        </div>
+
+        <div class="dk-card wb-figure wb-stack">
+          <div class="wb-figure-bar">
+            <span class="dk-label">Ranked by risk score</span>
+            <span class="dk-label wb-push">Higher = more exposure</span>
+          </div>
+          <div class="wb-figure-body wb-figure-scroll">
+            <table class="dk-table wb-table-wide">
+              <colgroup>
+                <col class="wb-col-lg">
+                <col class="wb-col-sm">
+                <col class="wb-col-lg">
+                <col>
+                <col class="wb-col-xs">
+                <col class="wb-col-md">
+              </colgroup>
               <thead>
-                <tr class="border-b border-border" style="background: var(--muted)">
-                  <th class="px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Ref</th>
-                  <th class="px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Airframe</th>
-                  <th class="px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Cause</th>
-                  <th class="px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Status</th>
-                  <th class="px-5 py-2.5 text-right font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Payout</th>
+                <tr>
+                  <th scope="col">Airframe</th>
+                  <th scope="col" data-align="end">Flight hrs</th>
+                  <th scope="col">Risk score</th>
+                  <th scope="col">90-day trend</th>
+                  <th scope="col" data-align="end">Claims</th>
+                  <th scope="col" data-align="end">Premium /mo</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="r in incidents" :key="r.id" class="border-b border-border last:border-0">
-                  <td class="px-5 py-3 font-mono text-[12px] tabular-nums" style="color: var(--foreground)">{{ r.id }}</td>
-                  <td class="px-5 py-3">
-                    <div class="flex items-center gap-2">
-                      <span class="h-1.5 w-1.5 rounded-full" :style="`background: ${token[r.sev]}`" />
-                      <span class="text-[13px]" style="color: var(--foreground)">{{ r.airframe }}</span>
-                    </div>
-                    <span class="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70">{{ r.date }}</span>
+                <tr v-for="r in fleet" :key="r.id">
+                  <td data-lead="true">
+                    <span class="dk-num">{{ r.id }}</span>
+                    <span class="dk-micro block">{{ r.model }}</span>
                   </td>
-                  <td class="px-5 py-3 text-[13px] text-muted-foreground">{{ r.type }}</td>
-                  <td class="px-5 py-3">
-                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em]" :style="`color: ${token[r.sev]}; background: ${tint(token[r.sev])}`">{{ r.status }}</span>
+                  <td data-align="end" class="dk-num">{{ r.hours }} h</td>
+                  <td>
+                    <span class="flex items-center gap-2">
+                      <span class="wb-bar">
+                        <span class="wb-bar-fill" :class="`wb-bar-${riskLevel(r.risk)}`" :style="{ width: `${r.risk}%` }" />
+                      </span>
+                      <span class="dk-label dk-num" :class="`dk-ink-${riskLevel(r.risk)}`">{{ r.risk }}</span>
+                    </span>
                   </td>
-                  <td class="px-5 py-3 text-right font-mono text-[12px] tabular-nums" style="color: var(--foreground)">{{ r.payout }}</td>
+                  <td>
+                    <Sparkline :data="r.spark" :width="120" :height="26" class="wb-spark" :class="`dk-ink-${riskLevel(r.risk)}`" />
+                  </td>
+                  <td data-align="end" class="dk-num">{{ r.incidents }}</td>
+                  <td data-align="end" class="dk-num">{{ r.premium }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- breakdown + funnel -->
-        <div class="flex flex-col gap-5">
-          <!-- claim type bars -->
-          <div class="rounded-2xl border border-border p-5 shadow-sm" style="background: var(--card)">
-            <p class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Claims by cause · 12 mo</p>
-            <ul class="mt-4 space-y-3">
-              <li v-for="c in claimTypes" :key="c.label">
-                <div class="flex items-center justify-between text-[12px]">
-                  <span style="color: var(--foreground)">{{ c.label }}</span>
-                  <span class="font-mono tabular-nums text-muted-foreground">{{ c.count }}</span>
-                </div>
-                <div class="mt-1.5 h-1.5 w-full overflow-hidden rounded-full" style="background: var(--muted)">
-                  <div class="h-full rounded-full" :style="`width: ${(c.count / claimMax) * 100}%; background: ${token[c.level]}`" />
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          <!-- claims funnel -->
-          <div class="rounded-2xl border border-border p-5 shadow-sm" style="background: var(--card)">
-            <p class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Claims pipeline</p>
-            <ul class="mt-4 space-y-2.5">
-              <li v-for="f in funnel" :key="f.stage" class="flex items-center gap-3">
-                <span class="w-16 shrink-0 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">{{ f.stage }}</span>
-                <div class="h-6 flex-1 overflow-hidden rounded" style="background: var(--muted)">
-                  <div class="flex h-full items-center justify-end rounded pr-2" :style="`width: ${(f.n / funnelMax) * 100}%; background: color-mix(in oklab, var(--brand) 16%, var(--card))`">
-                    <span class="font-mono text-[11px] tabular-nums" style="color: var(--brand)">{{ f.n }}</span>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <p class="dk-caption">Representative interface · sample data · Auterion Insure</p>
       </div>
     </section>
 
-    <!-- ════════ LAYOUT 3 · AIRFRAME RISK LEADERBOARD ════════ -->
-    <section class="mx-auto max-w-6xl px-6 pb-20 pt-20">
-      <div class="mb-5 flex items-baseline justify-between">
-        <h2 class="text-[15px] font-medium tracking-tight" style="color: var(--foreground)">Airframe risk leaderboard</h2>
-        <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Layout · 03</span>
-      </div>
-
-      <div class="overflow-hidden rounded-2xl border border-border shadow-sm" style="background: var(--card)">
-        <div class="flex items-center gap-3 border-b border-border px-5 py-3">
-          <span class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--foreground)">Ranked by risk score</span>
-          <span class="ml-auto font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Higher = more exposure</span>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full min-w-[680px] border-collapse text-left">
-            <thead>
-              <tr class="border-b border-border" style="background: var(--muted)">
-                <th class="px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Airframe</th>
-                <th class="px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Flight hrs</th>
-                <th class="px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Risk score</th>
-                <th class="px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">90-day trend</th>
-                <th class="px-5 py-2.5 text-center font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Claims</th>
-                <th class="px-5 py-2.5 text-right font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Premium /mo</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="r in fleet" :key="r.id" class="border-b border-border last:border-0">
-                <td class="px-5 py-3.5">
-                  <p class="font-mono text-[13px] tabular-nums" style="color: var(--foreground)">{{ r.id }}</p>
-                  <p class="text-[11px] text-muted-foreground">{{ r.model }}</p>
-                </td>
-                <td class="px-5 py-3.5 font-mono text-[12px] tabular-nums text-muted-foreground">{{ r.hours }} h</td>
-                <td class="px-5 py-3.5">
-                  <div class="flex items-center gap-2.5">
-                    <div class="h-1.5 w-20 overflow-hidden rounded-full" style="background: var(--muted)">
-                      <div class="h-full rounded-full" :style="`width: ${r.risk}%; background: ${token[riskLevel(r.risk)]}`" />
-                    </div>
-                    <span class="font-mono text-[12px] tabular-nums" :style="`color: ${token[riskLevel(r.risk)]}`">{{ r.risk }}</span>
-                  </div>
-                </td>
-                <td class="px-5 py-3.5">
-                  <div class="h-7 w-28" :style="`color: ${token[riskLevel(r.risk)]}`">
-                    <Sparkline :data="r.spark" :width="120" :height="28" />
-                  </div>
-                </td>
-                <td class="px-5 py-3.5 text-center font-mono text-[12px] tabular-nums text-muted-foreground">{{ r.incidents }}</td>
-                <td class="px-5 py-3.5 text-right font-mono text-[13px] tabular-nums" style="color: var(--foreground)">{{ r.premium }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <p class="mt-4 text-center font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">
-        Representative interface · sample data · Auterion Insure
-      </p>
-    </section>
-
-    <!-- ── CTA band ── -->
-    <section class="border-t border-border" style="background: var(--card)">
-      <div class="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-16 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 class="text-3xl font-medium" style="color: var(--foreground)">Price your fleet in a week.</h2>
-          <p class="mt-2 max-w-md text-[15px] leading-relaxed text-muted-foreground">
+    <!-- ╭─ Proof close ──────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-plate wb-cover">
+          <div class="wb-cover-copy">
+            <p class="dk-h2 dk-ghost">Auterion Insure</p>
+            <h2 class="dk-display">Price your fleet in a week.</h2>
+          </div>
+          <p class="dk-body-lg wb-cover-lede">
             Connect telemetry, set coverage, and let underwriting follow the data — not a static spreadsheet.
           </p>
-        </div>
-        <div class="flex flex-wrap items-center gap-3">
-          <button
-            class="cta-btn inline-flex items-center gap-2 rounded-lg px-6 py-3 text-[14px] font-medium"
-            style="background: var(--brand); color: var(--brand-foreground)"
-            @click="navigate('company')"
-          >
-            Request a quote
-            <Icon name="arrow-right" size="xs" />
-          </button>
-          <Button variant="ghost" size="md" class="gap-2 text-[14px]" @click="navigate('fleet')">See fleet ops</Button>
+          <div class="wb-actions">
+            <button type="button" class="dk-cta-solid" @click="navigate('company')">
+              Request a quote <Icon name="arrow-right" size="xs" />
+            </button>
+            <button type="button" class="dk-cta" @click="navigate('fleet')">See fleet ops</button>
+          </div>
         </div>
       </div>
     </section>
 
   </div>
 </template>
-
-<style scoped>
-.cta-btn:hover {
-  background: color-mix(in oklab, var(--brand) 88%, black) !important;
-}
-.cta-btn:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
-</style>

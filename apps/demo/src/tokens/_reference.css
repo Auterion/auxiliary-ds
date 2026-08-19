@@ -1,0 +1,387 @@
+/* Hallmark · macrostructure: Editorial (portfolio deck) worn by a reference manual
+ * tone: measured/declarative · anchor hue: none spent (see "Signal budget" below)
+ * pre-emit critique: P5 H5 E5 S5 R5 V4
+ *
+ * "REFERENCE" — the page-local layer shared by the demo's two documentation
+ * surfaces: the GTC token model (`tokens/TokenModel.vue`) and the component
+ * gallery (`App.vue`). They are one pair — a table of measured facts about the
+ * system, and a table of measured facts about what the system renders — so they
+ * get ONE layer rather than two that would drift.
+ *
+ * Written in the Deck 07b grammar (`_deck07b.css`) and to the Console method
+ * (`console/_console.css`), which is the house standard for a page-local layer:
+ *
+ *   · ONE ladder per axis. This layer adds three surface dimensions (measure,
+ *     topbar height, label slot) and one column-minimum ladder; everything else
+ *     — radius, rule, duration, easing, gutter, ink — steps to the `--dk-*`
+ *     ladders. A magic number in either template is a bug.
+ *   · The mode is [data-theme], on the SAME element as `.dk`, so the DS semantic
+ *     tokens and the `--dk-*` palette re-resolve together. No second mode axis.
+ *   · Repeating structures are GRIDS and TABLES with fixed slots, never flex
+ *     rows sized by their contents — every label starts on the same x and every
+ *     numeral ends on the same x, down the whole page.
+ *   · Hairlines, never shadows. Motion on state change only, never on load.
+ *   · Not one colour literal. Every value resolves through a `--dk-*` alias or a
+ *     design-system token. A raw hex in an `.rf-*` rule is a bug, exactly as it
+ *     is in a `.dk-*` one. (The swatch FILLS in both templates are bound from
+ *     token data — that is content being displayed, not styling.)
+ *
+ * Signal budget: ZERO signal plates across both surfaces. These two pages are
+ * the ones where colour is the subject — the auterion-blue ramp, the primary
+ * button, the five-level ladder are all on display as specimens. A decorative
+ * blue plate would compete with the very thing being measured, so the budget
+ * goes unspent and the chrome stays ink. The status ladder is exempt and keeps
+ * its hues wherever state is reported.
+ *
+ * Namespaced `rf-`; sits alongside `dk-` (grammar), `os-`, `bp-` and `ix-`
+ * without collision. Demo layer — NOT a tokens or recipe change.
+ */
+
+/* ═══ Surface ladder ══════════════════════════════════════════════════════ */
+
+.rf-page {
+  /* The three dimensions the grammar has no opinion about. */
+  --rf-measure: 1120px; /* one column measure, held by every block  */
+  --rf-topbar-h: 56px; /* the sticky identity strip                 */
+  /* Two rungs of ONE label-slot ladder: a short row label (SOLID, SM, OP) and
+   * a long one (a primitive ramp family). Every specimen row on the page picks
+   * one of the two, so every specimen starts on one of two x's — never on a
+   * third that its own content happened to produce. */
+  --rf-slot: 76px;
+  --rf-slot-lg: 104px;
+  /* Two narrowed measures below the page measure — a short form, and a single
+   * column of full-width controls that would otherwise run to 1120px. */
+  --rf-narrow: 480px;
+  --rf-medium: 720px;
+
+  /* Column minimum — the one responsive ladder on these pages. Grids are
+   * `auto-fit` off this value rather than a parallel set of breakpoints, so
+   * there is exactly one place a column count is decided. */
+  --rf-col-min: 220px;
+
+  min-height: 100dvh;
+}
+
+/* ═══ Chrome ══════════════════════════════════════════════════════════════ */
+
+.rf-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--dk-gutter-sm);
+  min-height: var(--rf-topbar-h);
+  padding: 8px var(--dk-gutter);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+  background: color-mix(in oklab, var(--dk-bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+/* The measure. Every ledger, section head and table is set to it, so a label
+ * started on one section's x is on the same x eighteen sections later. */
+.rf-measure {
+  width: 100%;
+  max-width: var(--rf-measure);
+  margin-inline: auto;
+  padding-inline: var(--dk-gutter);
+  padding-bottom: calc(var(--dk-gutter) * 2);
+}
+
+.rf-footer {
+  border-top: var(--dk-rule) solid var(--dk-line);
+  padding: var(--dk-gutter);
+}
+
+/* The closing spread caption. `margin`, not `padding` — `.dk-caption` owns its
+ * own padding-top, and two rules fighting over one property is how a layer
+ * starts depending on stylesheet order. */
+.rf-colophon { margin-top: calc(var(--dk-gutter) * 2); }
+
+/* ═══ Rhythm ══════════════════════════════════════════════════════════════
+ * Two vertical gaps and no third: between sections, and inside one. */
+
+.rf-stack { display: flex; flex-direction: column; gap: calc(var(--dk-gutter) * 2); }
+.rf-section,
+.rf-stack-sm { display: flex; flex-direction: column; gap: var(--dk-gutter-sm); }
+.rf-tight { display: flex; flex-direction: column; gap: 10px; }
+.rf-stack-xs { display: flex; flex-direction: column; gap: 8px; }
+.rf-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+/* Controls that carry a label above and an echo below cannot centre against a
+ * bare button — they start-align, so every specimen in the row begins on one y. */
+.rf-row-top { align-items: flex-start; }
+.rf-row-end { margin-left: auto; }
+
+/* A size scale read left to right — the specimens sit on one baseline, which
+ * is the only way a size comparison is readable. */
+.rf-scale { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--dk-gutter); }
+.rf-scale-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+/* A figure and its meter. A grid with a fixed first slot, so four stacked
+ * meters start at the same x however wide their figures run. */
+.rf-meter {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--dk-gutter-sm);
+}
+
+/* A fixed slot, so the specimen rows below it all begin on one x. `auto` here
+ * would size the slot per row and stagger the specimens by a few px each. */
+.rf-slot { width: var(--rf-slot); flex-shrink: 0; }
+.rf-narrow { max-width: var(--rf-narrow); }
+.rf-medium { max-width: var(--rf-medium); }
+
+/* A hairline inside a specimen frame, separating two readings of one component
+ * set. Hairlines, never a second frame. */
+.rf-split {
+  border-top: var(--dk-rule) solid var(--dk-line);
+  padding-top: var(--dk-gutter-sm);
+}
+
+/* The lede under a display or section title — one value, used in both places. */
+.rf-lede { padding-top: 10px; max-width: 68ch; }
+.rf-cover {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-block: calc(var(--dk-gutter) * 2) var(--dk-gutter);
+}
+.rf-cover-facts { padding-top: var(--dk-gutter-sm); }
+/* The gap between the header ledger and the first section — one section gap. */
+.rf-body { padding-top: calc(var(--dk-gutter) * 2); }
+
+/* Inline literal inside prose — a token path, a component tag, a shell command.
+ * The measuring voice, at the copy's own size so the line doesn't jump. */
+.rf-code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  color: var(--dk-fg);
+}
+
+/* A block-level mono run — a token path, a CSS variable, a semantic role. */
+.rf-mono { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.5; }
+.rf-ink { color: var(--dk-fg); }
+.rf-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* A v-model echo: the specimen reporting its own state back. Mono, because in
+ * this grammar anything measured is mono, and tabular so a changing value does
+ * not shift the line it sits on. */
+.rf-echo {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--dk-fg-3);
+}
+.rf-echo-value { color: var(--dk-fg); }
+
+/* ═══ Grids ═══════════════════════════════════════════════════════════════
+ * `auto-fit` off the one column-minimum ladder. Four named minimums cover
+ * every block on both pages; a fifth would mean the ladder is wrong. */
+
+.rf-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--rf-col-min), 1fr));
+  gap: var(--dk-gutter);
+}
+.rf-cols-xs { --rf-col-min: 84px; gap: 8px; }
+.rf-cols-sm { --rf-col-min: 148px; gap: var(--dk-gutter-sm); }
+.rf-cols-lg { --rf-col-min: 340px; }
+
+/* A pointer-labelled value pair. Deliberately NOT `.dk-ledger`: the header
+ * ledger tops a case layout once, and reusing it as a body element is the
+ * failure mode its permission slip names. Same column discipline, no misuse. */
+.rf-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  gap: var(--dk-gutter-sm);
+}
+.rf-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+.rf-field[data-align='end'] { align-items: flex-end; text-align: right; }
+/* The field pairs stay a description list for assistive tech; only the UA's
+ * 40px indent is dropped, so the label and its value share one x. */
+.rf-field > dd { margin-inline-start: 0; }
+
+/* Header-ledger column counts. Declared here so no template carries a count. */
+.rf-ledger-4 { --dk-ledger-cols: 4; }
+.rf-ledger-5 { --dk-ledger-cols: 5; }
+
+/* Below `sm` the ledger's prose-length values stack, and the measured cell
+ * stops running right because there is nothing left to align against. */
+@media (max-width: 700px) {
+  .rf-page .dk-ledger { --dk-ledger-cols: 1; gap: 12px; }
+  .rf-page .dk-ledger-cell[data-align='end'] { align-items: flex-start; text-align: left; }
+}
+
+/* ═══ Chapter head ════════════════════════════════════════════════════════
+ * numeral card · title · bracketed totals. The permission slip is ONE numeral
+ * card per spread, and a page is a spread — so exactly one of these exists on
+ * each surface. The folio marks position in a sequence, so it is aria-hidden at
+ * the call site and the name always sits beside it: never the only carrier. */
+
+.rf-chapter {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--dk-gutter);
+  padding-block: var(--dk-gutter);
+}
+/* Compound selectors throughout are deliberate, not defensive noise:
+ * `_deck07b.css` is imported from the app entry and this file from the views,
+ * so the grammar's stylesheet can land AFTER this one. Anything that has to
+ * beat a `.dk-*` declaration is written at (0,2,0)+ so source order stops
+ * mattering. */
+.dk-numeral.rf-folio {
+  width: 96px;
+  height: 96px;
+  padding: 12px;
+  justify-content: center;
+}
+@media (max-width: 860px) {
+  .rf-chapter { grid-template-columns: minmax(0, 1fr); }
+  /* decorative-structural only, so it is the first thing to go */
+  .rf-folio { display: none; }
+}
+
+/* ═══ Specimen frame ══════════════════════════════════════════════════════
+ * The hairline box a specimen sits in. It is CHROME: it frames the exhibit and
+ * never touches it. Nothing in this block sets a colour, size, radius or state
+ * on anything inside — a gallery that dresses its exhibits reports on itself
+ * instead of on the system. */
+
+.rf-specimen { padding: var(--dk-gutter); }
+/* A rule inside a specimen frame runs the full width of it, so it cancels the
+ * frame's own padding rather than floating inside it. */
+.rf-specimen-split { margin-inline: calc(var(--dk-gutter) * -1); }
+
+/* A selector holding more entries than one control row can carry. The segment
+ * stays ONE bordered well — it wraps rather than scrolling or splitting. */
+.dk-segment.rf-segment-wrap {
+  flex-wrap: wrap;
+  height: auto;
+  min-height: var(--dk-control-md);
+}
+/* `.dk-segment-btn` is `height: 100%`, which has nothing to resolve against once
+ * the well wraps — so the wrapped variant takes the dense rung explicitly. */
+.dk-segment.rf-segment-wrap .dk-segment-btn { height: var(--dk-control-sm); }
+
+/* A block head that does NOT draw its own rule, for use above a `.dk-table` —
+ * the table's own `th` hairline is the rule, and two hairlines 10px apart is a
+ * stack of cards pretending to be a deck. */
+.rf-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--dk-gutter-sm);
+  padding-bottom: 10px;
+}
+
+/* A hairline tile holding a glyph and its name — the icon registry and the
+ * status pairing. One geometry, two uses. */
+.rf-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px 6px;
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: var(--dk-r-sm);
+  color: var(--dk-fg-2);
+}
+.rf-tile-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: var(--dk-rule) solid var(--dk-line);
+  border-radius: var(--dk-r-sm);
+}
+.rf-tile-name {
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ═══ Colour specimens ════════════════════════════════════════════════════
+ * The fills are bound from token data — content. These rules only size and
+ * align the wells the content is poured into. */
+
+.rf-ramp {
+  display: grid;
+  grid-template-columns: var(--rf-slot-lg) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--dk-gutter-sm);
+}
+.rf-ramp-steps { display: flex; gap: 2px; min-width: 0; }
+.rf-ramp-step { flex: 1 1 0; min-width: 0; text-align: center; }
+.rf-swatch {
+  height: 28px;
+  border-radius: var(--dk-r-sm);
+  border: var(--dk-rule) solid var(--dk-line);
+}
+.rf-ramp-steps .rf-swatch { flex: 1 1 0; min-width: 0; }
+.rf-chip {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: var(--dk-r-sm);
+  border: var(--dk-rule) solid var(--dk-line);
+}
+
+/* ═══ Ledger table — column model ═════════════════════════════════════════
+ * `.dk-table` is `table-layout: fixed`, which makes these binding: the token
+ * reference cannot shift a column when the focused component changes. */
+
+.rf-scroll-x { overflow-x: auto; }
+.rf-table-min { min-width: 720px; }
+.rf-col-token { width: 22%; }
+.rf-col-chain { width: 34%; }
+.rf-col-var { width: 26%; }
+.rf-col-value { width: 18%; }
+/* `.dk-table td` sets 13px at (0,1,2); the mono run has to answer it. */
+.dk-table td.rf-mono { font-size: 11.5px; }
+/* Dotted token paths are long and unbreakable; a fixed table needs them told
+ * where they may break rather than letting them push the column. */
+.rf-chain { overflow-wrap: anywhere; }
+
+/* ═══ Focus — the gallery's one deliberate withholding ════════════════════
+ * The grammar declares one ring for a whole surface, and on product pages that
+ * is right. Here it is not: a DS control must focus exactly as it does in
+ * product, because that is the entire job of these two pages. So the grammar's
+ * outline is withheld from everything, then restored on the page's own `.dk-*`
+ * chrome controls — leaving each component's own `--ring` treatment intact and
+ * unduplicated. Written at (0,3,1) so stylesheet order cannot decide it. */
+
+.dk.rf-page :is(a, button, [tabindex], input, select, textarea):focus-visible {
+  outline: none;
+}
+.dk.rf-page
+  :is(.dk-cta, .dk-cta-solid, .dk-segment-btn, .dk-nav-item, .dk-link):focus-visible {
+  outline: 2px solid var(--dk-fg);
+  outline-offset: 2px;
+  border-radius: var(--dk-r-sm);
+}
+
+/* ═══ Composition with the grammar ════════════════════════════════════════ */
+
+/* The DS Card ships `text-card-foreground`; inside these surfaces the ink ramp
+ * is the 07b one, and the two must not disagree by a step. */
+.rf-page .dk-card { color: var(--dk-fg); }
+
+/* Eighteen sections of scanning; the grammar declares the transition for
+ * exactly this and leaves the hover to the consumer. */
+.rf-page .dk-table tbody tr:hover { background: var(--dk-bg-2); }

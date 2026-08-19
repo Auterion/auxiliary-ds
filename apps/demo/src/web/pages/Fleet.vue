@@ -1,17 +1,21 @@
-/* Hallmark · macrostructure: Swiss-Minimal · tone: clean-professional · anchor: white+blue-accent */
+<!--
+  Hallmark · macrostructure: Editorial (portfolio deck) · tone: measured/declarative
+  anchor hue: auterion blue (rationed — none on this page; the masthead mark is
+  the view's only signal. The five-level status ladder is exempt: it is state.)
+  pre-emit critique: P5 H5 E5 S5 R5 V4
+-->
 <script setup lang="ts">
 import { inject } from 'vue';
-import { Button } from '@auxiliary/vue';
 import { Icon, type IconName } from '@auxiliary/icons';
 import WebHero from '../WebHero.vue';
 
 const navigate = inject<(p: string) => void>('navigate', () => {});
 
-const kpis: { label: string; value: string; delta: string; up: boolean }[] = [
-  { label: 'Active vehicles', value: '142', delta: '+8 today', up: true },
-  { label: 'Missions in flight', value: '37', delta: '+12%', up: true },
-  { label: 'Avg. uptime', value: '99.2%', delta: '+0.4pt', up: true },
-  { label: 'Open incidents', value: '3', delta: '−2', up: false },
+const kpis: { label: string; value: string; delta: string }[] = [
+  { label: 'Active vehicles', value: '142', delta: '+8 today' },
+  { label: 'Missions in flight', value: '37', delta: '+12%' },
+  { label: 'Avg. uptime', value: '99.2%', delta: '+0.4pt' },
+  { label: 'Open incidents', value: '3', delta: '−2' },
 ];
 
 type Status = 'nominal' | 'caution' | 'alarm';
@@ -23,11 +27,6 @@ const fleet: { id: string; model: string; mission: string; battery: number; alt:
   { id: 'UAV-004', model: 'Skynode', mission: 'Relay hold', battery: 9, alt: '156 m', status: 'alarm' },
 ];
 
-const statusToken: Record<Status, string> = {
-  nominal: 'var(--nominal)',
-  caution: 'var(--caution)',
-  alarm: 'var(--alarm)',
-};
 const statusLabel: Record<Status, string> = { nominal: 'Nominal', caution: 'Caution', alarm: 'Alarm' };
 
 const features: { name: string; icon: IconName; desc: string }[] = [
@@ -36,164 +35,163 @@ const features: { name: string; icon: IconName; desc: string }[] = [
   { name: 'Fleet analytics', icon: 'gear', desc: 'Utilisation, uptime and maintenance trends across your whole fleet, exportable to your stack.' },
 ];
 
-function batteryColor(b: number): string {
-  if (b <= 15) return 'var(--alarm)';
-  if (b <= 30) return 'var(--caution)';
-  return 'var(--nominal)';
+/* Battery reads the reserved severity ladder — state, never brand. */
+function batteryLevel(b: number): Status {
+  if (b <= 15) return 'alarm';
+  if (b <= 30) return 'caution';
+  return 'nominal';
 }
 </script>
 
 <template>
-  <div class="overflow-x-clip" style="background: var(--background)">
+  <div>
 
-    <!-- 1. HERO -->
+    <!-- ╭─ Cover ────────────────────────────────────────────────────╮ -->
     <WebHero
       eyebrow="Fleet operations"
       title="Your whole fleet, one pane of glass."
       subtitle="Command live operations, replay missions and track fleet health across every vehicle and team — from the browser."
+      facts="142 VEHICLES · 37 IN FLIGHT · 99.2% UPTIME"
       primary="Start a trial"
       secondary="Book a demo"
       @primary="navigate('company')"
       @secondary="navigate('company')"
     />
 
-    <!-- 2. DASHBOARD MOCK -->
-    <section class="mx-auto max-w-6xl px-6 py-20">
-      <div class="overflow-hidden rounded-2xl border border-border shadow-sm" style="background: var(--card)">
-
-        <!-- toolbar -->
-        <div class="flex items-center gap-3 border-b border-border px-5 py-3">
-          <span class="flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full animate-pulse" style="background: var(--nominal)" />
-            <span class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--foreground)">Live operations</span>
-          </span>
-          <span class="ml-auto font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Region · EU-Central</span>
-        </div>
-
-        <!-- KPI row -->
-        <div class="grid grid-cols-2 gap-px md:grid-cols-4" style="background: var(--border)">
-          <div v-for="k in kpis" :key="k.label" class="px-5 py-6" style="background: var(--card)">
-            <p class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{{ k.label }}</p>
-            <p class="mt-2 text-4xl font-medium tabular-nums tracking-tight" style="color: var(--foreground)">{{ k.value }}</p>
-            <p
-              class="mt-1 font-mono text-[11px] tabular-nums"
-              :style="`color: ${k.up ? 'var(--nominal)' : 'var(--muted-foreground)'}`"
-            >{{ k.delta }}</p>
-          </div>
-        </div>
-
-        <!-- fleet table -->
-        <div class="overflow-x-auto border-t border-border">
-          <table class="w-full min-w-[640px] border-collapse text-left">
-            <thead>
-              <tr class="border-b border-border" style="background: var(--muted)">
-                <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Vehicle</th>
-                <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Module</th>
-                <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Mission</th>
-                <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Battery</th>
-                <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Alt</th>
-                <th class="px-5 py-3 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in fleet" :key="row.id" class="border-b border-border last:border-0">
-                <td class="px-5 py-3.5 font-mono text-[13px] tabular-nums" style="color: var(--foreground)">{{ row.id }}</td>
-                <td class="px-5 py-3.5 text-[13px] text-muted-foreground">{{ row.model }}</td>
-                <td class="px-5 py-3.5 text-[13px]" style="color: var(--foreground)">{{ row.mission }}</td>
-                <td class="px-5 py-3.5">
-                  <div class="flex items-center gap-2">
-                    <div class="h-1.5 w-16 overflow-hidden rounded-full" style="background: var(--muted)">
-                      <div class="h-full rounded-full" :style="`width: ${row.battery}%; background: ${batteryColor(row.battery)}`" />
-                    </div>
-                    <span class="font-mono text-[12px] tabular-nums text-muted-foreground">{{ row.battery }}%</span>
-                  </div>
-                </td>
-                <td class="px-5 py-3.5 font-mono text-[12px] tabular-nums text-muted-foreground">{{ row.alt }}</td>
-                <td class="px-5 py-3.5">
-                  <span
-                    class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em]"
-                    :style="`color: ${statusToken[row.status]}; background: color-mix(in oklab, ${statusToken[row.status]} 14%, transparent)`"
-                  >
-                    <span class="h-1.5 w-1.5 rounded-full" :style="`background: ${statusToken[row.status]}`" />
-                    {{ statusLabel[row.status] }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <p class="mt-4 text-center font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">
-        Representative interface · Auterion Suite
-      </p>
-    </section>
-
-    <!-- 3. FEATURES -->
-    <section class="border-t border-border" style="background: var(--card)">
-      <div class="mx-auto max-w-6xl px-6 py-24">
-        <div class="mb-12 max-w-2xl">
-          <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Built for operators</p>
-          <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-            From a single drone to a <span style="color: var(--brand)">fleet of thousands.</span>
-          </h2>
-        </div>
-        <div class="grid gap-5 md:grid-cols-3">
+    <!-- ╭─ Header ledger ────────────────────────────────────────────╮
+         The KPIs top the case layout. Deltas carry no hue: a trend is not
+         a state, and the ladder is reserved for state. -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block-sm">
+        <div class="dk-ledger wb-ledger-4">
           <div
-            v-for="f in features"
-            :key="f.name"
-            class="rounded-xl border border-border p-7 transition-shadow hover:shadow-md"
-            style="background: var(--background)"
+            v-for="(k, i) in kpis"
+            :key="k.label"
+            class="dk-ledger-cell"
+            :data-align="i === kpis.length - 1 ? 'end' : undefined"
           >
-            <div
-              class="mb-5 flex h-11 w-11 items-center justify-center rounded-lg"
-              style="background: color-mix(in oklab, var(--brand) 12%, var(--card))"
-            >
-              <Icon :name="f.icon" size="sm" style="color: var(--brand)" />
-            </div>
-            <h3 class="text-[18px] font-medium" style="color: var(--foreground)">{{ f.name }}</h3>
-            <p class="mt-2.5 text-[14px] leading-relaxed text-muted-foreground">{{ f.desc }}</p>
+            <span class="dk-pointer">{{ k.label }}</span>
+            <span class="wb-figure-num">{{ k.value }}</span>
+            <span class="dk-label dk-num">{{ k.delta }}</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 4. CTA -->
-    <section class="border-t border-border" style="background: var(--background)">
-      <div class="mx-auto max-w-2xl px-6 py-24 text-center">
-        <p class="font-mono text-[11px] uppercase tracking-[0.12em]" style="color: var(--brand)">Get started</p>
-        <h2 class="mt-3 text-4xl font-medium" style="color: var(--foreground)">
-          See your fleet in Auterion Suite.
-        </h2>
-        <p class="mx-auto mt-4 max-w-md text-[16px] leading-relaxed text-muted-foreground">
-          Connect your first vehicle in minutes. No rip-and-replace — Suite works with the hardware you already fly.
-        </p>
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <button
-            class="cta-btn inline-flex items-center gap-2 rounded-lg px-6 py-3 text-[14px] font-medium"
-            style="background: var(--brand); color: var(--brand-foreground)"
-            @click="navigate('company')"
-          >
-            Start a trial
-            <Icon name="arrow-right" size="xs" />
-          </button>
-          <Button variant="ghost" size="md" class="gap-2 text-[14px]" @click="navigate('products')">
-            Explore products
-          </Button>
+    <!-- ╭─ Live operations panel ────────────────────────────────────╮ -->
+    <section>
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">Live operations</span>
+          <span class="dk-bracket">5 VEHICLES · REGION EU-CENTRAL</span>
+        </div>
+
+        <div class="dk-card wb-figure wb-stack">
+          <div class="wb-figure-bar">
+            <span class="wb-live">
+              <span class="dk-dot dk-dot-nominal" />
+              <span class="dk-label">Streaming</span>
+            </span>
+            <span class="dk-label wb-push">Region · EU-Central</span>
+          </div>
+
+          <div class="wb-figure-body wb-figure-scroll">
+            <table class="dk-table wb-table-wide">
+              <colgroup>
+                <col class="wb-col-md">
+                <col class="wb-col-md">
+                <col>
+                <col class="wb-col-lg">
+                <col class="wb-col-sm">
+                <col class="wb-col-md">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col">Vehicle</th>
+                  <th scope="col">Module</th>
+                  <th scope="col">Mission</th>
+                  <th scope="col">Battery</th>
+                  <th scope="col" data-align="end">Alt</th>
+                  <th scope="col" data-align="end">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in fleet" :key="row.id">
+                  <td data-lead="true" class="dk-num">{{ row.id }}</td>
+                  <td>{{ row.model }}</td>
+                  <td>{{ row.mission }}</td>
+                  <td>
+                    <span class="flex items-center gap-2">
+                      <span class="wb-bar">
+                        <span
+                          class="wb-bar-fill"
+                          :class="`wb-bar-${batteryLevel(row.battery)}`"
+                          :style="{ width: `${row.battery}%` }"
+                        />
+                      </span>
+                      <span class="dk-label dk-num">{{ row.battery }}%</span>
+                    </span>
+                  </td>
+                  <td data-align="end" class="dk-num">{{ row.alt }}</td>
+                  <td data-align="end">
+                    <span class="wb-status" :class="`dk-ink-${row.status}`">
+                      <span class="dk-dot" :class="`dk-dot-${row.status}`" />
+                      {{ statusLabel[row.status] }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p class="dk-caption">Representative interface · Auterion Suite</p>
+      </div>
+    </section>
+
+    <!-- ╭─ Built for operators ──────────────────────────────────────╮ -->
+    <section class="wb-band wb-band-alt">
+      <div class="wb-wrap wb-block">
+        <div class="dk-section">
+          <span class="dk-label">Built for operators</span>
+          <span class="dk-bracket">3 CAPABILITIES</span>
+        </div>
+        <div class="wb-head">
+          <h2 class="dk-h1">From a single drone to a fleet of thousands.</h2>
+        </div>
+
+        <div class="wb-grid" data-cols="3">
+          <div v-for="f in features" :key="f.name" class="dk-card dk-lift wb-tile">
+            <div class="wb-tile-head">
+              <span class="wb-tile-mark"><Icon :name="f.icon" size="xs" /></span>
+            </div>
+            <h3 class="dk-h2">{{ f.name }}</h3>
+            <p class="dk-body">{{ f.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ╭─ Proof close ──────────────────────────────────────────────╮ -->
+    <section class="wb-band">
+      <div class="wb-wrap wb-block">
+        <div class="dk-plate wb-cover">
+          <div class="wb-cover-copy">
+            <p class="dk-h2 dk-ghost">Get started</p>
+            <h2 class="dk-display">See your fleet in Auterion Suite.</h2>
+          </div>
+          <p class="dk-body-lg wb-cover-lede">
+            Connect your first vehicle in minutes. No rip-and-replace — Suite works with the hardware you already fly.
+          </p>
+          <div class="wb-actions">
+            <button type="button" class="dk-cta-solid" @click="navigate('company')">
+              Start a trial <Icon name="arrow-right" size="xs" />
+            </button>
+            <button type="button" class="dk-cta" @click="navigate('products')">Explore products</button>
+          </div>
         </div>
       </div>
     </section>
 
   </div>
 </template>
-
-<style scoped>
-.cta-btn:hover {
-  background: color-mix(in oklab, var(--brand) 88%, black) !important;
-}
-
-.cta-btn:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
-</style>

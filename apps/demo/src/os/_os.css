@@ -1,0 +1,319 @@
+/* Hallmark · macrostructure: Editorial (portfolio deck) · tone: measured/declarative · anchor hue: auterion blue (rationed to one surface)
+ * pre-emit critique: P5 H5 E5 S5 R5 V4
+ *
+ * "DEVICE DOSSIER" — the AuterionOS surface, written in the Deck 07b grammar.
+ *
+ * This file adds NOTHING to the grammar. Every colour, radius, duration and
+ * easing here resolves through a `--dk-*` alias declared in `_deck07b.css`, or
+ * through a DS semantic token. There is no hex, no rgb, no oklch: a raw literal
+ * in an `.os-*` rule is a bug, exactly as it is in a `.dk-*` rule.
+ *
+ * Why the file exists at all: a device console is a page of measured facts about
+ * ONE machine, and the grammar's ledger devices carry the facts but not the
+ * furniture — the rail, the plot backdrop, the topology hub, the table column
+ * model. Those are this surface's own structure. They are named HERE so the
+ * template carries no magic numbers, which is the rule the Console `.bp-*` layer
+ * set and the rule this layer is held to:
+ *
+ *   · ONE ladder per axis, named in the layer, never improvised at the call site.
+ *     This layer adds four surface dimensions (rail width, topbar height, hub,
+ *     node) and one measure; everything else steps to the `--dk-*` ladders.
+ *   · The mode is [data-theme], on the SAME element as `.dk` — so the DS
+ *     semantic tokens and the `--dk-*` palette re-resolve together and can never
+ *     drift out of step. There is no second mode attribute on this surface.
+ *   · Repeating structures are GRIDS and TABLES, not flex rows. Connectivity,
+ *     payloads, safety and apps share ONE column model (`.os-col-*`), so a
+ *     reader switching sections sees the columns stay exactly where they were.
+ *   · Hairlines, never shadows — including on hover.
+ *   · Motion only on state change, never on load, and it inherits the grammar's
+ *     durations and easings rather than declaring its own.
+ *
+ * Namespaced `os-`; sits alongside `dk-` (grammar), `ix-` (Suite) and `bp-`
+ * (Console) without collision. Demo layer — NOT a tokens or recipe change.
+ */
+
+/* ═══ Surface ladder ══════════════════════════════════════════════════════
+ * The four dimensions the grammar has no opinion about, plus the one measure
+ * every block on the page is set to. */
+
+.os-root {
+  --os-rail-w: 236px;
+  --os-topbar-h: 56px;
+  --os-mark: 30px; /* the identity tile — the view's one signal surface */
+  --os-hub: 64px; /* topology centre                                    */
+  --os-node-w: 148px; /* topology subsystem chip                         */
+  --os-measure: 1024px; /* one column measure, held across every section */
+
+  /* The grammar has one focus ring (`--dk-fg`, never transitioned). The DS
+   * components on this page ring off `--ring`, which is auterion-blue — a
+   * second ring treatment AND a third occurrence of the signal. Point it at
+   * the grammar's ink so Button/Switch/StatusBadge focus matches `.dk`. */
+  --ring: var(--dk-fg);
+}
+
+/* ═══ Chrome ══════════════════════════════════════════════════════════════ */
+
+.os-rail {
+  width: var(--os-rail-w);
+  border-right: var(--dk-rule) solid var(--dk-line);
+  background: var(--dk-bg);
+}
+
+.os-topbar {
+  height: var(--os-topbar-h);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+  background: var(--dk-bg);
+}
+
+.os-block { padding: var(--dk-gutter-sm); }
+.os-block-x { padding-inline: var(--dk-gutter-sm); }
+
+/* The measure. Every ledger, chapter head and table on this page is set to it,
+ * so a label started on one section's x is on the same x in the next. */
+.os-measure {
+  width: 100%;
+  max-width: var(--os-measure);
+  margin-inline: auto;
+  padding-inline: var(--dk-gutter);
+  padding-bottom: calc(var(--dk-gutter) * 2);
+}
+
+.os-scroll {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--dk-line) transparent;
+}
+
+/* The page's vertical rhythm: one gap between blocks, no other value. */
+.os-stack { display: flex; flex-direction: column; gap: var(--dk-gutter); }
+/* Adjacency inside a block — an icon next to its text, a badge next to a name. */
+.os-inline { display: flex; align-items: center; gap: 8px; }
+.os-inline-lg { display: flex; align-items: center; gap: var(--dk-gutter-sm); }
+.os-tight { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+
+/* ═══ Identity ════════════════════════════════════════════════════════════
+ * The signal budget, spent: this tile is the ONLY blue surface in the view.
+ * A device console reports on one machine, and the one place the brand belongs
+ * is the machine's own mark. `.dk-plate-signal` supplies the fill and radius —
+ * this rule only sizes the tile. When the accent axis is `mono` the call site
+ * repoints `--dk-signal` at the ink, and the view drops to zero blue. */
+
+.os-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--os-mark);
+  height: var(--os-mark);
+  flex-shrink: 0;
+}
+
+/* ═══ Fields ══════════════════════════════════════════════════════════════
+ * A pointer-labelled value grid. Deliberately NOT `.dk-ledger`: the header
+ * ledger tops the case layout once, and reusing it as a body element is the
+ * failure mode its permission slip names. Same column discipline, no device
+ * misuse. */
+
+.os-fields {
+  display: grid;
+  grid-template-columns: repeat(var(--os-fields-cols, 2), minmax(0, 1fr));
+  gap: var(--dk-gutter-sm);
+}
+.os-fields-4 { --os-fields-cols: 4; }
+.os-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.os-field[data-align='end'] { align-items: flex-end; text-align: right; }
+
+/* The header ledger runs five facts on this surface, not three. */
+.os-ledger-5 { --dk-ledger-cols: 5; }
+
+/* ═══ Chapter head ════════════════════════════════════════════════════════
+ * numeral card · section title · bracketed totals. Exactly one numeral card is
+ * rendered per section — the permission slip is "one per spread", and a section
+ * is this surface's spread. The folio marks position in a sequence of six, so
+ * it is aria-hidden at the call site and the section name always sits beside
+ * it: the folio is never the only carrier of the index. */
+
+.os-chapter {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--dk-gutter);
+  padding-block: var(--dk-gutter);
+}
+/* Compound selectors throughout this file are deliberate, not defensive noise:
+ * `_deck07b.css` is imported from the app entry and `_os.css` from this view,
+ * so the grammar's stylesheet can land AFTER this one. Anything that has to
+ * beat a `.dk-*` declaration is written at (0,2,0) so source order stops
+ * mattering. */
+.dk-numeral.os-folio {
+  width: 108px;
+  height: 108px;
+  padding: 12px;
+  justify-content: center;
+}
+
+@media (max-width: 860px) {
+  .os-chapter { grid-template-columns: minmax(0, 1fr); }
+  /* decorative-structural only, so it is the first thing to go */
+  .os-folio { display: none; }
+}
+
+/* ═══ Cover plate ═════════════════════════════════════════════════════════
+ * `.dk-plate` is the opposite exposure of the same material and is not
+ * rationed, but it must earn its weight — so it appears once, on the device
+ * cover. It carries type only: DS components resolve against [data-theme], not
+ * against the plate, so a primary Button placed on it would vanish in light
+ * mode. The actions live below the plate, on the page surface. */
+
+.os-cover { display: grid; grid-template-columns: minmax(0, 1fr); overflow: hidden; }
+.os-cover-body { padding: var(--dk-gutter); }
+.os-cover-art {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--dk-gutter);
+  border-left: var(--dk-rule) solid var(--dk-plate-line);
+}
+@media (min-width: 860px) {
+  .os-cover { grid-template-columns: minmax(0, 1fr) auto; }
+  .os-cover-art { display: flex; }
+}
+.os-cover-eyebrow { padding-bottom: 4px; }
+.os-cover-fields { padding-top: var(--dk-gutter); }
+.os-cover-svg { width: 210px; height: 150px; }
+
+/* The lede under a display or section title — one value, used in both places. */
+.os-lede { padding-top: 8px; }
+/* A mono label heading a rail group. */
+.os-rail-head { padding-bottom: 8px; }
+
+/* ═══ Severity rail ═══════════════════════════════════════════════════════
+ * The ladder tied to structure. State, not brand — exempt from the signal
+ * budget, and never blue. */
+
+.dk-card.os-edge { border-left-width: 2px; border-left-color: transparent; }
+.dk-card.os-edge-alarm { border-left-color: var(--alarm); }
+.dk-card.os-edge-warning { border-left-color: var(--warning); }
+.dk-card.os-edge-caution { border-left-color: var(--caution); }
+.dk-card.os-edge-advisory { border-left-color: var(--advisory); }
+.dk-card.os-edge-nominal { border-left-color: var(--nominal); }
+
+.os-banner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--dk-gutter-sm);
+  padding: var(--dk-gutter-sm);
+}
+
+/* ═══ Table column model ══════════════════════════════════════════════════
+ * ONE geometry for connectivity · payloads · safety · apps. Four sections that
+ * report the same shape of fact about the unit, so they get the same columns:
+ * subject, state, measured spec (hard right), control. Switching sections must
+ * not move a column. `table-layout: fixed` on `.dk-table` makes these binding. */
+
+.os-col-lead { width: 34%; }
+.os-col-state { width: 20%; }
+.os-col-spec { width: 28%; }
+.os-col-act { width: 18%; }
+
+/* Vitals has its own shape — it is the only block carrying a trend. */
+.os-col-vital { width: 20%; }
+.os-col-detail { width: 24%; }
+.os-col-trend { width: 26%; }
+.os-col-vstate { width: 16%; }
+.os-col-value { width: 14%; }
+
+/* The journal: a mono stream, timestamps hard right with the other numerals. */
+.os-col-lvl { width: 13%; }
+.os-col-src { width: 14%; }
+.os-col-msg { width: 55%; }
+.os-col-time { width: 18%; }
+.os-log { font-family: var(--font-mono); }
+.os-log-scroll { max-height: 560px; }
+
+/* Cells that hold a control rather than copy sit on the row's centre line. */
+.dk-table td.os-cell-mid { vertical-align: middle; }
+.os-cell-end { display: flex; justify-content: flex-end; }
+
+.os-trend { display: block; width: 100%; max-width: 168px; }
+
+/* A block head that does NOT draw its own rule, for use above a `.dk-table` —
+ * the table's own `th` hairline is the rule, and two hairlines 10px apart is a
+ * stack of cards pretending to be a deck. `.dk-section` is used where nothing
+ * below supplies the rule. */
+.os-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--dk-gutter-sm);
+  padding-bottom: 10px;
+}
+
+/* ═══ Topology ════════════════════════════════════════════════════════════ */
+
+.dk-card.os-plot {
+  position: relative;
+  height: 392px;
+  margin-top: var(--dk-gutter-sm);
+  background-image:
+    linear-gradient(var(--dk-line-2) 1px, transparent 1px),
+    linear-gradient(90deg, var(--dk-line-2) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Nodes are placed from the topology data, so their x/y are bound inline; the
+ * centring transform is named here so the template carries coordinates only. */
+.os-abs { position: absolute; transform: translate(-50%, -50%); }
+.os-hub-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+
+/* The hub is the page's heaviest mark and it is ink, not signal — weight is
+ * carried by contrast here, the way the editorial school carries it. */
+.os-hub {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--os-hub);
+  height: var(--os-hub);
+  border-radius: var(--dk-r);
+  background: var(--dk-fg);
+  color: var(--dk-bg);
+}
+
+.os-node {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: var(--os-node-w);
+  padding: 8px 10px;
+}
+.os-node-title { color: var(--dk-fg); font-weight: 600; }
+
+/* A hairline square that holds a glyph. One size, matching the dense control. */
+.os-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--dk-control-sm);
+  height: var(--dk-control-sm);
+  flex-shrink: 0;
+  border-radius: var(--dk-r-sm);
+  border: var(--dk-rule) solid var(--dk-line);
+  color: var(--dk-fg-2);
+}
+
+/* ═══ Controls ════════════════════════════════════════════════════════════ */
+
+/* The device switcher fills the rail, so its label and chevron take the ends. */
+.dk-cta.os-cta-block { width: 100%; justify-content: space-between; }
+
+/* Nav folio: the section index, hard right, tabular — the same alignment rule
+ * the tables follow, applied to the rail. */
+.os-nav-folio { margin-left: auto; }
+
+/* The accent switcher is secondary chrome and folds away first. Compound
+ * selector: `.dk-segment` declares `display: inline-flex` and its stylesheet
+ * can land after this one. */
+.dk-segment.os-md-only { display: none; }
+@media (min-width: 768px) {
+  .dk-segment.os-md-only { display: inline-flex; }
+}

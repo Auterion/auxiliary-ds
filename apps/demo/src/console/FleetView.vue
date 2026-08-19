@@ -1,7 +1,11 @@
 <script setup lang="ts">
-/* Fleet — a dense but calm vehicle table over the Suite showcase's shared fleet.
- * Status is the one place color is allowed: a 6px dot on the five-level ladder,
- * always paired with its text label so it never reads by color alone. */
+/* Fleet — the ledger table. 07b's strictest device: a real <table> with
+ * `table-layout: fixed`, pointer-labels (`↳ CALLSIGN`) on the field headers —
+ * their one sanctioned use — and every measured column running hard right on
+ * tabular numerals, so the figures line up down the whole page.
+ *
+ * Status is the one place colour is allowed: a 6px dot on the five-level ladder,
+ * always paired with its text label so it never reads by colour alone. */
 import { computed, ref } from 'vue';
 import { Card, Avatar, AvatarFallback } from '@auxiliary/vue';
 import { Sparkline } from '@auxiliary/viz';
@@ -21,16 +25,19 @@ const filtered = computed(() => {
 </script>
 
 <template>
-  <Card class="bp-card p-5">
+  <Card class="dk-card p-5">
     <!-- toolbar -->
-    <div class="flex items-center justify-between gap-3 pb-4">
-      <div>
-        <h2 class="bp-ink-1 text-[14px] font-semibold">All vehicles</h2>
-        <p class="bp-ink-2 pt-0.5 text-[13px]">{{ filtered.length }} of {{ VEHICLES.length }} in the fleet</p>
-      </div>
+    <div class="dk-section">
+      <h2 class="dk-label">All vehicles</h2>
+      <span class="dk-bracket">
+        <span>{{ filtered.length }} of {{ VEHICLES.length }} listed</span>
+      </span>
+    </div>
+
+    <div class="flex justify-end py-4">
       <div class="relative w-[240px]">
         <Icon
-          class="bp-ink-3 pointer-events-none absolute left-2 top-1/2 -translate-y-1/2"
+          class="bp-glyph pointer-events-none absolute left-2 top-1/2 -translate-y-1/2"
           name="magnifying-glass"
           size="sm"
         />
@@ -39,51 +46,60 @@ const filtered = computed(() => {
     </div>
 
     <div class="overflow-x-auto">
-      <table class="bp-table">
+      <table class="dk-table min-w-[860px]">
+        <!-- fixed layout needs the proportions declared once, here, rather than
+             letting content decide them differently on every render -->
+        <colgroup>
+          <col style="width: 13%" >
+          <col style="width: 16%" >
+          <col style="width: 15%" >
+          <col style="width: 13%" >
+          <col style="width: 13%" >
+          <col style="width: 18%" >
+          <col style="width: 12%" >
+        </colgroup>
         <thead>
           <tr>
-            <th scope="col">Callsign</th>
-            <th scope="col">Model</th>
-            <th scope="col">Status</th>
-            <th scope="col">Battery</th>
-            <th scope="col">Site</th>
-            <th scope="col">Operator</th>
-            <th scope="col" class="text-right">Last seen</th>
+            <th scope="col"><span class="dk-pointer">Callsign</span></th>
+            <th scope="col"><span class="dk-pointer">Model</span></th>
+            <th scope="col"><span class="dk-pointer">Status</span></th>
+            <th scope="col" data-align="end"><span class="dk-pointer">Battery</span></th>
+            <th scope="col"><span class="dk-pointer">Site</span></th>
+            <th scope="col"><span class="dk-pointer">Operator</span></th>
+            <th scope="col" data-align="end"><span class="dk-pointer">Last seen</span></th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="v in filtered" :key="v.id">
-            <td>
-              <span class="bp-ink-1 text-[13px] font-medium">{{ v.callsign }}</span>
-            </td>
-            <td class="whitespace-nowrap">{{ v.model }}</td>
+            <td data-lead="true">{{ v.callsign }}</td>
+            <td class="truncate">{{ v.model }}</td>
             <td>
               <span class="flex items-center gap-2 whitespace-nowrap">
-                <span class="bp-dot" :class="`bp-dot-${v.status.level}`" />
+                <span class="dk-dot" :class="`dk-dot-${v.status.level}`" />
                 {{ v.status.label }}
               </span>
             </td>
-            <td>
-              <span class="flex items-center gap-2">
+            <td data-align="end">
+              <span class="flex items-center justify-end gap-2">
                 <Sparkline
                   :values="v.metrics.battery"
-                  :width="48"
-                  :height="16"
-                  color="var(--bp-ink-3)"
+                  :width="44"
+                  :height="14"
+                  color="var(--dk-fg-3)"
                 />
-                <span class="bp-ink-1 tabular text-[13px]">{{ v.battery }}%</span>
+                <span class="dk-num">{{ v.battery }}%</span>
               </span>
             </td>
-            <td class="whitespace-nowrap">{{ v.site.name }}</td>
+            <td class="truncate">{{ v.site.name }}</td>
             <td>
-              <span class="flex items-center gap-2 whitespace-nowrap">
-                <Avatar size="sm" class="!h-5 !w-5">
+              <span class="flex items-center gap-2 truncate whitespace-nowrap">
+                <Avatar size="sm" class="!h-5 !w-5 shrink-0">
                   <AvatarFallback class="bp-avatar !text-[10px]">{{ v.operator.initials }}</AvatarFallback>
                 </Avatar>
                 {{ v.operator.name }}
               </span>
             </td>
-            <td class="bp-ink-3 whitespace-nowrap text-right">{{ v.lastSeen }}</td>
+            <td data-align="end" class="whitespace-nowrap">{{ v.lastSeen }}</td>
           </tr>
         </tbody>
       </table>

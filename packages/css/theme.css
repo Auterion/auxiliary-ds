@@ -127,9 +127,65 @@
  * so they re-resolve under [data-register="operational"] (which shortens
  * --duration-base). Unlayered :root so it wins over Tailwind's @theme default.
  * prefers-reduced-motion still overrides everything below with !important.
+ *
+ * BOTH halves of a transition are ours. The duration was bridged here from the
+ * start; the easing was not, so every `transition-colors` in the recipe layer ran
+ * on Tailwind's own cubic-bezier(0.4, 0, 0.2, 1) while --ease-out sat unused —
+ * which made the motion tokens decorative and this comment untrue. The component
+ * schema's binding check is what surfaced it.
  * -------------------------------------------------------------------------- */
 :root {
   --default-transition-duration: var(--duration-base);
+  --default-transition-timing-function: var(--ease-out);
+}
+
+/* -------------------------------------------------------------------------- *
+ * Named animations.
+ *
+ * The recipe layer referenced `animate-in`, `animate-out`, `fade-in-0`,
+ * `animate-accordion-up` and `animate-accordion-down` — the shadcn/radix
+ * vocabulary, which arrives with `tw-animate-css`. That package was never a
+ * dependency, so all five generated NOTHING: an unmatched Tailwind class is
+ * dropped silently, and the accordion had never slid, the dialog overlay had
+ * never faded. The component-schema build is what caught it.
+ *
+ * These are defined here rather than by adding the dependency, because the
+ * composition vocabulary that package exists to provide (`animate-in` +
+ * `fade-in-0` + `slide-in-from-top-2`, composed at the call site) is precisely
+ * what this system does not want. Two named animations per behaviour, built
+ * from the motion tokens, is the Console rule: one ladder per axis, named in the
+ * layer, never improvised at the call site.
+ *
+ * Because duration and easing come through var(), they re-resolve under
+ * [data-register="operational"] — which shortens --duration-* — exactly as
+ * transitions do. prefers-reduced-motion still collapses them below.
+ *
+ * The accordion pair reads --reka-accordion-content-height, which Reka UI
+ * measures and writes onto AccordionContent. There is nothing to tokenise: the
+ * value is whatever the panel's content happens to be.
+ * -------------------------------------------------------------------------- */
+@theme {
+  --animate-fade-in: fade-in var(--duration-fast) var(--ease-out);
+  --animate-fade-out: fade-out var(--duration-fast) var(--ease-out);
+  --animate-accordion-down: accordion-down var(--duration-base) var(--ease-out);
+  --animate-accordion-up: accordion-up var(--duration-base) var(--ease-out);
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--reka-accordion-content-height); }
+  }
+  @keyframes accordion-up {
+    from { height: var(--reka-accordion-content-height); }
+    to { height: 0; }
+  }
 }
 
 /* -------------------------------------------------------------------------- *
@@ -151,8 +207,21 @@
   html {
     font-family: var(--font-sans);
     font-optical-sizing: auto;
-    /* ss03 = straight/square quotes, commas + square punctuation; ss08 = straight punctuation variant. */
-    font-feature-settings: "ss01", "ss03", "ss07", "ss08", "cv02", "cv03", "cv04", "cv06", "cv09", "cv12", "cv13", "calt", "liga";
+    /* The house set is EXACTLY the two square-punctuation features, nothing more:
+     *   ss07 = "Square punctuation" (the dots on . : ; ! ? and i j)
+     *   ss08 = "Square quotes" (quotes & commas)
+     * plus calt/liga, which are ordinary contextual-alternate and ligature
+     * features every text run wants — not stylistic alternates.
+     *
+     * Deliberately NOT here:
+     *   ss03 — Inter's "Round quotes & commas", the direct OPPOSITE of ss08. It
+     *          was once enabled behind a comment misnaming it "straight/square
+     *          quotes", so the two fought and quote shape fell to lookup order.
+     *   ss01 — "Open digits", and cv02/03/04/06/09/12/13 — letterform alternates.
+     *          These change GLYPH SHAPES, not punctuation. Keeping Inter's default
+     *          letterforms is the house position; only punctuation is squared.
+     * Letterform disambiguators live on the operational register alone (below). */
+    font-feature-settings: "ss07", "ss08", "calt", "liga";
     /* Auterion type settings (Figma 788:24): tight body line-height + the real
      * -2% body tracking. The text-* scale carries the tighter per-size tracking
      * (-3/-4%) at larger sizes; this is the baseline for non-utility text. */
@@ -162,9 +231,8 @@
     color: var(--foreground);
   }
 
-  /* Square/straight punctuation EVERYWHERE. Inter's ss01/ss03/ss07/ss08 plus
-   * the cv* character variants give square dots, straight quotes/commas and
-   * geometric punctuation (the IBM/Swiss register). The html rule above sets
+  /* Square punctuation EVERYWHERE. Inter's ss07 + ss08 give square dots and
+   * square quotes/commas (the IBM/Swiss register). The html rule above sets
    * them for inherited text, but native form controls reset font-family AND
    * font-feature-settings by UA stylesheet — so re-inherit them explicitly,
    * otherwise buttons/inputs/selects/textareas silently fall back to round
@@ -207,10 +275,15 @@
    * composite (not DTCG scalar) values, so they can't live in operational.tokens.json.
    *
    * font-feature-settings does NOT cascade-merge — it fully REPLACES — so this
-   * MUST restate the entire html base set and then ADD the disambiguators:
+   * MUST restate the html base set (ss07/ss08 + calt/liga) and then ADD the
+   * disambiguators:
    *   cv05 = tailed lowercase l, cv08 = serif uppercase I, cv11 = single-story a
    * so capital-I, lowercase-l and digit-1 read as three distinct shapes in
    * alphanumeric asset names / call-signs (e.g. `Il1`).
+   *
+   * These four (cv05/cv08/cv11/zero) are the ONLY glyph alternates anywhere in
+   * the system. They are a legibility guarantee for instrument surfaces, not a
+   * style choice — which is exactly why they are scoped here and not house-wide.
    *
    * Slashed zero is delivered TWO ways on purpose. `zero` in the feature string
    * rides font-feature-settings, which inherits independently — so it survives on
@@ -222,8 +295,7 @@
    * (Inter v4 numbering — matches the base set already in theme.css:180.) */
   [data-register="operational"] {
     font-feature-settings:
-      "ss01", "ss03", "ss07", "ss08",
-      "cv02", "cv03", "cv04", "cv06", "cv09", "cv12", "cv13",
+      "ss07", "ss08",
       "cv05", "cv08", "cv11",
       "zero", "calt", "liga";
     font-variant-numeric: slashed-zero;
@@ -263,11 +335,17 @@
 
   /* Display / marketing headline voice — tuned toward a Neue-Haas-Grotesk feel:
    * the Inter "Display" optical cut (opsz 32, pinned so it reads display at any
-   * size), medium weight, tight tracking, and a CLEAN feature set — we drop the
-   * operational square/disambiguation alternates (ss01/ss03/ss07/ss08/cv*) the
-   * html base applies, keeping only calt + liga so the letterforms read as a
-   * clean neo-grotesque. --font-display leads with "Inter Display" (the family
-   * Figma uses); on web it falls through to Inter Variable + the pinned opsz. */
+   * size), medium weight, tight tracking, and otherwise CLEAN letterforms.
+   *
+   * --font-display is now the SAME stack as --font-sans (Inter Variable first).
+   * The display cut comes from the pinned `opsz 32` axis, which IS the static
+   * Inter Display design — so nothing is lost by dropping that family, and we
+   * gain its missing ss07/ss08: the standalone Inter Display binary ships
+   * WITHOUT the square-punctuation sets, which is why it can't be the display
+   * face while square punctuation is house-wide.
+   *
+   * The feature set here is identical to the html base — ss07/ss08 + calt/liga —
+   * so display headlines need no exemption from, or addition to, the house rule. */
   .font-display {
     font-family: var(--font-display);
     font-size: var(--text-6xl);        /* fluid display size (clamp) */
@@ -276,7 +354,7 @@
     letter-spacing: var(--text-6xl--letter-spacing);
     font-optical-sizing: auto;
     font-variation-settings: "opsz" 32;
-    font-feature-settings: "calt", "liga";
+    font-feature-settings: "ss07", "ss08", "calt", "liga";
   }
 
   /* Caps micro-label / eyebrow utility — section headers, status pills, axis &
@@ -293,7 +371,7 @@
   .caps {
     text-transform: uppercase;
     letter-spacing: var(--tracking-caps);
-    font-feature-settings: "ss01", "ss03", "ss07", "ss08", "cv02", "cv03", "cv04", "cv06", "cv09", "cv12", "cv13", "case", "calt", "liga";
+    font-feature-settings: "ss07", "ss08", "case", "calt", "liga";
   }
 
   /* font-feature-settings fully REPLACES, so a .caps element inside an operational
@@ -301,7 +379,7 @@
    * serif I is the one that matters under uppercase) so operational .caps keeps the
    * I/l/1 guarantee, while expressive .caps stays on the cleaner letterforms. */
   [data-register="operational"] .caps {
-    font-feature-settings: "ss01", "ss03", "ss07", "ss08", "cv02", "cv03", "cv04", "cv06", "cv09", "cv12", "cv13", "cv05", "cv08", "cv11", "case", "calt", "liga";
+    font-feature-settings: "ss07", "ss08", "cv05", "cv08", "cv11", "case", "calt", "liga";
   }
 
   .font-mono {

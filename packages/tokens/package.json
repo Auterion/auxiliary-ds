@@ -16,7 +16,8 @@
     },
     "./dist/tailwind-v4.css": "./dist/tailwind-v4.css",
     "./dist/tokens.css": "./dist/tokens.css",
-    "./dist/tokens.json": "./dist/tokens.json"
+    "./dist/tokens.json": "./dist/tokens.json",
+    "./dist/figma-native.json": "./dist/figma-native.json"
   },
   "scripts": {
     "build": "node build.mjs",
