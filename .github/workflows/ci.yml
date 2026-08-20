@@ -27,13 +27,9 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        env:
-          FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
         run: pnpm install --frozen-lockfile
 
       - name: Verify icon registry in sync with config
-        env:
-          FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
         run: |
           pnpm --filter @auxiliary/icons sync
           if ! git diff --exit-code packages/icons/src/registry.ts; then
@@ -73,8 +69,6 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        env:
-          FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
         run: pnpm install --frozen-lockfile
 
       - name: Verify changeset present

@@ -205,19 +205,6 @@ importers:
       vue-tsc:
         specifier: ^2.2.0
         version: 2.2.12(typescript@6.0.3)
-    optionalDependencies:
-      '@fortawesome/sharp-light-svg-icons':
-        specifier: ^6.7.2
-        version: 6.7.2
-      '@fortawesome/sharp-regular-svg-icons':
-        specifier: ^6.7.2
-        version: 6.7.2
-      '@fortawesome/sharp-solid-svg-icons':
-        specifier: ^6.7.2
-        version: 6.7.2
-      '@fortawesome/sharp-thin-svg-icons':
-        specifier: ^6.7.0
-        version: 6.7.2
 
   packages/tokens:
     devDependencies:
@@ -845,26 +832,6 @@ packages:
 
   '@fontsource-variable/inter@5.2.8':
     resolution: {integrity: sha512-kOfP2D+ykbcX/P3IFnokOhVRNoTozo5/JxhAIVYLpea/UBmCQ/YWPBfWIDuBImXX/15KH+eKh4xpEUyS2sQQGQ==}
-
-  '@fortawesome/fontawesome-common-types@6.7.2':
-    resolution: {integrity: sha512-Zs+YeHUC5fkt7Mg1l6XTniei3k4bwG/yo3iFUtZWd/pMx9g3fdvkSK9E0FOC+++phXOka78uJcYb8JaFkW52Xg==}
-    engines: {node: '>=6'}
-
-  '@fortawesome/sharp-light-svg-icons@6.7.2':
-    resolution: {integrity: sha512-E4Q+zZbMOPyiZs79kXILJcbaWMz4ydLHQSIIld9DGRSU9tqvmo2o0iFInpHbVxswbYRN4v4sPbqLavq0F8MEyA==}
-    engines: {node: '>=6'}
-
-  '@fortawesome/sharp-regular-svg-icons@6.7.2':
-    resolution: {integrity: sha512-WczljTfGbnyH0pIXeavRUryBWrO6phm+5FnBIW2hZ9EU6BPzMPs2bxqmWRzwWROyh7cEfX0jDFjOrSTKdfs2xA==}
-    engines: {node: '>=6'}
-
-  '@fortawesome/sharp-solid-svg-icons@6.7.2':
-    resolution: {integrity: sha512-RQGnMRGpVUAT6HtELU57ZxIBsbYFC60+qfwlyOBjnK/wwQLy0KiYo+GdBYHmnpefMXjotTk5Lp9zPXb2Lnhd4Q==}
-    engines: {node: '>=6'}
-
-  '@fortawesome/sharp-thin-svg-icons@6.7.2':
-    resolution: {integrity: sha512-lsPOZHfYhlU/tVwNLtlcMVXJZRu5XA8jhhIAa4LCjv4UVq1Xqz9vpOvixne1R+rP/ZfBGUyZXSKHU9ysZhyfxw==}
-    engines: {node: '>=6'}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -3829,29 +3796,6 @@ snapshots:
   '@fontsource-variable/geist-mono@5.2.8': {}
 
   '@fontsource-variable/inter@5.2.8': {}
-
-  '@fortawesome/fontawesome-common-types@6.7.2':
-    optional: true
-
-  '@fortawesome/sharp-light-svg-icons@6.7.2':
-    dependencies:
-      '@fortawesome/fontawesome-common-types': 6.7.2
-    optional: true
-
-  '@fortawesome/sharp-regular-svg-icons@6.7.2':
-    dependencies:
-      '@fortawesome/fontawesome-common-types': 6.7.2
-    optional: true
-
-  '@fortawesome/sharp-solid-svg-icons@6.7.2':
-    dependencies:
-      '@fortawesome/fontawesome-common-types': 6.7.2
-    optional: true
-
-  '@fortawesome/sharp-thin-svg-icons@6.7.2':
-    dependencies:
-      '@fortawesome/fontawesome-common-types': 6.7.2
-    optional: true
 
   '@humanfs/core@0.19.2':
     dependencies:
