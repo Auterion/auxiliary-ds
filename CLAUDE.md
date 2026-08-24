@@ -101,7 +101,7 @@ pnpm --filter @auxiliary/docs dev       # VitePress on :5173
 
 CI (`.github/workflows/ci.yml`) enforces two things that are easy to miss:
 
-1. **The icon registry is generated and must be committed in sync.** `packages/icons/src/registry.ts` is produced from `packages/icons/src/config.ts` (and `packages/icons/inputs/*.svg`). After changing either, run `pnpm --filter @auxiliary/icons sync` and commit the regenerated `registry.ts` — CI fails if it drifts. Icons build on Font Awesome Pro Sharp plus a custom kit, so installing/syncing needs `FONTAWESOME_PACKAGE_TOKEN` in the environment.
+1. **The icon registry is generated and must be committed in sync.** `packages/icons/src/registry.ts` is produced from `packages/icons/src/config.ts` (and `packages/icons/inputs/*.svg`). After changing either, run `pnpm --filter @auxiliary/icons sync` and commit the regenerated `registry.ts` — CI fails if it drifts. Icons are sourced entirely from `packages/icons/inputs/*.svg` — no vendor package, no registry auth, no token.
 2. **Every PR needs a changeset.** CI runs `changeset status --since=origin/main`; add one with `pnpm changeset`.
 
 `@auxiliary/figma-sync` builds a self-contained push program (`dist/push.figma.js`); its lint/test scripts are still stubs.

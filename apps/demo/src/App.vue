@@ -1204,8 +1204,9 @@ function showToast(variant: 'info' | 'success' | 'alarm') {
             </div>
           </div>
           <p class="mt-4 text-xs text-muted-foreground">
-            Run <code class="font-mono">pnpm --filter @auxiliary/icons sync</code> with
-            <code class="font-mono">FONTAWESOME_PACKAGE_TOKEN</code> set to populate FA Pro Sharp glyphs.
+            Interim placeholder glyphs pending the Nucleo swap. Drop SVGs in
+            <code class="font-mono">packages/icons/inputs/</code> and run
+            <code class="font-mono">pnpm --filter @auxiliary/icons sync</code>.
           </p>
         </div>
       </section>

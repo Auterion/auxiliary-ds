@@ -1,7 +1,7 @@
 {
   "name": "@auxiliary/icons",
   "version": "0.0.0",
-  "description": "Typed <Icon> Vue component over a curated set of Font Awesome Pro Sharp glyphs + an Auterion operational kit. Registry is generated and committed — consumers do not need FA Pro access to use the package.",
+  "description": "Typed <Icon> Vue component over a curated Auterion glyph set. Registry is generated from inputs/*.svg and committed — no vendor dependency, no registry auth.",
   "license": "UNLICENSED",
   "type": "module",
   "files": [
@@ -28,11 +28,5 @@
     "vite": "^6.0.0",
     "vue": "^3.5.0",
     "vue-tsc": "^2.2.0"
-  },
-  "optionalDependencies": {
-    "@fortawesome/sharp-light-svg-icons": "^6.7.2",
-    "@fortawesome/sharp-regular-svg-icons": "^6.7.2",
-    "@fortawesome/sharp-solid-svg-icons": "^6.7.2",
-    "@fortawesome/sharp-thin-svg-icons": "^6.7.0"
   }
 }

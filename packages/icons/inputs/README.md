@@ -1,12 +1,15 @@
-# Auterion custom glyphs
+# Icon sources
 
-Hand-authored SVGs for operational concepts that have no Font Awesome equivalent
-(drone, geofence, RTL, RTH, GPS state, waypoint, etc.).
+Every glyph @auxiliary/icons ships is sourced from this directory — both the Auterion
+operational marks (drone, geofence, RTL, RTH, GPS state, waypoint, etc.) and the
+general-purpose set. There is no vendor package behind any of them.
 
 ## Format
 
 Each file is `<name>.svg`, where `name` matches its entry in [`src/config.ts`](../src/config.ts)
-under `CUSTOM_ICONS`.
+under `ICONS`. For sources that ship real weight variants, use `<weight>/<name>.svg`
+instead — `thin`, `light`, `regular`, `solid`. Sync prefers per-weight files and falls
+back to the flat file.
 
 Authoring rules:
 
@@ -24,6 +27,6 @@ Authoring rules:
 
 ## After authoring
 
-1. Add the name to `CUSTOM_ICONS` in [`src/config.ts`](../src/config.ts).
+1. Add the name to `ICONS` in [`src/config.ts`](../src/config.ts).
 2. Run `pnpm --filter @auxiliary/icons sync` to regenerate the registry.
 3. Verify the icon renders at 12/16/24 px in the demo app.
