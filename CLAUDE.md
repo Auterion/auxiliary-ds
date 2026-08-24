@@ -1,3 +1,5 @@
+## Intro
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -12,7 +14,7 @@ Packages (all under the `@auxiliary/*` scope):
 - `packages/css` — `@auxiliary/css`
 - `packages/vue` — `@auxiliary/vue`
 - `packages/icons` — `@auxiliary/icons`
-- `packages/figma-sync` — `@auxiliary/figma-sync` (parked — see its README)
+- `packages/figma-sync` — `@auxiliary/figma-sync` (tokens → Figma push; see its README)
 
 Apps:
 
@@ -33,7 +35,7 @@ tokens  →  css  →  vue  →  docs
          figma-sync (consumes tokens)
 ```
 
-- `packages/tokens` — DTCG-spec JSON. **Source of truth.** Every other package downstream of tokens must derive from these, not redefine.
+- `packages/tokens` — DTCG-spec JSON. **Source of truth.** Every other package downstream of tokens must derive from these, not redefine. Composite tokens (`shadow`, `type/*` typography roles) aren't single CSS values — they ship to Figma as Effect/Text Styles via figma-sync, not as Variables.
 - `packages/css` — Tailwind v4 preset and `@theme` exports generated from tokens. Also ships the
   styling toolkit consumed by `vue`: `cn()` (`@auxiliary/css/utils`), per-component recipes
   with typed variants (`@auxiliary/css/recipes`), and framework-agnostic formatters
@@ -79,7 +81,7 @@ Root scripts (all `turbo run` orchestrated except the changeset helpers):
 pnpm install
 pnpm build       # build across packages, respecting the dependency graph
 pnpm dev         # docs + demo + watch builds
-pnpm lint        # real gate: eslint --max-warnings 0 in every package (figma-sync parked)
+pnpm lint        # real gate: eslint --max-warnings 0 in every package
 pnpm test        # @auxiliary/vue runs Vitest + vitest-axe w/ coverage; other packages are stubs
 pnpm typecheck
 pnpm changeset   # add a changeset (required on every PR — see below)
@@ -102,7 +104,7 @@ CI (`.github/workflows/ci.yml`) enforces two things that are easy to miss:
 1. **The icon registry is generated and must be committed in sync.** `packages/icons/src/registry.ts` is produced from `packages/icons/src/config.ts` (and `packages/icons/inputs/*.svg`). After changing either, run `pnpm --filter @auxiliary/icons sync` and commit the regenerated `registry.ts` — CI fails if it drifts. Icons are sourced entirely from `packages/icons/inputs/*.svg` — no vendor package, no registry auth, no token.
 2. **Every PR needs a changeset.** CI runs `changeset status --since=origin/main`; add one with `pnpm changeset`.
 
-`@auxiliary/figma-sync` is currently parked — its build/lint/test scripts are stubs.
+`@auxiliary/figma-sync` builds a self-contained push program (`dist/push.figma.js`); its lint/test scripts are still stubs.
 
 ## Component patterns (vue)
 
@@ -122,3 +124,41 @@ These are conventions in `packages/vue`, not optional style:
 ## License
 
 UNLICENSED. Proprietary to Auterion AG.
+
+<!-- crystl-cli:begin -->
+
+## Crystl CLI (agent-callable)
+
+You're running inside Crystl. You can inspect and control sibling gems and shards via the `crystl` CLI:
+
+- `crystl gems` / `crystl shards --gem <name>` — discover what's open
+- `crystl screen --gem <name> --shard <name>` — read another shard's terminal output
+- `crystl send --gem <name> --shard <name> "<text>"` — type into another shard
+- `crystl shard create --gem <name> [--isolated] [-c "<cmd>"]` — fan out parallel work into a new shard
+- `crystl pending` / `crystl approve <id>` / `crystl deny <id>` — handle pending tool approvals
+- `crystl wait pending [--timeout SECS]` — block until a permission request appears (built on SSE; no polling)
+- `crystl events [--type pending_changed,notification]` — stream live bridge events as JSON lines
+
+Full reference: https://crystl.dev/docs/cli
+<!-- crystl-cli:end -->
+
+## figma-sync — pushing tokens to Figma
+
+Full procedure lives in the **`figma-sync` skill** (`.claude/skills/figma-sync/`). Key facts:
+
+- **Build the program:** `pnpm --filter @auxiliary/tokens build` then
+  `pnpm --filter @auxiliary/figma-sync build` → `packages/figma-sync/dist/push.figma.js`
+  (self-contained, data inlined; idempotent + atomic).
+- **What it pushes:** two Variable collections (Primitives ~395, Semantic ~31 × 4 theme
+  modes), **Effect Styles** (`shadow/*`), and **Text Styles** (`Type/*`, generated from the
+  `type/*` typography composites). Push summary:
+  `{ collections, valuesSet, effectStyles, textStyles }`.
+- **Gotcha — `use_figma` isn't always available.** The skill assumes a plugin-API Figma MCP
+  (`use_figma` + `whoami`). In this environment the connected Figma MCP is often the
+  **read-only Dev Mode** server (no `use_figma`/`whoami`). To actually write when that's the
+  case, run the generated **one-shot dev plugin** instead: in Figma **desktop** → Plugins →
+  Development → Import plugin from manifest → `packages/figma-sync/dist/plugin/manifest.json`,
+  then run it (re-reads `code.js` each run, so no re-import after rebuilds). The plugin wraps
+  `push.figma.js`; regenerate it after any token change by re-wrapping the rebuilt program.
+- Code → Figma only; never sync Figma back (README Principle 1). Renaming a token orphans the
+  old Figma variable (pre-1.0: acceptable; clean up manually).

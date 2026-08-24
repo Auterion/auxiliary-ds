@@ -162,3 +162,19 @@
   background: var(--muted);
   color: var(--foreground);
 }
+
+/*
+ * Auterion org mark in the navbar (theme/index.ts injects <Logo> into the
+ * `nav-bar-title-before` slot). The mark master has no intrinsic width/height,
+ * so we size it here; `currentColor` makes it follow the navbar text color, so
+ * it stays legible across all four themes with no per-theme image swap.
+ */
+.aux-nav-mark {
+  margin-right: 8px;
+  color: var(--foreground);
+}
+.aux-nav-mark svg {
+  display: block;
+  height: 22px;
+  width: auto;
+}

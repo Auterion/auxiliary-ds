@@ -1,0 +1,20 @@
+/* Shared glass surfaces for the Mission Control views (global, used across
+ * MapView + CameraView; theme-aware via semantic tokens). */
+.amc-glass {
+  background: color-mix(in oklab, var(--card) 76%, transparent);
+  backdrop-filter: blur(16px);
+  border: 1px solid color-mix(in oklab, var(--foreground) 13%, transparent);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.38), inset 0 1px 0 color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+.amc-glass-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.6rem;
+  background: color-mix(in oklab, var(--card) 76%, transparent);
+  border: 1px solid color-mix(in oklab, var(--foreground) 13%, transparent);
+  color: var(--foreground);
+}
+.amc-glass-btn:hover {
+  background: var(--secondary);
+}

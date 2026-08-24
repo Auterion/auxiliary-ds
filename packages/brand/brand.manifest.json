@@ -14,6 +14,7 @@
       "id": "auterion",
       "name": "Auterion",
       "type": "org",
+      "brandHue": "auterion-blue.700 — oklch(0.482 0.235 264 / ~264°). The color mark uses this hue; never substitute a generic blue. Token ref: color.primitive.auterion-blue.700 (semantic `brand`).",
       "minSize": { "mark": 16, "wordmark": 16, "lockup-horizontal": 24, "lockup-stacked": 24 },
       "clearspace": 0.5,
       "themes": ["light", "dark", "sunlight", "darknight"],
@@ -24,9 +25,9 @@
         "over photographic / satellite terrain without a contrast scrim (see brand imagery)"
       ],
       "variants": {
-        "mark": { "color": "pending", "mono": "pending", "inverse": "pending" },
+        "mark": { "color": "pending", "mono": "auterion/mark-mono.svg", "inverse": "auterion/mark-mono.svg" },
         "wordmark": { "color": "pending", "mono": "pending", "inverse": "pending" },
-        "lockup-horizontal": { "color": "pending", "mono": "pending", "inverse": "pending" },
+        "lockup-horizontal": { "color": "pending", "mono": "auterion/lockup-horizontal-mono.svg", "inverse": "auterion/lockup-horizontal-mono.svg" },
         "lockup-stacked": { "color": "pending", "mono": "pending", "inverse": "pending" }
       }
     },
@@ -64,7 +65,8 @@
       "themes": ["light", "dark"],
       "forbidden": [
         "recoloring outside the provided tones",
-        "stretching, rotating, or altering proportions"
+        "stretching, rotating, or altering proportions",
+        "the full color lockup inside dense operational chrome — use the bare mark, mono/inverse, at minSize"
       ],
       "variants": {
         "mark": { "color": "pending", "mono": "pending", "inverse": "pending" },

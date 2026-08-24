@@ -47,7 +47,21 @@ registry) — re-run `sync` and commit after touching `assets/` or `brand.manife
 Until a master lands, its slot is `"pending"` and `<Logo>` renders a labelled placeholder,
 so the gap is visible in dev/docs and nothing fake ever ships.
 
+## App-icon / favicon export
+
+`scripts/export-icons.mjs` rasterizes each available **mark** master into the outputs the
+manifest declares (`appIcons.outputs`) — `favicon.svg` (adaptive), `favicon.ico`,
+apple-touch / PWA / maskable PNGs, and a 1200×630 `og-image.png` template — under
+`exports/<id>/`. Needs ImageMagick (`magick`/`convert`); skips cleanly without it.
+
+```bash
+pnpm --filter @auxiliary/brand export:icons            # all targets with a mark
+pnpm --filter @auxiliary/brand export:icons auterion   # one target
+```
+
 ## Status
 
-Scaffold complete; **awaiting master artwork**. App-icon/favicon export
-(`scripts/export-icons.mjs`) and brand-color tokens are tracked in `ROADMAP.md`.
+Org mark (`auterion`) **mark + horizontal lockup** have landed (mono/inverse `currentColor`
+masters) and drive the docs navbar + favicons. Still pending: the `wordmark` / `lockup-stacked`
+kinds, the product marks (`mission-control`, `suite`, `os`), and brand-color tokens — tracked
+in `ROADMAP.md`.

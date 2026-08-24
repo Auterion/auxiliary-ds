@@ -38,11 +38,22 @@ describe('brand manifest', () => {
     expect(toneForTheme('darknight')).toBe('inverse');
   });
 
-  it('resolves a known logo to pending while masters are absent', () => {
-    const r = resolveLogo({ id: 'auterion', kind: 'mark' });
+  it('resolves a kind whose master is absent to pending', () => {
+    // `wordmark` art hasn't landed; `mark` + `lockup-horizontal` have.
+    const r = resolveLogo({ id: 'auterion', kind: 'wordmark' });
     expect(r).toBeDefined();
     expect(r!.status).toBe('pending');
     expect(r!.svg).toBeUndefined();
+    expect(r!.minSize).toBe(getLogo('auterion')!.minSize.wordmark);
+  });
+
+  it('resolves a landed master to its inlined single-color SVG', () => {
+    const r = resolveLogo({ id: 'auterion', kind: 'mark', theme: 'light' });
+    expect(r).toBeDefined();
+    expect(r!.status).toBe('available');
+    expect(r!.svg).toContain('<svg');
+    // The mono master serves every tone via currentColor.
+    expect(r!.svg).toContain('currentColor');
     expect(r!.minSize).toBe(getLogo('auterion')!.minSize.mark);
   });
 

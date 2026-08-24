@@ -112,6 +112,12 @@ describe('NumberField', () => {
     expect(wrapper.get('[role="spinbutton"]').attributes('disabled')).toBeDefined();
   });
 
+  it('accepts custom decrementLabel / incrementLabel for operational context', () => {
+    const wrapper = mount(NumberField, { props: { decrementLabel: 'Minus', incrementLabel: 'Plus' } });
+    expect(wrapper.find('[aria-label="Minus"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-label="Plus"]').exists()).toBe(true);
+  });
+
   it('has no axe violations when associated with a label', async () => {
     const wrapper = mount(NumberField, {
       props: { id: 'altitude', modelValue: 408, unit: 'm' },
