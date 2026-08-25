@@ -2,7 +2,6 @@
 '@auxiliary/tokens': major
 '@auxiliary/css': minor
 '@auxiliary/figma-sync': minor
-'@auxiliary/docs': minor
 ---
 
 Component token schema — one source for agents, humans, and Figma
