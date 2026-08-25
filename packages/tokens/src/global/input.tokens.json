@@ -3,6 +3,11 @@
     "target": {
       "min":   { "$type": "dimension", "$value": "44px" },
       "floor": { "$type": "dimension", "$value": "0px" }
+    },
+    "field-text": {
+      "$description": "The other half of the coarse-pointer contract. --target-floor sizes the BOX; this sizes the TYPED TEXT. iOS Safari zooms the whole page when a focused input renders text below 16px and never zooms back out, so the layout an operator was reading shifts the moment they tap a field. Same mechanism as target.*: a 0px floor that the @media (pointer: coarse) block and the [data-input] override raise, consumed as max(--text-sm, --field-text-floor) so it composes over register density and is authoring-overridable for a known desk.",
+      "min":   { "$type": "dimension", "$value": "16px" },
+      "floor": { "$type": "dimension", "$value": "0px" }
     }
   }
 }

@@ -4,6 +4,21 @@
       "gap": {
         "$type": "dimension",
         "$value": "{global.spacing.1_5}"
+      },
+      "icon-size": {
+        "$description": "Level glyph beside the readout. Mirrors telemetry-value so the two siblings annotate severity identically.",
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.size.icon.2xs}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.size.icon.xs}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.size.icon.sm}"
+        }
       }
     }
   }

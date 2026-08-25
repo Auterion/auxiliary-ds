@@ -14,24 +14,24 @@ const selected = computed(() => items.find((v) => v.id === selectedId.value) ?? 
 
 The master/detail screen — a scrollable list on the left, the selected item's detail on the right. The backbone of fleet management, mission logs, and asset views. Selecting in the list drives the detail (try it).
 
-<div class="vp-raw" style="margin:1.25rem 0; border:1px solid var(--border); border-radius:0.5rem; overflow:hidden; background:var(--background); display:grid; grid-template-columns:16rem 1fr; height:20rem;">
+<div class="vp-raw" style="margin:var(--spacing-5) var(--spacing-0); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--background); display:grid; grid-template-columns:16rem 1fr; height:20rem;">
   <nav aria-label="Vehicles" style="border-right:1px solid var(--border); background:var(--card); overflow-y:auto;">
-    <button v-for="v in items" :key="v.id" @click="selectedId = v.id" :aria-current="selectedId === v.id ? 'true' : undefined" :style="{ display:'flex', alignItems:'center', gap:'0.5rem', width:'100%', padding:'0.625rem 0.75rem', border:'none', borderBottom:'1px solid var(--border)', background: selectedId===v.id ? 'var(--accent)' : 'transparent', cursor:'pointer', textAlign:'left' }">
+    <button v-for="v in items" :key="v.id" @click="selectedId = v.id" :aria-current="selectedId === v.id ? 'true' : undefined" :style="{ display:'flex', alignItems:'center', gap:'var(--spacing-2)', width:'100%', padding:'var(--spacing-2.5) var(--spacing-3)', border:'none', borderBottom:'1px solid var(--border)', background: selectedId===v.id ? 'var(--accent)' : 'transparent', cursor:'pointer', textAlign:'left' }">
       <code style="font-size:0.8125rem; font-weight:500;">{{ v.vehicle }}</code>
       <StatusBadge :level="v.level" size="sm" dot>{{ v.site }}</StatusBadge>
       <div style="flex:1;"></div>
       <TelemetryValue :value="v.batt" unit="%" :precision="0" size="sm" />
     </button>
   </nav>
-  <section aria-label="Detail" style="overflow-y:auto; padding:1.25rem; display:flex; flex-direction:column; gap:1rem;">
-    <div style="display:flex; align-items:center; gap:0.625rem;">
-      <h3 style="margin:0; font-size:1.125rem;">{{ selected.vehicle }}</h3>
+  <section aria-label="Detail" style="overflow-y:auto; padding:var(--spacing-5); display:flex; flex-direction:column; gap:var(--spacing-4);">
+    <div style="display:flex; align-items:center; gap:var(--spacing-2.5);">
+      <h3 style="margin:var(--spacing-0); font-size:1.125rem;">{{ selected.vehicle }}</h3>
       <StatusBadge :level="selected.level" dot>{{ selected.site }}</StatusBadge>
       <div style="flex:1;"></div>
       <Button variant="ghost" size="sm">Edit</Button>
       <Button variant="primary" size="sm">Launch</Button>
     </div>
-    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:0.75rem;">
+    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:var(--spacing-3);">
       <TelemetryValue label="Battery" :value="selected.batt" unit="%" :precision="0" :level="selected.batt < 25 ? 'warning' : undefined" />
       <TelemetryValue label="Altitude" :value="selected.alt" unit="m" :precision="0" />
     </div>

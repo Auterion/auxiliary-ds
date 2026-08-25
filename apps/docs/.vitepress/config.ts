@@ -40,7 +40,6 @@ export default defineConfig({
         text: 'pre-1.0',
         items: [
           { text: 'GitHub', link: 'https://github.com/Auterion/auxiliary-ds' },
-          { text: 'Demo (live)', link: 'http://localhost:5174' },
         ],
       },
     ],

@@ -83,7 +83,7 @@ The component renders a `<div>` and forwards `$attrs`, so `id`, `data-*`, and `a
 - The coordinate is **plain text** in document order (optional label, then value, then format tag), so a screen reader reads it naturally. Keep `label` set so the position has a name.
 - `tabular-nums` keeps each glyph a fixed width, so a streaming position stays aligned and doesn't reflow as digits tick.
 - **Invalid input degrades, never throws.** A `NaN`, out-of-range, or polar coordinate MGRS can't express renders as an em dash (`—`) rather than blanking — a bad fix must never break the surrounding panel.
-- **Color is never the only cue.** `level` tints the value, but the coordinate text itself always carries the meaning (WCAG 1.4.1). For a time-critical breach, pair it with a `<Toast>` / `<AlertBanner>` that announces via a live region — a recolored readout is silent to anyone not looking at that field.
+- **Color is never the only cue.** Setting `level` renders the shared severity glyph (the same grayscale-distinct shape `StatusBadge` uses) and a visually-hidden level word alongside the tint, so the *tier* survives grayscale, dichromacy and a screen reader. The coordinate text carries the reading; it does not carry the tier, which is why the tint alone was not enough (WCAG 1.4.1, `AD-D-014`). For a time-critical breach still pair it with a `<Toast>` / `<AlertBanner>` that announces via a live region — a recolored readout is silent to anyone not looking at that field.
 
 ## Tokens consumed
 

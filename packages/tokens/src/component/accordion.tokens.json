@@ -3,7 +3,8 @@
     "accordion": {
       "padding-x": {
         "$type": "dimension",
-        "$value": "{global.spacing.1}"
+        "$value": "{global.spacing.3}",
+        "$description": "Matches the row family it belongs to \u2014 table cell and tabs trigger are 12px, dropdown item 8px. This sat at 4px, which read as a mis-set row inside the 20px Card it usually lives in."
       },
       "padding-y": {
         "$type": "dimension",

@@ -1723,7 +1723,7 @@
         "type": "StatusLevel | null",
         "default": "null",
         "required": false,
-        "description": ""
+        "description": "Status level. The bar's own length carries the reading; `level` adds the tier. Because a track has no room for a glyph, the non-color channel here is `aria-valuetext` — the level word travels with the value to assistive tech instead of living in the fill hue alone (AD-D-014 invariant 1)."
       }
     ],
     "events": [],
@@ -2582,7 +2582,7 @@
         "type": "StatusLevel | null",
         "default": "null",
         "required": false,
-        "description": "Status level — colors the value when set (e.g. red for alarm threshold)."
+        "description": "Status level at a threshold. Renders the shared severity glyph and a visually-hidden level word alongside the color — never color alone."
       }
     ],
     "events": [],
@@ -2715,7 +2715,7 @@
         "type": "StatusLevel | null",
         "default": "null",
         "required": false,
-        "description": "Status level — colors the value when set (e.g. red for an out-of-bounds fix)."
+        "description": "Status level for an out-of-bounds fix. Renders the shared severity glyph and a visually-hidden level word alongside the color — never color alone."
       }
     ],
     "events": [],

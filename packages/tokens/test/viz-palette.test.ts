@@ -58,15 +58,38 @@ describe.each(THEMES)('viz palette — %s theme', (name) => {
     }
   });
 
-  it('no categorical series sits on a status color', () => {
+  /**
+   * A series may not be painted in a role the interface already speaks in.
+   *
+   * The status roles were always reserved. The TEXT roles were not, and that is
+   * where it bit: chart chrome is drawn in `muted-foreground` (axis labels at
+   * TimeSeries.vue, the legend at Bars.vue), so a series sitting on it makes
+   * "this stroke is data" and "this stroke is chrome" the same color — the one
+   * distinction a categorical palette exists to make. Light `viz-categorical-6`
+   * was `mono.950`, the identical primitive to `foreground` (ΔEok 0.0000).
+   *
+   * `brand` is deliberately NOT reserved: series 1 IS the Auterion ultramarine
+   * by design (see packages/viz/src/palette.ts), so reserving it would fail the
+   * palette's own intent.
+   */
+  const RESERVED = [...LADDER, 'destructive', 'foreground', 'muted-foreground'] as const;
+
+  it('no categorical series sits on a reserved role', () => {
     for (const i of CAT) {
-      for (const role of [...LADDER, 'destructive'] as const) {
+      for (const role of RESERVED) {
         expect(
           deltaEOk(cat[i - 1]!, theme[role]!),
           `viz-categorical-${i} vs ${role}`,
         ).toBeGreaterThanOrEqual(0.05);
       }
     }
+  });
+
+  // Positive control: the reservation must actually reject a series painted in a
+  // reserved ink. Without it, a typo in RESERVED yields a green test over an
+  // empty loop — which is how the text roles went unchecked in the first place.
+  it('actually rejects a series painted in a reserved ink', () => {
+    expect(deltaEOk(theme.foreground!, theme.foreground!)).toBeLessThan(0.05);
   });
 
   it('sequential ramp is strictly monotonic in luminance', () => {

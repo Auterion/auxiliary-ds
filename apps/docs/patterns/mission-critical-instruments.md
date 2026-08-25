@@ -17,7 +17,7 @@ The Level-4 bespoke widgets a heads-up / payload view needs — an attitude indi
 
 An artificial horizon — sky/ground split rolls and pitches with the aircraft, a fixed reference and bank scale stay put. Drag the sliders to fly it.
 
-<div class="auxiliary-demo vp-raw" style="gap:1.5rem; align-items:center; flex-wrap:wrap;">
+<div class="auxiliary-demo vp-raw" style="gap:var(--spacing-6); align-items:center; flex-wrap:wrap;">
   <svg width="180" height="180" viewBox="0 0 200 200" role="img" :aria-label="`Attitude: roll ${roll}°, pitch ${pitch}°`">
     <defs><clipPath id="adi"><circle cx="100" cy="100" r="86" /></clipPath></defs>
     <g clip-path="url(#adi)">
@@ -43,9 +43,9 @@ An artificial horizon — sky/ground split rolls and pitches with the aircraft, 
     </g>
     <circle cx="100" cy="100" r="86" fill="none" stroke="var(--border)" stroke-width="3" />
   </svg>
-  <div style="display:flex; flex-direction:column; gap:0.75rem; min-width:14rem;">
-    <div style="display:flex; align-items:center; gap:0.75rem;"><span style="width:3rem; font-size:0.8125rem; color:var(--muted-foreground);">Roll</span><Slider :model-value="[roll]" @update:model-value="setRoll" :min="-45" :max="45" :step="1" aria-label="Roll" style="flex:1;" /><code style="width:3rem; text-align:right;">{{ roll }}°</code></div>
-    <div style="display:flex; align-items:center; gap:0.75rem;"><span style="width:3rem; font-size:0.8125rem; color:var(--muted-foreground);">Pitch</span><Slider :model-value="[pitch]" @update:model-value="setPitch" :min="-20" :max="20" :step="1" aria-label="Pitch" style="flex:1;" /><code style="width:3rem; text-align:right;">{{ pitch }}°</code></div>
+  <div style="display:flex; flex-direction:column; gap:var(--spacing-3); min-width:14rem;">
+    <div style="display:flex; align-items:center; gap:var(--spacing-3);"><span style="width:3rem; font-size:0.8125rem; color:var(--muted-foreground);">Roll</span><Slider :model-value="[roll]" @update:model-value="setRoll" :min="-45" :max="45" :step="1" aria-label="Roll" style="flex:1;" /><code style="width:3rem; text-align:right;">{{ roll }}°</code></div>
+    <div style="display:flex; align-items:center; gap:var(--spacing-3);"><span style="width:3rem; font-size:0.8125rem; color:var(--muted-foreground);">Pitch</span><Slider :model-value="[pitch]" @update:model-value="setPitch" :min="-20" :max="20" :step="1" aria-label="Pitch" style="flex:1;" /><code style="width:3rem; text-align:right;">{{ pitch }}°</code></div>
   </div>
 </div>
 
@@ -53,7 +53,7 @@ An artificial horizon — sky/ground split rolls and pitches with the aircraft, 
 
 A rotating compass rose with a fixed lubber line and a mono readout — the numbers-before-graphics rule applies (the digits lead, the rose confirms).
 
-<div class="auxiliary-demo vp-raw" style="gap:1.5rem; align-items:center; flex-wrap:wrap;">
+<div class="auxiliary-demo vp-raw" style="gap:var(--spacing-6); align-items:center; flex-wrap:wrap;">
   <svg width="150" height="150" viewBox="0 0 200 200" role="img" :aria-label="`Heading ${heading}°`">
     <circle cx="100" cy="100" r="86" fill="var(--card)" stroke="var(--border)" stroke-width="3" />
     <g :transform="`rotate(${-heading} 100 100)`" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--foreground)">
@@ -67,18 +67,18 @@ A rotating compass rose with a fixed lubber line and a mono readout — the numb
     <rect x="78" y="88" width="44" height="24" rx="4" fill="var(--background)" stroke="var(--border)" />
     <text x="100" y="105" text-anchor="middle" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--foreground)">{{ heading }}°</text>
   </svg>
-  <div style="display:flex; align-items:center; gap:0.75rem; min-width:14rem;"><span style="width:3.5rem; font-size:0.8125rem; color:var(--muted-foreground);">Heading</span><Slider :model-value="[heading]" @update:model-value="setHeading" :min="0" :max="359" :step="1" aria-label="Heading" style="flex:1;" /></div>
+  <div style="display:flex; align-items:center; gap:var(--spacing-3); min-width:14rem;"><span style="width:3.5rem; font-size:0.8125rem; color:var(--muted-foreground);">Heading</span><Slider :model-value="[heading]" @update:model-value="setHeading" :min="0" :max="359" :step="1" aria-label="Heading" style="flex:1;" /></div>
 </div>
 
 ## Payload action cluster
 
 The gimbal/payload controls. The dangerous ones are **guarded** — `STRIKE` requires a hold (`GuardedAction`), so it can't fire on a stray tap; track toggles; zoom and record are immediate.
 
-<div class="auxiliary-demo vp-raw" style="gap:1rem; align-items:center; flex-wrap:wrap;">
-  <div style="display:flex; flex-direction:column; gap:0.625rem; align-items:stretch; width:13rem;">
+<div class="auxiliary-demo vp-raw" style="gap:var(--spacing-4); align-items:center; flex-wrap:wrap;">
+  <div style="display:flex; flex-direction:column; gap:var(--spacing-2.5); align-items:stretch; width:13rem;">
     <GuardedAction mode="hold" variant="danger" :hold-ms="1500" confirm-label="Hold to STRIKE">Strike</GuardedAction>
     <Button :variant="tracking ? 'primary' : 'secondary'" @click="tracking = !tracking">{{ tracking ? 'Tracking — release' : 'Track target' }}</Button>
-    <div style="display:flex; gap:0.5rem;"><Button variant="secondary" aria-label="Zoom out" style="flex:1;"><Icon name="minus" /></Button><Button variant="secondary" style="flex:2;">FOV 49°</Button><Button variant="secondary" aria-label="Zoom in" style="flex:1;"><Icon name="plus" /></Button></div>
+    <div style="display:flex; gap:var(--spacing-2);"><Button variant="secondary" aria-label="Zoom out" style="flex:1;"><Icon name="minus" /></Button><Button variant="secondary" style="flex:2;">FOV 49°</Button><Button variant="secondary" aria-label="Zoom in" style="flex:1;"><Icon name="plus" /></Button></div>
     <Button variant="ghost" aria-label="Record"><Icon name="circle-info" /> Record</Button>
   </div>
 </div>

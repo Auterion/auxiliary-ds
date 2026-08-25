@@ -179,17 +179,22 @@ Product keeps Inter's **Text** optical cut for operational legibility.
 | `body` | `Type/Marketing/Body` | Inter | 18px (`{text.lg}`) | regular | `normal` 1.5 | `tight` −0.01em |
 | `caption` | `Type/Marketing/Caption` | Inter | 14px (`{text.sm}`) | semibold | `snug` 1.35 | `tight` −0.01em |
 
+> **Sizes `3xl` and above are fluid.** They ship as `clamp()`, so the figures in
+> both tables are the **upper** bound: `3xl` resolves 26→30px, `4xl` 30→40px,
+> `5xl` 34→48px and `6xl` 40→60px between the narrow and wide ends of the
+> viewport. Everything at `2xl` and below is a fixed size.
+
 ### Product — `type/product/*` (operational: Suite · OS · Mission Control · Inter Text)
 
 | Role | Figma style | Font | Size | Weight | Leading | Tracking |
 | --- | --- | --- | --- | --- | --- | --- |
-| `display` | `Type/Product/Display` | Inter | 32px | semibold | `tight` 1.2 | `subhead` −0.03em |
+| `display` | `Type/Product/Display` | Inter | 30px (`{text.3xl}`) | semibold | `tight` 1.2 | `subhead` −0.03em |
 | `heading` | `Type/Product/Heading` | Inter | 24px (`{text.2xl}`) | semibold | `heading` 1.15 | `tight` −0.01em |
 | `title` | `Type/Product/Title` | Inter | 20px (`{text.xl}`) | semibold | `subhead` 1.25 | `tight` −0.01em |
-| `body-lg` | `Type/Product/Body Large` | Inter | 18px (`{text.lg}`) | medium | `normal` 1.5 | `normal` 0 |
-| `body` | `Type/Product/Body` | Inter | 16px (`{text.base}`) | regular | `normal` 1.5 | `normal` 0 |
-| `label` | `Type/Product/Label` | Inter | 14px (`{text.sm}`) | medium | `snug` 1.35 | `normal` 0 |
-| `caption` | `Type/Product/Caption` | Inter | 12px (`{text.xs}`) | regular | `snug` 1.35 | `normal` 0 |
+| `body-lg` | `Type/Product/Body Large` | Inter | 18px (`{text.lg}`) | medium | `lg` 1.4 | `lg` −0.02em |
+| `body` | `Type/Product/Body` | Inter | 16px (`{text.base}`) | regular | `base` 1.4 | `base` −0.02em |
+| `label` | `Type/Product/Label` | Inter | 14px (`{text.sm}`) | medium | `sm` 1.4 | `sm` −0.02em |
+| `caption` | `Type/Product/Caption` | Inter | 12px (`{text.xs}`) | regular | `xs` 1.4 | `xs` −0.02em |
 
 **Inter Display vs Text.** The two are the ends of Inter's optical-size (`opsz`) axis, which
 Inter v4 folded into the variable font (range 14–32). **`opsz 32` IS the static Inter Display
@@ -254,3 +259,16 @@ is bound to its `Primitives/text/*` variable.
   font-variant-numeric: tabular-nums;
 }
 </style>
+
+### Why the text roles cite a size step, not a named leading
+
+`body`, `body-lg`, `label` and `caption` take their leading and tracking from the
+**per-size** `text-leading.*` / `text-tracking.*` pairs — the ones the `text-*`
+utilities already carry — rather than from the role vocabulary (`leading.normal`,
+`tracking.normal`). They used to cite the role vocabulary while the browser
+rendered the size step's own 1.4 / −0.02em, and because these composites emit no
+CSS and are consumed only by figma-sync, every Figma Text Style was drawn against
+leading the product does not have. `heading` and `display` keep the role
+vocabulary on purpose: a heading legitimately runs tighter than a size step's
+default, which is a fallback for arbitrary text. Gated by
+`packages/tokens/test/type-role-parity.test.ts`.

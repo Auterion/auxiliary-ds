@@ -11,17 +11,17 @@ export const select = tv({
     // The text inset is DERIVED, not a measurement: indicator inset + indicator
     // icon + label gap. Left as a literal (it was `pl-7`), bumping the check icon
     // silently overlaps the label — the relationship was invisible.
-    item: 'relative flex h-(--component-select-item-height) cursor-pointer select-none items-center rounded-(--component-select-item-radius) pl-[calc(var(--component-select-item-indicator-inset-inline-start)+var(--component-select-item-icon-size)+var(--spacing-2))] pr-(--component-select-item-padding-inline-end) text-sm outline-none data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground data-[disabled]:opacity-(--opacity-disabled) data-[disabled]:cursor-not-allowed',
+    item: 'relative flex h-(--component-select-item-height) cursor-pointer select-none items-center rounded-(--component-select-item-radius) ps-[calc(var(--component-select-item-indicator-inset-inline-start)+var(--component-select-item-icon-size)+var(--spacing-2))] pe-(--component-select-item-padding-inline-end) truncate text-sm outline-none data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground data-[disabled]:opacity-(--opacity-disabled) data-[disabled]:cursor-not-allowed',
     itemIndicator:
-      'absolute left-(--component-select-item-indicator-inset-inline-start) flex items-center justify-center',
+      'absolute start-(--component-select-item-indicator-inset-inline-start) flex items-center justify-center',
     separator: 'my-(--component-select-separator-margin-y) border-t border-border',
   },
   variants: {
     // Shared size vocabulary (see sizes.ts) — flexes the trigger only. Height is
     // register-flex via --control-height-* (ROADMAP §6g).
     size: {
-      sm: { trigger: 'h-[max(var(--component-select-height-sm),var(--target-floor))] px-(--component-select-padding-x-sm) text-sm' },
-      md: { trigger: 'h-[max(var(--component-select-height-md),var(--target-floor))] px-(--component-select-padding-x-md) text-sm' },
+      sm: { trigger: 'h-[max(var(--component-select-height-sm),var(--target-floor))] px-(--component-select-padding-x-sm) text-[max(var(--text-sm),var(--field-text-floor))]' },
+      md: { trigger: 'h-[max(var(--component-select-height-md),var(--target-floor))] px-(--component-select-padding-x-md) text-[max(var(--text-sm),var(--field-text-floor))]' },
       lg: { trigger: 'h-[max(var(--component-select-height-lg),var(--target-floor))] px-(--component-select-padding-x-lg) text-base' },
     },
     invalid: {

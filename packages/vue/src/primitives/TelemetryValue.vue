@@ -3,7 +3,7 @@ import { computed, type HTMLAttributes } from 'vue';
 import { telemetryValue, type Size } from '@auxiliary/css/recipes';
 import { convertQuantity, formatNumber, type Quantity, type UnitSystem } from '@auxiliary/css/format';
 import { cn } from '@auxiliary/css/utils';
-import type { StatusLevel } from './status-glyphs';
+import { STATUS_GLYPHS, STATUS_LABELS, type StatusLevel } from './status-glyphs';
 import { useUnitSystem } from '../composables/useUnitSystem';
 
 const props = withDefaults(
@@ -29,7 +29,10 @@ const props = withDefaults(
     trend?: 'up' | 'down' | 'stable' | null;
     /** Visual size. */
     size?: Size;
-    /** Status level — colors the value when set (e.g. red for alarm threshold). */
+    /**
+     * Status level at a threshold. Renders the shared severity glyph and a
+     * visually-hidden level word alongside the color — never color alone.
+     */
     level?: StatusLevel | null;
     class?: HTMLAttributes['class'];
   }>(),
@@ -44,18 +47,34 @@ const ctx = useUnitSystem();
 const system = computed(() => props.system ?? ctx.system.value);
 const locale = computed(() => props.locale ?? ctx.locale.value);
 
-const styles = computed(() =>
-  telemetryValue({ size: props.size, level: props.level ?? undefined }),
-);
-
-const rootClass = computed(() => cn(styles.value.root(), props.class));
-
 /** Converted SI value in quantity mode; null otherwise. */
 const converted = computed(() =>
   props.quantity != null && typeof props.value === 'number'
     ? convertQuantity(props.value, props.quantity, system.value)
     : null,
 );
+
+/** Unit derived from `quantity` wins over the manual `unit` prop. */
+const displayUnit = computed(() => converted.value?.unit ?? props.unit);
+
+/**
+ * Honour the formatter's own spacing rule (`408 m` vs `247°`) so the component
+ * and `formatQuantity` never disagree. Outside quantity mode the unit is a bare
+ * string, so fall back to the same set of symbols that set the flag in units.ts.
+ */
+const spaced = computed(
+  () => converted.value?.spaced ?? !/^[°%′″]/.test(displayUnit.value ?? ''),
+);
+
+const styles = computed(() =>
+  telemetryValue({
+    size: props.size,
+    level: props.level ?? undefined,
+    spaced: spaced.value,
+  }),
+);
+
+const rootClass = computed(() => cn(styles.value.root(), props.class));
 
 const formattedValue = computed(() => {
   if (converted.value) {
@@ -70,28 +89,50 @@ const formattedValue = computed(() => {
   return props.value;
 });
 
-/** Unit derived from `quantity` wins over the manual `unit` prop. */
-const displayUnit = computed(() => converted.value?.unit ?? props.unit);
-
+/**
+ * U+2191/2193/2192 — all three inside the Geist Mono latin unicode-range, so the
+ * three trend states render in one face at one advance width. The geometric
+ * triangles they replaced fell outside every declared subset.
+ */
 const trendArrow = computed(() => {
-  if (props.trend === 'up') return '▲';
-  if (props.trend === 'down') return '▼';
-  if (props.trend === 'stable') return '–';
+  if (props.trend === 'up') return '↑';
+  if (props.trend === 'down') return '↓';
+  if (props.trend === 'stable') return '→';
   return '';
 });
+
+const levelGlyph = computed(() => (props.level ? STATUS_GLYPHS[props.level] : null));
+const levelLabel = computed(() => (props.level ? STATUS_LABELS[props.level] : null));
 </script>
 
 <template>
   <div :class="rootClass">
     <span v-if="label" :class="styles.label()">{{ label }}</span>
     <div :class="styles.valueRow()">
+      <!-- Non-color redundancy for `level`: a grayscale-distinct shape and, below,
+           the level word for assistive tech. Color is the fast cue, never the only one. -->
+      <svg
+        v-if="levelGlyph"
+        :class="styles.levelIcon()"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path :d="levelGlyph" />
+      </svg>
       <span :class="styles.value()">{{ formattedValue }}</span>
       <span v-if="displayUnit" :class="styles.unit()">{{ displayUnit }}</span>
       <span
         v-if="trendArrow"
         :class="styles.trend()"
-        :aria-label="`trend ${trend}`"
+        aria-hidden="true"
       >{{ trendArrow }}</span>
+      <span v-if="levelLabel" class="sr-only">{{ levelLabel }}</span>
+      <span v-if="trend" class="sr-only">trend {{ trend }}</span>
     </div>
   </div>
 </template>

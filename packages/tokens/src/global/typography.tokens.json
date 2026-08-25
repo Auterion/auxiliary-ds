@@ -3,116 +3,395 @@
     "font": {
       "sans": {
         "$type": "fontFamily",
-        "$value": ["Inter Variable", "Inter", "system-ui", "sans-serif"]
+        "$value": [
+          "Inter Variable",
+          "Inter",
+          "system-ui",
+          "sans-serif"
+        ]
       },
       "display": {
         "$type": "fontFamily",
-        "$description": "Marketing/display voice. Deliberately the SAME stack as font.sans — the display cut is reached via the opsz axis (`opsz 32` === the static Inter Display), not via a separate family. The standalone Inter Display binary does NOT carry the ss07/ss08 square-punctuation sets, and square punctuation is house-wide; keeping one family keeps the feature set intact.",
-        "$value": ["Inter Variable", "Inter", "system-ui", "sans-serif"]
+        "$description": "Marketing/display voice. Deliberately the SAME stack as font.sans \u2014 the display cut is reached via the opsz axis (`opsz 32` === the static Inter Display), not via a separate family. The standalone Inter Display binary does NOT carry the ss07/ss08 square-punctuation sets, and square punctuation is house-wide; keeping one family keeps the feature set intact.",
+        "$value": [
+          "Inter Variable",
+          "Inter",
+          "system-ui",
+          "sans-serif"
+        ]
       },
       "mono": {
         "$type": "fontFamily",
-        "$value": ["Geist Mono", "ui-monospace", "SFMono-Regular", "monospace"]
+        "$value": [
+          "Geist Mono",
+          "ui-monospace",
+          "SFMono-Regular",
+          "monospace"
+        ]
       }
     },
     "font-weight": {
-      "regular":  { "$type": "fontWeight", "$value": 400 },
-      "medium":   { "$type": "fontWeight", "$value": 500 },
-      "semibold": { "$type": "fontWeight", "$value": 600 },
-      "bold":     { "$type": "fontWeight", "$value": 700 }
+      "regular": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "medium": {
+        "$type": "fontWeight",
+        "$value": 500
+      },
+      "semibold": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "bold": {
+        "$type": "fontWeight",
+        "$value": 700
+      }
     },
     "text": {
-      "2xs":  { "$type": "dimension", "$value": "10px" },
-      "xs":   { "$type": "dimension", "$value": "12px" },
-      "sm":   { "$type": "dimension", "$value": "14px" },
-      "base": { "$type": "dimension", "$value": "16px" },
-      "lg":   { "$type": "dimension", "$value": "18px" },
-      "xl":   { "$type": "dimension", "$value": "20px" },
-      "2xl":  { "$type": "dimension", "$value": "24px" },
-      "3xl":  { "$type": "dimension", "$value": "30px",
-                "$extensions": { "com.auterion.auxiliary": { "fluid": { "min": "26px" } } } },
-      "4xl":  { "$type": "dimension", "$value": "40px",
-                "$extensions": { "com.auterion.auxiliary": { "fluid": { "min": "30px" } } } },
-      "5xl":  { "$type": "dimension", "$value": "48px",
-                "$extensions": { "com.auterion.auxiliary": { "fluid": { "min": "34px" } } } },
-      "6xl":  { "$type": "dimension", "$value": "60px",
-                "$extensions": { "com.auterion.auxiliary": { "fluid": { "min": "40px" } } } },
-      "7xl":  { "$type": "dimension", "$value": "72px",
-                "$extensions": { "com.auterion.auxiliary": { "fluid": { "min": "46px" } } } },
-      "8xl":  { "$type": "dimension", "$value": "80px",
-                "$extensions": { "com.auterion.auxiliary": { "fluid": { "min": "52px" } } } },
-      "9xl":  { "$type": "dimension", "$value": "96px",
-                "$extensions": { "com.auterion.auxiliary": { "fluid": { "min": "60px" } } } },
-      "10xl": { "$type": "dimension", "$value": "128px",
-                "$extensions": { "com.auterion.auxiliary": { "fluid": { "min": "72px" } } } },
-
-      "caption": { "$type": "dimension", "$value": "{global.text.xs}" },
-      "label":   { "$type": "dimension", "$value": "{global.text.sm}" },
-      "body":    { "$type": "dimension", "$value": "{global.text.base}" },
-      "body-lg": { "$type": "dimension", "$value": "{global.text.lg}" },
-      "title":   { "$type": "dimension", "$value": "{global.text.xl}" },
-      "heading": { "$type": "dimension", "$value": "{global.text.2xl}" },
-      "display": { "$type": "dimension", "$value": "{global.text.6xl}" }
+      "2xs": {
+        "$type": "dimension",
+        "$value": "10px"
+      },
+      "xs": {
+        "$type": "dimension",
+        "$value": "12px"
+      },
+      "sm": {
+        "$type": "dimension",
+        "$value": "14px"
+      },
+      "base": {
+        "$type": "dimension",
+        "$value": "16px"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "18px"
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "20px"
+      },
+      "2xl": {
+        "$type": "dimension",
+        "$value": "24px"
+      },
+      "3xl": {
+        "$type": "dimension",
+        "$value": "30px",
+        "$extensions": {
+          "com.auterion.auxiliary": {
+            "fluid": {
+              "min": "26px"
+            }
+          }
+        }
+      },
+      "4xl": {
+        "$type": "dimension",
+        "$value": "40px",
+        "$extensions": {
+          "com.auterion.auxiliary": {
+            "fluid": {
+              "min": "30px"
+            }
+          }
+        }
+      },
+      "5xl": {
+        "$type": "dimension",
+        "$value": "48px",
+        "$extensions": {
+          "com.auterion.auxiliary": {
+            "fluid": {
+              "min": "34px"
+            }
+          }
+        }
+      },
+      "6xl": {
+        "$type": "dimension",
+        "$value": "60px",
+        "$extensions": {
+          "com.auterion.auxiliary": {
+            "fluid": {
+              "min": "40px"
+            }
+          }
+        }
+      },
+      "7xl": {
+        "$type": "dimension",
+        "$value": "72px",
+        "$extensions": {
+          "com.auterion.auxiliary": {
+            "fluid": {
+              "min": "46px"
+            }
+          }
+        }
+      },
+      "8xl": {
+        "$type": "dimension",
+        "$value": "80px",
+        "$extensions": {
+          "com.auterion.auxiliary": {
+            "fluid": {
+              "min": "52px"
+            }
+          }
+        }
+      },
+      "9xl": {
+        "$type": "dimension",
+        "$value": "96px",
+        "$extensions": {
+          "com.auterion.auxiliary": {
+            "fluid": {
+              "min": "60px"
+            }
+          }
+        }
+      },
+      "10xl": {
+        "$type": "dimension",
+        "$value": "128px",
+        "$extensions": {
+          "com.auterion.auxiliary": {
+            "fluid": {
+              "min": "72px"
+            }
+          }
+        }
+      },
+      "caption": {
+        "$type": "dimension",
+        "$value": "{global.text.xs}"
+      },
+      "label": {
+        "$type": "dimension",
+        "$value": "{global.text.sm}"
+      },
+      "body": {
+        "$type": "dimension",
+        "$value": "{global.text.base}"
+      },
+      "body-lg": {
+        "$type": "dimension",
+        "$value": "{global.text.lg}"
+      },
+      "title": {
+        "$type": "dimension",
+        "$value": "{global.text.xl}"
+      },
+      "heading": {
+        "$type": "dimension",
+        "$value": "{global.text.2xl}"
+      },
+      "display": {
+        "$type": "dimension",
+        "$value": "{global.text.6xl}"
+      }
     },
     "leading": {
-      "tight":   { "$type": "number", "$value": 1.2 },
-      "snug":    { "$type": "number", "$value": 1.35 },
-      "normal":  { "$type": "number", "$value": 1.5 },
-      "loose":   { "$type": "number", "$value": 1.7 },
-      "body":    { "$type": "number", "$value": 1.4 },
-      "subhead": { "$type": "number", "$value": 1.25 },
-      "heading": { "$type": "number", "$value": 1.15 },
-      "title":   { "$type": "number", "$value": 1.1 },
-      "display": { "$type": "number", "$value": 1.0 }
+      "tight": {
+        "$type": "number",
+        "$value": 1.2
+      },
+      "snug": {
+        "$type": "number",
+        "$value": 1.35
+      },
+      "normal": {
+        "$type": "number",
+        "$value": 1.5
+      },
+      "loose": {
+        "$type": "number",
+        "$value": 1.7
+      },
+      "body": {
+        "$type": "number",
+        "$value": 1.4
+      },
+      "subhead": {
+        "$type": "number",
+        "$value": 1.25
+      },
+      "heading": {
+        "$type": "number",
+        "$value": 1.15
+      },
+      "title": {
+        "$type": "number",
+        "$value": 1.1
+      },
+      "display": {
+        "$type": "number",
+        "$value": 1.0
+      }
     },
     "tracking": {
-      "tighter": { "$type": "dimension", "$value": "-0.05em" },
-      "tight":   { "$type": "dimension", "$value": "-0.01em" },
-      "normal":  { "$type": "dimension", "$value": "0em" },
-      "wide":    { "$type": "dimension", "$value": "0.02em" },
-      "body":    { "$type": "dimension", "$value": "-0.02em" },
-      "subhead": { "$type": "dimension", "$value": "-0.03em" },
-      "display": { "$type": "dimension", "$value": "-0.04em" },
-      "caps":    { "$type": "dimension", "$value": "0.05em" }
+      "tighter": {
+        "$type": "dimension",
+        "$value": "-0.05em"
+      },
+      "tight": {
+        "$type": "dimension",
+        "$value": "-0.01em"
+      },
+      "normal": {
+        "$type": "dimension",
+        "$value": "0em"
+      },
+      "wide": {
+        "$type": "dimension",
+        "$value": "0.02em"
+      },
+      "body": {
+        "$type": "dimension",
+        "$value": "-0.02em"
+      },
+      "subhead": {
+        "$type": "dimension",
+        "$value": "-0.03em"
+      },
+      "display": {
+        "$type": "dimension",
+        "$value": "-0.04em"
+      },
+      "caps": {
+        "$type": "dimension",
+        "$value": "0.05em"
+      }
     },
-
     "text-leading": {
-      "$description": "Per-size line-height paired to the text scale (Figma node 1388:223): tightens as size grows, 1.4 body → 1.0 display. Emitted as Tailwind --text-<step>--line-height so every text-* utility carries it automatically; `leading` above stays the role-based vocabulary.",
-      "2xs":  { "$type": "number", "$value": 1.4 },
-      "xs":   { "$type": "number", "$value": 1.4 },
-      "sm":   { "$type": "number", "$value": 1.4 },
-      "base": { "$type": "number", "$value": 1.4 },
-      "lg":   { "$type": "number", "$value": 1.4 },
-      "xl":   { "$type": "number", "$value": 1.4 },
-      "2xl":  { "$type": "number", "$value": 1.25 },
-      "3xl":  { "$type": "number", "$value": 1.25 },
-      "4xl":  { "$type": "number", "$value": 1.15 },
-      "5xl":  { "$type": "number", "$value": 1.12 },
-      "6xl":  { "$type": "number", "$value": 1.08 },
-      "7xl":  { "$type": "number", "$value": 1.05 },
-      "8xl":  { "$type": "number", "$value": 1 },
-      "9xl":  { "$type": "number", "$value": 1 },
-      "10xl": { "$type": "number", "$value": 1 }
+      "$description": "Per-size line-height paired to the text scale (Figma node 1388:223): tightens as size grows, 1.4 body \u2192 1.0 display. Emitted as Tailwind --text-<step>--line-height so every text-* utility carries it automatically; `leading` above stays the role-based vocabulary.",
+      "2xs": {
+        "$type": "number",
+        "$value": 1.4
+      },
+      "xs": {
+        "$type": "number",
+        "$value": 1.4
+      },
+      "sm": {
+        "$type": "number",
+        "$value": 1.4
+      },
+      "base": {
+        "$type": "number",
+        "$value": 1.4
+      },
+      "lg": {
+        "$type": "number",
+        "$value": 1.4
+      },
+      "xl": {
+        "$type": "number",
+        "$value": 1.4
+      },
+      "2xl": {
+        "$type": "number",
+        "$value": 1.25
+      },
+      "3xl": {
+        "$type": "number",
+        "$value": 1.25
+      },
+      "4xl": {
+        "$type": "number",
+        "$value": 1.15
+      },
+      "5xl": {
+        "$type": "number",
+        "$value": 1.12
+      },
+      "6xl": {
+        "$type": "number",
+        "$value": 1.08
+      },
+      "7xl": {
+        "$type": "number",
+        "$value": 1.05
+      },
+      "8xl": {
+        "$type": "number",
+        "$value": 1
+      },
+      "9xl": {
+        "$type": "number",
+        "$value": 1
+      },
+      "10xl": {
+        "$type": "number",
+        "$value": 1
+      }
     },
     "text-tracking": {
-      "$description": "Per-size letter-spacing paired to the text scale: increasingly negative as size grows (-0.02em small → -0.05em display). Emitted as Tailwind --text-<step>--letter-spacing. 2xs stays at 0 — tiny type must not tighten.",
-      "2xs":  { "$type": "dimension", "$value": "0em" },
-      "xs":   { "$type": "dimension", "$value": "-0.02em" },
-      "sm":   { "$type": "dimension", "$value": "-0.02em" },
-      "base": { "$type": "dimension", "$value": "-0.02em" },
-      "lg":   { "$type": "dimension", "$value": "-0.02em" },
-      "xl":   { "$type": "dimension", "$value": "-0.03em" },
-      "2xl":  { "$type": "dimension", "$value": "-0.03em" },
-      "3xl":  { "$type": "dimension", "$value": "-0.04em" },
-      "4xl":  { "$type": "dimension", "$value": "-0.04em" },
-      "5xl":  { "$type": "dimension", "$value": "-0.04em" },
-      "6xl":  { "$type": "dimension", "$value": "-0.045em" },
-      "7xl":  { "$type": "dimension", "$value": "-0.045em" },
-      "8xl":  { "$type": "dimension", "$value": "-0.045em" },
-      "9xl":  { "$type": "dimension", "$value": "-0.05em" },
-      "10xl": { "$type": "dimension", "$value": "-0.05em" }
+      "$description": "Per-size letter-spacing paired to the text scale: increasingly negative as size grows (-0.02em small \u2192 -0.05em display). Emitted as Tailwind --text-<step>--letter-spacing. 2xs stays at 0 \u2014 tiny type must not tighten.",
+      "2xs": {
+        "$type": "dimension",
+        "$value": "0em"
+      },
+      "xs": {
+        "$type": "dimension",
+        "$value": "-0.02em"
+      },
+      "sm": {
+        "$type": "dimension",
+        "$value": "-0.02em"
+      },
+      "base": {
+        "$type": "dimension",
+        "$value": "-0.02em"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "-0.02em"
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "-0.03em"
+      },
+      "2xl": {
+        "$type": "dimension",
+        "$value": "-0.03em"
+      },
+      "3xl": {
+        "$type": "dimension",
+        "$value": "-0.04em"
+      },
+      "4xl": {
+        "$type": "dimension",
+        "$value": "-0.04em"
+      },
+      "5xl": {
+        "$type": "dimension",
+        "$value": "-0.04em"
+      },
+      "6xl": {
+        "$type": "dimension",
+        "$value": "-0.045em"
+      },
+      "7xl": {
+        "$type": "dimension",
+        "$value": "-0.045em"
+      },
+      "8xl": {
+        "$type": "dimension",
+        "$value": "-0.045em"
+      },
+      "9xl": {
+        "$type": "dimension",
+        "$value": "-0.05em"
+      },
+      "10xl": {
+        "$type": "dimension",
+        "$value": "-0.05em"
+      }
     },
-
     "type": {
       "product": {
         "display": {
@@ -151,8 +430,8 @@
             "fontFamily": "{global.font.sans}",
             "fontSize": "{global.text.lg}",
             "fontWeight": "{global.font-weight.medium}",
-            "lineHeight": "{global.leading.normal}",
-            "letterSpacing": "{global.tracking.normal}"
+            "lineHeight": "{global.text-leading.lg}",
+            "letterSpacing": "{global.text-tracking.lg}"
           }
         },
         "body": {
@@ -161,8 +440,8 @@
             "fontFamily": "{global.font.sans}",
             "fontSize": "{global.text.base}",
             "fontWeight": "{global.font-weight.regular}",
-            "lineHeight": "{global.leading.normal}",
-            "letterSpacing": "{global.tracking.normal}"
+            "lineHeight": "{global.text-leading.base}",
+            "letterSpacing": "{global.text-tracking.base}"
           }
         },
         "label": {
@@ -171,8 +450,8 @@
             "fontFamily": "{global.font.sans}",
             "fontSize": "{global.text.sm}",
             "fontWeight": "{global.font-weight.medium}",
-            "lineHeight": "{global.leading.snug}",
-            "letterSpacing": "{global.tracking.normal}"
+            "lineHeight": "{global.text-leading.sm}",
+            "letterSpacing": "{global.text-tracking.sm}"
           }
         },
         "caption": {
@@ -181,10 +460,11 @@
             "fontFamily": "{global.font.sans}",
             "fontSize": "{global.text.xs}",
             "fontWeight": "{global.font-weight.regular}",
-            "lineHeight": "{global.leading.snug}",
-            "letterSpacing": "{global.tracking.normal}"
+            "lineHeight": "{global.text-leading.xs}",
+            "letterSpacing": "{global.text-tracking.xs}"
           }
-        }
+        },
+        "$description": "The four TEXT roles (body, body-lg, label, caption) take their line-height and letter-spacing from the per-size text-leading/text-tracking pairs that actually ship, not from the role-based leading/tracking vocabulary. They used to declare {leading.normal}/{tracking.normal} while the web rendered the size step's own 1.4/-0.02em \u2014 and since these composites are consumed ONLY by figma-sync, every Figma Text Style was drawn against leading the product does not have. The heading and display roles keep the role vocabulary deliberately: a heading legitimately runs tighter than a size-step default, which is a fallback for arbitrary text."
       },
       "marketing": {
         "display": {

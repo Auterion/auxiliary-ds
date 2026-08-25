@@ -95,7 +95,7 @@ The component forwards `class`, so you can override the track width or height in
 - `ProgressRoot` renders `role="progressbar"` with `aria-valuemin`, `aria-valuemax`, and (when `value` is set) `aria-valuenow`, so assistive tech reads the fraction without extra markup.
 - Omitting `value` produces an **indeterminate** bar — Reka UI drops `aria-valuenow` and exposes the indeterminate state, the correct contract for "unknown extent."
 - The bar has **no intrinsic accessible name.** When several bars share a view, give each an `aria-label` (e.g. `aria-label="Battery"`) or associate it with a visible label via `aria-labelledby` so the reading isn't ambiguous.
-- **Color is never the only cue.** The `level` fill color is a redundant signal layered on top of the numeric reading — a low battery is communicated by `aria-valuenow` and the visible percentage, not by red alone. This keeps the bar legible for color-blind users and meets WCAG 1.4.1.
+- **Color is never the only cue.** A track has no room for a glyph, so `level` travels through `aria-valuetext` — the level word is announced with the reading ("Caution — 18%") rather than living in the fill hue alone. `aria-valuenow` carries the *fraction*; it never carried the *tier*, which is what the color encodes (WCAG 1.4.1, `AD-D-014`).
 - The indicator's `transition-transform` honors the platform reduced-motion preference at the surface level; the fill animates position only, never an attention-seeking loop.
 
 ## Tokens consumed

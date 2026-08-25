@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { setThemeAttribute } from '@auxiliary/css/utils';
 /**
  * The component gallery — every `@auxiliary/vue` primitive, as it actually
  * renders.
@@ -105,9 +106,8 @@ type Theme = (typeof THEMES)[number];
 const theme = ref<Theme>('system');
 
 watchEffect(() => {
-  const html = document.documentElement;
-  if (theme.value === 'system') html.removeAttribute('data-theme');
-  else html.setAttribute('data-theme', theme.value);
+  if (theme.value === 'system') setThemeAttribute('data-theme', null);
+  else setThemeAttribute('data-theme', theme.value);
 });
 
 // The DS themes the switcher offers, minus the `system` pass-through.
@@ -264,9 +264,9 @@ function toggleVehicle(id: string) {
 
 // Toast state
 const toastOpen = ref(false);
-const toastVariant = ref<'info' | 'success' | 'alarm'>('info');
+const toastVariant = ref<'advisory' | 'nominal' | 'alarm'>('advisory');
 
-function showToast(variant: 'info' | 'success' | 'alarm') {
+function showToast(variant: 'advisory' | 'nominal' | 'alarm') {
   toastVariant.value = variant;
   toastOpen.value = false;
   // re-open on next tick so repeat clicks restart the timer
@@ -975,8 +975,8 @@ const iconBracket = `${ICON_NAMES.length} icons`;
             </p>
           </header>
           <div class="rf-row">
-            <Button variant="ghost" size="sm" @click="showToast('info')">Show info</Button>
-            <Button variant="secondary" size="sm" @click="showToast('success')">Show success</Button>
+            <Button variant="ghost" size="sm" @click="showToast('advisory')">Show advisory</Button>
+            <Button variant="secondary" size="sm" @click="showToast('nominal')">Show nominal</Button>
             <Button variant="danger" size="sm" @click="showToast('alarm')">Show alarm</Button>
           </div>
         </section>
@@ -1385,11 +1385,11 @@ const iconBracket = `${ICON_NAMES.length} icons`;
   </main>
   <Toast v-model:open="toastOpen">
     <div>
-      <ToastTitle>{{ toastVariant === 'alarm' ? 'Link lost' : toastVariant === 'success' ? 'Mission saved' : 'Telemetry updated' }}</ToastTitle>
+      <ToastTitle>{{ toastVariant === 'alarm' ? 'Link lost' : toastVariant === 'nominal' ? 'Mission saved' : 'Telemetry updated' }}</ToastTitle>
       <ToastDescription>
         {{ toastVariant === 'alarm'
           ? 'No telemetry packets received for &gt;3s. Check radio link.'
-          : toastVariant === 'success'
+          : toastVariant === 'nominal'
           ? 'Waypoints stored to local mission cache.'
           : '3 new sensor readings within the last 10s.' }}
       </ToastDescription>

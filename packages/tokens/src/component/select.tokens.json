@@ -61,7 +61,8 @@
         },
         "radius": {
           "$type": "dimension",
-          "$value": "{global.radius.sm}"
+          "$value": "{global.radius.xs}",
+          "$description": "Concentric with the popover: outer radius (md, 6px) minus the container padding (4px) = 2px. A 4px inner inside a 6px outer with a 4px inset reads as a mis-struck corner."
         },
         "padding-inline-end": {
           "$type": "dimension",
@@ -75,7 +76,8 @@
         },
         "icon-size": {
           "$type": "dimension",
-          "$value": "{global.size.icon.xs}"
+          "$value": "{global.size.icon.sm}",
+          "$description": "Raised one rung when the inline glyph set was unified on stroke-width 2 \u2014 the check was carrying its weight with a heavier stroke (3) than every other glyph in the same control, which read as two different icon sets side by side."
         }
       },
       "separator": {

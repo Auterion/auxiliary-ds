@@ -127,7 +127,7 @@
       },
       "alarm-emphasis": {
         "$type": "color",
-        "$value": "{global.color.primitive.red.700}",
+        "$value": "{global.color.primitive.red.900}",
         "$description": "On-surface alarm ink (text/border/glyph on page or card) \u2014 gated >=4.5:1 vs background AND card. The alarm FILL is only gated against its own -foreground; never use the fill as ink."
       },
       "warning-emphasis": {
@@ -136,7 +136,7 @@
       },
       "caution-emphasis": {
         "$type": "color",
-        "$value": "{global.color.primitive.amber.700}"
+        "$value": "{global.color.primitive.amber.800}"
       },
       "advisory-emphasis": {
         "$type": "color",
@@ -165,7 +165,7 @@
       },
       "viz-categorical-4": {
         "$type": "color",
-        "$value": "{global.color.primitive.stone.600}"
+        "$value": "{global.color.primitive.cadet.800}"
       },
       "viz-categorical-5": {
         "$type": "color",
@@ -173,7 +173,7 @@
       },
       "viz-categorical-6": {
         "$type": "color",
-        "$value": "{global.color.primitive.mono.950}"
+        "$value": "{global.color.primitive.cadet.950}"
       },
       "viz-sequential-1": {
         "$type": "color",

@@ -3,12 +3,12 @@ import { ref } from 'vue';
 
 // Drives the interactive demo in "Driving toasts from state" below.
 const toastOpen = ref(false);
-const toastVariant = ref('info');
+const toastVariant = ref('advisory');
 
 const toastContent = {
-  info:    { title: 'Telemetry updated', body: '3 new sensor readings within the last 10s.' },
-  success: { title: 'Mission saved',     body: 'Waypoints stored to local mission cache.' },
-  alarm:   { title: 'Link lost',         body: 'No telemetry packets received for over 3s. Check radio link.' },
+  advisory: { title: 'Telemetry updated', body: '3 new sensor readings within the last 10s.' },
+  nominal:  { title: 'Mission saved',     body: 'Waypoints stored to local mission cache.' },
+  alarm:    { title: 'Link lost',         body: 'No telemetry packets received for over 3s. Check radio link.' },
 };
 
 function showToast(variant) {
@@ -166,8 +166,8 @@ In a real app the `<Toast>` markup is static; you toggle its `open` model from a
 
 <div class="auxiliary-demo vp-raw">
   <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-    <Button variant="ghost" size="sm" @click="showToast('info')">Show info</Button>
-    <Button variant="secondary" size="sm" @click="showToast('success')">Show success</Button>
+    <Button variant="ghost" size="sm" @click="showToast('advisory')">Show advisory</Button>
+    <Button variant="secondary" size="sm" @click="showToast('nominal')">Show nominal</Button>
     <Button variant="danger" size="sm" @click="showToast('alarm')">Show alarm</Button>
   </div>
   <ToastProvider :duration="4000">
@@ -192,12 +192,12 @@ In a real app the `<Toast>` markup is static; you toggle its `open` model from a
 import { ref } from 'vue';
 
 const open = ref(false);
-const variant = ref('info');
+const variant = ref('advisory');
 
 const content = {
-  info:    { title: 'Telemetry updated', body: '3 new sensor readings within the last 10s.' },
-  success: { title: 'Mission saved',     body: 'Waypoints stored to local mission cache.' },
-  alarm:   { title: 'Link lost',         body: 'No telemetry packets received for over 3s. Check radio link.' },
+  advisory: { title: 'Telemetry updated', body: '3 new sensor readings within the last 10s.' },
+  nominal:  { title: 'Mission saved',     body: 'Waypoints stored to local mission cache.' },
+  alarm:    { title: 'Link lost',         body: 'No telemetry packets received for over 3s. Check radio link.' },
 };
 
 function showToast(v) {
@@ -208,8 +208,8 @@ function showToast(v) {
 </script>
 
 <template>
-  <Button variant="ghost" size="sm" @click="showToast('info')">Show info</Button>
-  <Button variant="secondary" size="sm" @click="showToast('success')">Show success</Button>
+  <Button variant="ghost" size="sm" @click="showToast('advisory')">Show advisory</Button>
+  <Button variant="secondary" size="sm" @click="showToast('nominal')">Show nominal</Button>
   <Button variant="danger" size="sm" @click="showToast('alarm')">Show alarm</Button>
 
   <ToastProvider :duration="4000">

@@ -2,20 +2,51 @@
   "global": {
     "size": {
       "icon": {
-        "$description": "Glyph sizes. A distinct semantic axis from spacing — it tracks optical weight, not layout rhythm — so it gets its own group even though every rung aliases the spacing scale. That indirection is what makes a future \"larger glyphs under a coarse pointer\" pass a five-line change instead of a hunt through .vue files.",
-        "2xs": { "$type": "dimension", "$value": "{global.spacing.2_5}" },
-        "xs": { "$type": "dimension", "$value": "{global.spacing.3}" },
-        "sm": { "$type": "dimension", "$value": "{global.spacing.3_5}" },
-        "md": { "$type": "dimension", "$value": "{global.spacing.4}" },
-        "lg": { "$type": "dimension", "$value": "{global.spacing.5}" }
+        "$description": "Glyph sizes. A distinct semantic axis from spacing \u2014 it tracks optical weight, not layout rhythm \u2014 so it gets its own group even though every rung aliases the spacing scale. That indirection is what makes a future \"larger glyphs under a coarse pointer\" pass a five-line change instead of a hunt through .vue files.",
+        "2xs": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2_5}"
+        },
+        "xs": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        },
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3_5}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.spacing.4}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.spacing.5}"
+        }
       },
       "container": {
         "$description": "Widths of floating surfaces (menus, popovers, tooltips, dialogs, toasts). Named `size.container.*` and NOT emitted as `--container-*` on purpose: `--container-*` is a Tailwind v4 theme namespace, so using it would silently redefine Tailwind's own container scale and change every max-w-sm / max-w-lg in the system. Until this group existed, three of these five widths were owned by Tailwind's defaults rather than by us.",
-        "2xs": { "$type": "dimension", "$value": "160px" },
-        "xs": { "$type": "dimension", "$value": "288px" },
-        "sm": { "$type": "dimension", "$value": "320px" },
-        "md": { "$type": "dimension", "$value": "420px", "$description": "Toast viewport. The one off-ladder value (the others are 10/18/20/32rem); squaring it to 26 or 28rem is a visual change and belongs in its own commit." },
-        "lg": { "$type": "dimension", "$value": "512px" }
+        "2xs": {
+          "$type": "dimension",
+          "$value": "160px"
+        },
+        "xs": {
+          "$type": "dimension",
+          "$value": "288px"
+        },
+        "sm": {
+          "$type": "dimension",
+          "$value": "320px"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "420px",
+          "$description": "Toast viewport. The one off-ladder value (the others are 10/18/20/32rem); squaring it to 26 or 28rem is a visual change and belongs in its own commit."
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "512px"
+        }
       }
     }
   }

@@ -11,7 +11,8 @@
       },
       "icon-size": {
         "$type": "dimension",
-        "$value": "{global.size.icon.2xs}"
+        "$value": "{global.size.icon.xs}",
+        "$description": "Raised one rung when the inline glyph set was unified on stroke-width 2 \u2014 the check was carrying its weight with a heavier stroke (3) than every other glyph in the same control, which read as two different icon sets side by side."
       }
     }
   }

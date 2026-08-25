@@ -280,7 +280,7 @@ const scoreC = scoreFor('C');
           <h2>A · Mono-neutral <span class="dir-tag">incumbent</span></h2>
           <p>Operational truth, expressed with precision. Swiss / NASA-JPL restraint.</p>
         </div>
-        <Register :value="register">
+        <Register :register="register">
           <div class="dir-stage">
             <DirectionContent />
           </div>
@@ -294,7 +294,7 @@ const scoreC = scoreFor('C');
           <h2>B · Anno 1965 <span class="dir-tag">challenger</span></h2>
           <p>Gerstner field grid, zero radius, zero shadow, steps(1) motion, mono display.</p>
         </div>
-        <Register :value="register">
+        <Register :register="register">
           <div data-direction="anno-1965" class="dir-stage">
             <DirectionContent />
           </div>
@@ -306,7 +306,7 @@ const scoreC = scoreFor('C');
           <h2>C · Sera <span class="dir-tag">shadcn beXRTDCy</span></h2>
           <p>Zinc, Inter, radius none, uppercase letterspaced headings, flat tinted cards.</p>
         </div>
-        <Register :value="register">
+        <Register :register="register">
           <div data-direction="sera" class="dir-stage">
             <DirectionContent />
           </div>

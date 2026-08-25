@@ -103,7 +103,7 @@
       },
       "caution": {
         "$type": "color",
-        "$value": "{global.color.primitive.yellow.600}"
+        "$value": "{global.color.primitive.amber.500}"
       },
       "caution-foreground": {
         "$type": "color",
@@ -119,7 +119,7 @@
       },
       "nominal": {
         "$type": "color",
-        "$value": "{global.color.primitive.green.700}"
+        "$value": "{global.color.primitive.emerald.700}"
       },
       "nominal-foreground": {
         "$type": "color",
@@ -157,7 +157,7 @@
       },
       "viz-categorical-2": {
         "$type": "color",
-        "$value": "{global.color.primitive.cadet.400}"
+        "$value": "{global.color.primitive.blue.300}"
       },
       "viz-categorical-3": {
         "$type": "color",
@@ -165,7 +165,7 @@
       },
       "viz-categorical-4": {
         "$type": "color",
-        "$value": "{global.color.primitive.stone.50}"
+        "$value": "{global.color.primitive.purple.100}"
       },
       "viz-categorical-5": {
         "$type": "color",

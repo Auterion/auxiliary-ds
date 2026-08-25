@@ -114,35 +114,37 @@ const apps = [
   { name: 'RTK Base Link', version: '0.9.0', level: 'advisory' as Level, status: 'Beta' },
 ];
 
-type LogLevel = 'info' | 'ok' | 'warn' | 'error';
+// The reserved ladder (AD-D-014), not a parallel log vocabulary: one word per
+// concept. `advisory` is the informational rung; there is no separate `info`.
+type LogLevel = 'advisory' | 'nominal' | 'caution' | 'alarm';
 const logs: { t: string; lvl: LogLevel; src: string; msg: string }[] = [
-  { t: '06:14:23.881', lvl: 'info', src: 'mavlink', msg: 'Heartbeat OK · FMU sysid 1' },
-  { t: '06:14:23.412', lvl: 'ok', src: 'gnss', msg: 'RTK FIXED · 21 sats · HDOP 0.6' },
-  { t: '06:14:22.905', lvl: 'warn', src: 'datalink', msg: 'Cellular RSSI −84 dBm, approaching threshold' },
-  { t: '06:14:22.770', lvl: 'info', src: 'payload', msg: 'Sony ILX-LR1 enumerated on USB3' },
-  { t: '06:14:21.330', lvl: 'ok', src: 'health', msg: 'Pre-arm checks passed (12/12)' },
-  { t: '06:14:20.110', lvl: 'info', src: 'ota', msg: 'MAVLink Router 2.1.0 available' },
-  { t: '06:14:19.642', lvl: 'warn', src: 'thermal', msg: 'SoC junction 54°C, throttle headroom 18°C' },
-  { t: '06:14:18.220', lvl: 'info', src: 'esc', msg: '4 motors calibrated, telemetry nominal' },
-  { t: '06:14:17.005', lvl: 'error', src: 'rc', msg: 'RC link dropout 120 ms — recovered' },
-  { t: '06:14:15.880', lvl: 'info', src: 'gimbal', msg: 'Gremsy Pixy homed, mode FOLLOW' },
-  { t: '06:14:14.300', lvl: 'ok', src: 'net', msg: 'mesh peer yt-a4b2 joined' },
-  { t: '06:14:12.770', lvl: 'info', src: 'kernel', msg: 'auterion-os 4.2.1 · uptime 6d 04:12' },
+  { t: '06:14:23.881', lvl: 'advisory', src: 'mavlink', msg: 'Heartbeat OK · FMU sysid 1' },
+  { t: '06:14:23.412', lvl: 'nominal', src: 'gnss', msg: 'RTK FIXED · 21 sats · HDOP 0.6' },
+  { t: '06:14:22.905', lvl: 'caution', src: 'datalink', msg: 'Cellular RSSI −84 dBm, approaching threshold' },
+  { t: '06:14:22.770', lvl: 'advisory', src: 'payload', msg: 'Sony ILX-LR1 enumerated on USB3' },
+  { t: '06:14:21.330', lvl: 'nominal', src: 'health', msg: 'Pre-arm checks passed (12/12)' },
+  { t: '06:14:20.110', lvl: 'advisory', src: 'ota', msg: 'MAVLink Router 2.1.0 available' },
+  { t: '06:14:19.642', lvl: 'caution', src: 'thermal', msg: 'SoC junction 54°C, throttle headroom 18°C' },
+  { t: '06:14:18.220', lvl: 'advisory', src: 'esc', msg: '4 motors calibrated, telemetry nominal' },
+  { t: '06:14:17.005', lvl: 'alarm', src: 'rc', msg: 'RC link dropout 120 ms — recovered' },
+  { t: '06:14:15.880', lvl: 'advisory', src: 'gimbal', msg: 'Gremsy Pixy homed, mode FOLLOW' },
+  { t: '06:14:14.300', lvl: 'nominal', src: 'net', msg: 'mesh peer yt-a4b2 joined' },
+  { t: '06:14:12.770', lvl: 'advisory', src: 'kernel', msg: 'auterion-os 4.2.1 · uptime 6d 04:12' },
 ];
-const logFilter = ref<'all' | 'warn' | 'error'>('all');
+const logFilter = ref<'all' | 'caution' | 'alarm'>('all');
 const shownLogs = computed(() =>
   logFilter.value === 'all' ? logs
-  : logFilter.value === 'error' ? logs.filter((l) => l.lvl === 'error')
-  : logs.filter((l) => l.lvl === 'warn' || l.lvl === 'error'),
+  : logFilter.value === 'alarm' ? logs.filter((l) => l.lvl === 'alarm')
+  : logs.filter((l) => l.lvl === 'caution' || l.lvl === 'alarm'),
 );
 // Journal severity rides the status ladder — the dot carries the hue, the label
-// carries the contrast-gated *-emphasis ink. `info` is not a state, so it stays
+// carries the contrast-gated *-emphasis ink. `advisory` is the quiet rung, so it stays
 // neutral rather than borrowing a ladder rung.
 const logDot: Record<LogLevel, string> = {
-  info: '', ok: 'dk-dot-nominal', warn: 'dk-dot-caution', error: 'dk-dot-alarm',
+  advisory: '', nominal: 'dk-dot-nominal', caution: 'dk-dot-caution', alarm: 'dk-dot-alarm',
 };
 const logInk: Record<LogLevel, string> = {
-  info: '', ok: 'dk-ink-nominal', warn: 'dk-ink-caution', error: 'dk-ink-alarm',
+  advisory: '', nominal: 'dk-ink-nominal', caution: 'dk-ink-caution', alarm: 'dk-ink-alarm',
 };
 
 const current = computed(() => NAV.find((n) => n.key === section.value) ?? NAV[0]);
@@ -161,8 +163,8 @@ const bracket = computed(() => {
     case 'apps':
       return `${apps.length} packages · ${apps.filter((a) => a.status === 'Update available').length} update`;
     case 'logs':
-      return `${shownLogs.value.length} lines · ${logs.filter((l) => l.lvl === 'warn').length} warn `
-        + `· ${logs.filter((l) => l.lvl === 'error').length} error`;
+      return `${shownLogs.value.length} lines · ${logs.filter((l) => l.lvl === 'caution').length} caution `
+        + `· ${logs.filter((l) => l.lvl === 'alarm').length} alarm`;
     default:
       return `${vitals.length} vitals · ${nodes.length} subsystems `
         + `· ${nodes.filter((n) => n.level !== 'nominal').length} flagged`;
@@ -625,7 +627,7 @@ const topologyBracket = computed(
             <div class="os-head">
               <div class="dk-segment">
                 <button
-                  v-for="f in (['all', 'warn', 'error'] as const)"
+                  v-for="f in (['all', 'caution', 'alarm'] as const)"
                   :key="f"
                   type="button"
                   class="dk-segment-btn"

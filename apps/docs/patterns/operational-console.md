@@ -37,13 +37,13 @@ The blocks a ground-control / C2 surface is built from — composed from existin
 
 The persistent top strip: vehicle identity + state, flight mode, and the vital telemetry an operator scans continuously — link, power, INS, battery. Numbers are `TelemetryValue` (mono, tabular); the battery is a [`Gauge`](/data-viz/gauge); state is a `StatusBadge`; mode is a `DropdownMenu`.
 
-<div class="auxiliary-demo vp-raw" style="padding:0;">
-  <div style="display:flex; align-items:center; gap:1rem; width:100%; padding:0.625rem 1rem; background:var(--card); border-radius:0.5rem; flex-wrap:wrap;">
+<div class="auxiliary-demo vp-raw" style="padding:var(--spacing-0);">
+  <div style="display:flex; align-items:center; gap:var(--spacing-4); width:100%; padding:var(--spacing-2.5) var(--spacing-4); background:var(--card); border-radius:var(--radius-lg); flex-wrap:wrap;">
     <strong style="font-variant-numeric:tabular-nums;">MX-01</strong>
     <StatusBadge level="nominal" size="sm" dot>In mission</StatusBadge>
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
-        <button style="display:inline-flex; align-items:center; gap:0.375rem; padding:0.25rem 0.5rem; border:1px solid var(--border); border-radius:0.375rem; background:transparent; color:var(--foreground); font-size:0.8125rem; cursor:pointer;">Position <Icon name="chevron-down" /></button>
+        <button style="display:inline-flex; align-items:center; gap:var(--spacing-1.5); padding:var(--spacing-1) var(--spacing-2); border:1px solid var(--border); border-radius:var(--radius-md); background:transparent; color:var(--foreground); font-size:0.8125rem; cursor:pointer;">Position <Icon name="chevron-down" /></button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>Position</DropdownMenuItem>
@@ -63,8 +63,8 @@ The persistent top strip: vehicle identity + state, flight mode, and the vital t
 
 Every vehicle reads the same way on the map and in the fleet list: a **heading-rotated marker**, a **status halo** (color *and* the persistent badge — never color alone), a **callsign** in mono, and adjacent **readouts**. This repeated unit is the strongest candidate to extract into an `EntityIcon` component — flagged for follow-up; documented here as the composition.
 
-<div class="auxiliary-demo vp-raw" style="gap:2rem;">
-  <div v-for="v in fleet" :key="v.id" style="display:flex; flex-direction:column; align-items:center; gap:0.25rem;">
+<div class="auxiliary-demo vp-raw" style="gap:var(--spacing-8);">
+  <div v-for="v in fleet" :key="v.id" style="display:flex; flex-direction:column; align-items:center; gap:var(--spacing-1);">
     <svg width="28" height="28" viewBox="0 0 28 28" :style="{ transform:`rotate(${v.heading}deg)` }" role="img" :aria-label="`${v.callsign} heading ${v.heading}°`">
       <circle cx="14" cy="14" r="12" fill="none" :stroke="entityColor(v.level)" stroke-width="2" :stroke-opacity="v.level==='alarm' ? 1 : 0.5" />
       <path d="M14 5 L20 22 L14 18 L8 22 Z" :fill="entityColor(v.level)" />
@@ -77,15 +77,15 @@ Every vehicle reads the same way on the map and in the fleet list: a **heading-r
 
 The roster, **alarm in the periphery**: an alarm-level row carries a colored left edge that's visible while the operator's eye is on the inspector. Click a row to select it (drives the inspector below).
 
-<div class="auxiliary-demo vp-raw" style="padding:0;">
-  <div style="width:100%; max-width:24rem; border:1px solid var(--border); border-radius:0.5rem; overflow:hidden; background:var(--card);">
+<div class="auxiliary-demo vp-raw" style="padding:var(--spacing-0);">
+  <div style="width:100%; max-width:24rem; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--card);">
     <button
       v-for="v in fleet"
       :key="v.id"
       @click="selectedId = v.id"
       :aria-current="selectedId === v.id ? 'true' : undefined"
       :style="{
-        display:'flex', alignItems:'center', gap:'0.625rem', width:'100%', padding:'0.5rem 0.75rem',
+        display:'flex', alignItems:'center', gap:'var(--spacing-2.5)', width:'100%', padding:'var(--spacing-2) var(--spacing-3)',
         border:'none', borderLeft:`3px solid ${v.level==='alarm' ? entityColor(v.level) : 'transparent'}`,
         background: selectedId===v.id ? 'var(--accent)' : 'transparent', cursor:'pointer', textAlign:'left',
       }"
@@ -105,20 +105,20 @@ The roster, **alarm in the periphery**: an alarm-level row carries a colored lef
 
 The selected entity in detail — telemetry grid, position as a [`CoordinateValue`](/components/coordinate-value), and an altitude [`Sparkline`](/data-viz/sparkline).
 
-<div class="auxiliary-demo vp-raw" style="padding:0;">
-  <div style="width:100%; max-width:22rem; border:1px solid var(--border); border-radius:0.5rem; background:var(--card); padding:1rem; display:flex; flex-direction:column; gap:0.75rem;">
-    <div style="display:flex; align-items:center; gap:0.5rem;">
+<div class="auxiliary-demo vp-raw" style="padding:var(--spacing-0);">
+  <div style="width:100%; max-width:22rem; border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--card); padding:var(--spacing-4); display:flex; flex-direction:column; gap:var(--spacing-3);">
+    <div style="display:flex; align-items:center; gap:var(--spacing-2);">
       <strong>{{ selected.callsign }}</strong>
       <StatusBadge :level="selected.level" size="sm" dot>{{ selected.status }}</StatusBadge>
     </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1rem;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--spacing-2) var(--spacing-4);">
       <TelemetryValue label="Altitude" :value="selected.alt" unit="m" :precision="0" size="sm" />
       <TelemetryValue label="Heading" :value="selected.heading" unit="°" :precision="0" size="sm" />
       <TelemetryValue label="Battery" :value="selected.batt" unit="%" :precision="0" size="sm" :level="selected.batt < 25 ? 'warning' : undefined" />
       <TelemetryValue label="Speed" :value="12.4" unit="m/s" size="sm" />
     </div>
     <CoordinateValue :lat="47.3977" :lon="8.5456" format="dms" show-format-tag />
-    <div style="display:flex; align-items:center; gap:0.5rem;">
+    <div style="display:flex; align-items:center; gap:var(--spacing-2);">
       <span style="font-size:0.75rem; color:var(--muted-foreground);">Alt trend</span>
       <Sparkline :values="altTrend" :width="120" :height="24" />
     </div>
@@ -129,7 +129,7 @@ The selected entity in detail — telemetry grid, position as a [`CoordinateValu
 
 The prioritized, acknowledgeable condition stack — this is the [alert model](/components/alert-model) (`useAlertModel` + `AlertManager`), not a pile of toasts.
 
-<div class="auxiliary-demo vp-raw" style="padding:0;">
+<div class="auxiliary-demo vp-raw" style="padding:var(--spacing-0);">
   <AlertManager :model="alerts" :max="4" style="width:100%; max-width:28rem;" />
 </div>
 
@@ -137,15 +137,15 @@ The prioritized, acknowledgeable condition stack — this is the [alert model](/
 
 The map engine is **product-owned** (no mapping engine ships in the design system) — the console provides a labelled slot and the **overlay grammar** drawn over it: entities positioned by coordinate, using the same marker as the fleet.
 
-<div class="auxiliary-demo vp-raw" style="padding:0;">
-  <div role="img" aria-label="Map view with three vehicles" style="position:relative; width:100%; height:16rem; border:1px solid var(--border); border-radius:0.5rem; overflow:hidden; background:linear-gradient(135deg, var(--muted), var(--card));">
+<div class="auxiliary-demo vp-raw" style="padding:var(--spacing-0);">
+  <div role="img" aria-label="Map view with three vehicles" style="position:relative; width:100%; height:16rem; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:linear-gradient(135deg, var(--muted), var(--card));">
     <span style="position:absolute; top:0.5rem; left:0.625rem; font-size:0.75rem; color:var(--muted-foreground);">Map slot — product-owned engine</span>
-    <div v-for="v in onMap" :key="v.id" :style="{ position:'absolute', left:v.x+'%', top:v.y+'%', transform:'translate(-50%,-50%)', display:'flex', flexDirection:'column', alignItems:'center', gap:'2px' }">
+    <div v-for="v in onMap" :key="v.id" :style="{ position:'absolute', left:v.x+'%', top:v.y+'%', transform:'translate(-50%,-50%)', display:'flex', flexDirection:'column', alignItems:'center', gap:'var(--spacing-0.5)' }">
       <svg width="24" height="24" viewBox="0 0 28 28" :style="{ transform:`rotate(${v.heading}deg)` }" :aria-label="v.callsign">
         <circle cx="14" cy="14" r="12" fill="none" :stroke="entityColor(v.level)" stroke-width="2" :stroke-opacity="v.level==='alarm' ? 1 : 0.5" />
         <path d="M14 5 L20 22 L14 18 L8 22 Z" :fill="entityColor(v.level)" />
       </svg>
-      <code style="font-size:0.625rem; background:var(--card); padding:0 2px; border-radius:2px;">{{ v.callsign }}</code>
+      <code style="font-size:0.625rem; background:var(--card); padding:var(--spacing-0) var(--spacing-0.5); border-radius:var(--radius-xs);">{{ v.callsign }}</code>
     </div>
   </div>
 </div>

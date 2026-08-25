@@ -11,7 +11,7 @@ A compact, at-a-glance summary of one vehicle or asset: identity in the header, 
       <CardDescription>Quadcopter · firmware v4.2.1</CardDescription>
     </CardHeader>
     <CardContent>
-      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:0.5rem; font-size:0.875rem;">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:var(--spacing-2); font-size:0.875rem;">
         <StatusBadge level="nominal" size="sm" dot>Connected</StatusBadge>
         <Separator orientation="vertical" style="height:1rem;" />
         <span style="color:var(--muted-foreground);">Battery</span>

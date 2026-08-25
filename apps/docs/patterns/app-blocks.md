@@ -47,11 +47,11 @@ Keyboard-first launcher for dense consoles — a `Dialog` over a filter `Input` 
     <DialogContent>
       <DialogTitle>Commands</DialogTitle>
       <Input v-model="paletteQuery" placeholder="Type a command…" aria-label="Command" />
-      <div role="listbox" style="display:flex; flex-direction:column; gap:0.125rem; margin-top:0.5rem; max-height:12rem; overflow:auto;">
-        <button v-for="c in paletteResults" :key="c" role="option" style="display:flex; align-items:center; gap:0.5rem; padding:0.375rem 0.5rem; border:none; background:transparent; border-radius:0.375rem; cursor:pointer; text-align:left; font-size:0.875rem; color:var(--foreground);">
+      <div role="listbox" style="display:flex; flex-direction:column; gap:var(--spacing-0.5); margin-top:var(--spacing-2); max-height:12rem; overflow:auto;">
+        <button v-for="c in paletteResults" :key="c" role="option" style="display:flex; align-items:center; gap:var(--spacing-2); padding:var(--spacing-1.5) var(--spacing-2); border:none; background:transparent; border-radius:var(--radius-md); cursor:pointer; text-align:left; font-size:0.875rem; color:var(--foreground);">
           <Icon name="chevron-right" /> {{ c }}
         </button>
-        <p v-if="!paletteResults.length" style="padding:0.5rem; color:var(--muted-foreground); font-size:0.875rem;">No commands match.</p>
+        <p v-if="!paletteResults.length" style="padding:var(--spacing-2); color:var(--muted-foreground); font-size:0.875rem;">No commands match.</p>
       </div>
     </DialogContent>
   </Dialog>
@@ -61,7 +61,7 @@ Keyboard-first launcher for dense consoles — a `Dialog` over a filter `Input` 
 
 A row of filters with removable chips — the saved state of a filtered view. Filters are `DropdownMenu`s; active filters are removable `Badge` chips.
 
-<div class="auxiliary-demo vp-raw" style="gap:0.5rem; flex-wrap:wrap;">
+<div class="auxiliary-demo vp-raw" style="gap:var(--spacing-2); flex-wrap:wrap;">
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button variant="secondary" size="sm">Status <Icon name="chevron-down" /></Button>
@@ -82,10 +82,10 @@ A row of filters with removable chips — the saved state of a filtered view. Fi
       <DropdownMenuItem>LON</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
-  <span style="width:1px; align-self:stretch; background:var(--border); margin:0 0.25rem;"></span>
+  <span style="width:1px; align-self:stretch; background:var(--border); margin:var(--spacing-0) var(--spacing-1);"></span>
   <Badge v-for="c in chips" :key="c" variant="secondary">
     {{ c }}
-    <button @click="removeChip(c)" :aria-label="`Remove ${c}`" style="margin-left:0.25rem; border:none; background:transparent; cursor:pointer; color:inherit; display:inline-flex;"><Icon name="xmark" /></button>
+    <button @click="removeChip(c)" :aria-label="`Remove ${c}`" style="margin-left:var(--spacing-1); border:none; background:transparent; cursor:pointer; color:inherit; display:inline-flex;"><Icon name="xmark" /></button>
   </Badge>
 </div>
 
@@ -93,9 +93,9 @@ A row of filters with removable chips — the saved state of a filtered view. Fi
 
 The dense data surface with its action toolbar: search, column/visibility controls, and primary actions over a [`Table`](/components/table). (Builds on the [fleet table](/patterns/fleet-table) pattern.)
 
-<div class="auxiliary-demo vp-raw" style="padding:0;">
-  <div style="width:100%; border:1px solid var(--border); border-radius:0.5rem; overflow:hidden; background:var(--card);">
-    <div style="display:flex; align-items:center; gap:0.5rem; padding:0.625rem 0.75rem; border-bottom:1px solid var(--border);">
+<div class="auxiliary-demo vp-raw" style="padding:var(--spacing-0);">
+  <div style="width:100%; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--card);">
+    <div style="display:flex; align-items:center; gap:var(--spacing-2); padding:var(--spacing-2.5) var(--spacing-3); border-bottom:1px solid var(--border);">
       <Input v-model="search" placeholder="Search vehicles…" size="sm" aria-label="Search vehicles" style="max-width:14rem;" />
       <div style="flex:1;"></div>
       <DropdownMenu>
@@ -139,9 +139,9 @@ A `Popover` off a bell trigger holding the recent-notifications list — distinc
       <Button variant="secondary" size="sm" aria-label="Notifications (2 unread)"><Icon name="bell" /> 2</Button>
     </PopoverTrigger>
     <PopoverContent>
-      <div style="display:flex; flex-direction:column; gap:0.5rem; min-width:16rem;">
+      <div style="display:flex; flex-direction:column; gap:var(--spacing-2); min-width:16rem;">
         <div style="font-weight:500;">Notifications</div>
-        <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.875rem;">
+        <div style="display:flex; flex-direction:column; gap:var(--spacing-2); font-size:0.875rem;">
           <div><div style="font-weight:500;">Export complete</div><div style="color:var(--muted-foreground);">Telemetry for MX-01 is ready.</div></div>
           <Separator />
           <div><div style="font-weight:500;">New operator joined</div><div style="color:var(--muted-foreground);">A. Park accepted your invite.</div></div>
@@ -156,11 +156,11 @@ A `Popover` off a bell trigger holding the recent-notifications list — distinc
 
 A side panel for an item's detail without leaving the list. The demo toggles a slide-in panel; **in production compose a `Dialog`** (or a sheet variant) so it gets focus-trap, `Escape`, and scrim for free.
 
-<div class="auxiliary-demo vp-raw" style="padding:0;">
-  <div style="position:relative; width:100%; height:13rem; border:1px solid var(--border); border-radius:0.5rem; overflow:hidden; background:var(--card);">
-    <div style="padding:0.75rem;"><Button variant="secondary" size="sm" @click="drawerOpen = true">Open details</Button></div>
+<div class="auxiliary-demo vp-raw" style="padding:var(--spacing-0);">
+  <div style="position:relative; width:100%; height:13rem; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--card);">
+    <div style="padding:var(--spacing-3);"><Button variant="secondary" size="sm" @click="drawerOpen = true">Open details</Button></div>
     <div v-if="drawerOpen" @click="drawerOpen = false" style="position:absolute; inset:0; background:color-mix(in oklch, var(--foreground) 30%, transparent);"></div>
-    <aside :style="{ position:'absolute', top:'0', right:'0', height:'100%', width:'16rem', background:'var(--background)', borderLeft:'1px solid var(--border)', padding:'1rem', transform: drawerOpen ? 'translateX(0)' : 'translateX(100%)', transition:'transform var(--duration-base) var(--ease-out)', display:'flex', flexDirection:'column', gap:'0.5rem' }">
+    <aside :style="{ position:'absolute', top:'0', right:'0', height:'100%', width:'16rem', background:'var(--background)', borderLeft:'1px solid var(--border)', padding:'var(--spacing-4)', transform: drawerOpen ? 'translateX(0)' : 'translateX(100%)', transition:'transform var(--duration-base) var(--ease-out)', display:'flex', flexDirection:'column', gap:'var(--spacing-2)' }">
       <div style="display:flex; align-items:center; justify-content:space-between;">
         <strong>MX-01</strong>
         <button @click="drawerOpen = false" aria-label="Close" style="border:none; background:transparent; cursor:pointer; color:var(--muted-foreground);"><Icon name="xmark" /></button>
@@ -177,10 +177,10 @@ A side panel for an item's detail without leaving the list. The demo toggles a s
 What a surface shows before it has data — icon, a plain-language heading, one sentence, and the primary action. (Suite uses these throughout; don't leave a blank panel.)
 
 <div class="auxiliary-demo vp-raw">
-  <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:0.625rem; padding:2rem; width:100%;">
-    <div style="display:flex; align-items:center; justify-content:center; width:3rem; height:3rem; border-radius:9999px; background:var(--muted); color:var(--muted-foreground);"><Icon name="drone" /></div>
+  <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:var(--spacing-2.5); padding:var(--spacing-8); width:100%;">
+    <div style="display:flex; align-items:center; justify-content:center; width:3rem; height:3rem; border-radius:var(--radius-full); background:var(--muted); color:var(--muted-foreground);"><Icon name="drone" /></div>
     <div style="font-weight:600;">No vehicles yet</div>
-    <p style="margin:0; color:var(--muted-foreground); font-size:0.875rem; max-width:22rem;">Add your first vehicle to start monitoring its telemetry, missions, and alerts.</p>
+    <p style="margin:var(--spacing-0); color:var(--muted-foreground); font-size:0.875rem; max-width:22rem;">Add your first vehicle to start monitoring its telemetry, missions, and alerts.</p>
     <Button variant="primary" size="sm">Add vehicle</Button>
   </div>
 </div>

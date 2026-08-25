@@ -17,9 +17,9 @@ export const combobox = tv({
       'z-[var(--z-dropdown)] max-h-(--component-combobox-content-max-height) min-w-[var(--reka-combobox-trigger-width)] overflow-hidden overflow-y-auto rounded-(--component-combobox-content-radius) border border-border bg-popover text-sm text-popover-foreground shadow-md outline-none',
     viewport: 'p-(--component-combobox-viewport-padding)',
     // Text inset is DERIVED — see the same note in select.ts.
-    item: 'relative flex h-(--component-combobox-item-height) cursor-pointer select-none items-center rounded-(--component-combobox-item-radius) pl-[calc(var(--component-combobox-item-indicator-inset-inline-start)+var(--component-combobox-item-icon-size)+var(--spacing-2))] pr-(--component-combobox-item-padding-inline-end) text-sm outline-none data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground data-[disabled]:opacity-(--opacity-disabled) data-[disabled]:cursor-not-allowed',
+    item: 'relative flex h-(--component-combobox-item-height) cursor-pointer select-none items-center rounded-(--component-combobox-item-radius) ps-[calc(var(--component-combobox-item-indicator-inset-inline-start)+var(--component-combobox-item-icon-size)+var(--spacing-2))] pe-(--component-combobox-item-padding-inline-end) truncate text-sm outline-none data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground data-[disabled]:opacity-(--opacity-disabled) data-[disabled]:cursor-not-allowed',
     itemIndicator:
-      'absolute left-(--component-combobox-item-indicator-inset-inline-start) flex items-center justify-center',
+      'absolute start-(--component-combobox-item-indicator-inset-inline-start) flex items-center justify-center',
     empty:
       'px-(--component-combobox-empty-padding-x) py-(--component-combobox-empty-padding-y) text-center text-sm text-muted-foreground',
     separator: 'my-(--component-combobox-separator-margin-y) border-t border-border',
@@ -28,8 +28,8 @@ export const combobox = tv({
     // Register-flex anchor height via --control-height-* (ROADMAP §6g) — keeps
     // the anchor aligned with Input/Select rungs across registers.
     size: {
-      sm: { anchor: 'h-[max(var(--component-combobox-height-sm),var(--target-floor))] px-(--component-combobox-padding-x-sm) text-sm' },
-      md: { anchor: 'h-[max(var(--component-combobox-height-md),var(--target-floor))] px-(--component-combobox-padding-x-md) text-sm' },
+      sm: { anchor: 'h-[max(var(--component-combobox-height-sm),var(--target-floor))] px-(--component-combobox-padding-x-sm) text-[max(var(--text-sm),var(--field-text-floor))]' },
+      md: { anchor: 'h-[max(var(--component-combobox-height-md),var(--target-floor))] px-(--component-combobox-padding-x-md) text-[max(var(--text-sm),var(--field-text-floor))]' },
       lg: { anchor: 'h-[max(var(--component-combobox-height-lg),var(--target-floor))] px-(--component-combobox-padding-x-lg) text-base' },
     },
     invalid: {

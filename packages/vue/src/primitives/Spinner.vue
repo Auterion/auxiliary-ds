@@ -26,7 +26,11 @@ const rootClass = computed(() => cn(styles.value.root(), props.class));
 
 <template>
   <span :class="rootClass" role="status" :aria-label="ariaLabel">
-    <svg
+    <!-- stroke-width 3 is the one deliberate exception to the stroke-width-2 glyph
+       set (gated in __tests__/glyph-weight.test.ts): this is a rotating ARC, not
+       an icon. At 2 the ring reads as a hairline and the motion stops being
+       legible at small sizes. -->
+  <svg
       :class="styles.icon()"
       viewBox="0 0 24 24"
       fill="none"

@@ -20,7 +20,7 @@ concept has exactly one name in both worlds.
 
 ## Microcopy standards
 
-- **Buttons / actions** — verb-first, title case, no trailing punctuation:
+- **Buttons / actions** — verb-first, sentence case, no trailing punctuation:
   *Save changes*, *Add waypoint*, *Arm*. Destructive actions name the
   consequence: *Delete mission* (not *OK*).
 - **Labels** — sentence case, noun phrases, no colon: *Coordinate format*.

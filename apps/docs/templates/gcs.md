@@ -31,19 +31,19 @@ The full ground-control-station screen — the [operational console blocks](/pat
 
 **Air-gap / degraded connectivity is a first-class state, not an edge case** — toggle the link to see the screen's degraded treatment.
 
-<div class="vp-raw" style="margin:1.25rem 0;">
+<div class="vp-raw" style="margin:var(--spacing-5) var(--spacing-0);">
   <div
     data-theme="dark"
     data-register="operational"
-    style="height:32rem; border:1px solid var(--border); border-radius:0.5rem; overflow:hidden; background:var(--background); color:var(--foreground); display:grid; grid-template-rows:auto 1fr auto; grid-template-columns:13rem 1fr 15rem; font-size:0.8125rem;"
+    style="height:32rem; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--background); color:var(--foreground); display:grid; grid-template-rows:auto 1fr auto; grid-template-columns:13rem 1fr 15rem; font-size:0.8125rem;"
   >
-    <header style="grid-column:1 / -1; display:flex; align-items:center; gap:0.75rem; padding:0 0.75rem; height:2.75rem; border-bottom:1px solid var(--border); background:var(--card);">
+    <header style="grid-column:1 / -1; display:flex; align-items:center; gap:var(--spacing-3); padding:var(--spacing-0) var(--spacing-3); height:2.75rem; border-bottom:1px solid var(--border); background:var(--card);">
       <strong style="font-variant-numeric:tabular-nums;">{{ selected.callsign }}</strong>
       <StatusBadge v-if="!degraded" :level="selected.level" size="sm" dot>{{ selected.status }}</StatusBadge>
       <StatusBadge v-else level="alarm" size="sm" dot>Link lost</StatusBadge>
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
-          <button style="display:inline-flex; align-items:center; gap:0.25rem; padding:0.2rem 0.45rem; border:1px solid var(--border); border-radius:0.375rem; background:transparent; color:var(--foreground); font-size:0.75rem; cursor:pointer;">Position <Icon name="chevron-down" /></button>
+          <button style="display:inline-flex; align-items:center; gap:var(--spacing-1); padding:var(--spacing-0.75) var(--spacing-2); border:1px solid var(--border); border-radius:var(--radius-md); background:transparent; color:var(--foreground); font-size:0.75rem; cursor:pointer;">Position <Icon name="chevron-down" /></button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem>Position</DropdownMenuItem>
@@ -52,20 +52,20 @@ The full ground-control-station screen — the [operational console blocks](/pat
         </DropdownMenuContent>
       </DropdownMenu>
       <div style="flex:1;"></div>
-      <div :style="{ display:'flex', gap:'0.75rem', alignItems:'center', opacity: degraded ? 0.4 : 1 }">
+      <div :style="{ display:'flex', gap:'var(--spacing-3)', alignItems:'center', opacity: degraded ? 0.4 : 1 }">
         <TelemetryValue label="Link" :value="-87" unit="dBm" :precision="0" size="sm" :level="degraded ? 'alarm' : 'caution'" />
         <TelemetryValue label="Sats" :value="degraded ? 0 : 14" :precision="0" size="sm" :level="degraded ? 'alarm' : 'nominal'" />
         <Gauge :value="selected.batt" unit="%" label="Battery" :size="38" :thickness="4" />
       </div>
       <Button variant="secondary" size="sm" @click="degraded = !degraded">{{ degraded ? 'Restore link' : 'Simulate link loss' }}</Button>
     </header>
-    <nav aria-label="Fleet" style="grid-row:2; grid-column:1; border-right:1px solid var(--border); background:var(--card); overflow-y:auto; padding:0.375rem;">
+    <nav aria-label="Fleet" style="grid-row:2; grid-column:1; border-right:1px solid var(--border); background:var(--card); overflow-y:auto; padding:var(--spacing-1.5);">
       <button
         v-for="v in fleet"
         :key="v.id"
         @click="selectedId = v.id"
         :aria-current="selectedId === v.id ? 'true' : undefined"
-        :style="{ display:'flex', alignItems:'center', gap:'0.5rem', width:'100%', padding:'0.4rem 0.5rem', border:'none', borderLeft:`3px solid ${v.level==='alarm' ? entityColor(v.level) : 'transparent'}`, background: selectedId===v.id ? 'var(--accent)' : 'transparent', cursor:'pointer', textAlign:'left', borderRadius:'0.25rem' }"
+        :style="{ display:'flex', alignItems:'center', gap:'var(--spacing-2)', width:'100%', padding:'var(--spacing-1.5) var(--spacing-2)', border:'none', borderLeft:`3px solid ${v.level==='alarm' ? entityColor(v.level) : 'transparent'}`, background: selectedId===v.id ? 'var(--accent)' : 'transparent', cursor:'pointer', textAlign:'left', borderRadius:'var(--radius-sm)' }"
       >
         <svg width="14" height="14" viewBox="0 0 28 28" :style="{ transform:`rotate(${v.heading}deg)`, flexShrink:0 }" aria-hidden="true">
           <path d="M14 5 L20 22 L14 18 L8 22 Z" :fill="entityColor(v.level)" />
@@ -80,30 +80,30 @@ The full ground-control-station screen — the [operational console blocks](/pat
       <div v-if="degraded" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:color-mix(in oklch, var(--alarm) 12%, transparent);">
         <StatusBadge level="alarm" dot>Telemetry stale — last known positions</StatusBadge>
       </div>
-      <div v-for="v in onMap" :key="v.id" :style="{ position:'absolute', left:v.x+'%', top:v.y+'%', transform:'translate(-50%,-50%)', display:'flex', flexDirection:'column', alignItems:'center', gap:'2px', opacity: degraded ? 0.45 : 1 }">
+      <div v-for="v in onMap" :key="v.id" :style="{ position:'absolute', left:v.x+'%', top:v.y+'%', transform:'translate(-50%,-50%)', display:'flex', flexDirection:'column', alignItems:'center', gap:'var(--spacing-0.5)', opacity: degraded ? 0.45 : 1 }">
         <svg width="22" height="22" viewBox="0 0 28 28" :style="{ transform:`rotate(${v.heading}deg)` }" :aria-label="v.callsign">
           <circle cx="14" cy="14" r="12" fill="none" :stroke="entityColor(v.level)" stroke-width="2" :stroke-opacity="v.level==='alarm' ? 1 : 0.5" />
           <path d="M14 5 L20 22 L14 18 L8 22 Z" :fill="entityColor(v.level)" />
         </svg>
-        <code style="font-size:0.5625rem; background:var(--card); padding:0 2px; border-radius:2px;">{{ v.callsign }}</code>
+        <code style="font-size:0.5625rem; background:var(--card); padding:var(--spacing-0) var(--spacing-0.5); border-radius:var(--radius-xs);">{{ v.callsign }}</code>
       </div>
     </main>
-    <aside aria-label="Inspector" style="grid-row:2; grid-column:3; border-left:1px solid var(--border); background:var(--card); overflow-y:auto; padding:0.75rem; display:flex; flex-direction:column; gap:0.625rem;">
-      <div style="display:flex; align-items:center; gap:0.5rem;"><strong>{{ selected.callsign }}</strong></div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+    <aside aria-label="Inspector" style="grid-row:2; grid-column:3; border-left:1px solid var(--border); background:var(--card); overflow-y:auto; padding:var(--spacing-3); display:flex; flex-direction:column; gap:var(--spacing-2.5);">
+      <div style="display:flex; align-items:center; gap:var(--spacing-2);"><strong>{{ selected.callsign }}</strong></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--spacing-2);">
         <TelemetryValue label="Altitude" :value="selected.alt" unit="m" :precision="0" size="sm" />
         <TelemetryValue label="Heading" :value="selected.heading" unit="°" :precision="0" size="sm" />
         <TelemetryValue label="Battery" :value="selected.batt" unit="%" :precision="0" size="sm" :level="selected.batt < 25 ? 'warning' : undefined" />
         <TelemetryValue label="Speed" :value="selected.speed" unit="m/s" size="sm" />
       </div>
       <CoordinateValue :lat="47.3977" :lon="8.5456" format="dms" show-format-tag />
-      <div style="display:flex; align-items:center; gap:0.5rem;">
+      <div style="display:flex; align-items:center; gap:var(--spacing-2);">
         <span style="font-size:0.6875rem; color:var(--muted-foreground);">Alt</span>
         <Sparkline :values="altTrend" :width="110" :height="22" />
       </div>
     </aside>
-    <footer style="grid-column:1 / -1; display:flex; align-items:center; gap:1rem; padding:0.5rem 0.75rem; border-top:1px solid var(--border); background:var(--card);">
-      <div style="flex:1; display:flex; flex-direction:column; gap:0.25rem;">
+    <footer style="grid-column:1 / -1; display:flex; align-items:center; gap:var(--spacing-4); padding:var(--spacing-2) var(--spacing-3); border-top:1px solid var(--border); background:var(--card);">
+      <div style="flex:1; display:flex; flex-direction:column; gap:var(--spacing-1);">
         <div style="display:flex; justify-content:space-between; font-size:0.6875rem; color:var(--muted-foreground);"><span>Mission elapsed 0:19</span><span>Waypoint 3 / 5</span></div>
         <Progress :value="62" />
       </div>

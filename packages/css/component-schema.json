@@ -714,6 +714,9 @@
           },
           "gap": {
             "figma": "Component/badge/gap"
+          },
+          "white-space": {
+            "value": "nowrap"
           }
         }
       }
@@ -2780,7 +2783,10 @@
           "height": {
             "figma": "Component/combobox/item/height"
           },
-          "padding-left": {
+          "padding-inline-end": {
+            "figma": "Component/combobox/item/padding-inline-end"
+          },
+          "padding-inline-start": {
             "refs": [
               {
                 "var": "--component-combobox-item-indicator-inset-inline-start",
@@ -2797,11 +2803,11 @@
             ],
             "value": "calc(var(--component-combobox-item-indicator-inset-inline-start) + var(--component-combobox-item-icon-size) + var(--spacing-2))"
           },
-          "padding-right": {
-            "figma": "Component/combobox/item/padding-inline-end"
-          },
           "position": {
             "value": "relative"
+          },
+          "white-space": {
+            "value": "nowrap"
           }
         },
         "states": {
@@ -2828,11 +2834,11 @@
           "display": {
             "value": "flex"
           },
+          "inset-inline-start": {
+            "figma": "Component/combobox/item/indicator/inset-inline-start"
+          },
           "justify-content": {
             "value": "center"
-          },
-          "left": {
-            "figma": "Component/combobox/item/indicator/inset-inline-start"
           },
           "position": {
             "value": "absolute"
@@ -2882,7 +2888,17 @@
                 "figma": "Theme/input"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -2918,7 +2934,17 @@
                 "figma": "Theme/destructive"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -2961,7 +2987,17 @@
                 "figma": "Theme/input"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -2997,7 +3033,17 @@
                 "figma": "Theme/destructive"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -3132,7 +3178,8 @@
       "label",
       "valueRow",
       "value",
-      "formatTag"
+      "formatTag",
+      "levelIcon"
     ],
     "common": {
       "root": {
@@ -3220,6 +3267,21 @@
                 "figma": "Global/text/sm"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "sm"
+              }
+            }
           }
         }
       },
@@ -3236,6 +3298,21 @@
               },
               "font-size": {
                 "figma": "Global/text/sm"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "sm"
               }
             }
           }
@@ -3256,6 +3333,21 @@
                 "figma": "Global/text/sm"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "sm"
+              }
+            }
           }
         }
       },
@@ -3274,6 +3366,21 @@
                 "figma": "Global/text/sm"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "sm"
+              }
+            }
           }
         }
       },
@@ -3290,6 +3397,21 @@
               },
               "font-size": {
                 "figma": "Global/text/sm"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "sm"
               }
             }
           }
@@ -3310,6 +3432,21 @@
                 "figma": "Global/text/base"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "md"
+              }
+            }
           }
         }
       },
@@ -3326,6 +3463,21 @@
               },
               "font-size": {
                 "figma": "Global/text/base"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "md"
               }
             }
           }
@@ -3346,6 +3498,21 @@
                 "figma": "Global/text/base"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "md"
+              }
+            }
           }
         }
       },
@@ -3364,6 +3531,21 @@
                 "figma": "Global/text/base"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "md"
+              }
+            }
           }
         }
       },
@@ -3380,6 +3562,21 @@
               },
               "font-size": {
                 "figma": "Global/text/base"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "md"
               }
             }
           }
@@ -3400,6 +3597,21 @@
                 "figma": "Global/text/xl"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "lg"
+              }
+            }
           }
         }
       },
@@ -3416,6 +3628,21 @@
               },
               "font-size": {
                 "figma": "Global/text/xl"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "lg"
               }
             }
           }
@@ -3436,6 +3663,21 @@
                 "figma": "Global/text/xl"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "lg"
+              }
+            }
           }
         }
       },
@@ -3454,6 +3696,21 @@
                 "figma": "Global/text/xl"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "lg"
+              }
+            }
           }
         }
       },
@@ -3470,6 +3727,21 @@
               },
               "font-size": {
                 "figma": "Global/text/xl"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "height": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/coordinate-value/icon-size",
+                "mode": "lg"
               }
             }
           }
@@ -3548,6 +3820,15 @@
           "gap": {
             "figma": "Component/dialog/gap"
           },
+          "max-height": {
+            "refs": [
+              {
+                "var": "--component-dialog-viewport-inset",
+                "figma": "Component/dialog/viewport-inset"
+              }
+            ],
+            "value": "calc(100dvh - var(--component-dialog-viewport-inset))"
+          },
           "max-width": {
             "figma": "Component/dialog/max-width"
           },
@@ -3559,6 +3840,18 @@
           },
           "z-index": {
             "figma": "Global/z/modal"
+          }
+        },
+        "states": {
+          "data-[state=closed]": {
+            "animation": {
+              "value": "var(--animate-fade-out)"
+            }
+          },
+          "data-[state=open]": {
+            "animation": {
+              "value": "var(--animate-fade-in)"
+            }
           }
         }
       },
@@ -3573,14 +3866,43 @@
           "color": {
             "figma": "Theme/muted-foreground"
           },
+          "display": {
+            "value": "inline-grid"
+          },
+          "height": {
+            "refs": [
+              {
+                "var": "--component-dialog-close-size",
+                "figma": "Component/dialog/close/size"
+              },
+              {
+                "var": "--target-floor",
+                "figma": "Global/target/floor"
+              }
+            ],
+            "value": "max(var(--component-dialog-close-size), var(--target-floor))"
+          },
+          "inset-inline-end": {
+            "figma": "Component/dialog/close/inset"
+          },
           "position": {
             "value": "absolute"
           },
-          "right": {
-            "figma": "Component/dialog/close/inset"
-          },
           "top": {
             "figma": "Component/dialog/close/inset"
+          },
+          "width": {
+            "refs": [
+              {
+                "var": "--component-dialog-close-size",
+                "figma": "Component/dialog/close/size"
+              },
+              {
+                "var": "--target-floor",
+                "figma": "Global/target/floor"
+              }
+            ],
+            "value": "max(var(--component-dialog-close-size), var(--target-floor))"
           }
         },
         "states": {
@@ -3693,6 +4015,9 @@
           },
           "padding-inline": {
             "figma": "Component/dropdown-menu/item/padding-x"
+          },
+          "white-space": {
+            "value": "nowrap"
           }
         },
         "states": {
@@ -5269,7 +5594,17 @@
                 "figma": "Theme/input"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -5305,7 +5640,17 @@
                 "figma": "Theme/destructive"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -5348,7 +5693,17 @@
                 "figma": "Theme/input"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -5384,7 +5739,17 @@
                 "figma": "Theme/destructive"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -5660,7 +6025,7 @@
           "font-size": {
             "figma": "Global/text/sm"
           },
-          "padding-right": {
+          "padding-inline-end": {
             "figma": "Component/number-field/unit/padding-inline-end"
           }
         }
@@ -5679,7 +6044,17 @@
                 "figma": "Theme/input"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -5711,7 +6086,17 @@
                 "figma": "Theme/destructive"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -5750,7 +6135,17 @@
                 "figma": "Theme/input"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -5782,7 +6177,17 @@
                 "figma": "Theme/destructive"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -6320,7 +6725,10 @@
           "height": {
             "figma": "Component/select/item/height"
           },
-          "padding-left": {
+          "padding-inline-end": {
+            "figma": "Component/select/item/padding-inline-end"
+          },
+          "padding-inline-start": {
             "refs": [
               {
                 "var": "--component-select-item-indicator-inset-inline-start",
@@ -6337,11 +6745,11 @@
             ],
             "value": "calc(var(--component-select-item-indicator-inset-inline-start) + var(--component-select-item-icon-size) + var(--spacing-2))"
           },
-          "padding-right": {
-            "figma": "Component/select/item/padding-inline-end"
-          },
           "position": {
             "value": "relative"
+          },
+          "white-space": {
+            "value": "nowrap"
           }
         },
         "states": {
@@ -6368,11 +6776,11 @@
           "display": {
             "value": "flex"
           },
+          "inset-inline-start": {
+            "figma": "Component/select/item/indicator/inset-inline-start"
+          },
           "justify-content": {
             "value": "center"
-          },
-          "left": {
-            "figma": "Component/select/item/indicator/inset-inline-start"
           },
           "position": {
             "value": "absolute"
@@ -6403,7 +6811,17 @@
                 "figma": "Theme/input"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -6439,7 +6857,17 @@
                 "figma": "Theme/destructive"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -6482,7 +6910,17 @@
                 "figma": "Theme/input"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -6518,7 +6956,17 @@
                 "figma": "Theme/destructive"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "height": {
                 "refs": [
@@ -8233,6 +8681,15 @@
         },
         "states": {
           "data-[state=selected]": {
+            "--tw-shadow": {
+              "refs": [
+                {
+                  "var": "--brand",
+                  "figma": "Theme/brand"
+                }
+              ],
+              "value": "inset 2px 0 0 var(--tw-shadow-color, var(--brand))"
+            },
             "background-color": {
               "figma": "Theme/accent"
             }
@@ -8259,7 +8716,7 @@
             "figma": "Component/table/padding-x"
           },
           "text-align": {
-            "value": "left"
+            "value": "start"
           },
           "white-space": {
             "value": "nowrap"
@@ -8461,10 +8918,15 @@
         "caution",
         "advisory",
         "nominal"
+      ],
+      "spaced": [
+        "true",
+        "false"
       ]
     },
     "defaults": {
-      "size": "md"
+      "size": "md",
+      "spaced": true
     },
     "slots": [
       "root",
@@ -8472,7 +8934,8 @@
       "valueRow",
       "value",
       "unit",
-      "trend"
+      "trend",
+      "levelIcon"
     ],
     "common": {
       "root": {
@@ -8555,7 +9018,8 @@
       {
         "props": {
           "size": "sm",
-          "level": "alarm"
+          "level": "alarm",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8567,13 +9031,76 @@
                 "figma": "Global/text/sm"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "sm",
-          "level": "warning"
+          "level": "alarm",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/sm"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "sm",
+          "level": "warning",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8585,13 +9112,76 @@
                 "figma": "Global/text/sm"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "sm",
-          "level": "caution"
+          "level": "warning",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/sm"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "sm",
+          "level": "caution",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8603,13 +9193,76 @@
                 "figma": "Global/text/sm"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "sm",
-          "level": "advisory"
+          "level": "caution",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/sm"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "sm",
+          "level": "advisory",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8621,13 +9274,76 @@
                 "figma": "Global/text/sm"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "sm",
-          "level": "nominal"
+          "level": "advisory",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/sm"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "sm",
+          "level": "nominal",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8639,13 +9355,76 @@
                 "figma": "Global/text/sm"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "sm",
+          "level": "nominal",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/sm"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "sm"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "md",
-          "level": "alarm"
+          "level": "alarm",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8657,13 +9436,76 @@
                 "figma": "Global/text/lg"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "md",
-          "level": "warning"
+          "level": "alarm",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/lg"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "md",
+          "level": "warning",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8675,13 +9517,76 @@
                 "figma": "Global/text/lg"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "md",
-          "level": "caution"
+          "level": "warning",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/lg"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "md",
+          "level": "caution",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8693,13 +9598,76 @@
                 "figma": "Global/text/lg"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "md",
-          "level": "advisory"
+          "level": "caution",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/lg"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "md",
+          "level": "advisory",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8711,13 +9679,76 @@
                 "figma": "Global/text/lg"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "md",
-          "level": "nominal"
+          "level": "advisory",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/lg"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "md",
+          "level": "nominal",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8729,13 +9760,76 @@
                 "figma": "Global/text/lg"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "md",
+          "level": "nominal",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/lg"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "md"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "lg",
-          "level": "alarm"
+          "level": "alarm",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8747,13 +9841,76 @@
                 "figma": "Global/text/2xl"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "lg",
-          "level": "warning"
+          "level": "alarm",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/2xl"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/alarm-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "lg",
+          "level": "warning",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8765,13 +9922,76 @@
                 "figma": "Global/text/2xl"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "lg",
-          "level": "caution"
+          "level": "warning",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/2xl"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/warning-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "lg",
+          "level": "caution",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8783,13 +10003,76 @@
                 "figma": "Global/text/2xl"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "lg",
-          "level": "advisory"
+          "level": "caution",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/2xl"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/caution-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "lg",
+          "level": "advisory",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8801,13 +10084,76 @@
                 "figma": "Global/text/2xl"
               }
             }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              }
+            }
           }
         }
       },
       {
         "props": {
           "size": "lg",
-          "level": "nominal"
+          "level": "advisory",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/2xl"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/advisory-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "lg",
+          "level": "nominal",
+          "spaced": "true"
         },
         "slots": {
           "value": {
@@ -8817,6 +10163,68 @@
               },
               "font-size": {
                 "figma": "Global/text/2xl"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              }
+            }
+          }
+        }
+      },
+      {
+        "props": {
+          "size": "lg",
+          "level": "nominal",
+          "spaced": "false"
+        },
+        "slots": {
+          "value": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "font-size": {
+                "figma": "Global/text/2xl"
+              }
+            }
+          },
+          "unit": {
+            "properties": {
+              "margin-inline-start": {
+                "refs": [
+                  {
+                    "var": "--component-telemetry-value-gap",
+                    "figma": "Component/telemetry-value/gap"
+                  }
+                ],
+                "value": "calc(var(--component-telemetry-value-gap) * -1)"
+              }
+            }
+          },
+          "levelIcon": {
+            "properties": {
+              "color": {
+                "figma": "Theme/nominal-emphasis"
+              },
+              "height": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
+              },
+              "width": {
+                "figma": "Component/telemetry-value/icon-size",
+                "mode": "lg"
               }
             }
           }
@@ -8891,7 +10299,17 @@
                 "figma": "Theme/input"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "padding-block": {
                 "figma": "Component/textarea/padding-y",
@@ -8917,7 +10335,17 @@
                 "figma": "Theme/destructive"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "padding-block": {
                 "figma": "Component/textarea/padding-y",
@@ -8950,7 +10378,17 @@
                 "figma": "Theme/input"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "padding-block": {
                 "figma": "Component/textarea/padding-y",
@@ -8976,7 +10414,17 @@
                 "figma": "Theme/destructive"
               },
               "font-size": {
-                "figma": "Global/text/sm"
+                "refs": [
+                  {
+                    "var": "--text-sm",
+                    "figma": "Global/text/sm"
+                  },
+                  {
+                    "var": "--field-text-floor",
+                    "figma": "Global/field-text/floor"
+                  }
+                ],
+                "value": "max(var(--text-sm), var(--field-text-floor))"
               },
               "padding-block": {
                 "figma": "Component/textarea/padding-y",
@@ -9084,14 +10532,32 @@
           "gap": {
             "figma": "Component/toast/viewport/gap"
           },
+          "inset-inline-end": {
+            "figma": "Global/spacing/0"
+          },
           "padding": {
             "figma": "Component/toast/viewport/padding"
           },
+          "padding-bottom": {
+            "refs": [
+              {
+                "var": "--component-toast-viewport-padding",
+                "figma": "Component/toast/viewport/padding"
+              }
+            ],
+            "value": "calc(var(--component-toast-viewport-padding) + env(safe-area-inset-bottom,0px))"
+          },
+          "padding-inline-end": {
+            "refs": [
+              {
+                "var": "--component-toast-viewport-padding",
+                "figma": "Component/toast/viewport/padding"
+              }
+            ],
+            "value": "calc(var(--component-toast-viewport-padding) + env(safe-area-inset-right,0px))"
+          },
           "position": {
             "value": "fixed"
-          },
-          "right": {
-            "figma": "Global/spacing/0"
           },
           "z-index": {
             "figma": "Global/z/toast"
@@ -9175,6 +10641,35 @@
           },
           "color": {
             "figma": "Theme/muted-foreground"
+          },
+          "display": {
+            "value": "inline-grid"
+          },
+          "height": {
+            "refs": [
+              {
+                "var": "--component-toast-close-size",
+                "figma": "Component/toast/close/size"
+              },
+              {
+                "var": "--target-floor",
+                "figma": "Global/target/floor"
+              }
+            ],
+            "value": "max(var(--component-toast-close-size), var(--target-floor))"
+          },
+          "width": {
+            "refs": [
+              {
+                "var": "--component-toast-close-size",
+                "figma": "Component/toast/close/size"
+              },
+              {
+                "var": "--target-floor",
+                "figma": "Global/target/floor"
+              }
+            ],
+            "value": "max(var(--component-toast-close-size), var(--target-floor))"
           }
         },
         "states": {

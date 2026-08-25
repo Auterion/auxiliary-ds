@@ -5,6 +5,11 @@
         "$type": "dimension",
         "$value": "{global.size.container.lg}"
       },
+      "viewport-inset": {
+        "$description": "Margin kept between a fixed, centred panel and the screen edge. The recipe composes it as max-h-[calc(100dvh-var(...))]: the INSET is the design measurement and lives here; 100dvh is the viewport, not a token. Without the bound the panel grows past both viewport edges and its content is unreachable at 320px and at 200% zoom, because the page scrollbar cannot reach a fixed element.",
+        "$type": "dimension",
+        "$value": "{global.spacing.8}"
+      },
       "padding": {
         "$type": "dimension",
         "$value": "{global.spacing.6}"
@@ -18,6 +23,11 @@
         "$value": "{global.radius.md}"
       },
       "close": {
+        "size": {
+          "$description": "Hit area of the close control \u2014 24px box around a 16px glyph. The recipe floors it with max(\u2026, --target-floor), so under a coarse pointer the BOX grows to 44px while the glyph stays put.",
+          "$type": "dimension",
+          "$value": "{global.spacing.6}"
+        },
         "inset": {
           "$type": "dimension",
           "$value": "{global.spacing.4}"

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { blueEnergy, deltaEOk, loadTheme, luminance, pairRatio, parseOklch, type ThemeName } from './wcag';
+import { deltaEOkCvd } from './cvd';
 
 /**
  * Extended sunlight/night legibility gates (ROADMAP §6i — defense layer).
@@ -152,23 +153,64 @@ describe('darknight night-vision: every token stays low-blue', () => {
   });
 });
 
-// --- 5. Severity ladder fills stay perceptually distinct (ΔEok) ---------------
-// A ratchet floor below today's tightest pair (dark/darknight alarm↔warning at
-// ~0.045). The grayscale-glyph gate is the *primary* non-color guarantee; this
-// prevents the colors themselves from drifting closer together.
-const FILLS = ['alarm', 'warning', 'caution', 'advisory', 'nominal'] as const;
-const FILL_PAIRS = FILLS.flatMap((a, i) => FILLS.slice(i + 1).map((b) => [a, b] as const));
+// --- 5. Severity ladder stays perceptually distinct (ΔEok, normal + CVD) ------
+// The grayscale-glyph gate (packages/vue … status-cue.test.ts) is the *primary*
+// non-color guarantee; this prevents the colors themselves from drifting closer
+// together.
+//
+// SCOPE, twice widened, because the previous scope read as coverage it did not have:
+//
+//   1. BOTH TIERS. This covered the five `FILLS` only. The `*-emphasis` inks —
+//      which paint StatusBadge outline, TelemetryValue, CoordinateValue and every
+//      status readout that sits directly on a page surface — were ungated, and
+//      light/sunlight `warning-emphasis` vs `caution-emphasis` measured ΔEok
+//      0.0013 under deuteranopia. Two rungs of a safety ladder, one color.
+//
+//   2. UNDER SIMULATED DICHROMACY. This measured normal vision only, while
+//      viz-palette.test.ts already held a *decorative chart series* to 0.04 under
+//      protanopia AND deuteranopia using `deltaEOkCvd` from ./cvd — written,
+//      shipped, and imported by exactly one file. The safety ladder was held to a
+//      weaker standard than the chart legend.
+//
+// Fixing it required re-spacing on LIGHTNESS, the only channel dichromacy leaves
+// intact — hue separation is worth nothing to a deuteranope. Nine pairs across
+// both tiers and all four themes were below the floor before this widened.
+const LADDER = ['alarm', 'warning', 'caution', 'advisory', 'nominal'] as const;
+const LADDER_PAIRS = LADDER.flatMap((a, i) => LADDER.slice(i + 1).map((b) => [a, b] as const));
+const TIERS = ['', '-emphasis'] as const;
 const MIN_DELTA_E = 0.04; // TODO(ratchet): raise toward 0.06 as the dark palettes are refined.
 
 describe.each(['light', 'dark', 'sunlight', 'darknight'] as ThemeName[])(
   'severity ladder is color-distinct — %s theme',
   (name) => {
     const theme = loadTheme(name);
-    it.each(FILL_PAIRS)(`%s vs %s ΔEok ≥ ${MIN_DELTA_E}`, (a, b) => {
-      expect(deltaEOk(theme[a]!, theme[b]!)).toBeGreaterThanOrEqual(MIN_DELTA_E);
-    });
+    for (const tier of TIERS) {
+      const label = tier === '' ? 'fill' : 'emphasis';
+      it.each(LADDER_PAIRS)(
+        `${label}: %s vs %s ΔEok ≥ ${MIN_DELTA_E} — normal, protanopia, deuteranopia`,
+        (a, b) => {
+          const [ca, cb] = [theme[`${a}${tier}`]!, theme[`${b}${tier}`]!];
+          expect(deltaEOk(ca, cb), 'normal').toBeGreaterThanOrEqual(MIN_DELTA_E);
+          expect(deltaEOkCvd(ca, cb, 'protanopia'), 'protanopia').toBeGreaterThanOrEqual(MIN_DELTA_E);
+          expect(deltaEOkCvd(ca, cb, 'deuteranopia'), 'deuteranopia').toBeGreaterThanOrEqual(MIN_DELTA_E);
+        },
+      );
+    }
   },
 );
+
+// Positive control for the CVD half specifically. Without it, a `deltaEOkCvd`
+// that silently started returning the normal-vision value would leave every
+// assertion above passing while checking nothing — which is precisely how the
+// ungated emphasis tier survived 347 green token tests.
+describe('CVD simulation self-check', () => {
+  it('collapses a red/green pair that normal vision separates', () => {
+    const red = parseOklch('oklch(0.55 0.20 25)');
+    const green = parseOklch('oklch(0.55 0.20 145)');
+    expect(deltaEOk(red, green), 'normal vision separates them').toBeGreaterThan(0.15);
+    expect(deltaEOkCvd(red, green, 'deuteranopia'), 'deuteranopia does not').toBeLessThan(0.04);
+  });
+});
 
 describe('ΔEok self-check', () => {
   it('is 0 for identical colors and large for opponents', () => {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { setThemeAttribute } from '@auxiliary/css/utils';
 /**
  * Visual-regression harness — the thing Playwright screenshots.
  *
@@ -71,7 +72,7 @@ onMounted(() => {
   if (t && (THEMES as readonly string[]).includes(t)) theme.value = t as Theme;
   if (r && (REGISTERS as readonly string[]).includes(r)) register.value = r as RegisterValue;
 
-  document.documentElement.setAttribute('data-theme', theme.value);
+  setThemeAttribute('data-theme', theme.value);
   // VitePress's own chrome keys off `.dark`; keep it consistent so the page
   // background behind the specimens matches the token background.
   document.documentElement.classList.toggle(
@@ -106,8 +107,8 @@ const cell = computed(() => `${theme.value}/${register.value}`);
 </script>
 
 <template>
-  <div v-if="ready" class="aux-specimens" :data-cell="cell">
-    <Register :value="register">
+  <div v-if="ready" class="aux-specimens vp-raw" :data-cell="cell">
+    <Register :register="register">
       <section data-specimen="status-badge">
         <div class="row">
           <StatusBadge v-for="level in LEVELS" :key="level" :level="level">
@@ -165,6 +166,19 @@ const cell = computed(() => `${theme.value}/${register.value}`);
           <TelemetryValue label="Ground speed" :value="14.208" unit="m/s" :precision="2" />
           <TelemetryValue label="Heading" :value="287" unit="°" />
           <TelemetryValue label="Battery" :value="18" unit="%" />
+        </div>
+        <!-- `level` is the row this gate exists for. It used to change ink color
+             and nothing else, and no specimen rendered it — so the one gate that
+             could have shown a color-only status cue never drew one. -->
+        <div class="row">
+          <TelemetryValue
+            v-for="level in LEVELS"
+            :key="level"
+            :label="level"
+            :value="18"
+            unit="%"
+            :level="level"
+          />
         </div>
       </section>
 

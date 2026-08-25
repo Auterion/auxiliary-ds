@@ -13,24 +13,24 @@ const events = [
 
 The after-action screen — what happened on the flight: headline metrics, the altitude profile, and the event log. Read-only analysis, built from the same telemetry and the [data-viz](/data-viz/) layer.
 
-<div class="vp-raw" style="margin:1.25rem 0; border:1px solid var(--border); border-radius:0.5rem; background:var(--background); padding:1rem; display:flex; flex-direction:column; gap:1rem;">
-  <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+<div class="vp-raw" style="margin:var(--spacing-5) var(--spacing-0); border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--background); padding:var(--spacing-4); display:flex; flex-direction:column; gap:var(--spacing-4);">
+  <div style="display:flex; align-items:center; gap:var(--spacing-4); flex-wrap:wrap;">
     <strong>MX-01 — Survey, North field</strong>
     <StatusBadge level="nominal" size="sm" dot>Completed</StatusBadge>
     <div style="flex:1;"></div>
     <Button variant="ghost" size="sm">Export log</Button>
   </div>
-  <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:0.75rem;">
-    <div style="border:1px solid var(--border); border-radius:0.375rem; padding:0.75rem; background:var(--card);"><div style="font-size:0.75rem; color:var(--muted-foreground);">Duration</div><strong style="font-size:1.25rem; font-variant-numeric:tabular-nums;">13:52</strong></div>
-    <div style="border:1px solid var(--border); border-radius:0.375rem; padding:0.75rem; background:var(--card);"><div style="font-size:0.75rem; color:var(--muted-foreground);">Distance</div><strong style="font-size:1.25rem; font-variant-numeric:tabular-nums;">4.2 km</strong></div>
-    <div style="border:1px solid var(--border); border-radius:0.375rem; padding:0.75rem; background:var(--card);"><div style="font-size:0.75rem; color:var(--muted-foreground);">Max altitude</div><strong style="font-size:1.25rem; font-variant-numeric:tabular-nums;">121 m</strong></div>
-    <div style="border:1px solid var(--border); border-radius:0.375rem; padding:0.75rem; background:var(--card);"><div style="font-size:0.75rem; color:var(--muted-foreground);">Battery used</div><strong style="font-size:1.25rem; font-variant-numeric:tabular-nums;">62 %</strong></div>
+  <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:var(--spacing-3);">
+    <div style="border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--spacing-3); background:var(--card);"><div style="font-size:0.75rem; color:var(--muted-foreground);">Duration</div><strong style="font-size:1.25rem; font-variant-numeric:tabular-nums;">13:52</strong></div>
+    <div style="border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--spacing-3); background:var(--card);"><div style="font-size:0.75rem; color:var(--muted-foreground);">Distance</div><strong style="font-size:1.25rem; font-variant-numeric:tabular-nums;">4.2 km</strong></div>
+    <div style="border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--spacing-3); background:var(--card);"><div style="font-size:0.75rem; color:var(--muted-foreground);">Max altitude</div><strong style="font-size:1.25rem; font-variant-numeric:tabular-nums;">121 m</strong></div>
+    <div style="border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--spacing-3); background:var(--card);"><div style="font-size:0.75rem; color:var(--muted-foreground);">Battery used</div><strong style="font-size:1.25rem; font-variant-numeric:tabular-nums;">62 %</strong></div>
   </div>
-  <div style="border:1px solid var(--border); border-radius:0.375rem; padding:0.875rem; background:var(--card);">
-    <div style="font-size:0.8125rem; font-weight:500; margin-bottom:0.5rem;">Altitude profile</div>
+  <div style="border:1px solid var(--border); border-radius:var(--radius-md); padding:var(--spacing-3.5); background:var(--card);">
+    <div style="font-size:0.8125rem; font-weight:500; margin-bottom:var(--spacing-2);">Altitude profile</div>
     <Sparkline :values="altProfile" :width="560" :height="80" area label="Altitude profile over the flight" />
   </div>
-  <div style="border:1px solid var(--border); border-radius:0.375rem; overflow:hidden; background:var(--card);">
+  <div style="border:1px solid var(--border); border-radius:var(--radius-md); overflow:hidden; background:var(--card);">
     <Table>
       <TableHeader><TableRow><TableHead scope="col">Time</TableHead><TableHead scope="col">Event</TableHead><TableHead scope="col">Level</TableHead></TableRow></TableHeader>
       <TableBody>

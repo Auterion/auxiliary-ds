@@ -24,9 +24,9 @@ The top operational surface — fleets, mission logs, telemetry streams, alert h
 **Composes:** `Table` · `Checkbox` · `StatusBadge` · `TelemetryValue`
 
 <div class="auxiliary-demo vp-raw" style="display:block;">
-  <div style="border:1px solid var(--border); border-radius:0.5rem; background:var(--card); overflow:hidden;">
+  <div style="border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--card); overflow:hidden;">
     <Table>
-      <TableCaption style="padding:0.75rem 1rem 0;">
+      <TableCaption style="padding:var(--spacing-3) var(--spacing-4) var(--spacing-0);">
         Active fleet — {{ selectedVehicles.size }} of {{ FLEET.length }} selected
       </TableCaption>
       <TableHeader sticky>

@@ -10,7 +10,7 @@ Confirm-before-proceed checks with expandable detail — the kind an operator wo
       <CardTitle>Pre-flight checks</CardTitle>
       <CardDescription>Confirm before takeoff. Expand each for details.</CardDescription>
     </CardHeader>
-    <CardContent style="padding-left:0.25rem; padding-right:0.25rem;">
+    <CardContent style="padding-left:var(--spacing-1); padding-right:var(--spacing-1);">
       <Accordion type="single" collapsible default-value="airspace">
         <AccordionItem value="airspace">
           <AccordionTrigger>Airspace authorization</AccordionTrigger>

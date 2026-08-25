@@ -12,8 +12,8 @@ export const badge = tv({
       primary:   'bg-primary text-primary-foreground',
     },
     size: {
-      sm: 'h-(--component-badge-height-sm) px-(--component-badge-padding-x-sm) text-2xs',
-      md: 'h-(--component-badge-height-md) px-(--component-badge-padding-x-md) text-xs',
+      sm: 'h-(--component-badge-height-sm) px-(--component-badge-padding-x-sm) text-2xs whitespace-nowrap',
+      md: 'h-(--component-badge-height-md) px-(--component-badge-padding-x-md) text-xs whitespace-nowrap',
     },
   },
   defaultVariants: {

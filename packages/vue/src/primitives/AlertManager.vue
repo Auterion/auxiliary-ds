@@ -35,8 +35,18 @@ const unacked = computed(() => props.model.unacknowledged.value);
 
 <template>
   <div :class="cn(styles.root(), props.class)">
+    <!-- The announcement channel is ALWAYS mounted and never hidden. A live region
+         has to exist before its text changes or the change is not announced, and
+         `v-if` created the region at the same moment it filled it — so the count
+         went from absent to "1 unacknowledged" in one tick, which most screen
+         readers do not announce at all. Wrapping it in `hidden` would not help
+         either: a hidden live region is silent. So the region lives out here and
+         only the VISIBLE chrome below is conditional. -->
+    <span class="sr-only" aria-live="polite">{{ unacked > 0 ? `${unacked} unacknowledged` : '' }}</span>
+
     <div v-if="unacked > 0" :class="styles.header()">
-      <span :class="styles.count()" aria-live="polite">{{ unacked }} unacknowledged</span>
+      <!-- aria-hidden: the sr-only region above already says this. -->
+      <span :class="styles.count()" aria-hidden="true">{{ unacked }} unacknowledged</span>
       <button type="button" :class="styles.ackAll()" @click="model.acknowledgeAll()">
         {{ ackAllLabel }}
       </button>

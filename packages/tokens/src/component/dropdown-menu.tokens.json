@@ -20,7 +20,8 @@
         },
         "radius": {
           "$type": "dimension",
-          "$value": "{global.radius.sm}"
+          "$value": "{global.radius.xs}",
+          "$description": "Concentric with the popover: outer radius (md, 6px) minus the container padding (4px) = 2px. A 4px inner inside a 6px outer with a 4px inset reads as a mis-struck corner."
         },
         "padding-x": {
           "$type": "dimension",

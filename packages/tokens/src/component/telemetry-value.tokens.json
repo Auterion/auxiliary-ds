@@ -4,6 +4,21 @@
       "gap": {
         "$type": "dimension",
         "$value": "{global.spacing.1_5}"
+      },
+      "icon-size": {
+        "$description": "Level glyph beside the readout. Tracks the value's optical weight, one rung below it, so the cue reads as an annotation rather than competing with the number.",
+        "sm": {
+          "$type": "dimension",
+          "$value": "{global.size.icon.2xs}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{global.size.icon.xs}"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{global.size.icon.sm}"
+        }
       }
     }
   }

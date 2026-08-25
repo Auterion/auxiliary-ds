@@ -112,10 +112,14 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <!-- `label` is optional, so a hardcoded role="img" ships an UNNAMED graphic by
+       default. Sparkline, Bars and Distribution all gate the role on the name and
+       hide the graphic otherwise; this is the same three lines. -->
   <div
     ref="host"
-    role="img"
+    :role="label ? 'img' : undefined"
     :aria-label="label"
+    :aria-hidden="label ? undefined : 'true'"
     :style="{ width: `${width}px`, height: `${height}px` }"
   />
 </template>

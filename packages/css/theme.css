@@ -204,6 +204,43 @@
     color-scheme: light dark;
   }
 
+  /* `color-scheme` governs everything the USER AGENT paints and no token can
+   * reach: scrollbars, <select> popups, the caret, spellcheck underlines,
+   * autofill backgrounds, native checkbox internals. Declared once on :root it
+   * stays frozen at the OS preference while the tokens switch on [data-theme] —
+   * so an operator on a light laptop choosing `darknight` for a night flight got
+   * a scotopic palette behind white scrollbars and light-filled autofill, and on
+   * a dark OS `sunlight` got dark UA chrome behind a glare-hardened white page.
+   * Those are precisely the two themes whose whole purpose is controlling
+   * emitted light. Bare :root keeps `light dark` as the system-preference
+   * default for consumers who never set the attribute. */
+  [data-theme="light"],
+  [data-theme="sunlight"] {
+    color-scheme: light;
+  }
+
+  [data-theme="dark"],
+  [data-theme="darknight"] {
+    color-scheme: dark;
+  }
+
+  /* Windows High Contrast / forced-colors replaces every author color with a
+   * system one. Two things then break silently, and only these two are worth
+   * restating — the rest of the palette SHOULD be overridden:
+   *   1. the focus ring, which is drawn with a token color and would vanish;
+   *   2. status glyphs and borders, which carry meaning and must stay visible. */
+  @media (forced-colors: active) {
+    *:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+
+    [data-level] svg,
+    [data-state="checked"] svg {
+      forced-color-adjust: none;
+    }
+  }
+
   html {
     font-family: var(--font-sans);
     font-optical-sizing: auto;

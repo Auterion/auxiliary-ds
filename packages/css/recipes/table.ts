@@ -14,8 +14,12 @@ export const table = tv({
     header: '[&_tr]:border-b [&_tr]:border-border',
     body: '[&_tr:last-child]:border-0',
     footer: 'border-t border-border bg-muted/50 font-medium',
-    row: 'border-b border-border transition-colors hover:bg-accent data-[state=selected]:bg-accent',
-    head: 'h-(--component-table-head-height) px-(--component-table-padding-x) text-left align-middle font-medium text-muted-foreground whitespace-nowrap',
+    // Hover and selection must not be the SAME token: while the pointer is over
+    // the table, a hovered row was indistinguishable from a selected one, and on
+    // a fleet table selection means "which vehicles am I about to act on".
+    // The inset bar is a second channel that survives the hover repaint.
+    row: 'border-b border-border transition-colors hover:bg-accent data-[state=selected]:bg-accent data-[state=selected]:shadow-[inset_2px_0_0_var(--brand)]',
+    head: 'h-(--component-table-head-height) px-(--component-table-padding-x) text-start align-middle font-medium text-muted-foreground whitespace-nowrap',
     cell: 'px-(--component-table-padding-x) py-(--component-table-cell-padding-y) align-middle text-foreground',
     caption: 'mt-(--component-table-caption-margin-top) text-sm text-muted-foreground',
   },

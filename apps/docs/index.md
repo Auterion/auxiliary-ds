@@ -9,9 +9,6 @@ hero:
     - theme: brand
       text: Get started
       link: /foundations/colors
-    - theme: alt
-      text: Live demo
-      link: http://localhost:5174
 
 features:
   - title: One library, many surfaces

@@ -2,12 +2,12 @@
 
 The dead-end screen — a page that can't be shown (404, 500, no access). State plainly what happened and offer the way back; never a blank page or a raw stack trace.
 
-<div class="vp-raw" style="margin:1.25rem 0; border:1px solid var(--border); border-radius:0.5rem; background:var(--background); padding:3rem 1rem; display:flex; flex-direction:column; align-items:center; text-align:center; gap:0.75rem;">
-  <div style="display:flex; align-items:center; justify-content:center; width:3.5rem; height:3.5rem; border-radius:9999px; background:var(--muted); color:var(--muted-foreground);"><Icon name="circle-question" /></div>
+<div class="vp-raw" style="margin:var(--spacing-5) var(--spacing-0); border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--background); padding:var(--spacing-12) var(--spacing-4); display:flex; flex-direction:column; align-items:center; text-align:center; gap:var(--spacing-3);">
+  <div style="display:flex; align-items:center; justify-content:center; width:3.5rem; height:3.5rem; border-radius:var(--radius-full); background:var(--muted); color:var(--muted-foreground);"><Icon name="circle-question" /></div>
   <strong style="font-size:2rem; font-variant-numeric:tabular-nums;">404</strong>
   <div style="font-weight:600;">Page not found</div>
-  <p style="margin:0; max-width:24rem; font-size:0.875rem; color:var(--muted-foreground);">The page you're looking for doesn't exist or was moved. Check the URL, or head back to the dashboard.</p>
-  <div style="display:flex; gap:0.5rem;"><Button variant="ghost" size="sm">Go back</Button><Button variant="primary" size="sm">Dashboard</Button></div>
+  <p style="margin:var(--spacing-0); max-width:24rem; font-size:0.875rem; color:var(--muted-foreground);">The page you're looking for doesn't exist or was moved. Check the URL, or head back to the dashboard.</p>
+  <div style="display:flex; gap:var(--spacing-2);"><Button variant="ghost" size="sm">Go back</Button><Button variant="primary" size="sm">Go to dashboard</Button></div>
 </div>
 
 ## Composition

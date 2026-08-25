@@ -13,14 +13,14 @@ export const numberField = tv({
       'inline-flex shrink-0 items-center justify-center px-(--component-number-field-stepper-padding-x) text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground active:bg-accent/80 disabled:pointer-events-none disabled:opacity-(--opacity-disabled)',
     input:
       'min-w-0 flex-1 bg-transparent text-center tabular-nums text-foreground outline-none disabled:cursor-not-allowed [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
-    unit: 'flex shrink-0 select-none items-center pr-(--component-number-field-unit-padding-inline-end) text-sm text-muted-foreground',
+    unit: 'flex shrink-0 select-none items-center pe-(--component-number-field-unit-padding-inline-end) text-sm text-muted-foreground',
   },
   variants: {
     // Register-flex height via --control-height-* (ROADMAP §6g) — stays aligned
     // with Input/Select rungs and tightens under [data-register="operational"].
     size: {
-      sm: { root: 'h-[max(var(--component-number-field-height-sm),var(--target-floor))] text-sm' },
-      md: { root: 'h-[max(var(--component-number-field-height-md),var(--target-floor))] text-sm' },
+      sm: { root: 'h-[max(var(--component-number-field-height-sm),var(--target-floor))] text-[max(var(--text-sm),var(--field-text-floor))]' },
+      md: { root: 'h-[max(var(--component-number-field-height-md),var(--target-floor))] text-[max(var(--text-sm),var(--field-text-floor))]' },
       lg: { root: 'h-[max(var(--component-number-field-height-lg),var(--target-floor))] text-base' },
     },
     invalid: {

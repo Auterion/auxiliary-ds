@@ -44,20 +44,32 @@ describe('TelemetryValue', () => {
     expect(valueSpan.classes()).toContain('text-foreground');
   });
 
-  it('renders an accessible trend arrow with an aria-label', () => {
+  // The glyph is decorative to AT and the word is invisible to sighted users:
+  // `aria-label` on a role-less <span> is dropped by screen readers in favour of
+  // the raw character, so the name has to come from real text.
+  it('renders the trend arrow as a hidden glyph beside an sr-only word', () => {
     const wrapper = mount(TelemetryValue, { props: { value: 1, trend: 'up' } });
-    const trend = wrapper.find('[aria-label="trend up"]');
-    expect(trend.exists()).toBe(true);
-    expect(trend.text()).toBe('▲');
+    const glyph = wrapper.find('[aria-hidden="true"]');
+    expect(glyph.exists()).toBe(true);
+    expect(glyph.text()).toBe('↑');
+    expect(wrapper.find('.sr-only').text()).toBe('trend up');
   });
 
-  // Load-bearing a11y invariant: operational status must never be conveyed by color
-  // alone — the numeric/text value itself is always rendered alongside the level color.
-  it('never conveys status by color alone — the value text is always present', () => {
-    for (const level of LEVELS) {
-      const wrapper = mount(TelemetryValue, { props: { value: 99, level } });
-      expect(wrapper.text()).toContain('99.0');
+  // U+2191/2193/2192 sit inside the Geist Mono latin subset; the geometric
+  // triangles they replaced did not, so the three states rendered in two faces.
+  it('uses trend glyphs that are inside the mono subset', () => {
+    for (const [trend, glyph] of [['up', '↑'], ['down', '↓'], ['stable', '→']] as const) {
+      const wrapper = mount(TelemetryValue, { props: { value: 1, trend } });
+      expect(wrapper.find('[aria-hidden="true"]').text()).toBe(glyph);
     }
+  });
+
+  it('honours the formatter\'s unit spacing rule', () => {
+    // `247°` closes up; `408 m` keeps the gap. Same rule formatQuantity applies.
+    const tight = mount(TelemetryValue, { props: { value: 247, unit: '°' } });
+    expect(tight.find('.font-mono + span').classes().join(' ')).toContain('ms-[calc(');
+    const spaced = mount(TelemetryValue, { props: { value: 408, unit: 'm' } });
+    expect(spaced.find('.font-mono + span').classes().join(' ')).not.toContain('ms-[calc(');
   });
 
   it('has no axe violations', async () => {

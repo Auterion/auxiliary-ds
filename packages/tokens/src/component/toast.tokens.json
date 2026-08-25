@@ -34,6 +34,11 @@
         }
       },
       "close": {
+        "size": {
+          "$description": "Hit area of the close control \u2014 20px box around a 14px glyph. The recipe floors it with max(\u2026, --target-floor), so under a coarse pointer the BOX grows to 44px while the glyph stays put.",
+          "$type": "dimension",
+          "$value": "{global.spacing.5}"
+        },
         "radius": {
           "$type": "dimension",
           "$value": "{global.radius.sm}"

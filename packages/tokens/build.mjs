@@ -38,10 +38,10 @@ const REGISTERS = ['expressive', 'operational'];
 // (kiosks/field tablets force coarse; a known desk forces fine). Static CSS —
 // not token-derived — so it's emitted verbatim after the theme/register blocks.
 const INPUT_MODALITY_CSS = `@media (pointer: coarse) {
-  :root { --target-floor: var(--target-min); }
+  :root { --target-floor: var(--target-min); --field-text-floor: var(--field-text-min); }
 }
-[data-input="coarse"] { --target-floor: var(--target-min); }
-[data-input="fine"] { --target-floor: 0px; }
+[data-input="coarse"] { --target-floor: var(--target-min); --field-text-floor: var(--field-text-min); }
+[data-input="fine"] { --target-floor: 0px; --field-text-floor: 0px; }
 `;
 
 const toSrgb = converter('rgb');
@@ -211,6 +211,24 @@ StyleDictionary.registerFormat({
       out += renderVars(byTheme[theme]) + '\n';
       out += '}\n\n';
     }
+
+    // Increased-contrast preference. Answered with the hardened palettes that
+    // already ship rather than a fifth and sixth theme: `sunlight` is built to
+    // clear 7:1 body and 3:1 structural border/input under glare, and `darknight`
+    // is its dark counterpart — which is exactly what "give me more contrast"
+    // is asking for. Scoped to :root:not([data-theme]) so a DELIBERATE theme
+    // choice always beats an inferred preference; the operator who picked
+    // `light` keeps `light`.
+    out += '@media (prefers-contrast: more) {\n';
+    out += '  :root:not([data-theme]) {\n';
+    out += renderVars(byTheme.sunlight, '    ') + '\n';
+    out += '  }\n\n';
+    out += '  @media (prefers-color-scheme: dark) {\n';
+    out += '    :root:not([data-theme]) {\n';
+    out += renderVars(byTheme.darknight, '      ') + '\n';
+    out += '    }\n';
+    out += '  }\n';
+    out += '}\n\n';
 
     // Component tier — reference-valued so it follows [data-register]. Emitted in a
     // plain :root block, deliberately NOT inside @theme{}: Tailwind tree-shakes theme

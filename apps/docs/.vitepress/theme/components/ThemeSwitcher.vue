@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { setThemeAttribute } from '@auxiliary/css/utils';
 import { onMounted, ref, watchEffect } from 'vue';
 
 const THEMES = ['light', 'dark', 'sunlight', 'darknight'] as const;
@@ -25,7 +26,7 @@ watchEffect(() => {
   if (typeof document === 'undefined') return;
   const html = document.documentElement;
 
-  html.setAttribute('data-theme', theme.value);
+  setThemeAttribute('data-theme', theme.value);
 
   if (DARK_LIKE.has(theme.value)) html.classList.add('dark');
   else html.classList.remove('dark');

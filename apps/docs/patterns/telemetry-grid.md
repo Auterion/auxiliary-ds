@@ -4,7 +4,7 @@ A glanceable block of live readouts — altitude, speed, heading, battery, link.
 
 **Composes:** `TelemetryValue`
 
-<div class="auxiliary-demo vp-raw" style="display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem 1.5rem; align-items:start;">
+<div class="auxiliary-demo vp-raw" style="display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:var(--spacing-4) var(--spacing-6); align-items:start;">
   <TelemetryValue label="Altitude" :value="408.2" unit="m" trend="up" />
   <TelemetryValue label="Ground speed" :value="12.4" unit="m/s" trend="stable" />
   <TelemetryValue label="Heading" :value="247" unit="°" :precision="0" />
@@ -34,5 +34,6 @@ A glanceable block of live readouts — altitude, speed, heading, battery, link.
 
 - **Set `level` for status, `trend` for direction** — they're independent. A value can be `nominal` and trending `down` (battery draining normally) or `alarm` with no trend (link lost). The grid reads at a glance because severity is carried by color *and* the label text, never color alone.
 - **`tabular-nums` keeps columns from jittering** as values stream — `TelemetryValue` uses the mono tabular figure so digits don't shift width on update. Pair with a fixed `precision` for a stable readout.
-- **Responsive** — two columns on narrow viewports, four when there's room (`sm:grid-cols-4`). For a denser operational console, wrap the grid in `[data-register="operational"]`.
+- **Responsive** — two columns on narrow viewports, four when there's room (`sm:grid-cols-4`).
+- **The register does not change grid gaps.** `[data-register="operational"]` re-resolves control height, radius and motion duration — not the spacing scale — so wrapping this grid in it tightens the controls inside each cell but leaves `gap-4` exactly where it was. For a denser console set the gap yourself (`gap-2`), and see [registers](/foundations/registers) for the full list of what the axis owns.
 - For a single inline readout rather than a grid, use `TelemetryValue` on its own; for a per-vehicle summary, see the [vehicle status card](/patterns/vehicle-status-card).

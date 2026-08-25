@@ -7,9 +7,14 @@ export const input = tv({
     // as a "md" button. Height is register-flex via --control-height-* (ROADMAP
     // §6g): operational density shrinks fields automatically, no hand-rolled
     // classes.
+    // The typed-text half of the coarse-pointer contract: --field-text-floor
+    // raises these two rungs to 16px under a coarse pointer, because iOS Safari
+    // zooms the page on focus below that and never zooms back out. Keyed on the
+    // POINTER, not the viewport — the same axis --target-floor uses, and what
+    // input-and-touch.md means by "touch sizing is about the pointer".
     size: {
-      sm: 'h-[max(var(--component-input-height-sm),var(--target-floor))] px-(--component-input-padding-x-sm) text-sm',
-      md: 'h-[max(var(--component-input-height-md),var(--target-floor))] px-(--component-input-padding-x-md) text-sm',
+      sm: 'h-[max(var(--component-input-height-sm),var(--target-floor))] px-(--component-input-padding-x-sm) text-[max(var(--text-sm),var(--field-text-floor))]',
+      md: 'h-[max(var(--component-input-height-md),var(--target-floor))] px-(--component-input-padding-x-md) text-[max(var(--text-sm),var(--field-text-floor))]',
       lg: 'h-[max(var(--component-input-height-lg),var(--target-floor))] px-(--component-input-padding-x-lg) text-base',
     },
     // Validation: pairs with aria-invalid on the element (set in the component).

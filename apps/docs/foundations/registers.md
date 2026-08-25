@@ -117,6 +117,14 @@ dimensions the token build emits.
   a state-change still reads, but never decorative. Full-zero is reserved for
   `prefers-reduced-motion` — an *accessibility* override that always wins,
   independent of register (a *design* choice).
+- **The spacing scale does not flex.** `--spacing-*` is the same in both
+  registers, so padding and gaps set from the scale — a grid's `gap-4`, a page's
+  `p-6` — do not tighten when you set `data-register="operational"`. Density
+  arrives through control height and radius, which is what most components are
+  actually sized by. Shadowing the spacing scale per register would re-space
+  every `p-*`/`gap-*` in the subtree, including consumer markup the system does
+  not own, so it is deliberately not done. Set the gap yourself where a console
+  needs to be tighter than the default.
 - **Type scale does not flex.** Glance-ability under glare (`sunlight`), scotopic
   constraints (`darknight`), and human-engineering legibility minimums all argue
   against shrinking type. Operational density comes from height, radius, and
