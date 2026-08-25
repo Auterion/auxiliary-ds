@@ -1365,8 +1365,9 @@ const iconBracket = `${ICON_NAMES.length} icons`;
               </div>
             </div>
             <p class="dk-small">
-              Run <code class="rf-code">pnpm --filter @auxiliary/icons sync</code> with
-              <code class="rf-code">FONTAWESOME_PACKAGE_TOKEN</code> set to populate FA Pro Sharp glyphs.
+              Interim placeholder glyphs pending the Nucleo swap. Drop SVGs in
+              <code class="rf-code">packages/icons/inputs/</code> and run
+              <code class="rf-code">pnpm --filter @auxiliary/icons sync</code>.
             </p>
           </div>
         </section>

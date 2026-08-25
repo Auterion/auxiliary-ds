@@ -51,7 +51,7 @@ packages/css         Tailwind v4 preset + @theme bridge + recipes
        ↓
 packages/vue         Vue 3 components on Reka UI, styled via @auxiliary/css
        ↓
-packages/icons       <Icon> over Font Awesome Pro Sharp + Auterion custom kit
+packages/icons       <Icon> over a generated, vendor-free Auterion glyph registry
        ↓
 apps/docs            This site
 apps/demo            Living showcase at http://localhost:5174

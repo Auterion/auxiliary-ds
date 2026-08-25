@@ -148,7 +148,7 @@ pnpm --filter @auxiliary/docs dev       # VitePress on :5173
 
 CI (`.github/workflows/ci.yml`) enforces two things that are easy to miss:
 
-1. **The icon registry is generated and must be committed in sync.** `packages/icons/src/registry.ts` is produced from `packages/icons/src/config.ts` (and `packages/icons/inputs/*.svg`). After changing either, run `pnpm --filter @auxiliary/icons sync` and commit the regenerated `registry.ts` — CI fails if it drifts. Icons build on Font Awesome Pro Sharp plus a custom kit, so installing/syncing needs `FONTAWESOME_PACKAGE_TOKEN` in the environment.
+1. **The icon registry is generated and must be committed in sync.** `packages/icons/src/registry.ts` is produced from `packages/icons/src/config.ts` (and `packages/icons/inputs/*.svg`). After changing either, run `pnpm --filter @auxiliary/icons sync` and commit the regenerated `registry.ts` — CI fails if it drifts. Icons are sourced entirely from `packages/icons/inputs/*.svg` — no vendor package, no registry auth, no token.
 2. **Every PR needs a changeset.** CI runs `changeset status --since=origin/main`; add one with `pnpm changeset`.
 3. **More committed-generated artifacts with drift gates:** docs props (`apps/docs/.vitepress/data/props.generated.json`, regenerate with `node apps/docs/scripts/gen-props.mjs`) and the brand registry (`pnpm --filter @auxiliary/brand sync`) — both fail `pnpm test` when stale. CI also runs `pnpm pack:smoke` (publish-correctness of tokens/css/vue tarballs) and `pnpm decisions:check` (decision-log format + index).
 

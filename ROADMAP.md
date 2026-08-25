@@ -360,7 +360,7 @@ Run **6.1 first**, led by the **full component audit (6a)** — foundational (re
 adding), low-risk, and it produces the states-matrix + gap analysis that prioritizes everything
 after. Then 6.2 (the spine), then 6.3 / 6.4 / 6.5 (6.5 can run parallel to 6.3/6.4).
 
-- 6d needs `FONTAWESOME_PACKAGE_TOKEN`.
+- 6d is blocked on the Nucleo icon set landing in `packages/icons/inputs/`.
 - 6e needs a charting-approach spike.
 - 6i's MIL-STD-1472 / DO-178C pass likely needs human/expert sign-off (prep the conformance
   checklist, don't self-certify).
@@ -388,7 +388,7 @@ military/avionics standards await human expert sign-off, and a short residual ba
 
 **Next:** flip to a **release rhythm** — the changesets accumulated across 6.2–6.5 are ready to
 version/publish (first tagged pre-1.0). Remaining tracks for a later phase: **6d** (iconography /
-pictograms / MIL-STD-2525 symbology — needs `FONTAWESOME_PACKAGE_TOKEN`) and the parked
+pictograms / MIL-STD-2525 symbology — blocked on the Nucleo set) and the parked
 **satellite/terrain basemap** legibility work (tied to the operational-map slot).
 
 ---

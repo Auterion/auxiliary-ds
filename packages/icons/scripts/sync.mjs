@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /**
  * Regenerates src/registry.ts from:
- *   - src/config.ts allow-list of Font Awesome Pro Sharp names
- *   - inputs/<name>.svg hand-authored Auterion glyphs
+ *   - src/config.ts allow-list
+ *   - inputs/<name>.svg           (single shape, used for every weight)
+ *   - inputs/<weight>/<name>.svg  (per-weight shapes, when a vendor ships them)
  *
- * Requires FONTAWESOME_PACKAGE_TOKEN in the environment for the FA Pro npm registry.
- * Custom-only syncs work without it.
+ * No network, no registry auth, no vendor dependency — this reads SVG files
+ * off disk and emits static path data.
  *
  * Run:  pnpm --filter @auxiliary/icons sync
  */
@@ -22,112 +23,90 @@ const configPath = join(pkgRoot, 'src/config.ts');
 const registryOut = join(pkgRoot, 'src/registry.ts');
 
 const WEIGHTS = ['thin', 'light', 'regular', 'solid'];
-const WEIGHT_TO_PACKAGE = {
-  thin: '@fortawesome/sharp-thin-svg-icons',
-  light: '@fortawesome/sharp-light-svg-icons',
-  regular: '@fortawesome/sharp-regular-svg-icons',
-  solid: '@fortawesome/sharp-solid-svg-icons',
-};
+
+/** Weight key used for single-shape icons. Icon.vue falls back to it from any weight. */
+const DEFAULT_WEIGHT = 'regular';
 
 /* -------------------------------------------------------------------------- */
 /* Load curated allow-list                                                    */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Reads src/config.ts and extracts FA_ICONS + CUSTOM_ICONS without compiling
- * the TS file. Uses a tiny regex parser because the config shape is constrained.
+ * Reads src/config.ts and extracts ICONS without compiling the TS file.
+ * Uses a tiny regex parser because the config shape is constrained.
  */
 async function loadConfig() {
   const src = await readFile(configPath, 'utf8');
 
-  const faMatch = src.match(/export const FA_ICONS:[^=]*=\s*\[([\s\S]*?)\];/);
-  const customMatch = src.match(/export const CUSTOM_ICONS:[^=]*=\s*\[([\s\S]*?)\];/);
-  if (!faMatch || !customMatch) {
-    throw new Error('Could not parse FA_ICONS / CUSTOM_ICONS from config.ts');
+  const match = src.match(/export const ICONS:[^=]*=\s*\[([\s\S]*?)\];/);
+  if (!match) {
+    throw new Error('Could not parse ICONS from config.ts');
   }
 
-  const parseEntries = (body) => {
-    const entries = [];
-    const re = /\{([^}]+)\}/g;
-    let m;
-    while ((m = re.exec(body)) !== null) {
-      const obj = {};
-      for (const [, key, val] of m[1].matchAll(/(\w+):\s*'([^']+)'/g)) {
-        obj[key] = val;
-      }
-      // weights: [...] (string array form, optional)
-      const weightsM = m[1].match(/weights:\s*\[([^\]]+)\]/);
-      if (weightsM) {
-        obj.weights = [...weightsM[1].matchAll(/'(\w+)'/g)].map((x) => x[1]);
-      }
-      if (obj.name) entries.push(obj);
+  const entries = [];
+  const re = /\{([^}]+)\}/g;
+  let m;
+  while ((m = re.exec(match[1])) !== null) {
+    const obj = {};
+    for (const [, key, val] of m[1].matchAll(/(\w+):\s*'([^']+)'/g)) {
+      obj[key] = val;
     }
-    return entries;
-  };
-
-  return {
-    fa: parseEntries(faMatch[1]),
-    custom: parseEntries(customMatch[1]),
-  };
-}
-
-/* -------------------------------------------------------------------------- */
-/* FA Pro source                                                              */
-/* -------------------------------------------------------------------------- */
-
-async function tryLoadFaWeight(weight) {
-  try {
-    return await import(WEIGHT_TO_PACKAGE[weight]);
-  } catch (err) {
-    if (err.code === 'ERR_MODULE_NOT_FOUND') return null;
-    throw err;
+    if (obj.name) entries.push(obj);
   }
-}
-
-function faKey(name) {
-  // chevron-right → faChevronRight
-  return (
-    'fa' +
-    name
-      .split('-')
-      .map((p) => p[0].toUpperCase() + p.slice(1))
-      .join('')
-  );
-}
-
-function escapeSvg(s) {
-  return s.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
-}
-
-function shapeFromFa(icon) {
-  // icon = [width, height, ligatures, unicode, pathData]
-  const [width, height, , , pathData] = icon;
-  const paths = Array.isArray(pathData) ? pathData : [pathData];
-  const inner = paths.map((d) => `<path d="${d}"/>`).join('');
-  return { viewBox: `0 0 ${width} ${height}`, inner };
+  return entries;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Custom SVG source                                                          */
+/* SVG source                                                                 */
 /* -------------------------------------------------------------------------- */
 
-async function shapeFromFile(filename) {
-  const path = join(inputsDir, `${filename}.svg`);
-  if (!existsSync(path)) {
-    throw new Error(`Custom icon source not found: inputs/${filename}.svg`);
-  }
+async function shapeFromFile(path, label) {
   const svg = await readFile(path, 'utf8');
   const viewBox = svg.match(/viewBox="([^"]+)"/)?.[1];
   if (!viewBox) {
-    throw new Error(`inputs/${filename}.svg is missing a viewBox attribute`);
+    throw new Error(`${label} is missing a viewBox attribute`);
   }
   const inner = svg
     .replace(/<\?xml[\s\S]*?\?>/g, '')
     .replace(/<!--[\s\S]*?-->/g, '')
     .replace(/<svg\b[^>]*>/i, '')
     .replace(/<\/svg>\s*$/i, '')
+    .replace(/>\s+</g, '><')
     .trim();
   return { viewBox, inner };
+}
+
+/**
+ * Resolves one icon to { viewBox, weights }. Per-weight files win; a flat
+ * inputs/<file>.svg is used for every weight via the default-weight key.
+ */
+async function resolveIcon(spec) {
+  const file = spec.file ?? spec.name;
+  const weights = {};
+  let viewBox = null;
+
+  for (const w of WEIGHTS) {
+    const path = join(inputsDir, w, `${file}.svg`);
+    if (!existsSync(path)) continue;
+    const shape = await shapeFromFile(path, `inputs/${w}/${file}.svg`);
+    weights[w] = shape.inner;
+    viewBox ??= shape.viewBox;
+  }
+
+  if (Object.keys(weights).length > 0) return { viewBox, weights };
+
+  const flat = join(inputsDir, `${file}.svg`);
+  if (!existsSync(flat)) {
+    throw new Error(
+      `No source for "${spec.name}" — expected inputs/${file}.svg or inputs/<weight>/${file}.svg`,
+    );
+  }
+  const shape = await shapeFromFile(flat, `inputs/${file}.svg`);
+  return { viewBox: shape.viewBox, weights: { [DEFAULT_WEIGHT]: shape.inner } };
+}
+
+function escapeSvg(s) {
+  return s.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
 }
 
 /* -------------------------------------------------------------------------- */
@@ -136,70 +115,10 @@ async function shapeFromFile(filename) {
 
 async function main() {
   const config = await loadConfig();
-  // Escape hatch for working on custom icons without FA access. NEVER use it
-  // to commit the result: the partial registry would gut the FA entries and
-  // the CI drift gate would (rightly) fail.
-  const allowPartial = process.argv.includes('--allow-partial');
-
-  // Load each FA weight package.
-  const faModules = {};
-  const missingWeights = [];
-  for (const w of WEIGHTS) {
-    const mod = await tryLoadFaWeight(w);
-    if (mod) faModules[w] = mod;
-    else missingWeights.push(w);
-  }
-  if (config.fa.length > 0 && missingWeights.length === WEIGHTS.length) {
-    const msg =
-      'No @fortawesome/sharp-*-svg-icons packages installed, but config.ts lists FA icons.\n' +
-      '  Proceeding would write a registry containing only custom icons — gutting the\n' +
-      '  committed one and producing a misleading "registry out of date" CI failure.\n' +
-      '  Set FONTAWESOME_PACKAGE_TOKEN and run `pnpm install`, or pass --allow-partial\n' +
-      '  to proceed anyway (local experiments only — do not commit the result).';
-    if (!allowPartial) {
-      console.error(`✗ ${msg}`);
-      process.exit(1);
-    }
-    console.warn(`⚠ ${msg}`);
-  } else if (missingWeights.length > 0) {
-    console.warn(`⚠ Missing FA weight packages: ${missingWeights.join(', ')}`);
-  }
 
   const entries = {};
-
-  // FA-sourced
-  for (const spec of config.fa) {
-    const wantedWeights = spec.weights ?? WEIGHTS;
-    const weightsOut = {};
-    let viewBox = null;
-    for (const w of wantedWeights) {
-      const mod = faModules[w];
-      if (!mod) continue;
-      const icon = mod[faKey(spec.fa)];
-      if (!icon) {
-        console.warn(`  · ${spec.name}: missing in @fortawesome/sharp-${w}-svg-icons`);
-        continue;
-      }
-      const shape = shapeFromFa(icon.icon);
-      weightsOut[w] = shape.inner;
-      viewBox ??= shape.viewBox;
-    }
-    if (Object.keys(weightsOut).length === 0) {
-      const msg = `${spec.name}: no FA weight packages resolved for it`;
-      if (!allowPartial) {
-        console.error(`✗ ${msg} — registry would silently drop this icon (use --allow-partial to override).`);
-        process.exit(1);
-      }
-      console.warn(`  · ${msg}: skipped`);
-      continue;
-    }
-    entries[spec.name] = { viewBox, weights: weightsOut };
-  }
-
-  // Custom-sourced
-  for (const spec of config.custom) {
-    const shape = await shapeFromFile(spec.file ?? spec.name);
-    entries[spec.name] = { viewBox: shape.viewBox, weights: { regular: shape.inner } };
+  for (const spec of config) {
+    entries[spec.name] = await resolveIcon(spec);
   }
 
   // Sort for stable diffs
@@ -248,11 +167,7 @@ async function main() {
 
   await writeFile(registryOut, lines.join('\n'), 'utf8');
 
-  const faCount = config.fa.length - config.fa.filter((s) => !(s.name in entries)).length;
-  const customCount = config.custom.length;
-  console.log(
-    `✓ Wrote src/registry.ts — ${Object.keys(sorted).length} icons (${faCount} FA, ${customCount} custom)`,
-  );
+  console.log(`✓ Wrote src/registry.ts — ${Object.keys(sorted).length} icons`);
 }
 
 main().catch((err) => {

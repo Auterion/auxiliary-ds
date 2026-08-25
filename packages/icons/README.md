@@ -1,7 +1,7 @@
 # @auxiliary/icons
 
 A typed `<Icon name size weight>` Vue component over a **static, generated registry**
-of Font Awesome Pro Sharp glyphs + an Auterion operational kit.
+of Auterion glyphs.
 
 ## Why a wrapper
 
@@ -11,10 +11,10 @@ breaking a single consumer.
 
 ## Why a generated, static registry
 
-The runtime carries **no dependency on `@fortawesome/*`**. SVG path data is extracted
-once at sync time and committed to [`src/registry.ts`](src/registry.ts). Consumers
-install `@auxiliary/icons` and get the icons — no FA Pro license required *to consume*
-the package, only *to add or update* icons.
+The package carries **no icon-vendor dependency at all**. SVG source lives in
+[`inputs/`](inputs/), path data is extracted at sync time and committed to
+[`src/registry.ts`](src/registry.ts). Nothing here needs registry auth, a private
+scope, or a vendor subscription — to consume the package *or* to extend it.
 
 This also means:
 
@@ -64,60 +64,51 @@ This pairs cleanly with the 5-level alarm hierarchy in [`@auxiliary/tokens`](../
 >
 > - **Local**: edit `src/config.ts` (or drop an SVG in `inputs/`), run `pnpm --filter @auxiliary/icons sync`, commit the regenerated `src/registry.ts`.
 > - **CI**: re-runs `sync` and fails the PR if you forgot to commit.
-> - **Consumers**: install the package and get every icon baked in — zero FA Pro dependency at their end.
+> - **Consumers**: install the package and get every icon baked in — zero vendor dependency at their end.
 
-### From Font Awesome Pro Sharp
-
-1. Add an entry to `FA_ICONS` in [`src/config.ts`](src/config.ts):
-
-   ```ts
-   { name: 'wrench', fa: 'wrench' }
-   ```
-
-   Use the FA-canonical name in `fa`; `name` is what consumers will type — keep them
-   in sync unless there's a reason to rename.
-
-2. Ensure `FONTAWESOME_PACKAGE_TOKEN` is set in your environment (see below).
-
-3. Run sync:
-
-   ```bash
-   pnpm --filter @auxiliary/icons sync
-   ```
-
-4. Commit the regenerated `src/registry.ts`.
-
-### From a hand-authored Auterion glyph
+### Adding a glyph
 
 1. Drop the SVG at `inputs/<name>.svg`. See [`inputs/README.md`](inputs/README.md) for
    the format contract (viewBox required, fill-only preferred, no defs/gradients/IDs).
 
-2. Add an entry to `CUSTOM_ICONS` in [`src/config.ts`](src/config.ts):
+2. Add an entry to `ICONS` in [`src/config.ts`](src/config.ts):
 
    ```ts
    { name: 'geofence' }
    ```
 
-3. Run sync and commit.
-
-## Font Awesome Pro setup
-
-The FA Sharp packages are private — install requires a token bound to your FA Pro
-subscription.
-
-1. Get the token from [fontawesome.com/account](https://fontawesome.com/account) →
-   *Subscriptions* → *npm.fontawesome.com*.
-
-2. Export it (do **not** commit a `.npmrc` with the token inlined):
+3. Run sync and commit:
 
    ```bash
-   export FONTAWESOME_PACKAGE_TOKEN=YOUR_TOKEN
+   pnpm --filter @auxiliary/icons sync
    ```
 
-3. Run `pnpm install` from the repo root.
+### Per-weight glyphs
 
-The committed [`.npmrc`](.npmrc) references the token via `${FONTAWESOME_PACKAGE_TOKEN}`
-and points the `@fortawesome` scope at FA's private registry.
+A flat `inputs/<name>.svg` is a single shape rendered at every weight. When a source
+ships real weight variants, use per-weight directories instead:
+
+```
+inputs/
+  thin/chevron-right.svg
+  light/chevron-right.svg
+  regular/chevron-right.svg
+  solid/chevron-right.svg
+```
+
+Sync prefers per-weight files when present and falls back to the flat file otherwise.
+`config.ts` is unchanged either way — the layout on disk is the only difference.
+
+## Current glyph source
+
+> **Interim set.** The shipped glyphs are hand-authored 24×24 placeholders drawn to
+> hold the `IconName` contract while the icon set moves to **Nucleo**. They are
+> deliberately plain. Replace them name-for-name by dropping Nucleo SVGs into
+> `inputs/` (per-weight directories where the Nucleo pack provides them) and running
+> sync — no consumer change, no API change.
+
+There is no vendor package, no private registry, and no token in this pipeline. A
+fresh clone installs with a plain `pnpm install`.
 
 ## Restraint
 
@@ -125,12 +116,12 @@ The Step-0 set deliberately ships a tight, opinionated list: navigation chevrons
 arrows, action verbs (`xmark`, `check`, `plus`, etc.), the status circle/triangle
 family that pairs with our alarm hierarchy, and a handful of identity glyphs.
 
-Adding an icon is a commitment to maintaining four weight variants forever. Reach for
-[the FA library](https://fontawesome.com/icons) to verify a glyph exists in Sharp
-before adding, and reach for restraint before adding at all.
+Adding an icon is a commitment to maintaining it across every weight and every theme
+forever. Verify the glyph exists in the upstream set before adding, and reach for
+restraint before adding at all.
 
 ## Status
 
-- **Currently ships**: 36 FA Pro Sharp glyphs across four weights + 1 Auterion custom glyph (`drone`). See [`src/config.ts`](src/config.ts) for the canonical allow-list.
+- **Currently ships**: 37 glyphs — 36 interim placeholders pending the Nucleo swap, plus the Auterion `drone` mark. See [`src/config.ts`](src/config.ts) for the canonical allow-list.
 - **Pre-1.0**: APIs subject to change. The `IconName` union is the contract — if it
   doesn't move, your code doesn't break.
