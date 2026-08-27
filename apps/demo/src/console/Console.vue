@@ -107,6 +107,7 @@ function go(key: string) {
           type="button"
           class="dk-nav-item"
           :data-active="view === item.key ? 'true' : 'false'"
+          :aria-pressed="view === item.key"
           :aria-current="view === item.key ? 'page' : undefined"
           @click="go(item.key)"
         >
@@ -124,6 +125,7 @@ function go(key: string) {
           type="button"
           class="dk-nav-item"
           :data-active="view === item.key ? 'true' : 'false'"
+          :aria-pressed="view === item.key"
           @click="item.key === 'settings' && go('settings')"
         >
           <Icon :name="item.icon" size="sm" class="shrink-0" />
@@ -183,6 +185,7 @@ function go(key: string) {
             type="button"
             class="dk-nav-item"
             :data-active="view === item.key ? 'true' : 'false'"
+            :aria-pressed="view === item.key"
             :aria-current="view === item.key ? 'page' : undefined"
             @click="go(item.key)"
           >

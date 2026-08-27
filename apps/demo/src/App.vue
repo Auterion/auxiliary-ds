@@ -316,6 +316,7 @@ const iconBracket = `${ICON_NAMES.length} icons`;
             type="button"
             class="dk-segment-btn"
             :data-active="theme === t"
+            :aria-pressed="theme === t"
             @click="theme = t"
           >{{ t }}</button>
         </div>

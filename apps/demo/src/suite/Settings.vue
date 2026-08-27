@@ -195,7 +195,10 @@ v-for="(mem, i) in members" :key="mem.email"
                   </div>
                   <Badge variant="secondary" size="sm">{{ mem.role }}</Badge>
                   <StatusBadge :level="mem.level" size="sm" dot :sr-label="mem.level">{{ mem.level === 'nominal' ? 'Active' : mem.level === 'advisory' ? 'Flying' : 'Idle' }}</StatusBadge>
-                  <button class="text-muted-foreground hover:text-foreground"><Icon name="ellipsis" size="sm" /></button>
+                  <button
+                    class="text-muted-foreground hover:text-foreground"
+                    :aria-label="`Actions for ${mem.name}`"
+                  ><Icon name="ellipsis" size="sm" /></button>
                 </div>
               </div>
             </section>

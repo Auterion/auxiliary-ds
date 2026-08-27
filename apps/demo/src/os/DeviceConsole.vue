@@ -208,6 +208,7 @@ const topologyBracket = computed(
           type="button"
           class="dk-nav-item"
           :data-active="section === n.key"
+          :aria-pressed="section === n.key"
           :aria-current="section === n.key ? 'page' : undefined"
           @click="section = n.key"
         >
@@ -260,6 +261,7 @@ const topologyBracket = computed(
               type="button"
               class="dk-segment-btn"
               :data-active="accent === a.key"
+              :aria-pressed="accent === a.key"
               @click="accent = a.key"
             >{{ a.label }}</button>
           </div>
@@ -270,6 +272,7 @@ const topologyBracket = computed(
               type="button"
               class="dk-segment-btn"
               :data-active="theme === t"
+              :aria-pressed="theme === t"
               @click="theme = t"
             >{{ t }}</button>
           </div>
@@ -508,7 +511,7 @@ const topologyBracket = computed(
                   <td class="os-cell-mid"><StatusBadge :level="l.level" size="sm" dot>{{ l.status }}</StatusBadge></td>
                   <td data-align="end" data-lead="true">{{ l.metric }}</td>
                   <td class="os-cell-mid">
-                    <span class="os-cell-end"><Switch :model-value="l.status !== 'Idle'" /></span>
+                    <span class="os-cell-end"><Switch :model-value="l.status !== 'Idle'" :aria-label="`${l.name} link`" /></span>
                   </td>
                 </tr>
               </tbody>
@@ -544,7 +547,7 @@ const topologyBracket = computed(
                   </td>
                   <td data-align="end">{{ p.sub }}</td>
                   <td class="os-cell-mid">
-                    <span class="os-cell-end"><Switch v-model="p.on" /></span>
+                    <span class="os-cell-end"><Switch v-model="p.on" :aria-label="p.name" /></span>
                   </td>
                 </tr>
               </tbody>
@@ -579,7 +582,7 @@ const topologyBracket = computed(
                   </td>
                   <td data-align="end">{{ s.sub }}</td>
                   <td class="os-cell-mid">
-                    <span class="os-cell-end"><Switch v-model="s.on" /></span>
+                    <span class="os-cell-end"><Switch v-model="s.on" :aria-label="s.name" /></span>
                   </td>
                 </tr>
               </tbody>
@@ -632,6 +635,7 @@ const topologyBracket = computed(
                   type="button"
                   class="dk-segment-btn"
                   :data-active="logFilter === f"
+                  :aria-pressed="logFilter === f"
                   @click="logFilter = f"
                 >{{ f }}</button>
               </div>

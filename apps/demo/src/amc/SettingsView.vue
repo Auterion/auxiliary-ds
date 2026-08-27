@@ -84,6 +84,7 @@ const bracket = computed(() => {
           type="button"
           class="dk-nav-item"
           :data-active="section === s.key"
+          :aria-pressed="section === s.key"
           :aria-current="section === s.key ? 'page' : undefined"
           @click="section = s.key"
         >

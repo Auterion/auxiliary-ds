@@ -97,7 +97,7 @@ const footerCols = [
             <div class="dk-segment wb-sm-up">
               <button
                 v-for="a in (['mono','ultramarine'] as const)" :key="a" type="button"
-                class="dk-segment-btn" :data-active="accent === a"
+                class="dk-segment-btn" :data-active="accent === a" :aria-pressed="accent === a"
                 @click="accent = a"
               >{{ a === 'ultramarine' ? 'ultra' : a }}</button>
             </div>
@@ -105,7 +105,7 @@ const footerCols = [
             <div class="dk-segment">
               <button
                 v-for="t in (['light','dark'] as const)" :key="t" type="button"
-                class="dk-segment-btn" :data-active="theme === t"
+                class="dk-segment-btn" :data-active="theme === t" :aria-pressed="theme === t"
                 @click="theme = t"
               >{{ t }}</button>
             </div>
@@ -123,6 +123,7 @@ const footerCols = [
               type="button"
               class="wb-navlink"
               :data-active="page === l.key"
+              :aria-pressed="page === l.key"
               :aria-current="page === l.key ? 'page' : undefined"
               @click="go(l.key)"
             >{{ l.label }}</button>

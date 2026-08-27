@@ -193,6 +193,7 @@ const flownPath = plan.slice(0, 7).map((p) => `${p.x},${p.y}`).join(' ');
         class="a27-hud-card flex items-center gap-2.5 px-3"
         style="height: var(--a27-act-lg)"
         :data-active="menu === 'vehicle'"
+        :aria-pressed="menu === 'vehicle'"
         :aria-expanded="menu === 'vehicle'"
         @click="menu = menu === 'vehicle' ? 'none' : 'vehicle'"
       >
@@ -226,6 +227,7 @@ const flownPath = plan.slice(0, 7).map((p) => `${p.x},${p.y}`).join(' ');
           type="button"
           class="a27-act a27-act-sm"
           :data-active="menu === 'mission'"
+          :aria-pressed="menu === 'mission'"
           aria-label="Mission menu"
           @click="menu = menu === 'mission' ? 'none' : 'mission'"
         ><Icon name="gear" size="xs" /></button>
@@ -518,6 +520,7 @@ const flownPath = plan.slice(0, 7).map((p) => `${p.x},${p.y}`).join(' ');
         class="a27-menu-row a27-edge"
         :class="`a27-edge-${v.health}`"
         :data-active="v.id === selected"
+        :aria-pressed="v.id === selected"
         @click="selected = v.id; menu = 'none'"
       >
         <span :class="`a27-ink-${v.health}`"><span class="a27-dot block" /></span>

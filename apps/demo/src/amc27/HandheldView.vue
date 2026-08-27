@@ -220,9 +220,13 @@ const leftFan: { a: number; icon: IconName; label: string; level?: Level }[] = [
     </div>
 
     <!-- ── Left thumb · flight commands ─────────────────────────────────── -->
+    <!-- inert on the WRAPPER replaces the hand-rolled `:tabindex` guard below:
+         one mechanism, applied once, that also removes the collapsed items from
+         the accessibility tree instead of only from the tab order. -->
     <div
       class="a27-fan a27-fan-dock"
       :data-open="leftOpen"
+      :inert="!leftOpen"
       style="left: 30px; bottom: 30px; width: var(--a27-touch-lg); height: var(--a27-touch-lg)"
     >
       <button
@@ -232,7 +236,6 @@ const leftFan: { a: number; icon: IconName; label: string; level?: Level }[] = [
         class="a27-hud a27-fan-item"
         :class="c.level === 'warning' ? 'a27-hud-warning' : ''"
         :style="{ '--a27-a': `${c.a}deg` }"
-        :tabindex="leftOpen ? 0 : -1"
         :aria-label="c.label"
       >
         <span class="flex flex-col items-center gap-0.5">
@@ -245,6 +248,7 @@ const leftFan: { a: number; icon: IconName; label: string; level?: Level }[] = [
         type="button"
         class="a27-hud a27-hud-lg relative"
         :data-active="leftOpen"
+        :aria-pressed="leftOpen"
         :aria-expanded="leftOpen"
         aria-label="Flight commands"
         @click="leftOpen = !leftOpen"
@@ -257,6 +261,7 @@ const leftFan: { a: number; icon: IconName; label: string; level?: Level }[] = [
     <div
       class="a27-fan a27-fan-dock"
       :data-open="!authority"
+      :inert="authority"
       style="right: 30px; bottom: 30px; width: var(--a27-touch-xl); height: var(--a27-touch-xl)"
     >
       <button
@@ -360,7 +365,9 @@ const leftFan: { a: number; icon: IconName; label: string; level?: Level }[] = [
     </button>
 
     <!-- ── The sheet ────────────────────────────────────────────────────── -->
-    <div class="a27-sheet" :data-open="sheet !== 'closed'" :aria-hidden="sheet === 'closed'">
+    <!-- inert: see TabletSheet.vue — the closed sheet is translated off-screen,
+         which hides it from sight and from nothing else. -->
+    <div class="a27-sheet" :data-open="sheet !== 'closed'" :inert="sheet === 'closed'">
       <span class="a27-sheet-grab" aria-hidden="true" />
       <div class="flex items-center justify-between px-3 pb-2">
         <span class="a27-label">Alerts &amp; authority</span>

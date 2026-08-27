@@ -131,6 +131,7 @@ const metrics = computed(() => [
           type="button"
           class="dk-nav-item"
           :data-active="activeNav === item.key"
+          :aria-pressed="activeNav === item.key"
           :aria-label="item.label"
           :aria-current="activeNav === item.key ? 'page' : undefined"
           @click="activeNav = item.key"
@@ -194,6 +195,7 @@ const metrics = computed(() => [
                 type="button"
                 class="dk-segment-btn"
                 :data-active="accent === 'mono'"
+                :aria-pressed="accent === 'mono'"
                 @click="accent = 'mono'"
               >
                 Mono
@@ -202,6 +204,7 @@ const metrics = computed(() => [
                 type="button"
                 class="dk-segment-btn"
                 :data-active="accent === 'ultramarine'"
+                :aria-pressed="accent === 'ultramarine'"
                 @click="accent = 'ultramarine'"
               >
                 Ultra
@@ -217,6 +220,7 @@ const metrics = computed(() => [
               type="button"
               class="dk-segment-btn"
               :data-active="theme === t"
+              :aria-pressed="theme === t"
               @click="theme = t"
             >
               {{ t }}

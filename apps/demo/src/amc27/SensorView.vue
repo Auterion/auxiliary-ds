@@ -188,6 +188,7 @@ const trackState = computed(() => (tracking.value ? 'LOCK' : 'SEARCH'));
           class="a27-seg-btn"
           style="flex: 1"
           :data-active="sensor === s"
+          :aria-pressed="sensor === s"
           @click="sensor = s"
         >{{ s }}</button>
       </div>

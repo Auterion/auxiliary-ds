@@ -51,6 +51,7 @@ const TITLES: Record<Layout, string> = {
             type="button"
             class="dk-segment-btn"
             :data-active="layout === opt"
+            :aria-pressed="layout === opt"
             :aria-current="layout === opt ? 'page' : undefined"
             @click="layout = opt"
           >{{ opt }}</button>
@@ -65,6 +66,7 @@ const TITLES: Record<Layout, string> = {
             type="button"
             class="dk-segment-btn"
             :data-active="mode === opt"
+            :aria-pressed="mode === opt"
             @click="mode = opt"
           >{{ opt }}</button>
         </div>

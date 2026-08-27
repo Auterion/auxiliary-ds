@@ -258,6 +258,7 @@ const chainBracket = computed(() => {
                   type="button"
                   class="dk-segment-btn"
                   :data-active="theme === t"
+                  :aria-pressed="theme === t"
                   @click="theme = t"
                 >{{ t }}</button>
               </div>
@@ -271,6 +272,7 @@ const chainBracket = computed(() => {
                   type="button"
                   class="dk-segment-btn"
                   :data-active="register === r"
+                  :aria-pressed="register === r"
                   @click="register = r"
                 >{{ r }}</button>
               </div>
@@ -284,6 +286,7 @@ const chainBracket = computed(() => {
                   type="button"
                   class="dk-segment-btn"
                   :data-active="pointer === p"
+                  :aria-pressed="pointer === p"
                   @click="pointer = p"
                 >{{ p }}</button>
               </div>
@@ -372,6 +375,7 @@ const chainBracket = computed(() => {
               type="button"
               class="dk-segment-btn"
               :data-active="focus === c"
+              :aria-pressed="focus === c"
               @click="focus = c"
             >{{ c }}</button>
           </div>

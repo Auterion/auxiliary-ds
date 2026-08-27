@@ -148,6 +148,7 @@ const blueCons = [
               type="button"
               class="dk-segment-btn"
               :data-active="theme === t.k"
+              :aria-pressed="theme === t.k"
               @click="theme = t.k"
             >{{ t.l }}</button>
           </div>
@@ -159,6 +160,7 @@ const blueCons = [
               type="button"
               class="dk-segment-btn"
               :data-active="dir === d.k"
+              :aria-pressed="dir === d.k"
               @click="dir = d.k"
             >{{ d.l }}</button>
           </div>
@@ -1374,7 +1376,7 @@ const blueCons = [
   display: block;
   width: 24px;
   height: 24px;
-  border-radius: var(--radius-sm)
+  border-radius: var(--radius-sm);
   border: var(--dk-rule) solid var(--dk-line);
 }
 .dk-table tbody tr:hover { background: var(--dk-bg-2); }

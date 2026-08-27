@@ -274,6 +274,7 @@ const legend = computed(() => {
             type="button"
             class="a27-seg-btn"
             :data-active="device === d"
+            :aria-pressed="device === d"
             @click="device = d"
           >{{ d }}</button>
         </div>
@@ -287,6 +288,7 @@ const legend = computed(() => {
             type="button"
             class="a27-seg-btn"
             :data-active="view === v"
+            :aria-pressed="view === v"
             :aria-current="view === v ? 'page' : undefined"
             @click="view = v"
           >{{ v }}</button>
@@ -301,6 +303,7 @@ const legend = computed(() => {
             type="button"
             class="a27-seg-btn"
             :data-active="theme === th"
+            :aria-pressed="theme === th"
             @click="theme = th"
           >{{ THEME_LABEL[th] }}</button>
         </div>

@@ -34,7 +34,13 @@ const current = 7;
 </script>
 
 <template>
-  <div class="a27-overlay" :data-open="props.panel !== 'none'" :aria-hidden="props.panel === 'none'">
+  <!-- `inert`, not `aria-hidden`. The closed state hides with opacity + scale +
+       pointer-events, none of which removes anything from the TAB ORDER — and
+       `aria-hidden` over focusable content is worse than nothing: it hides the
+       controls from a screen reader while leaving them keyboard-reachable, which
+       is an explicit ARIA violation. `inert` is the one attribute that removes
+       both, and it is the platform doing it rather than a hand-rolled guard. -->
+  <div class="a27-overlay" :data-open="props.panel !== 'none'" :inert="props.panel === 'none'">
     <div class="a27-overlay-head">
       <span class="flex items-baseline gap-3">
         <span class="a27-name" style="font-size: 15px">

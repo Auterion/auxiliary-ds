@@ -185,6 +185,7 @@ const trackBracket = computed(() => `${TRACKS.length} tracks`);
               type="button"
               class="dk-segment-btn"
               :data-active="profile === p"
+              :aria-pressed="profile === p"
               @click="profile = p"
             >{{ PROFILE_META[p].label }}</button>
           </div>

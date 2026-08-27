@@ -123,7 +123,15 @@ const actions = [
     <!-- ─── Right gimbal / payload controls ─── -->
     <div class="amc-rail-r flex flex-col items-center gap-2">
       <span class="amc-glass amc-chip amc-edge amc-edge-alarm dk-label dk-ink-alarm">Strike</span>
-      <GuardedAction mode="hold" variant="danger" size="md" confirm-label="Hold…" class="amc-touch-target" @confirm="() => {}">
+      <GuardedAction
+        mode="hold"
+        variant="danger"
+        size="md"
+        confirm-label="Hold…"
+        aria-label="Commit strike — press and hold"
+        class="amc-touch-target"
+        @confirm="() => {}"
+      >
         <Icon name="triangle-exclamation" size="sm" />
       </GuardedAction>
       <button type="button" class="amc-glass-btn amc-glass-btn-lg" aria-label="Gimbal up"><Icon name="chevron-up" size="sm" /></button>

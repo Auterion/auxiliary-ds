@@ -75,6 +75,7 @@ const activity = [
             type="button"
             class="dk-segment-btn"
             :data-active="i === 0"
+            :aria-pressed="i === 0"
           >
             {{ loc }}
           </button>
@@ -99,6 +100,7 @@ const activity = [
             type="button"
             class="dk-segment-btn"
             :data-active="theme === t"
+            :aria-pressed="theme === t"
             @click="theme = t"
           >
             {{ t }}
