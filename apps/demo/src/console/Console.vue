@@ -73,7 +73,7 @@ function go(key: string) {
 </script>
 
 <template>
-  <div :data-theme="theme" class="dk bp-shell flex min-h-screen antialiased">
+  <div :data-theme="theme" class="dk bp-shell flex min-h-screen">
     <!-- ── Navigation rail (≥ lg) ────────────────────────────────────────── -->
     <aside class="bp-sidebar hidden w-[248px] shrink-0 flex-col lg:flex">
       <!-- brand lockup. The mark is the surface's ONE signal plate: a partner

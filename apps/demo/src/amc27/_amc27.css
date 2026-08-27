@@ -156,7 +156,7 @@
 
 .a27-label {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: var(--text-2xs);
   line-height: 1.2;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -195,7 +195,7 @@
 }
 .a27-unit {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: var(--text-2xs);
   color: var(--a27-ink-3);
   letter-spacing: 0.04em;
 }
@@ -595,7 +595,7 @@
 .a27-table { width: 100%; border-collapse: collapse; }
 .a27-table th {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-2xs);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-weight: var(--font-weight-medium);
@@ -696,7 +696,7 @@
     border-color var(--a27-dur) var(--a27-ease), transform var(--a27-dur) var(--a27-ease);
 }
 .a27-hud:hover { background: color-mix(in oklab, var(--card) 92%, transparent); }
-.a27-hud:active { transform: scale(0.94); }
+.a27-hud:active { transform: scale(0.96); }
 .a27-hud-lg { width: var(--a27-touch-lg); height: var(--a27-touch-lg); }
 .a27-hud-xl { width: var(--a27-touch-xl); height: var(--a27-touch-xl); }
 /* A HUD control carrying words rather than a glyph stretches, keeping height. */
@@ -919,7 +919,7 @@
     border-color var(--a27-dur) var(--a27-ease), transform var(--a27-dur) var(--a27-ease);
 }
 .a27-act:hover { background: var(--a27-hud-veil-solid); }
-.a27-act:active { transform: scale(0.94); }
+.a27-act:active { transform: scale(0.96); }
 .a27-act-sm { width: var(--a27-act-sm); height: var(--a27-act-sm); }
 .a27-act-lg { width: var(--a27-act-lg); height: var(--a27-act-lg); }
 .a27-act-xl { width: var(--a27-act-xl); height: var(--a27-act-xl); }
@@ -943,7 +943,7 @@
 }
 .a27-act-label {
   font-family: var(--font-mono);
-  font-size: 8.5px;
+  font-size: var(--text-2xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: currentcolor;

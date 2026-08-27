@@ -1468,7 +1468,7 @@ const blueCons = [
   bottom: var(--dk-gutter);
   text-align: right;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-2xs);
   line-height: 1.8;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1516,7 +1516,7 @@ const blueCons = [
 }
 .bd-hero-d-coord {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-2xs);
   letter-spacing: 0.08em;
   fill: var(--dk-fg-3);
 }

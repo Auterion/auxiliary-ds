@@ -29,27 +29,35 @@
 /* ═══ Ladders ══════════════════════════════════════════════════════════════ */
 
 .dk {
-  /* Control scale — two heights for the whole grammar, no third. */
-  --dk-control-sm: 28px; /* dense, inside a ledger or card row */
-  --dk-control-md: 32px; /* page-level actions                 */
+  /* Control scale — two heights for the whole grammar, no third.
+   *
+   * ALIASED, not restated. These were `28px` and `32px` written out as literals,
+   * which looked identical in the rendered page and was not: `--control-height-*`
+   * re-resolves under `[data-register="operational"]` and a literal does not, so
+   * the register axis was completely inert on every surface built on this
+   * grammar — the axis the demo exists to demonstrate. Same reasoning for the
+   * radius and motion ladders below, which the register also moves. */
+  --dk-control-sm: var(--control-height-xs); /* dense, inside a ledger or card row */
+  --dk-control-md: var(--control-height-sm); /* page-level actions                 */
 
   /* Radius ladder. 07b uses four values and no others. */
-  --dk-r-sm: 6px;
-  --dk-r: 8px;
-  --dk-r-lg: 10px;
-  --dk-r-pill: 9999px;
+  --dk-r-sm: var(--radius-md);
+  --dk-r: var(--radius-lg);
+  --dk-r-lg: var(--radius-xl);
+  --dk-r-pill: var(--radius-full);
 
-  /* Motion — 120–160ms, two named easings, never the browser default. */
-  --dk-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --dk-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dk-dur: 120ms;
-  --dk-dur-slow: 160ms;
+  /* Motion — two named easings, never the browser default. The durations track
+   * the register: `operational` calms them without this file restating a number. */
+  --dk-ease: var(--ease-out);
+  --dk-ease-in-out: var(--ease-in-out);
+  --dk-dur: var(--duration-fast);
+  --dk-dur-slow: var(--duration-base);
 
   /* Alignment — the single gutter every ledger, table and grid steps to.
    * Strict alignment is the whole point of the editorial school: one rhythm,
    * held across blocks, is what separates a deck from a stack of cards. */
-  --dk-gutter: 24px;
-  --dk-gutter-sm: 16px;
+  --dk-gutter: var(--spacing-6);
+  --dk-gutter-sm: var(--spacing-4);
   --dk-rule: 1px;
 }
 
@@ -199,7 +207,7 @@
 /* Mono label — the measuring voice. */
 .dk-label {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: var(--text-2xs);
   line-height: 1.5;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -209,7 +217,7 @@
 }
 .dk-micro {
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--text-2xs);
   line-height: 1.5;
   font-weight: 400;
   letter-spacing: 0.1em;
@@ -230,7 +238,7 @@
   align-items: baseline;
   gap: 5px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-2xs);
   line-height: 1.5;
   font-weight: 400;
   letter-spacing: 0.12em;
@@ -240,7 +248,7 @@
 }
 .dk-pointer::before {
   content: '↳';
-  font-size: 9px;
+  font-size: var(--text-2xs);
   letter-spacing: 0;
   opacity: 0.7;
 }
@@ -350,7 +358,7 @@
 
 .dk-caption {
   font-family: var(--font-mono);
-  font-size: 8.5px;
+  font-size: var(--text-2xs);
   line-height: 1.5;
   font-weight: 400;
   letter-spacing: 0.12em;
@@ -391,7 +399,7 @@
   padding: 0 0 10px;
   text-align: left;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-2xs);
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -478,7 +486,7 @@
   padding: 0 10px;
   border-radius: 4px;
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: var(--text-2xs);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--dk-fg-3);

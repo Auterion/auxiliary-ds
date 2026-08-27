@@ -109,7 +109,7 @@
   display: inline-flex;
   align-items: center;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-2xs);
   line-height: 1;
   letter-spacing: 0.12em;
   padding: 3px 5px;
@@ -144,7 +144,7 @@
   letter-spacing: 0.16em;
   color: var(--muted-foreground);
 }
-.ix-label-sm { font-size: 9px; letter-spacing: 0.18em; }
+.ix-label-sm { font-size: var(--text-2xs); letter-spacing: 0.18em; }
 
 .ix-head {
   display: flex;

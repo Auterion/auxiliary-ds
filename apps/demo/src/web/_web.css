@@ -121,7 +121,7 @@
   padding: 0 9px;
   border-bottom: var(--dk-rule) solid transparent;
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: var(--text-2xs);
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -369,7 +369,7 @@ button.wb-tile, a.wb-tile { cursor: pointer; }
   content: '—';
   color: var(--dk-fg-3);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-2xs);
   line-height: 1.5;
 }
 
@@ -528,6 +528,16 @@ button.wb-tile, a.wb-tile { cursor: pointer; }
   overflow: hidden;
 }
 .wb-bar-fill { display: block; height: 100%; border-radius: var(--dk-r-pill); }
+/* Chart series, NOT the severity ladder. The ladder is reserved (AD-D-014) and
+ * these bars rank by FREQUENCY — using it here made "GPS / nav degraded" green
+ * because it was the rarest claim type, which is the ladder saying the opposite
+ * of itself. A sequential ramp is what a magnitude bar actually wants. */
+.wb-bar-seq-1 { background: var(--viz-sequential-1); }
+.wb-bar-seq-2 { background: var(--viz-sequential-2); }
+.wb-bar-seq-3 { background: var(--viz-sequential-3); }
+.wb-bar-seq-4 { background: var(--viz-sequential-4); }
+.wb-bar-seq-5 { background: var(--viz-sequential-5); }
+
 .wb-bar-alarm { background: var(--alarm); }
 .wb-bar-warning { background: var(--warning); }
 .wb-bar-caution { background: var(--caution); }
@@ -547,7 +557,7 @@ button.wb-tile, a.wb-tile { cursor: pointer; }
   align-items: center;
   gap: 6px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-2xs);
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -612,7 +622,7 @@ button.wb-tile, a.wb-tile { cursor: pointer; }
 .wb-swatch[data-wide='true'] { grid-column: span 2; }
 .wb-swatch-name {
   font-family: var(--font-mono);
-  font-size: 8.5px;
+  font-size: var(--text-2xs);
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;

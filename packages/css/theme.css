@@ -259,6 +259,16 @@
      *          letterforms is the house position; only punctuation is squared.
      * Letterform disambiguators live on the operational register alone (below). */
     font-feature-settings: "ss07", "ss08", "calt", "liga";
+    /* On macOS the default subpixel rendering over-inks text, and it bites
+     * hardest on exactly the type this system leans on: small uppercase mono at
+     * wide tracking (8-10px labels carrying ALT/SPD/HDG units and alert codes),
+     * and large semibold display type on marketing. It belongs HERE, on the one
+     * root rule, and not on individual app shells — a per-element `antialiased`
+     * is the pattern typography.md prints as its Bad example, and it produced
+     * exactly that: one demo surface patched itself and the same `.dk-label`
+     * class then rendered at two different weights depending on the page. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     /* Auterion type settings (Figma 788:24): tight body line-height + the real
      * -2% body tracking. The text-* scale carries the tighter per-size tracking
      * (-3/-4%) at larger sizes; this is the baseline for non-utility text. */

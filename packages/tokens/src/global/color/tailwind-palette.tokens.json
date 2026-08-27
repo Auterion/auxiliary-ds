@@ -1076,27 +1076,27 @@
           },
           "100": {
             "$type": "color",
-            "$value": "oklch(0.938 0.030 264)"
+            "$value": "oklch(0.938 0.027 264)"
           },
           "200": {
             "$type": "color",
-            "$value": "oklch(0.884 0.058 264)"
+            "$value": "oklch(0.884 0.053 264)"
           },
           "300": {
             "$type": "color",
-            "$value": "oklch(0.807 0.110 264)"
+            "$value": "oklch(0.807 0.091 264)"
           },
           "400": {
             "$type": "color",
-            "$value": "oklch(0.709 0.170 264)"
+            "$value": "oklch(0.709 0.143 264)"
           },
           "500": {
             "$type": "color",
-            "$value": "oklch(0.631 0.220 264)"
+            "$value": "oklch(0.631 0.187 264)"
           },
           "600": {
             "$type": "color",
-            "$value": "oklch(0.548 0.245 264)"
+            "$value": "oklch(0.548 0.237 264)"
           },
           "700": {
             "$type": "color",
@@ -1119,47 +1119,47 @@
           "$description": "Auterion brand neutral \u2014 cyan-grey at ~200\u00b0 hue. Fills the gap between achromatic grays and the ultramarine accent. Used for muted text on Space Cadet ground, editorial surfaces, and secondary type. Low chroma keeps it clearly distinct from advisory cyan (~185-215\u00b0 at 0.14+ chroma).",
           "50": {
             "$type": "color",
-            "$value": "oklch(0.97  0.005 200)"
+            "$value": "oklch(0.97 0.005 200)"
           },
           "100": {
             "$type": "color",
-            "$value": "oklch(0.95  0.008 200)"
+            "$value": "oklch(0.95 0.008 200)"
           },
           "200": {
             "$type": "color",
-            "$value": "oklch(0.91  0.012 200)"
+            "$value": "oklch(0.91 0.012 200)"
           },
           "300": {
             "$type": "color",
-            "$value": "oklch(0.88  0.015 200)"
+            "$value": "oklch(0.88 0.015 200)"
           },
           "400": {
             "$type": "color",
-            "$value": "oklch(0.75  0.015 200)"
+            "$value": "oklch(0.75 0.015 200)"
           },
           "500": {
             "$type": "color",
-            "$value": "oklch(0.63  0.014 200)"
+            "$value": "oklch(0.63 0.014 200)"
           },
           "600": {
             "$type": "color",
-            "$value": "oklch(0.55  0.013 200)"
+            "$value": "oklch(0.55 0.013 200)"
           },
           "700": {
             "$type": "color",
-            "$value": "oklch(0.48  0.012 200)"
+            "$value": "oklch(0.48 0.012 200)"
           },
           "800": {
             "$type": "color",
-            "$value": "oklch(0.38  0.010 200)"
+            "$value": "oklch(0.38 0.010 200)"
           },
           "900": {
             "$type": "color",
-            "$value": "oklch(0.28  0.008 200)"
+            "$value": "oklch(0.28 0.008 200)"
           },
           "950": {
             "$type": "color",
-            "$value": "oklch(0.20  0.006 200)"
+            "$value": "oklch(0.20 0.006 200)"
           }
         },
         "ink": {

@@ -443,7 +443,7 @@
  * can land after this file. */
 
 .dk-table.amc-table { font-variant-numeric: tabular-nums; }
-.dk-table.amc-table th { padding-bottom: 7px; font-size: 8.5px; }
+.dk-table.amc-table th { padding-bottom: 7px; font-size: var(--text-2xs); }
 .dk-table.amc-table td { padding: 6px 0; font-size: 12px; }
 .dk-table.amc-table :is(th, td) + :is(th, td) { padding-left: 10px; }
 .dk-table.amc-table td.amc-cell-mid { vertical-align: middle; }

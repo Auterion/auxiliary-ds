@@ -80,12 +80,16 @@ const incidents: { id: string; airframe: string; type: string; sev: Level; date:
   { id: 'INC-2026', airframe: 'Merlin-02', type: 'Weather abort', sev: 'caution', date: '09 May', status: 'Closed', payout: '—' },
 ];
 
-const claimTypes: { label: string; count: number; level: Level }[] = [
-  { label: 'Collision / contact', count: 14, level: 'alarm' },
-  { label: 'Flyaway / link loss', count: 9, level: 'warning' },
-  { label: 'Payload damage', count: 7, level: 'caution' },
-  { label: 'Weather', count: 5, level: 'caution' },
-  { label: 'GPS / nav degraded', count: 4, level: 'nominal' },
+// Ranked by frequency, so the colour carries MAGNITUDE, not severity. It used
+// the reserved ladder, which painted "GPS / nav degraded" nominal green for the
+// sole reason that it was the least common claim — the ladder inverted. A
+// sequential ramp says "more / less", which is the only thing this chart means.
+const claimTypes: { label: string; count: number; seq: number }[] = [
+  { label: 'Collision / contact', count: 14, seq: 5 },
+  { label: 'Flyaway / link loss', count: 9, seq: 4 },
+  { label: 'Payload damage', count: 7, seq: 3 },
+  { label: 'Weather', count: 5, seq: 2 },
+  { label: 'GPS / nav degraded', count: 4, seq: 1 },
 ];
 const claimMax = Math.max(...claimTypes.map((c) => c.count));
 
@@ -295,7 +299,7 @@ const header = [
                   <li v-for="c in claimTypes" :key="c.label" class="wb-rule-row wb-row-bar">
                     <span class="dk-small">{{ c.label }}</span>
                     <span class="wb-bar">
-                      <span class="wb-bar-fill" :class="`wb-bar-${c.level}`" :style="{ width: `${(c.count / claimMax) * 100}%` }" />
+                      <span class="wb-bar-fill" :class="`wb-bar-seq-${c.seq}`" :style="{ width: `${(c.count / claimMax) * 100}%` }" />
                     </span>
                     <span class="dk-label dk-num">{{ c.count }}</span>
                   </li>

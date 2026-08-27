@@ -1,16 +1,49 @@
 <script setup lang="ts">
 import { computed, onMounted, onBeforeUnmount, reactive, watch, ref, nextTick } from 'vue';
 import p5 from 'p5';
+import tokens from '@auxiliary/tokens/dist/tokens.json';
 import './_pattern.css';
 
-/* ---------- palettes (from @auxiliary/tokens — blue ramp, cadet oklch→hex, ink, field) ---------- */
+/* ---------- palettes ----------
+ * DERIVED from @auxiliary/tokens at module scope, not transcribed.
+ *
+ * This block used to be a hand-copied hex record under a comment claiming it
+ * came from the token package. It did — once. Then the severity/ramp pass moved
+ * `cadet.500` and `cadet.600`, the copy did not follow, and this surface kept
+ * rendering the OLD brand grey under the CURRENT brand's name. Nothing failed,
+ * because nothing gates a hex string inside a p5 config.
+ *
+ * It matters more here than almost anywhere else in the demo: this studio
+ * exports wallpapers and marks that LEAVE the repo. The DTCG build already
+ * resolves every colour to hex, so p5 needs no conversion — only a lookup.
+ */
+type DtcgColor = { $value?: { hex?: string } };
+const PRIMITIVES = (tokens as { global: { color: { primitive: Record<string, Record<string, DtcgColor>> } } })
+  .global.color.primitive;
+
+/** Resolve `family.step` to the hex the token build already computed. */
+function tone(family: string, step: string | number): string {
+  return PRIMITIVES[family]?.[String(step)]?.$value?.hex ?? '#000000';
+}
+
+const STEPS = [950, 900, 800, 700, 600, 500, 400] as const;
+const tones = (family: string) => STEPS.map((s) => tone(family, s));
+
 const PALETTES: Record<string, { tones: string[]; accent: string; ground: string }> = {
-  blue:  { tones: ['#06090F','#0C1A3E','#102454','#17398D','#113DB5','#1248DF','#205CFC'], accent: '#6A9CFF', ground: '#06090F' },
-  cadet: { tones: ['#131717','#1C2222','#242A2A','#3C4444','#566060','#688788','#A4B1B2'], accent: '#205CFC', ground: '#131717' },
-  ink:   { tones: ['#06090F','#0A1020','#0E1626','#141E33','#1C2840','#26344F','#33456A'], accent: '#417DFF', ground: '#06090F' },
-  mixed: { tones: ['#06090F','#102454','#2C3540','#3C4444','#1248DF','#688788','#205CFC'], accent: '#6A9CFF', ground: '#09101D' },
-  field: { tones: ['#0C1116','#16212A','#28373F','#3A4C54','#516269','#6E828A','#90A4AB'], accent: '#90A4AB', ground: '#0C1116' },
+  blue:  { tones: tones('auterion-blue'), accent: tone('auterion-blue', 400), ground: tone('auterion-blue', 950) },
+  cadet: { tones: tones('cadet'),         accent: tone('auterion-blue', 500), ground: tone('cadet', 950) },
+  ink:   { tones: tones('ink'),           accent: tone('auterion-blue', 400), ground: tone('ink', 950) },
+  mixed: {
+    tones: [
+      tone('ink', 950), tone('auterion-blue', 900), tone('cadet', 800), tone('cadet', 700),
+      tone('auterion-blue', 500), tone('cadet', 500), tone('auterion-blue', 400),
+    ],
+    accent: tone('auterion-blue', 400),
+    ground: tone('ink', 950),
+  },
+  field: { tones: tones('mono'), accent: tone('mono', 400), ground: tone('mono', 950) },
 };
+
 const LOGO_D = 'M327.102 266.371L369 379H285.204C278.221 379 272.087 374.57 269.823 367.973L250.195 310.197L327.102 266.371ZM347.862 213.214L142.336 278.718C133.182 281.64 124.784 272.498 128.37 263.638L175.175 149.972C179.138 140.265 193.01 140.736 196.407 150.632L222.735 228.483L303.511 202.752L232.926 13.0272C230.472 6.3355 224.15 2 216.978 2H166.304C159.416 2 153.188 6.147 150.545 12.556L11.263 355.626C6.7335 366.748 14.9432 379 27.0219 379H72.2227C78.7338 379 85.245 377.304 90.9069 374.005L352.958 224.713C355.695 223.205 356.827 219.906 355.789 216.984C354.657 213.874 351.165 212.178 347.862 213.214Z';
 
 /**

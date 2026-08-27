@@ -4,7 +4,16 @@ export const button = tv({
   base: [
     'inline-flex items-center justify-center gap-(--component-button-gap)',
     'rounded-(--component-button-radius) font-medium',
-    'transition-colors',
+    // Press feedback is the tactile half of a button and the library shipped only
+    // the colour half, so every consumer either had no press state or hand-rolled
+    // one (the demo has three different behaviours in a single row on the page
+    // that documents the system). 0.96 is the value: below 0.95 reads exaggerated.
+    // `transition-colors` is KEPT rather than replaced with an explicit property
+    // list — swapping it would silently drop text-decoration-color, fill and
+    // stroke from Tailwind's colors group. The colour shift stays as the static
+    // cue, so the state is never carried by motion alone.
+    'transition-colors transition-[scale] duration-150 ease-out',
+    'active:not-disabled:scale-[0.96] motion-reduce:active:scale-100',
     'focus-visible:outline-none focus-visible:ring-2 ring-ring focus-visible:ring-offset-2 ring-offset-background',
     'disabled:opacity-(--opacity-disabled) disabled:pointer-events-none',
   ].join(' '),

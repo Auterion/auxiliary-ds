@@ -186,9 +186,15 @@
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: var(--ps-track);
+  /* The RAIL is 2px; the CONTROL is not. `height` on a range input sizes its
+   * border box, and the border box is what hit-tests — so a 2px rail meant
+   * click-to-set (the normal way a slider is used) had a 2px-tall target, on
+   * this studio's primary parameter control, repeated on every axis. Paint the
+   * rail as a centred background instead and give the input a real box. The
+   * thumb overflows the track as before and is unaffected. */
+  height: var(--dk-control-sm);
   border-radius: var(--dk-r-pill);
-  background: var(--dk-line);
+  background: linear-gradient(var(--dk-line) 0 0) center / 100% var(--ps-track) no-repeat;
   cursor: pointer;
 }
 .ps-range::-webkit-slider-thumb {

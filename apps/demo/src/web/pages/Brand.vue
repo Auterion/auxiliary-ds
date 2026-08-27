@@ -286,7 +286,7 @@ const stats = [
             <Badge variant="outline">New</Badge>
             <StatusBadge level="nominal" dot>All systems nominal</StatusBadge>
             <StatusBadge level="advisory" dot>3 vehicles in flight</StatusBadge>
-            <StatusBadge level="warning" dot>Battery critical</StatusBadge>
+            <StatusBadge level="alarm" dot>Battery below reserve</StatusBadge>
           </div>
         </div>
 

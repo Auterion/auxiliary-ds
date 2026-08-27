@@ -237,7 +237,7 @@ const flownPath = plan.slice(0, 7).map((p) => `${p.x},${p.y}`).join(' ');
           <span
             v-if="latched.length"
             class="absolute right-0 top-0 grid h-3.5 w-3.5 place-items-center rounded-full"
-            style="background: var(--caution); color: var(--caution-foreground); font-family: var(--font-mono); font-size: 8px; font-weight: 600"
+            style="background: var(--caution); color: var(--caution-foreground); font-family: var(--font-mono); font-size: var(--text-2xs); font-weight: 600"
           >{{ latched.length }}</span>
         </button>
         <button type="button" class="a27-act a27-act-sm" aria-label="Mission plan" @click="panel = 'plan'; menu = 'none'">

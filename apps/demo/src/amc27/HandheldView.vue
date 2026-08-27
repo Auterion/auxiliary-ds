@@ -237,7 +237,7 @@ const leftFan: { a: number; icon: IconName; label: string; level?: Level }[] = [
       >
         <span class="flex flex-col items-center gap-0.5">
           <Icon :name="c.icon" size="xs" />
-          <span class="a27-label" style="color: currentcolor; font-size: 8px">{{ c.label }}</span>
+          <span class="a27-label" style="color: currentcolor; font-size: var(--text-2xs)">{{ c.label }}</span>
         </span>
       </button>
 
@@ -315,7 +315,7 @@ const leftFan: { a: number; icon: IconName; label: string; level?: Level }[] = [
             <path d="M4 8 V4 H8 M16 4 H20 V8 M20 16 V20 H16 M8 20 H4 V16" />
             <circle cx="12" cy="12" r="2.5" />
           </svg>
-          <span class="a27-label" style="color: currentcolor; font-size: 8px">TRACK</span>
+          <span class="a27-label" style="color: currentcolor; font-size: var(--text-2xs)">TRACK</span>
         </span>
       </button>
     </div>
