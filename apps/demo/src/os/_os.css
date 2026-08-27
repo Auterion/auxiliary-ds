@@ -53,6 +53,18 @@
 
 /* ═══ Chrome ══════════════════════════════════════════════════════════════ */
 
+/* The rail is fixed at 236px on a `h-dvh w-full` application shell — not a
+ * device mockup — so at 320px it took three quarters of the viewport and the
+ * clipped root put the content beyond reach. It steps down before it would
+ * dominate, and the shell scrolls rather than clipping at the narrow end. */
+@media (max-width: 860px) {
+  .os-root { --os-rail-w: 168px; }
+}
+@media (max-width: 560px) {
+  .os-root { --os-rail-w: 132px; }
+  .os-rail-head { display: none; }
+}
+
 .os-rail {
   width: var(--os-rail-w);
   border-right: var(--dk-rule) solid var(--dk-line);

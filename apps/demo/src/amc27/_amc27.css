@@ -100,8 +100,12 @@
  * The desk the console sits on. Presentation chrome, deliberately not product.
  */
 
+/* Same reasoning as amc.css: the console is a device mockup and does not
+ * reflow, but it must stay reachable rather than being clipped away. */
 .a27-stage {
   position: relative;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;

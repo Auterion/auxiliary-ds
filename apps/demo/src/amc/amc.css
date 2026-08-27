@@ -102,8 +102,17 @@
  * The stage is the desk the tablet sits on — presentation chrome, always ink
  * exposure, and deliberately not part of the product surface. */
 
+/* The device inside is a MOCKUP at its real pixel size, so it deliberately does
+ * not reflow — a 1194x834 tablet is a tablet. What it may not do is CLIP: below
+ * the design width the flight controls simply disappeared, with no scrollbar and
+ * no scale, which is content unreachable at 320px rather than content that is
+ * merely small. Scrolling the stage keeps the mockup honest and the controls
+ * reachable. `amc.css` and `_amc27.css` contained no width media query at all
+ * before this — only `prefers-reduced-motion`. */
 .amc-stage {
   position: relative;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
   background:
     radial-gradient(80% 60% at 50% 0%, var(--dk-bg-2) 0%, var(--dk-bg) 55%, var(--dk-plate-bg) 100%);
 }

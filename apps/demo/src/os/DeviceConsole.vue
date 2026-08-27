@@ -185,7 +185,7 @@ const topologyBracket = computed(
     :data-theme="theme"
     data-register="operational"
     :style="accentVars"
-    class="dk os-root flex h-dvh w-full overflow-hidden"
+    class="dk os-root flex h-dvh w-full overflow-x-auto"
   >
     <!-- ╭─ Console rail ──────────────────────────────────────────╮ -->
     <aside class="os-rail dk-divide flex shrink-0 flex-col">

@@ -10,6 +10,7 @@ import PatternStudio from './pattern/PatternStudio.vue';
 import Console from './console/Console.vue';
 import TokenModel from './tokens/TokenModel.vue';
 import DirectionStudio from './direction/DirectionStudio.vue';
+import StrikeStudio from './strike/StrikeStudio.vue';
 import EcoStudio from './eco/EcoStudio.vue';
 import Gallery from './App.vue';
 
@@ -24,6 +25,7 @@ type View =
   | 'console'
   | 'tokens'
   | 'direction'
+  | 'strike'
   | 'eco'
   | 'gallery';
 const view = ref<View>('brand');
@@ -34,6 +36,7 @@ const PAGES: { key: View; label: string }[] = [
   { key: 'console', label: 'Console' },
   { key: 'tokens', label: 'Tokens' },
   { key: 'direction', label: 'Direction' },
+  { key: 'strike', label: 'Strike' },
   { key: 'eco', label: 'Ecosystem' },
   { key: 'web', label: 'auterion.com' },
   { key: 'suite', label: 'Suite' },
@@ -50,6 +53,7 @@ const PAGES: { key: View; label: string }[] = [
   <Console v-else-if="view === 'console'" />
   <TokenModel v-else-if="view === 'tokens'" />
   <DirectionStudio v-else-if="view === 'direction'" />
+  <StrikeStudio v-else-if="view === 'strike'" />
   <EcoStudio v-else-if="view === 'eco'" />
   <SuiteApp v-else-if="view === 'suite'" />
   <MissionControl v-else-if="view === 'amc'" />
@@ -59,9 +63,22 @@ const PAGES: { key: View; label: string }[] = [
   <Gallery v-else />
 
   <!-- floating page switcher — always dark glass, regardless of page theme -->
+  <!-- `flex-wrap` + a viewport-bounded max-width, because this is the demo's
+       ONLY navigation and it is `position: fixed`: a fixed element's overflow
+       cannot be reached by the page scrollbar, so at 320px the row measured
+       977px and sat at left:-329 with five of its twelve destinations
+       permanently off-screen. Wrapping keeps every destination reachable
+       without adding a scroll affordance that would itself need a cue. The
+       radius steps to `rounded-3xl` so a two-row pill still reads as one
+       object rather than a stadium with a flat middle.
+
+       Centred with `inset-x-4 mx-auto w-fit` rather than `left-1/2` +
+       `-translate-x-1/2`: a fixed element positioned at `left: 50%` gets only
+       HALF the viewport as its available width, so it wrapped to two rows on a
+       1440px desktop where one row fits comfortably. -->
   <div
     data-theme="dark"
-    class="fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-0.5 rounded-full border border-border bg-card/80 p-1 shadow-2xl backdrop-blur-md"
+    class="fixed inset-x-4 bottom-4 z-50 mx-auto flex w-fit max-w-[calc(100vw-2rem)] flex-wrap items-center justify-center gap-0.5 rounded-3xl border border-border bg-card/80 p-1 shadow-2xl backdrop-blur-md"
   >
     <button
       v-for="p in PAGES"
