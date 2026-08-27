@@ -378,7 +378,7 @@ const metrics = computed(() => [
             <div class="flex flex-wrap items-center gap-2 px-4 pb-4">
               <StatusBadge :level="selected.status.level" size="sm" dot>{{ selected.status.label }}</StatusBadge>
               <StatusBadge :level="selected.battery >= 35 ? 'nominal' : 'warning'" variant="outline" size="sm">
-                {{ selected.battery >= 35 ? 'Healthy' : 'Battery low' }}
+                {{ selected.battery >= 35 ? 'Nominal' : 'Battery low' }}
               </StatusBadge>
               <span class="ml-auto flex items-center gap-1.5">
                 <Avatar size="sm"><AvatarFallback>{{ selected.operator.initials }}</AvatarFallback></Avatar>

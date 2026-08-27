@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LevelDot from '../LevelDot.vue';
 /**
  * AMC27 · the command bar.
  *
@@ -53,7 +54,7 @@ const linkLevel = computed(() => (t.snr < 10 ? 'caution' : 'nominal'));
         :aria-pressed="v.id === selected"
         @click="emit('select', v.id)"
       >
-        <span :class="`a27-ink-${v.health}`" aria-hidden="true"><span class="a27-dot block" /></span>
+        <span :class="`a27-ink-${v.health}`"><LevelDot :level="v.health" :label="v.callsign" /></span>
         <span class="text-left leading-tight">
           <span class="a27-name block" style="color: inherit">{{ v.callsign }}</span>
           <span class="a27-label">{{ v.armed ? 'ARMED' : 'SAFE' }} · {{ v.battery }}%</span>
@@ -80,7 +81,7 @@ const linkLevel = computed(() => (t.snr < 10 ? 'caution' : 'nominal'));
          the same number in the same place every time. -->
     <div class="a27-cell">
       <span class="a27-label">LINK</span>
-      <span :class="`a27-ink-${linkLevel}`"><span class="a27-dot a27-pulse" /></span>
+      <span :class="`a27-ink-${linkLevel}`"><LevelDot :level="linkLevel" label="Datalink" class="a27-pulse" /></span>
       <span class="leading-tight">
         <span class="a27-micro block">RSSI {{ t.rssi }}</span>
         <span class="a27-micro block">SNR&nbsp;&nbsp;{{ t.snr }}</span>

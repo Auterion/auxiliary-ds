@@ -98,6 +98,13 @@ export { default as NumberField } from './primitives/NumberField.vue';
 // StatusLevel is THE reserved severity ladder type (alarm|warning|caution|
 // advisory|nominal), shared by every level-bearing component.
 export { type StatusLevel } from './primitives/status-glyphs';
+// …and the vocabulary that goes with it. A consumer building its own status cue
+// — a bare dot in a dense table, a mark on a map — needs the SAME word and the
+// SAME grayscale-distinct shape that StatusBadge and AlertBanner use, or the
+// non-colour half of AD-D-014 stops at the package boundary. Not exporting
+// these is why the demo re-implemented the ladder as five parallel CSS
+// vocabularies and lost the glyph and the label on the way.
+export { STATUS_LABELS, STATUS_GLYPHS, STATUS_RANK } from './primitives/status-glyphs';
 export { default as StatusBadge } from './primitives/StatusBadge.vue';
 export { default as TelemetryValue } from './primitives/TelemetryValue.vue';
 export { default as AlertBanner } from './primitives/AlertBanner.vue';

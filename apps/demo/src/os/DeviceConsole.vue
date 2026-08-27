@@ -421,7 +421,7 @@ const topologyBracket = computed(
                     <td class="os-cell-mid">
                       <span class="os-inline">
                         <span class="dk-dot" :class="`dk-dot-${v.level}`" />
-                        <span class="dk-label" :class="`dk-ink-${v.level}`">{{ v.level === 'caution' ? 'Warm' : 'OK' }}</span>
+                        <span class="dk-label" :class="`dk-ink-${v.level}`">{{ v.level === 'caution' ? 'Warm' : 'Nominal' }}</span>
                       </span>
                     </td>
                     <td data-align="end" data-lead="true">{{ v.value }}{{ v.unit }}</td>

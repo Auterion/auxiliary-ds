@@ -68,11 +68,11 @@ const SCHEDULE = [
 
 // Recent flight log - completed sorties.
 const LOG = [
-  { id: 'FL-8841', vehicleId: '5', duration: '18:42', distance: 22.6, alt: 118, result: 'Success', level: 'nominal' as const },
-  { id: 'FL-8840', vehicleId: '1', duration: '11:05', distance: 8.9, alt: 74, result: 'Success', level: 'nominal' as const },
+  { id: 'FL-8841', vehicleId: '5', duration: '18:42', distance: 22.6, alt: 118, result: 'Completed', level: 'nominal' as const },
+  { id: 'FL-8840', vehicleId: '1', duration: '11:05', distance: 8.9, alt: 74, result: 'Completed', level: 'nominal' as const },
   { id: 'FL-8839', vehicleId: '8', duration: '24:17', distance: 31.2, alt: 142, result: 'Degraded link', level: 'caution' as const },
-  { id: 'FL-8838', vehicleId: '9', duration: '09:33', distance: 6.1, alt: 61, result: 'Success', level: 'nominal' as const },
-  { id: 'FL-8837', vehicleId: '2', duration: '15:58', distance: 19.4, alt: 96, result: 'Success', level: 'nominal' as const },
+  { id: 'FL-8838', vehicleId: '9', duration: '09:33', distance: 6.1, alt: 61, result: 'Completed', level: 'nominal' as const },
+  { id: 'FL-8837', vehicleId: '2', duration: '15:58', distance: 19.4, alt: 96, result: 'Completed', level: 'nominal' as const },
 ].map((r) => ({ ...r, vehicle: byId(r.vehicleId) }));
 </script>
 

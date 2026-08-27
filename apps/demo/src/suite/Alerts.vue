@@ -34,14 +34,16 @@ const alerts = ref<Alert[]>(SEED_ALERTS.map((a) => ({ ...a })));
 const FILTERS = [
   { key: 'all', label: 'All' },
   { key: 'unacknowledged', label: 'Unacknowledged' },
-  { key: 'critical', label: 'Critical' },
+  // Two rungs, so it takes a band name rather than a rung name — calling it
+  // `alarm` would claim to be one rung and calling it `critical` would rename one.
+  { key: 'urgent', label: 'Urgent' },
 ] as const;
 const filter = ref<(typeof FILTERS)[number]['key']>('all');
 
 const LEVELS: Level[] = ['alarm', 'warning', 'caution', 'advisory'];
 const LEVEL_ORDER: Record<Level, number> = { alarm: 0, warning: 1, caution: 2, advisory: 3 };
 const LEVEL_LABELS: Record<Level, string> = {
-  alarm: 'Critical', warning: 'Warning', caution: 'Caution', advisory: 'Advisory',
+  alarm: 'Alarm', warning: 'Warning', caution: 'Caution', advisory: 'Advisory',
 };
 
 const counts = computed(() => {
@@ -59,7 +61,7 @@ const sorted = computed(() =>
 const visible = computed(() =>
   sorted.value.filter((a) => {
     if (filter.value === 'unacknowledged') return !a.acknowledged;
-    if (filter.value === 'critical') return a.level === 'alarm' || a.level === 'warning';
+    if (filter.value === 'urgent') return a.level === 'alarm' || a.level === 'warning';
     return true;
   }),
 );

@@ -32,7 +32,7 @@ const flightTrend = seriesGen(42, 30, 16, 9);
 // Fleet status donut.
 const LEVELS = ['nominal', 'advisory', 'caution', 'warning', 'alarm'] as const;
 const LEVEL_LABELS: Record<(typeof LEVELS)[number], string> = {
-  nominal: 'Operational', advisory: 'In flight', caution: 'Maintenance', warning: 'Attention', alarm: 'Critical',
+  nominal: 'Operational', advisory: 'In flight', caution: 'Maintenance', warning: 'Attention', alarm: 'Grounded',
 };
 const counts = computed(() => {
   const c = Object.fromEntries(LEVELS.map((l) => [l, 0])) as Record<string, number>;
