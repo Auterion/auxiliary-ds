@@ -502,7 +502,7 @@ const scoreC = scoreFor('C');
 .dir-bar {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--z-raised);
   display: flex;
   flex-wrap: wrap;
   align-items: center;

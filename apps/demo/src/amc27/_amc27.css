@@ -490,11 +490,11 @@
  */
 
 .a27-edge { border-left: 2px solid transparent; }
-.a27-edge-alarm { border-left-color: var(--alarm); }
-.a27-edge-warning { border-left-color: var(--warning); }
-.a27-edge-caution { border-left-color: var(--caution); }
-.a27-edge-advisory { border-left-color: var(--advisory); }
-.a27-edge-nominal { border-left-color: var(--nominal); }
+.a27-edge-alarm { border-left-color: var(--alarm-emphasis); }
+.a27-edge-warning { border-left-color: var(--warning-emphasis); }
+.a27-edge-caution { border-left-color: var(--caution-emphasis); }
+.a27-edge-advisory { border-left-color: var(--advisory-emphasis); }
+.a27-edge-nominal { border-left-color: var(--nominal-emphasis); }
 
 .a27-ink-alarm { color: var(--alarm-emphasis); }
 .a27-ink-warning { color: var(--warning-emphasis); }
@@ -580,7 +580,7 @@
 .a27-ticks::after {
   content: '';
   position: absolute;
-  z-index: 5;
+  z-index: 5; /* off-ladder: shuffle inside this pseudo-element's own stacking context, not a global tier */
   width: 18px;
   height: 18px;
   border: var(--a27-rule) solid color-mix(in oklab, var(--foreground) 45%, transparent);
@@ -710,7 +710,7 @@
 }
 /* The one HUD control that may carry the ladder: engage authority. */
 .a27-hud-alarm {
-  border-color: var(--alarm);
+  border-color: var(--alarm-emphasis);
   color: var(--alarm-emphasis);
   background: color-mix(in oklab, var(--alarm) 22%, transparent);
 }
@@ -795,7 +795,7 @@
   position: relative;
   padding: 14px;
   border: var(--a27-rule) solid var(--a27-line);
-  border-radius: 42px;
+  border-radius: 42px; /* off-ladder: device bezel, industrial design not UI radius */
   background: var(--card);
 }
 .a27-device-screen {
@@ -804,7 +804,7 @@
   height: var(--a27-hh-h);
   max-width: 100%;
   overflow: hidden;
-  border-radius: 30px;
+  border-radius: 30px; /* off-ladder: device bezel, industrial design not UI radius */
   background: var(--background);
   color: var(--a27-ink);
 }
@@ -879,7 +879,7 @@
   height: var(--a27-tb-h);
   max-width: 100%;
   overflow: hidden;
-  border-radius: 22px;
+  border-radius: 22px; /* off-ladder: device bezel, industrial design not UI radius */
   background: var(--background);
   color: var(--a27-ink);
 }
@@ -932,7 +932,7 @@
 }
 /* The two ladder-bearing actions on the device, and no third. */
 .a27-act-alarm {
-  border-color: var(--alarm);
+  border-color: var(--alarm-emphasis);
   color: var(--alarm-emphasis);
   background: color-mix(in oklab, var(--alarm) 26%, transparent);
 }
@@ -987,6 +987,9 @@
  * docked rail and not a dragged sheet. */
 .a27-overlay {
   position: absolute;
+  /* off-ladder: sits between the HUD's dropdown tier and its sheet tier, both of
+   * which ARE on the global ladder. A local three-step stack inside one device
+   * frame; promoting it to --z-overlay would collide with the sheet above it. */
   z-index: 46;
   inset: var(--a27-hud-pad);
   display: flex;
@@ -1019,7 +1022,7 @@
 .a27-scrim {
   position: absolute;
   inset: 0;
-  z-index: 40;
+  z-index: var(--z-dropdown);
   background: var(--overlay);
   opacity: 0.5;
   transition: opacity var(--duration-base) var(--ease-out);
@@ -1035,7 +1038,7 @@
  * rows that each say what they will do. */
 .a27-menu {
   position: absolute;
-  z-index: 50;
+  z-index: var(--z-overlay);
   min-width: 268px;
   overflow: hidden;
   border: var(--a27-rule) solid var(--a27-line);
@@ -1075,7 +1078,7 @@
  * out. */
 .a27-actions {
   position: absolute;
-  z-index: 50;
+  z-index: var(--z-overlay);
   left: 50%;
   top: 50%;
   width: 440px;
@@ -1120,7 +1123,7 @@
 
 .a27-note {
   position: absolute;
-  z-index: 30;
+  z-index: var(--z-nav);
   display: grid;
   place-items: center;
   width: 20px;

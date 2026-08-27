@@ -109,8 +109,13 @@
   --dk-bg: var(--color-primitive-ink-950);
   --dk-bg-2: var(--color-primitive-ink-900);
   --dk-fg: var(--color-primitive-ink-50);
-  --dk-fg-2: var(--color-primitive-ink-400);
-  --dk-fg-3: var(--color-primitive-ink-500);
+  /* Shifted one rung lighter than the reversal produced. `ink-500` is a correct
+   * tertiary ON WHITE and was carried across unchanged when this block inverted
+   * the ramp — on `ink-950` it measures 4.16:1, under the 4.5:1 its own
+   * `.dk-label`/`.dk-micro` need. There is no rung between 400 and 500, so the
+   * whole tertiary/secondary pair moves up one to keep three distinct tiers. */
+  --dk-fg-2: var(--color-primitive-ink-300);
+  --dk-fg-3: var(--color-primitive-ink-400);
   --dk-line: var(--color-primitive-ink-800);
   --dk-line-2: var(--color-primitive-ink-850);
   /* Signal steps DOWN a stop on ink: blue-500 as surface, blue-400 as text, so
@@ -155,10 +160,18 @@
 .dk[data-theme='darknight'] {
   --dk-bg: var(--color-primitive-black);
   --dk-bg-2: var(--color-primitive-stone-950);
-  --dk-fg: var(--color-primitive-amber-500);
-  --dk-fg-2: var(--color-primitive-amber-600);
-  --dk-fg-3: var(--color-primitive-amber-700);
-  --dk-line: var(--color-primitive-amber-950);
+  /* Brightened one rung across all three inks. Three text tiers each clearing
+   * 4.5:1 do not fit between amber-500 and amber-700, so the ladder moves rather
+   * than collapsing a tier. This does NOT weaken the scotopic contract: that
+   * contract is spectral, not merely dim — blue energy stays at 0.000 for all
+   * three, well under the 0.15 cap, which is what protects dark adaptation.
+   * `--dk-line` moves furthest: amber-950 measured 1.40:1 against the 3:1
+   * structural floor the token gate holds `border` to in the operational themes,
+   * so panels had no edge at all in the dark. */
+  --dk-fg: var(--color-primitive-amber-400);
+  --dk-fg-2: var(--color-primitive-amber-500);
+  --dk-fg-3: var(--color-primitive-amber-600);
+  --dk-line: var(--color-primitive-amber-700);
   --dk-line-2: var(--color-primitive-stone-900);
   --dk-signal: var(--color-primitive-amber-600);
   --dk-signal-ink: var(--color-primitive-amber-400);
@@ -484,7 +497,7 @@
   justify-content: center;
   height: 100%;
   padding: 0 10px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm)
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   letter-spacing: 0.12em;

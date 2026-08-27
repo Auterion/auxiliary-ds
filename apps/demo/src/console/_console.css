@@ -73,7 +73,7 @@
 .bp-header {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: var(--z-sticky);
   background: color-mix(in oklab, var(--dk-bg) 88%, transparent);
   backdrop-filter: blur(8px);
 }

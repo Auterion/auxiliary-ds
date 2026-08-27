@@ -69,7 +69,7 @@
 .wb-nav {
   position: sticky;
   top: 0;
-  z-index: 30;
+  z-index: var(--z-nav);
   background: color-mix(in oklab, var(--dk-bg) 88%, transparent);
   backdrop-filter: blur(8px);
   border-bottom: var(--dk-rule) solid var(--dk-line);
@@ -666,7 +666,7 @@ button.wb-tile, a.wb-tile { cursor: pointer; }
   display: inline-block;
   padding: 1px 6px;
   border: var(--dk-rule) solid var(--dk-line);
-  border-radius: 4px;
+  border-radius: var(--radius-sm)
   font-family: var(--font-mono);
   font-size: 11px;
   line-height: 1.6;
@@ -692,7 +692,7 @@ button.wb-tile, a.wb-tile { cursor: pointer; }
   height: 24px;
   flex-shrink: 0;
   border: 2px solid currentColor;
-  border-radius: 3px;
+  border-radius: var(--radius-sm)
 }
 .wb-stage-word {
   font-family: var(--font-display);

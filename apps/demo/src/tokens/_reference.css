@@ -67,7 +67,7 @@
 .rf-topbar {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: var(--z-sticky);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -358,6 +358,9 @@
  * where they may break rather than letting them push the column. */
 .rf-chain { overflow-wrap: anywhere; }
 
+/* focus-delegated: the ring is not removed, it is DELEGATED — each component
+ * paints its own --ring from its recipe, which is the whole point of these two
+ * pages, and the grammar's ring is restored on the page's own chrome below. */
 /* ═══ Focus — the gallery's one deliberate withholding ════════════════════
  * The grammar declares one ring for a whole surface, and on product pages that
  * is right. Here it is not: a DS control must focus exactly as it does in

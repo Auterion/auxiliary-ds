@@ -1251,7 +1251,7 @@ const blueCons = [
 .bd-header {
   position: sticky;
   top: 0;
-  z-index: 30;
+  z-index: var(--z-nav);
   background: color-mix(in oklab, var(--dk-bg) 90%, transparent);
   backdrop-filter: blur(8px);
   border-bottom: var(--dk-rule) solid var(--dk-line);
@@ -1374,7 +1374,7 @@ const blueCons = [
   display: block;
   width: 24px;
   height: 24px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm)
   border: var(--dk-rule) solid var(--dk-line);
 }
 .dk-table tbody tr:hover { background: var(--dk-bg-2); }

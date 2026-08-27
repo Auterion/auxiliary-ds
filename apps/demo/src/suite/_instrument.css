@@ -42,11 +42,11 @@
 /* Severity edge: ties the status ladder to structure. Two hairlines wide, so
  * the rail steps to the same `--dk-rule` every other line on the page uses. */
 .ix-edge { border-left: calc(var(--dk-rule, 1px) * 2) solid transparent; }
-.ix-edge-alarm { border-left-color: var(--alarm); }
-.ix-edge-warning { border-left-color: var(--warning); }
-.ix-edge-caution { border-left-color: var(--caution); }
-.ix-edge-advisory { border-left-color: var(--advisory); }
-.ix-edge-nominal { border-left-color: var(--nominal); }
+.ix-edge-alarm { border-left-color: var(--alarm-emphasis); }
+.ix-edge-warning { border-left-color: var(--warning-emphasis); }
+.ix-edge-caution { border-left-color: var(--caution-emphasis); }
+.ix-edge-advisory { border-left-color: var(--advisory-emphasis); }
+.ix-edge-nominal { border-left-color: var(--nominal-emphasis); }
 
 /* Data-viz backdrop: a faint baseline grid behind charts, on the deck's own
  * soft line ink so it can never drift from the hairlines around it. */
@@ -132,7 +132,7 @@
   position: relative;
   border: 1px solid var(--border);
   background: var(--card);
-  border-radius: 10px;
+  border-radius: var(--radius-lg)
   box-shadow: inset 0 1px 0 color-mix(in oklab, var(--foreground) 6%, transparent);
 }
 
@@ -163,14 +163,14 @@
   background-size: 32px 32px, 32px 32px;
 }
 
+/* A mission row is the highest-frequency hover surface in the Suite — the
+ * pointer crosses six of them to reach one — and every crossing used to fire a
+ * 1px lift plus a 30px-blur shadow. That is an attention cost paid on every
+ * pass, for a state that is already legible from the background change alone,
+ * and it fought the flat hairline grammar this file's own header describes.
+ * The colour change stays; the choreography goes. */
 .ix-lift {
-  transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 120ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.ix-lift:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 30px -12px color-mix(in oklab, var(--foreground) 18%, transparent);
+  transition: background-color var(--duration-fast) var(--ease-out);
 }
 
 .ix-live { animation: ix-live 2s ease-in-out infinite; }

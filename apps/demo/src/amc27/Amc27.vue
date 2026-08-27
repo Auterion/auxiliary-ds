@@ -319,7 +319,7 @@ const legend = computed(() => {
       v-if="device === 'tablet'"
       data-register="operational"
       class="a27-tablet a27-device"
-      style="border-radius: 30px; padding: 16px"
+      style="border-radius: 30px; /* off-ladder: device bezel, industrial design not UI radius */ padding: 16px"
     >
       <TabletView :night="night" />
 

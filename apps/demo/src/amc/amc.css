@@ -137,8 +137,8 @@
 }
 
 /* The stage caption sits over the desk, not over the product. */
-.amc-caption { position: absolute; left: 32px; top: 32px; z-index: 10; user-select: none; pointer-events: none; }
-.amc-controls { position: absolute; right: 32px; top: 32px; z-index: 10; display: flex; align-items: flex-end; gap: var(--dk-gutter-sm); }
+.amc-caption { position: absolute; left: 32px; top: 32px; z-index: var(--z-raised); user-select: none; pointer-events: none; }
+.amc-controls { position: absolute; right: 32px; top: 32px; z-index: var(--z-raised); display: flex; align-items: flex-end; gap: var(--dk-gutter-sm); }
 .amc-control-group { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
 
 /* ═══ Overlay geometry ═════════════════════════════════════════════════════
@@ -284,11 +284,11 @@
  * so the rail steps to the same `--dk-rule` as every other line on the page. */
 
 .amc-edge { border-left: calc(var(--dk-rule) * 2) solid transparent; }
-.amc-edge-alarm { border-left-color: var(--alarm); }
-.amc-edge-warning { border-left-color: var(--warning); }
-.amc-edge-caution { border-left-color: var(--caution); }
-.amc-edge-advisory { border-left-color: var(--advisory); }
-.amc-edge-nominal { border-left-color: var(--nominal); }
+.amc-edge-alarm { border-left-color: var(--alarm-emphasis); }
+.amc-edge-warning { border-left-color: var(--warning-emphasis); }
+.amc-edge-caution { border-left-color: var(--caution-emphasis); }
+.amc-edge-advisory { border-left-color: var(--advisory-emphasis); }
+.amc-edge-nominal { border-left-color: var(--nominal-emphasis); }
 
 /* ═══ Liveness ═════════════════════════════════════════════════════════════
  * "Reporting" is a claim the surface makes about right now, so the marker

@@ -191,11 +191,11 @@
  * budget, and never blue. */
 
 .dk-card.os-edge { border-left-width: 2px; border-left-color: transparent; }
-.dk-card.os-edge-alarm { border-left-color: var(--alarm); }
-.dk-card.os-edge-warning { border-left-color: var(--warning); }
-.dk-card.os-edge-caution { border-left-color: var(--caution); }
-.dk-card.os-edge-advisory { border-left-color: var(--advisory); }
-.dk-card.os-edge-nominal { border-left-color: var(--nominal); }
+.dk-card.os-edge-alarm { border-left-color: var(--alarm-emphasis); }
+.dk-card.os-edge-warning { border-left-color: var(--warning-emphasis); }
+.dk-card.os-edge-caution { border-left-color: var(--caution-emphasis); }
+.dk-card.os-edge-advisory { border-left-color: var(--advisory-emphasis); }
+.dk-card.os-edge-nominal { border-left-color: var(--nominal-emphasis); }
 
 .os-banner {
   display: grid;
