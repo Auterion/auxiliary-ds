@@ -82,7 +82,7 @@ const LOG = [
     <header class="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur">
       <Icon name="arrow-up-right-from-square" size="sm" class="text-muted-foreground" />
       <span class="ix-label">SUITE</span>
-      <span class="text-muted-foreground/40">/</span>
+      <span class="text-border">/</span>
       <h1 class="text-[14px] font-medium tracking-tight">Operations</h1>
 
       <div class="mx-1 h-5 w-px bg-border" />
@@ -157,7 +157,7 @@ v-for="t in (['dark','light'] as const)" :key="t" type="button"
                 </div>
                 <div class="hidden sm:block">
                   <Progress v-if="m.state === 'Active' || m.state === 'Paused'" :value="m.progress" :level="m.level ?? undefined" class="h-1.5" />
-                  <span v-else class="font-mono text-[12px] tabular-nums text-muted-foreground/60">—</span>
+                  <span v-else class="font-mono text-[12px] tabular-nums text-muted-foreground">—</span>
                 </div>
                 <span class="hidden text-right font-mono text-[13px] tabular-nums text-foreground md:inline">
                   {{ m.distance }}<span class="ml-0.5 text-[11px] text-muted-foreground">km</span>

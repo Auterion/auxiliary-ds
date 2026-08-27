@@ -111,13 +111,13 @@ const teams = computed<TeamCard[]>(() => {
     <header class="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur">
       <Icon name="users" size="sm" class="text-muted-foreground" />
       <span class="ix-label">SUITE</span>
-      <span class="text-muted-foreground/40">/</span>
+      <span class="text-border">/</span>
       <h1 class="text-[14px] font-medium tracking-tight">Teams</h1>
 
       <div class="mx-1 h-5 w-px bg-border" />
 
       <span class="font-mono text-[12px] tabular-nums text-muted-foreground">
-        {{ teams.length }}<span class="text-muted-foreground/50"> CREWS</span> · {{ roster.length }}<span class="text-muted-foreground/50"> OPS</span>
+        {{ teams.length }}<span class="text-muted-foreground"> CREWS</span> · {{ roster.length }}<span class="text-muted-foreground"> OPS</span>
       </span>
 
       <div class="ml-auto flex items-center gap-2">

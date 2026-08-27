@@ -10,6 +10,7 @@ import PatternStudio from './pattern/PatternStudio.vue';
 import Console from './console/Console.vue';
 import TokenModel from './tokens/TokenModel.vue';
 import DirectionStudio from './direction/DirectionStudio.vue';
+import EcoStudio from './eco/EcoStudio.vue';
 import Gallery from './App.vue';
 
 type View =
@@ -23,6 +24,7 @@ type View =
   | 'console'
   | 'tokens'
   | 'direction'
+  | 'eco'
   | 'gallery';
 const view = ref<View>('brand');
 
@@ -32,6 +34,7 @@ const PAGES: { key: View; label: string }[] = [
   { key: 'console', label: 'Console' },
   { key: 'tokens', label: 'Tokens' },
   { key: 'direction', label: 'Direction' },
+  { key: 'eco', label: 'Ecosystem' },
   { key: 'web', label: 'auterion.com' },
   { key: 'suite', label: 'Suite' },
   { key: 'amc', label: 'Mission Control' },
@@ -47,6 +50,7 @@ const PAGES: { key: View; label: string }[] = [
   <Console v-else-if="view === 'console'" />
   <TokenModel v-else-if="view === 'tokens'" />
   <DirectionStudio v-else-if="view === 'direction'" />
+  <EcoStudio v-else-if="view === 'eco'" />
   <SuiteApp v-else-if="view === 'suite'" />
   <MissionControl v-else-if="view === 'amc'" />
   <Amc27 v-else-if="view === 'amc27'" />

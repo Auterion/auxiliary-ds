@@ -14,5 +14,9 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     include: ['test/**/*.test.ts'],
+    // Most gates here are static analysis and need no DOM, but the behavioural
+    // ones — the targeting interlock — exercise composables that listen for
+    // `visibilitychange`. happy-dom is the same environment packages/vue uses.
+    environment: 'happy-dom',
   },
 });

@@ -151,3 +151,50 @@ describe('the status ladder fill tier is never used as ink', () => {
     expect(fill.test('background: var(--alarm)')).toBe(true);
   });
 });
+
+/**
+ * A contrast-gated token, diluted, is no longer contrast-gated.
+ *
+ * `--muted-foreground` is held to 4.5:1 against every surface by the token
+ * suite. `text-muted-foreground/40` is not that token — it is a new colour that
+ * nothing has ever measured, and the four in this app measured 1.90:1 where the
+ * undiluted token measures 6.8-7.7:1. The dilution reads as a design choice and
+ * behaves as an opt-out from the only gate that was protecting it.
+ *
+ * Two legitimate answers, both used here rather than a blanket ban:
+ *   - if the mark is STRUCTURE (a breadcrumb separator), use a structural token
+ *     — `--border` is gated at 3:1 in the operational themes;
+ *   - if it carries meaning (a unit label, a no-value placeholder), it does not
+ *     get to be quieter than the floor.
+ */
+describe('gated colour tokens are not diluted past their gate', () => {
+  const DILUTABLE = ['foreground', 'muted-foreground', 'card-foreground', 'popover-foreground'];
+
+  it('uses no alpha-diluted text token', () => {
+    const re = new RegExp(String.raw`text-(?:${DILUTABLE.join('|')})/\d+`, 'g');
+    const offenders: string[] = [];
+    for (const file of files) {
+      readFileSync(file, 'utf8')
+        .split('\n')
+        .forEach((line, i) => {
+          for (const m of line.matchAll(re)) {
+            offenders.push(
+              `  ${relative(srcDir, file)}:${i + 1}  ${m[0]}  → use the undiluted token, or --border if it is structure`,
+            );
+          }
+        });
+    }
+    expect(
+      offenders,
+      `contrast-gated tokens diluted past their gate:\n${offenders.join('\n')}`,
+    ).toEqual([]);
+  });
+
+  it('actually catches the shape that shipped', () => {
+    const re = new RegExp(String.raw`text-(?:${DILUTABLE.join('|')})/\d+`, 'g');
+    expect('<span class="text-muted-foreground/40">/</span>'.match(re)).toHaveLength(1);
+    expect('<span class="text-muted-foreground">/</span>'.match(re)).toBeNull();
+    // A background tint is a different thing and is not in scope.
+    expect('<div class="bg-muted-foreground/10">'.match(re)).toBeNull();
+  });
+});

@@ -93,7 +93,7 @@ function acknowledgeHero() {
     >
       <Icon name="bell" size="sm" class="text-muted-foreground" />
       <span class="ix-label">SUITE</span>
-      <span class="text-muted-foreground/40">/</span>
+      <span class="text-border">/</span>
       <h1 class="text-[14px] font-medium tracking-tight">Alerts</h1>
 
       <div class="mx-1 h-5 w-px bg-border" />

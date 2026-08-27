@@ -50,7 +50,7 @@ const showKey = ref(false);
     <header class="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur">
       <Icon name="gear" size="sm" class="text-muted-foreground" />
       <span class="ix-label">SUITE</span>
-      <span class="text-muted-foreground/40">/</span>
+      <span class="text-border">/</span>
       <h1 class="text-[14px] font-medium tracking-tight">Settings</h1>
 
       <div class="ml-auto flex items-center gap-3">
