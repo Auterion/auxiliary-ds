@@ -55,7 +55,7 @@
       },
       "accent-foreground": {
         "$type": "color",
-        "$value": "{global.color.primitive.auterion-blue.700}"
+        "$value": "{global.color.primitive.auterion-blue.800}"
       },
       "brand": {
         "$type": "color",

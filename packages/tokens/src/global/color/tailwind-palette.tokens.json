@@ -1069,54 +1069,53 @@
           }
         },
         "auterion-blue": {
-          "$description": "Ultramarine \u2014 the Auterion brand hue (~264deg). A pure 50-950 oklch ramp, regularized onto the shared palette lightness spine so it aligns with every other color in a swatch grid. Hue held at 264; chroma peaks mid-ramp and tapers at both ends to stay in sRGB gamut. Brand resolves at the semantic layer (brand\u2192700, ring\u2192600) \u2014 this primitive carries no aliases. Dark-UI surfaces live in the separate low-chroma `ink` neutral.",
           "50": {
             "$type": "color",
-            "$value": "oklch(0.970 0.013 264)"
+            "$value": "oklch(0.970 0.011 259.3)"
           },
           "100": {
             "$type": "color",
-            "$value": "oklch(0.938 0.027 264)"
+            "$value": "oklch(0.940 0.024 259.3)"
           },
           "200": {
             "$type": "color",
-            "$value": "oklch(0.884 0.053 264)"
+            "$value": "oklch(0.884 0.050 259.3)"
           },
           "300": {
             "$type": "color",
-            "$value": "oklch(0.807 0.091 264)"
+            "$value": "oklch(0.812 0.084 259.3)"
           },
           "400": {
             "$type": "color",
-            "$value": "oklch(0.709 0.143 264)"
+            "$value": "oklch(0.734 0.129 259.3)"
           },
           "500": {
             "$type": "color",
-            "$value": "oklch(0.631 0.187 264)"
+            "$value": "oklch(0.664 0.168 259.3)"
           },
           "600": {
             "$type": "color",
-            "$value": "oklch(0.548 0.237 264)"
+            "$value": "oklch(0.594 0.215 259.3)"
           },
           "700": {
             "$type": "color",
-            "$value": "oklch(0.482 0.235 264)"
+            "$value": "oklch(0.520 0.192 259.3)"
           },
           "800": {
             "$type": "color",
-            "$value": "oklch(0.422 0.195 264)"
+            "$value": "oklch(0.448 0.165 259.3)"
           },
           "900": {
             "$type": "color",
-            "$value": "oklch(0.376 0.145 264)"
+            "$value": "oklch(0.378 0.140 259.3)"
           },
           "950": {
             "$type": "color",
-            "$value": "oklch(0.277 0.090 264)"
-          }
+            "$value": "oklch(0.290 0.088 259.3)"
+          },
+          "$description": "Ultramarine — the Auterion brand hue, anchored at 259.3° on the blue Mission Control and Nemyx already ship (#1475ff). A pure 50-950 oklch ramp: hue held constant, lightness on a regular ladder, chroma a single hump peaking at 600. Step 600 IS the product blue to within deltaE00 0.5, held just inside the sRGB headroom the gamut gate requires. Brand resolves at the semantic layer (brand→700 light / 500 dark, ring→600) — this primitive carries no aliases. Dark-UI surfaces live in the separate low-chroma `ink` neutral."
         },
         "cadet": {
-          "$description": "Auterion brand neutral \u2014 cyan-grey at ~200\u00b0 hue. Fills the gap between achromatic grays and the ultramarine accent. Used for muted text on Space Cadet ground, editorial surfaces, and secondary type. Low chroma keeps it clearly distinct from advisory cyan (~185-215\u00b0 at 0.14+ chroma).",
           "50": {
             "$type": "color",
             "$value": "oklch(0.97 0.005 200)"
@@ -1160,10 +1159,10 @@
           "950": {
             "$type": "color",
             "$value": "oklch(0.20 0.006 200)"
-          }
+          },
+          "$description": "Auterion brand neutral — cyan-grey at ~200° hue. Fills the gap between achromatic grays and the ultramarine accent. Used for muted text on Space Cadet ground, editorial surfaces, and secondary type. Low chroma keeps it clearly distinct from advisory cyan (~185-215° at 0.14+ chroma)."
         },
         "ink": {
-          "$description": "Ultramarine-tinted dark-UI neutral at ~265\u00b0 hue. A full 50-950 ramp on the shared neutral lightness spine (matches mono/slate/etc.) with a faint blue-whisper chroma (0.004\u21920.022) \u2014 cohesive with the auterion-blue brand without reading as a color wash. Dark theme draws its surfaces from the dark steps (background\u2192950, card\u2192900, secondary\u2192800, border\u2192700).",
           "50": {
             "$type": "color",
             "$value": "oklch(0.985 0.004 265)"
@@ -1211,10 +1210,10 @@
           "950": {
             "$type": "color",
             "$value": "oklch(0.139 0.014 265)"
-          }
+          },
+          "$description": "Ultramarine-tinted dark-UI neutral at ~265° hue. A full 50-950 ramp on the shared neutral lightness spine (matches mono/slate/etc.) with a faint blue-whisper chroma (0.004→0.022) — cohesive with the auterion-blue brand without reading as a color wash. Dark theme draws its surfaces from the dark steps (background→950, card→900, secondary→800, border→700)."
         },
         "scrim": {
-          "$description": "Modal-overlay scrims: black at fixed alpha, dark in EVERY theme. A surface-token scrim inverts or vanishes per theme (background/70 is white-on-white in sunlight; a foreground scrim floods darknight with light) \u2014 black dims uniformly and emits nothing, which is exactly right for the scotopic theme.",
           "55": {
             "$type": "color",
             "$value": "oklch(0 0 0 / 0.55)"
@@ -1222,7 +1221,8 @@
           "70": {
             "$type": "color",
             "$value": "oklch(0 0 0 / 0.70)"
-          }
+          },
+          "$description": "Modal-overlay scrims: black at fixed alpha, dark in EVERY theme. A surface-token scrim inverts or vanishes per theme (background/70 is white-on-white in sunlight; a foreground scrim floods darknight with light) — black dims uniformly and emits nothing, which is exactly right for the scotopic theme."
         }
       }
     }

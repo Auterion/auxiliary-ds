@@ -175,7 +175,7 @@ export function collectTokens(tree) {
 export function shippedComponentNames(repoRoot = resolve(HERE, '../..')) {
   const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
   const names = new Set();
-  for (const pkg of ['vue', 'viz']) {
+  for (const pkg of ['vue', 'viz', 'shell']) {
     let src;
     try {
       src = readFileSync(resolve(repoRoot, 'packages', pkg, 'src/index.ts'), 'utf8');

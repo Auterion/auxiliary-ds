@@ -1,0 +1,724 @@
+/* FlyView — arm state, and the command dial
+ *
+ * The surface for the two AMC UI/UX asks that landed in #amc-ui-work:
+ *
+ *   1. ARM / DISARM in different colours, prominent in the top bar, with a
+ *      deeper red once the aircraft is armed and flying.
+ *   2. HOLD / EIGHT reachable in two actions instead of four, and a pointer
+ *      menu carrying the six items RESET VEHICLE POSITION grew into.
+ *
+ * It is built on the AMC27 tablet because a tablet has no right mouse button,
+ * which is the constraint that makes the second ask answerable at all: the
+ * thread rules right-click out ("currently occupied by other functionality for
+ * EVO"), and press-and-hold is the gesture that costs nothing to take.
+ *
+ * ── House rules, same as `_amc27.css` ──────────────────────────────────────
+ *   · Every colour resolves through a design-system token. The one exception is
+ *     the simulated map raster in `TabletFrame.vue`'s scoped block, which is
+ *     imagery standing in for a live tile layer, and the one PROPOSED colour
+ *     below, which is labelled as a proposal precisely because it is not a
+ *     token yet.
+ *   · The reserved five-level ladder carries severity and nothing else. Arm
+ *     state is not a rung on it — see `--fv-hazard`.
+ *   · Fill tier for fills, `-emphasis` tier for ink and hairlines (AD-D-014).
+ *   · Motion only on state change; everything collapses under reduced motion.
+ *
+ * Namespaced `fv-`; sits alongside `a27-`, `sk-`, `dk-`, `amc-`, `bp-` and
+ * `ix-` without collision. Demo layer — no token, recipe or component change.
+ */
+
+.fv {
+  /* Rugged 12-inch tablet, landscape — the same device as the AMC27 tablet. */
+  --fv-w: 1194px;
+  --fv-h: 834px;
+  --fv-pad: 14px;
+
+  /* Ink ramp, derived from the theme's own foreground so all four themes
+   * re-resolve together. */
+  --fv-ink: var(--foreground);
+  --fv-ink-2: var(--muted-foreground);
+  --fv-ink-3: color-mix(in oklab, var(--muted-foreground) 74%, transparent);
+
+  --fv-line: var(--border);
+  --fv-line-2: color-mix(in oklab, var(--border) 55%, transparent);
+  --fv-well: color-mix(in oklab, var(--foreground) 6%, var(--card));
+
+  /* One veil for everything that floats on the map, so the map stays readable
+   * through all of it at once. */
+  --fv-veil: color-mix(in oklab, var(--card) 64%, transparent);
+  --fv-veil-solid: color-mix(in oklab, var(--card) 90%, transparent);
+  --fv-edge: color-mix(in oklab, var(--foreground) 22%, transparent);
+  --fv-blur: 14px;
+
+  /* ── Hazard ──────────────────────────────────────────────────────────────
+   * Arm state is a HAZARD annunciation, not a severity. An armed aircraft is
+   * not a fault: nothing has gone wrong, and if `--alarm` were spent on it the
+   * ladder's top rung would be lit for most of every sortie and would have
+   * nothing left to say when something actually failed.
+   *
+   * It resolves to the same red because red-means-energised is not a
+   * convention worth fighting — but it is aliased, so the day this becomes a
+   * real `--hazard` token pair the swap is one line here and nothing else.
+   */
+  --fv-hazard: var(--alarm);
+  --fv-hazard-ink: var(--alarm-foreground);
+  --fv-hazard-edge: var(--alarm-emphasis);
+
+  /* The requested "Deep Red". A PROPOSAL, deliberately not a token: the token
+   * package gates every semantic pair for contrast in all four themes, and a
+   * red mixed by hand here has passed no such gate. `black` is the one raw
+   * colour in this file and it is here so the studio's live contrast readout
+   * has something real to measure — which is the whole argument for why this
+   * step needs a gated token pair before it can ship. */
+  --fv-hazard-deep: color-mix(in oklab, var(--alarm) 72%, black);
+
+  /* Control ladder. Size is the hierarchy; a control's step is decided by how
+   * much it matters, not by what fits. */
+  --fv-act-lg: 66px;
+  --fv-act-md: 54px;
+  --fv-act-sm: 44px; /* the gloved-hand floor, never smaller */
+
+  /* The dial. One ring radius, one hub — every sector steps to these. */
+  --fv-dial-r: 128px;
+  --fv-dial-hub: 108px;
+
+  --fv-dur: var(--duration-fast);
+  --fv-ease: var(--ease-out);
+
+  /* Components on this surface ring off the surface ink, not brand blue — a
+   * blue ring would be a second spend of the one signal colour. */
+  --ring: var(--foreground);
+}
+
+/* ═══ Stage ════════════════════════════════════════════════════════════════
+ * The desk the tablet sits on. Presentation chrome, deliberately not product.
+ */
+
+.fv-stage {
+  position: relative;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  padding: 84px 32px 104px;
+  background: radial-gradient(90% 70% at 50% -10%, var(--card) 0%, var(--background) 60%);
+  color: var(--fv-ink);
+}
+
+.fv-caption {
+  position: absolute;
+  left: 32px;
+  top: 26px;
+  user-select: none;
+}
+.fv-controls {
+  position: absolute;
+  right: 32px;
+  top: 22px;
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.fv-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fv-seg {
+  display: inline-flex;
+  padding: 2px;
+  gap: 2px;
+  border: 1px solid var(--fv-line);
+  border-radius: var(--radius-md);
+  background: var(--card);
+}
+.fv-seg-btn {
+  padding: 5px 11px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--fv-ink-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--fv-dur) var(--fv-ease), color var(--fv-dur) var(--fv-ease);
+}
+.fv-seg-btn:hover { color: var(--fv-ink); }
+.fv-seg-btn[data-active='true'] { background: var(--fv-well); color: var(--fv-ink); }
+
+/* ═══ Type ═════════════════════════════════════════════════════════════════
+ * Four roles and no fifth, matching AMC27 exactly — a bracket that means one
+ * thing on the console cannot mean another here.
+ */
+
+.fv-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: var(--font-weight-medium);
+  color: var(--fv-ink-2);
+  white-space: nowrap;
+}
+.fv-name {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  line-height: 1.25;
+  font-weight: var(--font-weight-medium);
+  color: var(--fv-ink);
+}
+.fv-meas {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-medium);
+  color: var(--fv-ink);
+}
+.fv-meas-lg {
+  font-size: 21px;
+  letter-spacing: -0.01em;
+  font-weight: var(--font-weight-semibold);
+}
+.fv-micro {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  color: var(--fv-ink-2);
+}
+.fv-unit {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--fv-ink-3);
+  letter-spacing: 0.04em;
+}
+
+/* ═══ The device ═══════════════════════════════════════════════════════════ */
+
+.fv-device {
+  position: relative;
+  /* off-ladder: device bezel — industrial design, not a UI radius. */
+  border-radius: 30px;
+  padding: 16px;
+  background: linear-gradient(160deg, var(--fv-well), var(--card));
+  border: 1px solid var(--fv-line);
+  max-width: 100%;
+}
+
+.fv-screen {
+  position: relative;
+  width: var(--fv-w);
+  height: var(--fv-h);
+  max-width: 100%;
+  overflow: hidden;
+  /* off-ladder: the inner glass of the bezel above, cut to the same industrial
+     curve rather than to a UI rung. */
+  border-radius: 22px;
+  background: var(--background);
+  color: var(--fv-ink);
+  user-select: none;
+}
+
+/* ── The overlay surface ─────────────────────────────────────────────────── */
+.fv-hud-card {
+  border: 1px solid var(--fv-edge);
+  border-radius: var(--radius-md);
+  background: var(--fv-veil);
+  backdrop-filter: blur(var(--fv-blur));
+  color: var(--fv-ink);
+}
+
+.fv-act {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex-shrink: 0;
+  width: var(--fv-act-md);
+  height: var(--fv-act-md);
+  padding: 0;
+  border: 1px solid var(--fv-edge);
+  border-radius: var(--radius-full);
+  background: var(--fv-veil);
+  backdrop-filter: blur(var(--fv-blur));
+  color: var(--fv-ink);
+  cursor: pointer;
+  transition: background-color var(--fv-dur) var(--fv-ease),
+    border-color var(--fv-dur) var(--fv-ease), transform var(--fv-dur) var(--fv-ease);
+}
+.fv-act:hover { background: var(--fv-veil-solid); }
+.fv-act:active { transform: scale(0.96); }
+.fv-act-lg { width: var(--fv-act-lg); height: var(--fv-act-lg); }
+.fv-act-sm { width: var(--fv-act-sm); height: var(--fv-act-sm); }
+.fv-act[data-active='true'] {
+  background: var(--fv-ink);
+  border-color: var(--fv-ink);
+  color: var(--background);
+}
+.fv-act-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: currentcolor;
+  line-height: 1;
+}
+
+/* ═══ The arm plate ════════════════════════════════════════════════════════
+ * The one heavy mark in the top bar, and the only object on the surface that
+ * carries a hatch. That matters more than the hue does: hatch is a channel
+ * nothing else on the screen competes for, so the plate wins at a glance for
+ * an operator who cannot separate red from green — roughly one man in twelve,
+ * in a population that is overwhelmingly men.
+ *
+ * Four channels carry the state, in this order of reliability:
+ *   1. the WORD                (ARMED / DISARMED, never abbreviated)
+ *   2. the FILL WEIGHT         (filled plate vs outline)
+ *   3. the HATCH               (present only while rotors are live on ground)
+ *   4. the HUE                 (last, because it is the one that fails first)
+ */
+
+.fv-arm {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding-inline: 14px;
+  overflow: hidden;
+  border: 2px solid var(--fv-line);
+  border-radius: var(--radius-md);
+  background: var(--fv-veil-solid);
+  color: var(--fv-ink);
+  transition: background-color var(--duration-base) var(--fv-ease),
+    border-color var(--duration-base) var(--fv-ease), color var(--duration-base) var(--fv-ease);
+}
+.fv-arm-word {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  line-height: 1.1;
+  color: currentcolor;
+}
+.fv-arm-gloss {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  color: currentcolor;
+  opacity: 0.82;
+}
+
+/* The off-screen probes the studio measures. They exist to be read by
+ * `getComputedStyle`, never to be looked at, and so they must NOT inherit the
+ * plate's colour transition: a probe caught mid-transition reports the colour
+ * the plate is leaving, which is how the readout came to sit one theme behind
+ * — an instrument that lies slowly is worse than no instrument. */
+.fv-arm.fv-probe { transition: none; }
+
+/* The hatch. Machinery's mark for "energised, keep clear" — drawn from the
+ * plate's own ink so it re-resolves with whatever fill sits under it. */
+.fv-arm-hatch::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    135deg,
+    color-mix(in oklab, currentcolor 24%, transparent) 0 7px,
+    transparent 7px 15px
+  );
+}
+
+/* ── Scheme: as requested ────────────────────────────────────────────────── */
+.fv-arm[data-scheme='requested'][data-arm='safe'] {
+  background: var(--nominal);
+  border-color: var(--nominal-emphasis);
+  color: var(--nominal-foreground);
+}
+.fv-arm[data-scheme='requested'][data-arm='ground'] {
+  background: var(--fv-hazard);
+  border-color: var(--fv-hazard-edge);
+  color: var(--fv-hazard-ink);
+}
+.fv-arm[data-scheme='requested'][data-arm='air'] {
+  background: var(--fv-hazard-deep);
+  border-color: var(--fv-hazard-edge);
+  color: var(--fv-hazard-ink);
+}
+
+/* ── Scheme: proposed ────────────────────────────────────────────────────────
+ * Disarmed is QUIET, not green. Green on a ground control station already
+ * means "nominal" on the ladder, and a green arm plate reads as "arming is
+ * healthy" rather than "not armed" — the exact ambiguity the request is trying
+ * to remove. Absence of the hazard mark is the signal.
+ *
+ * Loudest is ARMED ON GROUND, not armed in flight. That inverts the request on
+ * purpose: on the ground the rotor and the person are in the same place, and
+ * the state lasts seconds. In flight the hazard is 118 m away and the state
+ * lasts the whole sortie — running the surface at maximum volume for forty
+ * minutes leaves nothing louder for the moment that earns it.
+ */
+.fv-arm[data-scheme='proposed'][data-arm='safe'] {
+  background: var(--fv-veil-solid);
+  border-color: var(--fv-line);
+  color: var(--fv-ink-2);
+}
+.fv-arm[data-scheme='proposed'][data-arm='ground'] {
+  background: var(--fv-hazard);
+  border-color: var(--fv-hazard-edge);
+  color: var(--fv-hazard-ink);
+}
+/* Airborne is the SAME gated pair as on the ground, and differs only by the
+ * hatch being absent. That is deliberate on two counts. It keeps both armed
+ * states on a pairing the token package has measured in all four themes — the
+ * first draft of this rule used a translucent wash with emphasis-tier ink and
+ * measured 1.77:1 in dark, which the studio's readout caught and no amount of
+ * looking at it would have. And it makes the difference between the two states
+ * a CHANNEL rather than a second red: one hue means armed, and the hatch means
+ * a person can reach the rotor. */
+.fv-arm[data-scheme='proposed'][data-arm='air'] {
+  background: var(--fv-hazard);
+  border-color: var(--fv-hazard-edge);
+  color: var(--fv-hazard-ink);
+}
+
+/* ═══ The command dial ═════════════════════════════════════════════════════
+ * Anchored where the pointer went down, because a menu that appears somewhere
+ * else has already cost the operator the trip back.
+ */
+
+.fv-dial-root {
+  position: absolute;
+  inset: 0;
+  /* off-ladder: a three-step local stack inside one device frame. The dial must
+     sit above the HUD strips and below the studio's own chrome; promoting it to
+     --z-overlay would put it above things outside this device. */
+  z-index: 48;
+}
+/* Deliberately light. A modal-strength scrim over a live tactical picture is
+ * a hole cut in the world for as long as the menu is open, and the operator
+ * does not stop being responsible for what is under it. Enough separation to
+ * read the ring against terrain; not enough to hide the terrain. */
+.fv-dial-scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay);
+  opacity: 0.34;
+  border: 0;
+  padding: 0;
+  cursor: default;
+}
+.fv-dial {
+  position: absolute;
+  width: calc(var(--fv-dial-r) * 2);
+  height: calc(var(--fv-dial-r) * 2);
+  transform: translate(-50%, -50%);
+  border-radius: var(--radius-full);
+}
+
+/* A sector. Positioned on the ring by its own angle; nothing is hand-placed. */
+.fv-sector {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 92px;
+  height: 74px;
+  margin: -37px 0 0 -46px;
+  padding: 0;
+  border: 1px solid var(--fv-edge);
+  border-radius: var(--radius-md);
+  background: var(--fv-veil-solid);
+  backdrop-filter: blur(var(--fv-blur));
+  color: var(--fv-ink);
+  cursor: pointer;
+  transition: background-color var(--fv-dur) var(--fv-ease),
+    border-color var(--fv-dur) var(--fv-ease), transform var(--fv-dur) var(--fv-ease);
+}
+.fv-sector:hover,
+.fv-sector[data-active='true'] {
+  background: var(--fv-ink);
+  border-color: var(--fv-ink);
+  color: var(--background);
+  transform: scale(1.04);
+}
+/* The guarded pair. A hairline in the emphasis tier, present at rest, so the
+ * class is visible BEFORE the pointer arrives rather than on arrival. */
+.fv-sector[data-kind='estimate'] {
+  border-color: var(--caution-emphasis);
+}
+.fv-sector[data-kind='estimate'][data-level='warning'] {
+  border-color: var(--warning-emphasis);
+}
+/* Chosen a sector: the ring stays as a ghost rather than leaving. It says where
+ * the hub came from, and that Back goes there — a ring that vanishes makes the
+ * hub look like a dialog that arrived from nowhere.  is already on these
+ * (see CommandDial), so this is presentation for a subtree that is out of the
+ * tab order and out of the accessibility tree either way. */
+.fv-sector[inert] {
+  opacity: 0.16;
+  transition: opacity var(--fv-dur) var(--fv-ease);
+}
+
+.fv-sector-label {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.15;
+  text-align: center;
+  color: currentcolor;
+}
+.fv-sector-kind {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: currentcolor;
+  opacity: 0.7;
+}
+
+/* The fence. A drawn gap between the everyday half of the ring and the guarded
+ * half — it says "a press on this side is not the same KIND of act as a press
+ * on that side" and costs no colour and no label to say it. */
+.fv-fence {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.fv-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--fv-dial-hub);
+  height: var(--fv-dial-hub);
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid var(--fv-edge);
+  border-radius: var(--radius-full);
+  background: var(--fv-veil-solid);
+  backdrop-filter: blur(var(--fv-blur));
+  text-align: center;
+}
+/* Opened by a value command: the ring dims and the hub becomes the stepper. */
+.fv-hub-open {
+  width: 232px;
+  height: 172px;
+  border-radius: var(--radius-lg);
+  gap: 8px;
+  padding: 14px;
+}
+.fv-hub-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--fv-act-sm);
+  height: var(--fv-act-sm);
+  border: 1px solid var(--fv-edge);
+  border-radius: var(--radius-full);
+  background: var(--fv-veil);
+  color: var(--fv-ink);
+  cursor: pointer;
+  transition: background-color var(--fv-dur) var(--fv-ease);
+}
+.fv-hub-step:hover { background: var(--fv-well); }
+.fv-hub-field {
+  width: 84px;
+  height: var(--control-height-sm);
+  border: 1px solid var(--fv-line);
+  border-radius: var(--radius-sm);
+  background: var(--background);
+  color: var(--fv-ink);
+  font-family: var(--font-mono);
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+}
+
+/* ═══ Guidelines ═══════════════════════════════════════════════════════════
+ * The written half. Drawn in design-system semantic tokens rather than the
+ * `--fv-*` aliases, because "this survives a theme" is the claim being made and
+ * the panel has to be able to make it about itself.
+ */
+
+.fv-doc {
+  width: min(1194px, 100%);
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+.fv-doc-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  color: var(--card-foreground);
+  padding: 20px;
+}
+.fv-doc-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.fv-doc-title {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--foreground);
+}
+.fv-doc-tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.fv-doc-body {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.62;
+  color: var(--muted-foreground);
+}
+.fv-doc-body + .fv-doc-body { margin-top: 10px; }
+.fv-doc-body strong { color: var(--foreground); font-weight: var(--font-weight-medium); }
+
+.fv-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+.fv-row:last-child { border-bottom: 0; }
+
+/* The live contrast readout. A ratio is a measured fact, so it is mono and
+ * tabular and it sits in the same slot every time. */
+.fv-ratio {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+  min-width: 62px;
+  text-align: right;
+}
+.fv-verdict {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  min-width: 74px;
+}
+.fv-verdict-pass { color: var(--nominal-emphasis); }
+.fv-verdict-fail { color: var(--warning-emphasis); }
+
+/* ═══ Annotation ═══════════════════════════════════════════════════════════ */
+
+.fv-note {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  transform: translate(-50%, -50%);
+  border-radius: var(--radius-full);
+  background: var(--foreground);
+  color: var(--background);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  /* off-ladder: sits above the device's own local stack, still inside the stage. */
+  z-index: 60;
+  pointer-events: none;
+}
+.fv-legend-row {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+.fv-legend-n {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  background: var(--foreground);
+  color: var(--background);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fv-act,
+  .fv-arm,
+  .fv-sector,
+  .fv-seg-btn,
+  .fv-hub-step {
+    transition: none;
+  }
+  .fv-act:active { transform: none; }
+  .fv-sector:hover,
+  .fv-sector[data-active='true'] { transform: none; }
+}
+
+/* ═══ Ladder ink ═══════════════════════════════════════════════════════════
+ * The `-emphasis` tier, which is the one gated ≥4.5:1 against `background` and
+ * `card`. The fill tier is for fills (AD-D-014 invariant 2).
+ */
+
+.fv-ink-alarm { color: var(--alarm-emphasis); }
+.fv-ink-warning { color: var(--warning-emphasis); }
+.fv-ink-caution { color: var(--caution-emphasis); }
+.fv-ink-advisory { color: var(--advisory-emphasis); }
+.fv-ink-nominal { color: var(--nominal-emphasis); }
+
+/* ═══ Guarded controls ═════════════════════════════════════════════════════
+ * `GuardedAction`'s root is an inline-flex `<span>` and its `class` prop lands
+ * on the button INSIDE that span, so a consumer that wants the control to fill
+ * a column has to stretch the span too — and the rules must be global, because
+ * a scoped selector never reaches a non-root element of a child component.
+ *
+ * The design system ships one destructive variant and no ladder-aware one, so
+ * the level is applied at the call site. `!important` is the only lever a
+ * consumer has over a recipe's own border.
+ */
+.fv-guard-block { display: flex; }
+.fv-guard-block > span { flex: 1; }
+.fv-guard-block > span > button { width: 100%; }
+
+.fv-guard-warning {
+  border: 1px solid var(--warning-emphasis) !important;
+  color: var(--warning-emphasis) !important;
+}
+.fv-guard-caution {
+  border: 1px solid var(--caution-emphasis) !important;
+  color: var(--caution-emphasis) !important;
+}

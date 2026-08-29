@@ -1,0 +1,907 @@
+/* Hallmark · macrostructure: Editorial (portfolio deck) worn by a design-review doc
+ * tone: measured/declarative · anchor hue: none spent by the chrome (see below)
+ *
+ * "STRIKE" — the page-local layer for SW-3136's strike + track control cluster
+ * (`strike/StrikeStudio.vue`), ported from the Claude Design doc
+ * "SW-3136 Final". The chosen design and its guidelines; the three exploration
+ * turns that produced it are in the history, not on the page.
+ *
+ * Written in the Deck 07b grammar (`_deck07b.css`) to the Console method
+ * (`console/_console.css`): the doc CHROME — cover, section heads, panel
+ * frames, the spec tables — steps to the `--dk-*` ladders and to DS semantic
+ * tokens, and carries no colour literal of its own.
+ *
+ * TWO PALETTES, and the split is the point of the document:
+ *
+ *   · The guidelines panel (2a) is drawn in DS semantic tokens —
+ *     `--destructive`, `--primary`, `--card`, `--border`, `--ring`. The panel
+ *     has its own three-way theme switch because that IS the question it asks:
+ *     does a control whose state is carried by SHAPE survive dark, darknight
+ *     and sunlight? Those panels must re-resolve, so they must be tokens.
+ *
+ *   · The in-situ video view is drawn in `--sk-amc-*`: the palette AMC's
+ *     C2 video view runs today, which is NOT on Auxiliary tokens. Reproducing
+ *     it is the whole evidentiary value of an in-situ frame — the claim is
+ *     "this control dropped into the surface as it exists", and re-tinting the
+ *     surface would quietly answer a different question. Same exemption the
+ *     AMC demo already takes for simulated sensor imagery
+ *     (`amc/CameraView.vue`): this is CONTENT being reproduced, not styling
+ *     being invented. Everything outside `.sk-amc` resolves through a token.
+ *
+ * Signal budget: the chrome spends ZERO. Inside the video view the budget is
+ * AMC's own and already spent — one blue (the frame, the track lock, the
+ * selected vehicle card) and one red (strike). The chrome must not add a third.
+ *
+ * Namespaced `sk-`; sits alongside `dk-` (grammar), `bp-`, `rf-`, `ix-` and
+ * `os-` without collision. Demo layer — NOT a tokens or recipe change.
+ */
+
+/* ═══ Page ladders ═════════════════════════════════════════════════════════ */
+
+.sk-page {
+  /* One measure for every block of prose on the page. */
+  --sk-measure: 820px;
+  --sk-topbar-h: 56px;
+
+  /* The in-situ stage. The original artboard is 1920×1080 with the video
+   * frame inset 50px on every side; both are expressed as PERCENTAGES so the
+   * stage stays proportional at whatever width the demo gives it. The inner
+   * frame is 1820×980 → 1.857:1, wider than the 16:9 feed, which is why the
+   * feed letterboxes left/right and why a click on the bars is not a click on
+   * the video. That behaviour is load-bearing (`VideoFeed.vue`), so it is
+   * preserved rather than flattened away. */
+  --sk-stage-inset-x: 2.604%; /*  50 / 1920 */
+  --sk-stage-inset-y: 4.63%; /*  50 / 1080 */
+
+  min-height: 100dvh;
+}
+
+/* ═══ Chrome ═══════════════════════════════════════════════════════════════ */
+
+.sk-topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--dk-gutter-sm);
+  min-height: var(--sk-topbar-h);
+  padding: 8px var(--dk-gutter);
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+  background: color-mix(in oklab, var(--dk-bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.sk-body {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  padding: 40px var(--dk-gutter) 96px;
+}
+
+.sk-measure {
+  max-width: var(--sk-measure);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* A turn — one pass at the problem, with its own thesis. */
+.sk-turn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dk-gutter);
+}
+.sk-turn-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Panel head: mono index tag · title · note. The tag is a hairline box, not a
+ * plate — the page spends no signal on its own scaffolding. */
+.sk-panel-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.sk-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 3px 7px;
+  border: var(--dk-rule) solid var(--dk-line);
+  color: var(--dk-fg-2);
+}
+
+.sk-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Spec tables — fixed slots, so every state name starts on the same x. */
+.sk-spec {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) 70px minmax(0, 1fr);
+  gap: var(--dk-gutter-sm);
+  padding: 12px 0;
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.sk-spec:last-child {
+  border-bottom: 0;
+}
+.sk-spec-head {
+  padding: 10px 0;
+}
+.sk-spec dfn {
+  font-style: normal;
+}
+
+/* State-set grids — one column per state, the specimen centred in it. */
+.sk-states {
+  display: grid;
+  gap: var(--dk-gutter-sm);
+  justify-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+/* Turn 1's specimens are wide modules, not plates, so their columns are too. */
+.sk-states-wide {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+.sk-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+/* The Turn-1 matrix frames each specimen so the wide rail modules line up. */
+.sk-well {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 88px;
+  background: color-mix(in oklab, var(--dk-fg) 4%, transparent);
+  border: var(--dk-rule) solid var(--dk-line-2);
+}
+
+.sk-rule-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: var(--dk-rule) solid var(--dk-line);
+}
+
+/* ═══ AMC C2 palette — reproduced product surface, see the header ══════════ */
+
+.sk-amc {
+  --sk-amc-bg: rgb(0 0 0 / 0.94);
+  --sk-amc-scrim: rgb(0 0 0 / 0.8);
+  --sk-amc-signal: rgb(20 117 255 / 0.95);
+  --sk-amc-signal-ink: rgb(77 147 255);
+  --sk-amc-alarm: rgb(239 68 68);
+  --sk-amc-alarm-fill: rgb(220 38 38);
+  --sk-amc-alarm-solid: rgb(220 38 38 / 0.95);
+  --sk-amc-armed: rgb(21 128 61);
+  --sk-amc-armed-ink: rgb(34 197 94);
+  --sk-amc-ink: rgb(255 255 255 / 0.95);
+  --sk-amc-ink-2: rgb(255 255 255 / 0.6);
+  --sk-amc-ink-3: rgb(255 255 255 / 0.45);
+  --sk-amc-line: rgb(255 255 255 / 0.15);
+  --sk-amc-line-2: rgb(255 255 255 / 0.25);
+  --sk-amc-line-3: rgb(255 255 255 / 0.6);
+  --sk-amc-plate: rgb(0 0 0 / 0.72);
+  --sk-amc-plate-dim: rgb(0 0 0 / 0.4);
+  --sk-amc-plate-deep: rgb(0 0 0 / 0.9);
+
+  color: var(--sk-amc-ink);
+}
+
+/* 2a catalogues DS-token controls, and re-resolves on its OWN theme switch —
+ * that panel's entire question is whether shape-carried state survives dark,
+ * darknight and sunlight. Re-pointing the `--dk-*` ink ladder at DS tokens is
+ * what lets the rules, wells and spec table inside it move with the panel
+ * instead of staying on the page's theme. */
+.sk-panel-token {
+  --dk-bg: var(--card);
+  --dk-bg-2: var(--muted);
+  --dk-fg: var(--foreground);
+  --dk-fg-2: var(--muted-foreground);
+  --dk-fg-3: var(--muted-foreground);
+  --dk-line: var(--border);
+  --dk-line-2: var(--border);
+
+  padding: var(--dk-gutter);
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+/* Turns 1a and 3a catalogue AMC-tone controls, so their panel is the AMC
+ * surface too and does not re-resolve with the page. 2a is the opposite case
+ * by design — see the header. */
+/* 3a is sized to its specimen; 1a's matrix runs the full measure. */
+.sk-panel-fit {
+  width: fit-content;
+  max-width: 100%;
+}
+.sk-amc-panel {
+  padding: var(--dk-gutter);
+  background: rgb(0 0 0 / 0.85);
+  border: 1px solid var(--sk-amc-line);
+}
+.sk-amc-panel .sk-rule-head {
+  border-bottom-color: var(--sk-amc-line);
+}
+.sk-amc-panel .sk-well {
+  background: rgb(0 0 0 / 0.55);
+  border-color: rgb(255 255 255 / 0.08);
+}
+.sk-amc-panel .sk-rule-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.sk-amc-panel .sk-rule-note {
+  font-size: 12px;
+  color: var(--sk-amc-ink-2);
+}
+
+/* ═══ Control tones ════════════════════════════════════════════════════════
+ * Every control below draws through four aliases and never names a colour.
+ * The tone class decides whether those four resolve to DS semantic tokens
+ * (the state-set panels) or to the AMC surface (the in-situ views). */
+
+.sk-tone-token {
+  --sk-strike: var(--destructive);
+  --sk-strike-on: var(--destructive-foreground);
+  /* Ink, not surface. `destructive` is sized to be a FILL; at 10 px / 700 on a
+   * card it is under-contrasted, and this is the label on the control that
+   * ends a life. `alarm-emphasis` is the grammar's contrast-gated on-surface
+   * tier for exactly this (`.dk-ink-alarm`), and it resolves to the same hue —
+   * `destructive` and `alarm` alias the same red primitive in all four themes. */
+  --sk-strike-ink: var(--alarm-emphasis);
+  --sk-track: var(--primary);
+  --sk-track-on: var(--primary-foreground);
+  /* Plate fills are opaque here and thinned per state by `fill-opacity`, so the
+   * aperture's four steps are one ladder rather than four hand-picked alphas. */
+  --sk-plate-fill: var(--card);
+  --sk-plate-line: var(--border);
+  --sk-plate-line-strong: var(--ring);
+  --sk-plate-ink: var(--foreground);
+  --sk-plate-ink-2: var(--muted-foreground);
+  --sk-plate-ink-off: var(--muted-foreground);
+}
+
+.sk-tone-amc {
+  --sk-strike: var(--sk-amc-alarm);
+  --sk-strike-on: var(--sk-amc-ink);
+  /* AMC's red is already a bright red-500 — it needs no second ink tier. */
+  --sk-strike-ink: var(--sk-amc-alarm);
+  /* AMC's engaged-track plate is zinc-200 on zinc-900 — the same pair the dark
+   * theme resolves `primary` / `primary-foreground` to. Named here so the two
+   * tones share one shape and differ only in pigment. */
+  --sk-track: rgb(228 228 231);
+  --sk-track-on: rgb(24 24 27);
+  --sk-plate-fill: rgb(0 0 0);
+  --sk-plate-line: var(--sk-amc-line-2);
+  --sk-plate-line-strong: var(--sk-amc-line-3);
+  --sk-plate-ink: rgb(255 255 255);
+  --sk-plate-ink-2: var(--sk-amc-ink-2);
+  --sk-plate-ink-off: var(--sk-amc-ink-3);
+}
+
+/* ═══ Plates — the shared square-control language ══════════════════════════ */
+
+.sk-plate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  touch-action: none;
+}
+.sk-plate[disabled],
+.sk-plate[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+.sk-plate:focus-visible {
+  outline: 2px solid var(--sk-plate-line-strong);
+  outline-offset: 3px;
+}
+
+/* Hover is GAIN, not a second colour. Every hue in these controls already
+ * carries state; a hover that recoloured them would collide with the state it
+ * is sitting on. Engaged track is the one plate that is already a solid fill,
+ * so it dims instead of brightening — same gesture, opposite direction. */
+button.sk-plate {
+  transition: filter var(--dk-dur) var(--dk-ease);
+}
+.sk-plate[data-control='strike']:hover {
+  filter: brightness(1.2);
+}
+.sk-plate[data-control='track']:hover {
+  filter: brightness(1.3);
+}
+.sk-plate[data-control='track'][aria-pressed='true']:hover {
+  filter: brightness(0.85);
+}
+
+/* Strike puts its caption ABOVE the glyph in the stacked cluster, so the two
+ * captions sit on the OUTSIDE of the pair and the two glyphs meet in the
+ * middle. A label between two controls belongs to neither of them — which is
+ * why the disabled reason line moves up with the label rather than being left
+ * behind between the octagon and the track plate. */
+.sk-plate[data-label='above'] .sk-plate-label {
+  order: -2;
+}
+.sk-plate[data-label='above'] .sk-plate-reason {
+  order: -1;
+}
+
+.sk-plate-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--sk-plate-ink);
+}
+.sk-plate-label[data-tone='strike'] {
+  color: var(--sk-strike-ink);
+}
+.sk-plate-label[data-tone='off'] {
+  color: var(--sk-plate-ink-off);
+}
+.sk-plate-reason {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.18em;
+  color: var(--sk-plate-ink-off);
+}
+.sk-plate-caption {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--sk-plate-ink-2);
+}
+
+/* State-set captions. Both tones resolve them, so a specimen sheet reads the
+ * same whether it is drawn in DS tokens or in the AMC surface. */
+.sk-state-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sk-plate-ink);
+}
+.sk-state-note {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--sk-plate-ink-2);
+}
+
+/* Zoom — ONE stepper: `+` · readout · `−` in a single hairline column, so the
+ * value sits at the point of control instead of in the OSD burn-in at the far
+ * corner of the frame. The buttons lose their own borders to the container:
+ * three separate boxes read as three controls, one box with two arrows and a
+ * number reads as one.
+ *
+ * `--sk-plate-zoom` is set by the template from `PLATE`, the same object the
+ * SVG sizes and the "ZOOM 40 PX" caption read — one number, three uses, so a
+ * caption cannot go stale against the specimen it labels. */
+.sk-zoom-stack {
+  display: flex;
+  flex-direction: column;
+  width: var(--sk-plate-zoom, 40px);
+  background: var(--sk-plate-fill);
+  border: 1px solid var(--sk-plate-line);
+}
+.sk-zoom {
+  height: var(--sk-plate-zoom, 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sk-plate-ink);
+  cursor: pointer;
+  transition: background var(--dk-dur) var(--dk-ease);
+}
+.sk-zoom:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--sk-plate-ink) 14%, transparent);
+}
+/* At the end of the range the press has nothing left to do, and a control that
+ * silently absorbs a press is indistinguishable from a dropped link. The
+ * segment dims rather than taking `disabled`: `disabled` mid-hold would kill
+ * the pointerup that stops the repeat, and it would drop the button out of the
+ * tab order the moment a keyboard user reached the stop. */
+.sk-zoom[data-limit] {
+  opacity: 0.35;
+}
+.sk-zoom:focus-visible {
+  outline: 2px solid var(--sk-plate-line-strong);
+  outline-offset: -2px;
+}
+.sk-zoom-readout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  border-block: 1px solid var(--sk-plate-line);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--sk-plate-ink);
+}
+
+/* ═══ In-situ stage ════════════════════════════════════════════════════════ */
+
+.sk-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--sk-amc-bg);
+}
+/* The out-of-frame backdrop: the same feed, dimmed to near-nothing, so the
+ * video panel reads as a panel over a running app and not as a flat card. */
+.sk-stage-backdrop {
+  position: absolute;
+  inset: 0;
+  filter: grayscale(0.6);
+  opacity: 0.25;
+}
+.sk-stage-scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--sk-amc-scrim);
+}
+.sk-stage-frame {
+  position: absolute;
+  top: var(--sk-stage-inset-y);
+  bottom: var(--sk-stage-inset-y);
+  left: var(--sk-stage-inset-x);
+  right: var(--sk-stage-inset-x);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius-xl)
+  border: 1px solid color-mix(in oklab, var(--sk-amc-signal) 80%, transparent);
+  background: rgb(0 0 0);
+  box-shadow: 0 0 60px rgb(0 0 0 / 0.9);
+}
+/* The feed is 16:9 inside a 1.857:1 frame, so it letterboxes left and right —
+ * ~2% bars, exactly as the artboard does at 1820×980. Sizing the box off the
+ * frame's HEIGHT lets the bars fall out of the aspect ratio instead of being
+ * a number someone has to keep in sync.
+ *
+ * The click target IS the feed element, which is what makes a click on a bar a
+ * non-click — no coordinate arithmetic, and no way for the two to disagree. */
+.sk-feed-box {
+  position: relative;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+}
+.sk-feed {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+}
+.sk-feed:focus-visible {
+  outline: 2px solid var(--sk-amc-signal);
+  outline-offset: -4px;
+}
+
+/* Simulated sensor imagery — an oblique daylight frame over a compound: field,
+ * track, two roofs, one vehicle. Not UI. It stands in for a live H.264 frame,
+ * the same exemption `amc/CameraView.vue` takes for its gimbal feed, and it is
+ * built to be TRACKABLE: the demo only lands if there is something in the
+ * frame worth putting a box around.
+ *
+ * Every layer is sized in %, so the scene scales with the stage instead of
+ * needing a second set of numbers per breakpoint. */
+.sk-feed-image {
+  background-color: #23261f;
+  background-image:
+    /* vehicle — the trackable object */
+    linear-gradient(#cfcfc9, #96968f),
+    /* roof, main structure */ linear-gradient(#55565a, #3c3d41),
+    /* roof, outbuilding */ linear-gradient(#4b4c50, #35363a),
+    /* compound apron */ linear-gradient(#3a3b38, #333430),
+    /* track running through the frame */
+      linear-gradient(101deg, transparent 47.4%, #45464a 47.4%, #45464a 52.6%, transparent 52.6%),
+    /* crop rows */
+      repeating-linear-gradient(24deg, rgb(255 255 255 / 0.02) 0 3px, transparent 3px 9px),
+    radial-gradient(62% 72% at 30% 34%, #333729, transparent 70%),
+    linear-gradient(160deg, #2c2f27 0%, #1a1c17 100%);
+  background-repeat: no-repeat;
+  background-size:
+    2.4% 1.5%,
+    14% 11%,
+    9% 7%,
+    27% 21%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  background-position:
+    63% 57%,
+    21% 25%,
+    39% 61%,
+    17% 21%,
+    0 0,
+    0 0,
+    0 0,
+    0 0;
+}
+.sk-feed-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgb(255 255 255 / 0.025) 0 1px, transparent 1px 3px),
+    radial-gradient(rgb(255 255 255 / 0.05) 0.5px, transparent 0.5px);
+  background-size: 100% 3px, 4px 4px;
+  opacity: 0.7;
+}
+
+/* The lock box the operator placed. Never interactive — it reports. */
+.sk-target {
+  position: absolute;
+  width: 132px;
+  height: 132px;
+  margin: -66px 0 0 -66px;
+  pointer-events: none;
+}
+.sk-target-box {
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--sk-amc-signal);
+}
+.sk-target-pip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  background: var(--sk-amc-signal);
+}
+.sk-target-tag {
+  position: absolute;
+  left: 0;
+  top: -22px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.sk-osd {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sk-osd-tl {
+  top: 16px;
+  left: 16px;
+}
+.sk-osd-tr {
+  top: 16px;
+  right: 16px;
+  gap: 8px;
+}
+.sk-osd-read {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgb(255 255 255 / 0.85);
+  background: rgb(0 0 0 / 0.6);
+  padding: 2px 8px;
+}
+.sk-osd-read b {
+  font-weight: 700;
+  color: rgb(255 255 255);
+}
+.sk-osd-badge {
+  font-family: var(--font-mono);
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgb(255 255 255);
+}
+
+.sk-osd-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 2px;
+  background: var(--sk-amc-plate-dim);
+  border: 1px solid var(--sk-amc-line);
+  color: var(--sk-amc-ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color var(--dk-dur) var(--dk-ease),
+    color var(--dk-dur) var(--dk-ease);
+}
+.sk-osd-btn:hover {
+  border-color: var(--sk-amc-signal-ink);
+  color: var(--sk-amc-signal-ink);
+}
+.sk-osd-btn[data-active] {
+  border-color: var(--sk-amc-signal);
+  background: var(--sk-amc-signal);
+  color: rgb(255 255 255);
+}
+.sk-osd-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 2px;
+  border: 0;
+  background: transparent;
+  color: rgb(255 255 255);
+  cursor: pointer;
+}
+.sk-osd-close:hover {
+  opacity: 0.7;
+}
+
+/* THE RAIL — the thing the whole exploration was about.
+ *
+ * One right-edge column, ordered by consequence downward-first: strike on top,
+ * track under it, a hairline fence, then zoom. On a tablet held in two hands
+ * the bottom of a right-edge rail is where the thumb already rests, so the
+ * control that ends a life is the one FURTHEST from where a hand already is —
+ * while still being the largest thing in the column once you look.
+ *
+ * Inner gap 6 (a label to its own glyph) against outer gap 16 (control to
+ * control): every label is visibly closer to the thing it names than the
+ * controls are to each other. */
+.sk-controls {
+  position: absolute;
+  right: 24px;
+  bottom: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--dk-gutter-sm);
+}
+
+/* The fence. Above it the weapon, below it the sensor — one hairline is enough
+ * to say that a press above is not the same KIND of act as a press below, and
+ * it costs no colour, no label and no vertical space worth counting. */
+.sk-fence {
+  width: var(--sk-plate-strike, 64px);
+  border-top: 1px solid rgb(255 255 255 / 0.2);
+}
+
+.sk-zoom-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.sk-stats {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm)
+  background: rgb(0 0 0 / 0.7);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgb(255 255 255);
+}
+.sk-stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.sk-stats-val {
+  color: var(--sk-amc-ink-2);
+}
+.sk-stats-track {
+  border-top: 1px solid var(--sk-amc-line);
+  padding-top: 4px;
+}
+
+.sk-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgb(0 0 0 / 0.95);
+  border: 1px solid var(--sk-amc-line);
+  color: var(--sk-amc-ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color var(--dk-dur) var(--dk-ease),
+    color var(--dk-dur) var(--dk-ease);
+}
+.sk-nav:hover {
+  border-color: var(--sk-amc-signal-ink);
+  color: var(--sk-amc-signal-ink);
+}
+.sk-nav-prev {
+  left: 16px;
+}
+.sk-nav-next {
+  right: 16px;
+}
+
+/* The strip stops short of the rail rather than sliding under it: a vehicle
+ * card tucked behind the strike octagon is a card the operator cannot read and
+ * an octagon they cannot trust they are pressing. */
+.sk-dock {
+  position: absolute;
+  bottom: 24px;
+  left: 16px;
+  right: 180px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+}
+.sk-card {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 2px;
+  border: 1px solid var(--sk-amc-line);
+  background: rgb(0 0 0 / 0.95);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
+}
+/* AgentCard.vue: ring-2 ring-c2-highlight ring-offset-2 ring-offset-c2-bg */
+.sk-card[data-selected] {
+  box-shadow:
+    0 0 0 2px var(--sk-amc-bg),
+    0 0 0 4px var(--sk-amc-signal);
+}
+.sk-card-id {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgb(255 255 255);
+  background: var(--sk-amc-armed);
+  border: 1px solid var(--sk-amc-armed);
+}
+.sk-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.sk-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--sk-amc-ink);
+}
+.sk-card-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sk-amc-ink-2);
+}
+.sk-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.3);
+}
+.sk-dot[data-on] {
+  background: var(--sk-amc-armed);
+}
+
+/* ═══ Motion ═══════════════════════════════════════════════════════════════
+ * There are no loops left on this surface. The hold trace and the zoom repeat
+ * are progress, not animation: a guard the operator is timing against has to
+ * keep reporting, so neither is suppressed under reduced motion. What IS
+ * suppressed is every transition — hover gain, plate fills, focus rings —
+ * because none of them carries information the still frame does not. */
+
+@media (prefers-reduced-motion: reduce) {
+  button.sk-plate,
+  .sk-zoom,
+  .sk-osd-btn,
+  .sk-nav {
+    transition: none;
+  }
+}
+
+/* ═══ Responsive ═══════════════════════════════════════════════════════════ */
+
+.sk-ledger-5 {
+  --dk-ledger-cols: 5;
+}
+
+/* Below `sm` the ledger's prose values stack, the state sets fall to two
+ * columns, and the spec table gives up its two narrow slots — a 110px state
+ * name and a 70px label have nothing left to align against at 320px. */
+@media (max-width: 700px) {
+  .sk-page .dk-ledger {
+    --dk-ledger-cols: 1;
+    gap: 12px;
+  }
+  .sk-states {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+  .sk-spec {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  .sk-spec-head {
+    display: none;
+  }
+  .sk-body {
+    padding: 24px var(--dk-gutter-sm) 96px;
+    gap: 48px;
+  }
+}

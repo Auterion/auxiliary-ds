@@ -41,6 +41,8 @@
  * (path relative to their own CSS entry) alongside this import. */
 @source "../vue/src/**/*.{vue,ts}";
 @source "../vue/dist/**/*.js";
+@source "../shell/src/**/*.{vue,ts}";
+@source "../shell/dist/**/*.js";
 @source "./recipes/**/*.ts";
 
 /* -------------------------------------------------------------------------- *

@@ -144,363 +144,45 @@
  * whichever line it lands. */
 .ec-caption > :last-child { margin-inline-start: auto; }
 
-/* ═══ THE IDENTITY BAR ═══════════════════════════════════════════════════
- * The shared component. One implementation, rendered five times on this page.
+/* A build step's state, on the step itself.
  *
- * Structure never varies: mark · AUTERION · / · SURFACE · apps · tabs · org ·
- * account. Palette and density re-resolve; the order does not.
- *
- * The height ladder is the register axis made visible. `--control-height-lg`
- * is 40px expressive and 36px operational, so the bar lands at 48 / 44 without
- * this file naming either number. */
-
-.ec-bar {
-  --ec-bar-h: calc(var(--control-height-lg) + var(--spacing-2));
-
-  display: flex;
+ * Page chrome, so it is drawn in the deck grammar (`--dk-*`) and not in
+ * semantic tokens — a specimen states the system, a document states its own
+ * status. `shipped` is the only state that earns ink; `drafted` and `next` are
+ * outlines, because a plan that highlights everything highlights nothing. */
+.ec-state {
+  display: inline-flex;
   align-items: center;
-  gap: 0;
-  block-size: var(--ec-bar-h);
-  padding-inline: var(--spacing-3);
-  background: var(--card);
-  color: var(--card-foreground);
-  border-block-end: 1px solid var(--border);
-}
-
-.ec-bar-mark {
-  flex: none;
-  inline-size: 20px;
-  block-size: 20px;
-  /* The page's one signal. `brand` is the identity hue in light and dark,
-   * BLACK in sunlight and AMBER in darknight — the DS theme's own answer to
-   * glare and to dark adaptation. Never used for state. */
-  color: var(--brand);
-}
-
-.ec-bar-word {
-  margin-inline-start: var(--spacing-2);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.3em;
-  /* The tracking pushes a trailing sidebearing past the glyph; pull it back so
-   * the slash sits the same distance from N as it does from the S of SUITE. */
-  margin-inline-end: calc(var(--spacing-2) - 0.3em);
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--foreground);
-}
-
-.ec-bar-slash {
-  opacity: 0.38;
-  font-size: 13px;
-  line-height: 1;
-}
-
-.ec-bar-surface {
-  margin-inline: var(--spacing-2) 0;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.24em;
-  margin-inline-end: calc(var(--spacing-3) - 0.24em);
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--muted-foreground);
-}
-
-/* Apps grid — the switcher, and (once objects have names) the resolver. */
-.ec-bar-apps {
-  flex: none;
-  display: grid;
-  place-items: center;
-  inline-size: var(--control-height-sm);
-  block-size: var(--control-height-sm);
-  border-radius: var(--radius-sm);
-  color: var(--muted-foreground);
-  cursor: pointer;
-  transition-property: background-color, color;
-  transition-duration: var(--duration-fast);
-  transition-timing-function: var(--ease-out);
-}
-.ec-bar-apps:hover {
-  background: var(--accent);
-  color: var(--foreground);
-}
-
-.ec-dots {
-  display: grid;
-  grid-template-columns: repeat(3, 3px);
-  gap: 3px;
-}
-.ec-dots > i {
-  inline-size: 3px;
-  block-size: 3px;
+  padding: 1px 6px;
+  border: var(--dk-rule) solid var(--dk-line);
   border-radius: var(--radius-full);
-  background: currentColor;
-}
-
-/* Surface-local tabs. They scroll rather than truncate: the next tab peeking
- * past the edge IS the affordance, and nothing in the bar is ever unreachable
- * at 320px. */
-.ec-bar-tabs {
-  display: flex;
-  align-items: stretch;
-  gap: 0;
-  min-inline-size: 0;
-  /* The bar centres its children; the tab strip is the one child that must run
-   * the full height, because its active marker is a rule on the bar's bottom
-   * edge — not an underline under a word. */
-  align-self: stretch;
-  /* A floor, because without one the strip was being squeezed to three pixels
-   * at panel width: a scroll container too narrow to show even a partial tab is
-   * content hidden with no cue at all, which is worse than a scrollbar. With
-   * the floor, the next tab peeks past the edge and the peek IS the
-   * affordance. */
-  flex: 0 1 auto;
-  min-inline-size: 3.5rem;
-  margin-inline-start: var(--spacing-2);
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scrollbar-width: none;
-}
-.ec-bar-tabs::-webkit-scrollbar { display: none; }
-
-.ec-bar-tab {
-  display: inline-flex;
-  align-items: center;
-  flex: none;
-  padding-inline: var(--spacing-3);
-  block-size: 100%;
-  font-size: 12.5px;
-  line-height: 1;
-  white-space: nowrap;
-  color: var(--muted-foreground);
-  cursor: pointer;
-  transition-property: color, box-shadow, background-color;
-  transition-duration: var(--duration-fast);
-  transition-timing-function: var(--ease-out);
-}
-.ec-bar-tab:hover { color: var(--foreground); }
-/* Position is marked by a rule, not a lozenge — and by weight, so the active
- * tab is still the active tab with no colour at all. */
-.ec-bar-tab[aria-current='page'] {
-  color: var(--foreground);
-  font-weight: 600;
-  box-shadow: inset 0 -2px 0 var(--brand);
-}
-
-/* The spacer is the first thing to yield — everything it separates is real. */
-.ec-bar-grow { flex: 1 1 auto; min-inline-size: 0; }
-
-.ec-bar-right {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2);
-  flex: none;
-}
-
-/* Org context. It lives in the bar and not in a sidebar popover because on a
- * shared terminal "which tenant am I in" is a safety question, not a
- * preference. It is the last thing in the bar allowed to collapse. */
-.ec-org {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  block-size: var(--control-height-xs);
-  padding-inline: var(--spacing-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--foreground);
-}
-
-.ec-account {
-  flex: none;
-  display: grid;
-  place-items: center;
-  inline-size: var(--control-height-sm);
-  block-size: var(--control-height-sm);
-  border-radius: var(--radius-full);
-  color: var(--muted-foreground);
-  cursor: pointer;
-  transition-property: background-color, color;
-  transition-duration: var(--duration-fast);
-  transition-timing-function: var(--ease-out);
-}
-.ec-account:hover { background: var(--accent); color: var(--foreground); }
-
-/* The bar at panel width. The wordmark is what goes: identity is still carried
- * by the mark, which is the one element the brand manifest says may never be
- * dropped. Org and account stay — they answer safety questions. */
-@container (max-width: 34rem) {
-  .ec-bar-word,
-  .ec-bar-slash { display: none; }
-  /* Tracking eases off with the room. Still positive — small uppercase always
-   * needs some — but 0.24em on the longest surface name (CONTROL) was the last
-   * few pixels between the org pill and the bar's edge. */
-  .ec-bar-surface {
-    margin-inline-start: var(--spacing-3);
-    letter-spacing: 0.18em;
-    margin-inline-end: calc(var(--spacing-3) - 0.18em);
-  }
-  /* Something has to give at 320px, and the order is decided by consequence,
-   * not by layout convenience. The org stays: on a shared terminal, "which
-   * tenant am I in" is a safety question. The account goes: it is the one
-   * element in the bar whose destination is reachable elsewhere on the same
-   * screen — the launcher states the signed-in account in full. */
-  .ec-account { display: none; }
-}
-
-/* ═══ Launcher ═══════════════════════════════════════════════════════════ */
-
-.ec-launch {
-  padding: var(--spacing-6) var(--spacing-5) var(--spacing-5);
-}
-@container (max-width: 34rem) {
-  .ec-launch { padding: var(--spacing-4); }
-}
-
-.ec-launch-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--spacing-3);
-  margin-block-end: var(--spacing-5);
-}
-
-/* Three columns, because there are six tiles and a grid that leaves two of them
- * alone on a row reads as an accident. `auto-fit` was giving 4 + 2 at desktop
- * width. The thresholds are where a tile stops fitting, not device sizes, and
- * they are container queries — the launcher has to hold up in a panel as well
- * as on a page. */
-.ec-tiles {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--spacing-3);
-}
-@container (max-width: 52rem) {
-  .ec-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@container (max-width: 34rem) {
-  .ec-tiles { grid-template-columns: minmax(0, 1fr); }
-}
-
-.ec-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--spacing-3);
-  padding: var(--spacing-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--card);
-  color: var(--card-foreground);
-  text-decoration: none;
-  transition-property: border-color, background-color, scale;
-  transition-duration: var(--duration-base);
-  transition-timing-function: var(--ease-out);
-}
-.ec-tile:hover { border-color: var(--muted-foreground); }
-.ec-tile:active { scale: 0.96; }
-
-.ec-tile[data-proposed='true'] {
-  border-style: dashed;
-}
-
-.ec-tile-top {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-3);
-}
-
-/* The glyph plate. Radius steps DOWN from the tile's, because a shape inset by
- * a full padding step cannot carry the parent's curve without looking swollen. */
-.ec-glyph {
-  flex: none;
-  display: grid;
-  place-items: center;
-  inline-size: 40px;
-  block-size: 40px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xs);
-  background: var(--muted);
-  color: var(--foreground);
-}
-
-/* Products are told apart by MARK and NAME, never by hue.
- *
- * The obvious move — a per-product colour band — would mint five accent hues
- * with no ramp, no contrast gate and no token behind them, and would collide
- * with a status ladder that already owns five. So each surface gets a drawn
- * hairline glyph instead: a diagram of what the surface IS. It survives
- * darknight (where there is no blue at any strength), it survives sunlight
- * (where the low end of every ramp collapses), and it costs the signal budget
- * nothing. */
-.ec-glyph svg { display: block; }
-
-.ec-tile-name {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  color: var(--foreground);
-}
-
-.ec-tile-blurb {
-  font-size: 13px;
   line-height: 1.5;
-  color: var(--muted-foreground);
-  text-wrap: pretty;
-}
-
-.ec-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-block-start: auto;
-  padding-block-start: var(--spacing-1);
-}
-
-/* A chip names its axis and its value, so neither is carried by colour. Two
- * chips that differ only in hue are two chips a colour-blind operator reads as
- * one; two chips that say THEME and REGISTER are two chips. */
-.ec-chip {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 5px;
-  padding: 3px 7px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xs);
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  line-height: 1.4;
   letter-spacing: 0.08em;
-  white-space: nowrap;
-}
-.ec-chip b {
-  font-weight: 400;
   text-transform: uppercase;
-  opacity: 0.55;
+  color: var(--dk-fg-3);
 }
-.ec-chip span { color: var(--foreground); }
+.ec-state[data-state='shipped'] {
+  border-color: transparent;
+  background: var(--dk-fg);
+  color: var(--dk-bg);
+}
 
-.ec-launch-foot {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2);
-  margin-block-start: var(--spacing-5);
-  padding-block-start: var(--spacing-4);
-  border-block-start: 1px solid var(--border);
-  font-size: 12px;
-  color: var(--muted-foreground);
-}
+/* ═══ THE IDENTITY BAR AND THE LAUNCHER — moved out ══════════════════════
+ *
+ * Both used to be drawn here, in `ec-` classes, against page-local CSS. They
+ * are now `@auxiliary/shell` (AD-D-038): the bar and the launcher this page
+ * renders are the SHIPPED components, styled by the `identityBar` and
+ * `launcher` recipes in `@auxiliary/css` off the `--component-identity-bar-*`
+ * and `--component-launcher-*` token tiers.
+ *
+ * That is not tidying. The claim this page makes is "one component, not five",
+ * and a page-local copy of the bar would make every specimen below a drawing
+ * of the claim rather than a test of it. What is left in this file is the
+ * FRAME the specimens hang in — page chrome, the surface bodies, the object
+ * grammar — none of which the design system owes anyone.
+ */
 
 /* ═══ Surface bodies ═════════════════════════════════════════════════════
  * Compressed, but real: the sidebar IA, the rail order, the agent cards and

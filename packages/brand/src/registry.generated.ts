@@ -26,7 +26,7 @@ export const MANIFEST = {
       "id": "auterion",
       "name": "Auterion",
       "type": "org",
-      "brandHue": "auterion-blue.700 — oklch(0.482 0.235 264 / ~264°). The color mark uses this hue; never substitute a generic blue. Token ref: color.primitive.auterion-blue.700 (semantic `brand`).",
+      "brandHue": "auterion-blue.700 — oklch(0.520 0.192 259.3). The ramp is anchored at 259.3° on the blue Mission Control and Nemyx already ship (AD-D-015); rung 600 IS that blue. The color mark uses this hue; never substitute a generic blue. Token ref: color.primitive.auterion-blue.700 (semantic `brand` — 700 rather than 600 because 600 carries white text at only 4.18:1).",
       "minSize": {
         "mark": 16,
         "wordmark": 16,
@@ -205,15 +205,66 @@ export const MANIFEST = {
           "inverse": "pending"
         }
       }
+    },
+    {
+      "id": "nemyx",
+      "name": "Nemyx",
+      "type": "product",
+      "parent": "auterion",
+      "coLockup": "Auterion Nemyx",
+      "context": "L4 Mission-Critical — swarm command, keyboard-first, and the surface designed for a tablet held outdoors. It is the first real consumer of the `sunlight` theme, which ships in the token set with none today. Dark is its default and light is shipped (AD-D-016).",
+      "minSize": {
+        "mark": 16,
+        "wordmark": 16,
+        "lockup-horizontal": 24,
+        "lockup-stacked": 24
+      },
+      "clearspace": 0.5,
+      "themes": [
+        "dark",
+        "darknight",
+        "sunlight",
+        "light"
+      ],
+      "forbidden": [
+        "recoloring outside the provided tones",
+        "stretching, rotating, or altering proportions",
+        "the full color lockup inside dense operational chrome — use the bare mark, mono/inverse, at minSize",
+        "the mark over map or video imagery without a contrast scrim (AD-D-032) — Nemyx already draws a brand watermark straight onto the map",
+        "a product hue for identity on the map — the watermark is a tint of the neutral, never an accent"
+      ],
+      "variants": {
+        "mark": {
+          "color": "pending",
+          "mono": "pending",
+          "inverse": "pending"
+        },
+        "wordmark": {
+          "color": "pending",
+          "mono": "pending",
+          "inverse": "pending"
+        },
+        "lockup-horizontal": {
+          "color": "pending",
+          "mono": "pending",
+          "inverse": "pending"
+        },
+        "lockup-stacked": {
+          "color": "pending",
+          "mono": "pending",
+          "inverse": "pending"
+        }
+      }
     }
   ],
   "appIcons": {
-    "note": "Derived from each logo's mark. The export step (scripts/export-icons.mjs — TODO) rasterizes these once the master mark exists. Targets: auterion, mission-control, suite, os.",
+    "note": "Derived from each logo's mark. The export step (scripts/export-icons.mjs — TODO) rasterizes these once the master mark exists. Targets: auterion, mission-control, suite, os, nemyx.",
     "targets": [
       "auterion",
       "mission-control",
       "suite",
-      "os"
+      "os",
+      "nemyx"
     ],
     "outputs": [
       {

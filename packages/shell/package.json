@@ -1,0 +1,56 @@
+{
+  "name": "@auxiliary/shell",
+  "version": "0.0.0",
+  "description": "The Auterion ecosystem shell: the identity strip every surface renders, the app grid, the org and account controls, the launcher, and the Surface declaration table they all read. Cross-product chrome only — it owns nothing below itself (AD-D-038).",
+  "license": "UNLICENSED",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./IdentityBar": {
+      "types": "./dist/IdentityBar.vue.d.ts",
+      "import": "./dist/IdentityBar.vue.js"
+    },
+    "./LauncherFrame": {
+      "types": "./dist/LauncherFrame.vue.d.ts",
+      "import": "./dist/LauncherFrame.vue.js"
+    },
+    "./surfaces": {
+      "types": "./dist/surfaces.d.ts",
+      "import": "./dist/surfaces.js"
+    }
+  },
+  "scripts": {
+    "build": "vite build && vue-tsc -p tsconfig.build.json",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "vue-tsc -p tsconfig.build.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@auxiliary/brand": "workspace:*",
+    "@auxiliary/css": "workspace:*",
+    "@auxiliary/icons": "workspace:*",
+    "@auxiliary/tokens": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.0",
+    "@vue/test-utils": "^2.4.10",
+    "happy-dom": "^20.9.0",
+    "vite": "^6.0.0",
+    "vitest": "^4.1.7",
+    "vitest-axe": "^0.1.0",
+    "vue": "^3.5.0",
+    "vue-tsc": "^2.2.0"
+  }
+}

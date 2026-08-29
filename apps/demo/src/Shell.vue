@@ -11,7 +11,10 @@ import Console from './console/Console.vue';
 import TokenModel from './tokens/TokenModel.vue';
 import DirectionStudio from './direction/DirectionStudio.vue';
 import StrikeStudio from './strike/StrikeStudio.vue';
+import FlyView from './flyview/FlyView.vue';
+import Amc20 from './amc20/Amc20.vue';
 import EcoStudio from './eco/EcoStudio.vue';
+import Hangar from './hangar/Hangar.vue';
 import Gallery from './App.vue';
 
 type View =
@@ -26,7 +29,10 @@ type View =
   | 'tokens'
   | 'direction'
   | 'strike'
+  | 'flyview'
+  | 'amc20'
   | 'eco'
+  | 'hangar'
   | 'gallery';
 const view = ref<View>('brand');
 
@@ -37,8 +43,11 @@ const PAGES: { key: View; label: string }[] = [
   { key: 'tokens', label: 'Tokens' },
   { key: 'direction', label: 'Direction' },
   { key: 'strike', label: 'Strike' },
+  { key: 'flyview', label: 'FlyView' },
+  { key: 'amc20', label: 'AMC20' },
   { key: 'eco', label: 'Ecosystem' },
   { key: 'web', label: 'auterion.com' },
+  { key: 'hangar', label: 'Hangar' },
   { key: 'suite', label: 'Suite' },
   { key: 'amc', label: 'Mission Control' },
   { key: 'amc27', label: 'AMC27' },
@@ -54,7 +63,10 @@ const PAGES: { key: View; label: string }[] = [
   <TokenModel v-else-if="view === 'tokens'" />
   <DirectionStudio v-else-if="view === 'direction'" />
   <StrikeStudio v-else-if="view === 'strike'" />
+  <FlyView v-else-if="view === 'flyview'" />
+  <Amc20 v-else-if="view === 'amc20'" />
   <EcoStudio v-else-if="view === 'eco'" />
+  <Hangar v-else-if="view === 'hangar'" />
   <SuiteApp v-else-if="view === 'suite'" />
   <MissionControl v-else-if="view === 'amc'" />
   <Amc27 v-else-if="view === 'amc27'" />

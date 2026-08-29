@@ -42,7 +42,7 @@ const DIRECTIONS: { k: Direction; l: string }[] = [
 // these are specimens of a palette that does not (yet) live in the token set,
 // so the value is the content, not a styling shortcut.
 const proposedPalette = [
-  { name: 'Ultramarine', hex: '#1248DF', oklch: 'oklch(0.482 0.235 264)', role: 'Brand accent — auterion-blue.700' },
+  { name: 'Ultramarine', hex: '#1161D4', oklch: 'oklch(0.520 0.192 259.3)', role: 'Brand accent — auterion-blue.700' },
   { name: 'Space Cadet', hex: '#171744', oklch: 'oklch(0.180 0.080 264)', role: 'Dark ground' },
   { name: 'Night', hex: '#191C1C', oklch: 'oklch(0.170 0.000 000)', role: 'Near-black surface' },
   { name: 'Cadet Grey', hex: '#919A9B', oklch: 'oklch(0.630 0.010 200)', role: 'Neutral mid — cadet.500' },

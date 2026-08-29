@@ -28,6 +28,10 @@ export { tabs } from './tabs.js';
 export { toast } from './toast.js';
 export { table, type TableVariants } from './table.js';
 
+// Ecosystem chrome (AD-D-038) — consumed by @auxiliary/shell
+export { identityBar } from './identity-bar.js';
+export { launcher } from './launcher.js';
+
 // Visual primitives
 export { avatar, avatarImage, avatarFallback, type AvatarVariants } from './avatar.js';
 export { spinner, type SpinnerVariants } from './spinner.js';

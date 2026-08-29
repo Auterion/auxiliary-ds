@@ -1,0 +1,115 @@
+{
+  "component": {
+    "identity-bar": {
+      "$description": "The ecosystem identity strip — the one piece of chrome every Auterion surface renders (AD-D-038). Its structure never varies; its density does. `height` aliases control.height.lg so the bar tightens under [data-register=operational] without this file or its consumers knowing it happened: 40+8=48px expressive, 36+8=44px operational. The bar is composed as control-rung + offset rather than a flat height so that the rung it steps off is a stated relationship, not a coincidence — the same reason tabs.trigger.height aliases control.height.xs. No colour and no typography here: those re-resolve per theme and belong to the theme tier.",
+      "height": {
+        "$type": "dimension",
+        "$value": "{global.control.height.lg}",
+        "$description": "The control rung the bar steps off. Register-flexed: operational aliases this down one rung."
+      },
+      "height-offset": {
+        "$type": "dimension",
+        "$value": "{global.spacing.2}",
+        "$description": "Block size above the control rung. What makes the bar read as identity chrome rather than a toolbar of controls; the recipe composes block-size as calc(height + height-offset)."
+      },
+      "padding-x": {
+        "$type": "dimension",
+        "$value": "{global.spacing.3}"
+      },
+      "mark": {
+        "icon-size": {
+          "$type": "dimension",
+          "$value": "{global.spacing.5}",
+          "$description": "Named `icon-size`, not `size`, deliberately: the touch-target gate floors every `-size` to 44px under a coarse pointer, and exempts `-icon-size` because it measures a glyph rather than a hit area. The mark is a glyph — its hit area is the bar. The brand manifest's minSize for the mark is 16px; this renders it at 20."
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}",
+          "$description": "Mark to wordmark. The wordmark's tracking is pulled back out of the trailing gap in the recipe so the slash sits the same distance from the N of AUTERION as from the E of SUITE."
+        }
+      },
+      "surface": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}",
+          "$description": "Surface name to the app grid."
+        }
+      },
+      "apps": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{global.control.height.sm}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.sm}"
+        },
+        "dot": {
+          "$type": "dimension",
+          "$value": "{global.spacing.0_75}"
+        },
+        "dot-gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.0_75}"
+        }
+      },
+      "tabs": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        },
+        "min-width": {
+          "$type": "dimension",
+          "$value": "{global.spacing.16}",
+          "$description": "Floor for the scrolling tab strip. Below this the strip is squeezed to a few pixels at panel width — content hidden with no cue, which is worse than a scrollbar. With the floor the next tab peeks past the edge, and the peek IS the affordance."
+        }
+      },
+      "tab": {
+        "padding-x": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        },
+        "marker": {
+          "$type": "dimension",
+          "$value": "{global.border-width.2}",
+          "$description": "The active tab is marked by a rule on the bar's bottom edge, not a lozenge — and by weight too, so position survives with no colour at all."
+        }
+      },
+      "right": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        }
+      },
+      "org": {
+        "$description": "The org chip is a READOUT, and so is sized by its padding and line-height rather than by a height token. That is not a naming trick to dodge the touch floor — it is what the floor is for. `--target-floor` raises hit areas, and raising a chip nobody can press produces a 44px box holding one 10px word. If the org ever becomes the org SWITCHER the bar deserves, it gains a height token that same day and takes the floor with it.",
+        "padding-y": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1_5}"
+        },
+        "padding-x": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.sm}"
+        }
+      },
+      "account": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{global.control.height.sm}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.full}"
+        }
+      }
+    }
+  }
+}

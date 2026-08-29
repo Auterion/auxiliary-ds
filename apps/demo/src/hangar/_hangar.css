@@ -1,0 +1,965 @@
+/* Hallmark · macrostructure: Full-bleed modular grid (agency press site)
+ * tone: declarative/absolute · anchor hue: none — this surface is achromatic
+ *
+ * "HANGAR" — auterion.com redrawn in a high-contrast monochrome grid grammar,
+ * after the layout language of armory.framer.ai.
+ *
+ * WHAT THIS GRAMMAR IS, in four rules:
+ *
+ *   1. THE MIDDLE HALF. Every band is a four-column full-bleed grid with
+ *      hairlines at 25/50/75%. Prose lives in columns 2–3 — the middle half of
+ *      the viewport — never edge to edge. The outer quarters stay empty on
+ *      purpose: they are what makes a 96px headline read as composed rather
+ *      than as shouting.
+ *   2. TWO EXPOSURES, ALTERNATING. A band is `ink` (near-black) or `paper`
+ *      (near-white); nothing in between and no third surface. The rhythm of the
+ *      page is the alternation, so a band that cannot decide which it is has no
+ *      business being a band.
+ *   3. TYPE CARRIES THE HIERARCHY, NOT COLOUR. One display cut, one body cut,
+ *      one mono. Eyebrows are mono caps with a hatch glyph; measured facts —
+ *      dates, counts, specs, descriptions in a row list — are ALWAYS mono.
+ *      Mono is the tell that a thing is a datum rather than a claim.
+ *   4. NO PRODUCT HUE. The whole site spends zero chroma. Auterion blue appears
+ *      exactly nowhere here, and that is the point: a monochrome sheet makes
+ *      the ONE place colour does appear — the status ladder, if a specimen ever
+ *      shows one — unmissable.
+ *
+ * Every colour steps through a `--hg-*` alias resolved from a design-system
+ * primitive. A raw hex/rgb/oklch literal in this file is a bug (AD-D-037).
+ *
+ * Namespaced `hg-`; sits alongside `dk-`, `wb-`, `bp-`, `ix-`, `os-`, `ec-`
+ * and `a27-` without collision. Demo layer — NOT a tokens or recipe change.
+ */
+
+/* ═══ Exposure ════════════════════════════════════════════════════════════ */
+
+.hg-root {
+  /* The ladder. One name per axis, never improvised at the call site. */
+  --hg-gutter: clamp(20px, 4vw, 56px);
+  --hg-band: clamp(72px, 9vw, 140px);      /* block rhythm between bands     */
+  --hg-band-sm: clamp(44px, 5vw, 72px);
+  --hg-nav-h: 88px;
+  --hg-rule: 1px;
+
+  /* Two exposures. `paper` is the default; `ink` inverts every alias below,
+   * which is why no rule in this file names an exposure by hand.
+   *
+   * The family is `mono`, not `ink`. Both are DS neutrals (AD-D-010), but `ink`
+   * carries a deliberate blue cast (chroma .014–.022 at 265°) because it is the
+   * ground the product UI sits on. This sheet claims to spend zero chroma, so
+   * it takes the achromatic one (.003–.006) and means it. `paper` is the 200
+   * rung rather than white: a grey sheet, so a white card on it is an object. */
+  --hg-bg: var(--color-primitive-mono-200);
+  --hg-fg: var(--color-primitive-mono-950);
+  --hg-fg-2: var(--color-primitive-mono-600);
+  --hg-fg-3: var(--color-primitive-mono-500);
+  --hg-line: var(--color-primitive-mono-300);
+  --hg-line-2: var(--color-primitive-mono-100);
+  --hg-plate: var(--color-primitive-mono-300);
+
+  color: var(--hg-fg);
+  background: var(--hg-bg);
+  font-family: var(--font-sans);
+  min-height: 100dvh;
+}
+
+[data-band='ink'] {
+  --hg-bg: var(--color-primitive-mono-950);
+  --hg-fg: var(--color-primitive-mono-50);
+  --hg-fg-2: var(--color-primitive-mono-400);
+  --hg-fg-3: var(--color-primitive-mono-500);
+  --hg-line: var(--color-primitive-mono-800);
+  --hg-line-2: var(--color-primitive-mono-900);
+  --hg-plate: var(--color-primitive-mono-900);
+
+  /* The bridge to the design system's semantic layer.
+   *
+   * A DS component rendered inside a band — a viz chart, a Button, a Badge —
+   * resolves its own colours from `--foreground` / `--background` / `--border`.
+   * Those are set by `[data-theme]`, which this sheet deliberately does not
+   * use: its axis is exposure, not theme. Without this bridge a Gauge's readout
+   * paints in the page theme's ink and vanishes on an ink band, which is
+   * exactly the bug that found this comment. */
+  --foreground: var(--hg-fg);
+  --background: var(--hg-bg);
+  --muted-foreground: var(--hg-fg-2);
+  --border: var(--hg-line);
+  --card: var(--hg-bg);
+  --card-foreground: var(--hg-fg);
+}
+
+[data-band='paper'] {
+  --hg-bg: var(--color-primitive-mono-200);
+  --hg-fg: var(--color-primitive-mono-950);
+  --hg-fg-2: var(--color-primitive-mono-600);
+  --hg-fg-3: var(--color-primitive-mono-500);
+  --hg-line: var(--color-primitive-mono-300);
+  --hg-line-2: var(--color-primitive-mono-100);
+  --hg-plate: var(--color-primitive-mono-300);
+
+  /* The bridge to the design system's semantic layer.
+   *
+   * A DS component rendered inside a band — a viz chart, a Button, a Badge —
+   * resolves its own colours from `--foreground` / `--background` / `--border`.
+   * Those are set by `[data-theme]`, which this sheet deliberately does not
+   * use: its axis is exposure, not theme. Without this bridge a Gauge's readout
+   * paints in the page theme's ink and vanishes on an ink band, which is
+   * exactly the bug that found this comment. */
+  --foreground: var(--hg-fg);
+  --background: var(--hg-bg);
+  --muted-foreground: var(--hg-fg-2);
+  --border: var(--hg-line);
+  --card: var(--hg-bg);
+  --card-foreground: var(--hg-fg);
+}
+
+/* ═══ Band + the four-column rule field ═══════════════════════════════════ */
+
+.hg-band {
+  position: relative;
+  isolation: isolate;
+  color: var(--hg-fg);
+  background: var(--hg-bg);
+}
+
+/* The hairlines at 25/50/75%. A grid of four cells whose inline-start edge is
+ * the rule, with the first suppressed — so the field reads as three rules and
+ * not as a box. Decorative and inert: it must never intercept a pointer. */
+/* Backdrop and rule field share one layer below the content; DOM order decides
+ * which of the two is on top. */
+.hg-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.hg-backdrop > * {
+  position: absolute;
+  inset: 0;
+}
+
+.hg-rules {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  pointer-events: none;
+}
+.hg-rules > i {
+  border-inline-start: var(--hg-rule) solid var(--hg-line);
+}
+.hg-rules > i:first-child {
+  border-inline-start: 0;
+}
+
+@media (max-width: 900px) {
+  .hg-rules { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* The content column — the middle half. Everything prose steps to it.
+ *
+ * Placed by GRID rather than by margin, and that is load-bearing: every type
+ * rule in this file sets `margin: 0`, and a `margin-inline-start` here would be
+ * beaten by whichever of them came later in the stylesheet. Grid placement
+ * cannot be undone by a margin reset, so the column holds no matter what class
+ * the child carries. */
+.hg-col {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  padding-inline: var(--hg-gutter);
+  margin-inline: auto;
+  width: min(100%, 1440px);
+}
+.hg-col > * {
+  grid-column: 2;
+  min-width: 0;
+}
+@media (max-width: 900px) {
+  .hg-col { grid-template-columns: minmax(0, 1fr); }
+  .hg-col > * { grid-column: 1; }
+}
+
+/* Full-bleed content that still respects the page's max width. */
+.hg-full {
+  width: min(100%, 1440px);
+  margin-inline: auto;
+}
+
+.hg-pad { padding-block: var(--hg-band); }
+.hg-pad-sm { padding-block: var(--hg-band-sm); }
+
+/* ═══ Type ════════════════════════════════════════════════════════════════ */
+
+.hg-display {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 9.5vw, 132px);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.hg-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5.4vw, 78px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.hg-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 42px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.hg-h3 {
+  font-size: clamp(19px, 1.5vw, 23px);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* The scroll-reveal paragraph. Set at display scale and read as a statement,
+ * not as body copy — so it takes the display cut and a generous measure. */
+.hg-statement {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.4vw, 46px);
+  font-weight: 400;
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.hg-lede {
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.55;
+  color: var(--hg-fg-2);
+  text-wrap: pretty;
+  margin: 0;
+}
+
+.hg-body {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--hg-fg-2);
+  text-wrap: pretty;
+  margin: 0;
+}
+
+/* Mono is the tell that something is a DATUM — a date, a count, a spec, a
+ * row-list description. Never used for a claim. */
+.hg-mono {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  color: var(--hg-fg-2);
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+
+.hg-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hg-fg-3);
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+
+.hg-num {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5vw, 68px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══ Eyebrow ═════════════════════════════════════════════════════════════ */
+
+.hg-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hg-fg);
+}
+.hg-hatch {
+  flex: none;
+  display: block;
+  color: var(--hg-fg);
+}
+
+/* ═══ Pill CTA ════════════════════════════════════════════════════════════
+ * A square glyph block welded to a label. The block is the only inverted
+ * surface in the component, so the eye lands on the affordance and not on the
+ * word — which is what a button on a 132px headline has to do. */
+
+.hg-pill {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  border: var(--hg-rule) solid var(--hg-fg);
+  background: var(--hg-fg);
+  color: var(--hg-bg);
+  text-decoration: none;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  transition-property: background-color, color, border-color;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+.hg-pill-glyph {
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  border-inline-end: var(--hg-rule) solid var(--hg-bg);
+  background: var(--hg-fg);
+  color: var(--hg-bg);
+  transition-property: background-color, color;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+.hg-pill-label {
+  display: grid;
+  place-items: center;
+  padding-inline: 22px;
+  min-block-size: 44px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.hg-pill:hover {
+  background: var(--hg-bg);
+  color: var(--hg-fg);
+}
+.hg-pill:hover .hg-pill-glyph {
+  background: var(--hg-fg);
+  color: var(--hg-bg);
+}
+.hg-pill[data-variant='ghost'] {
+  background: transparent;
+  color: var(--hg-fg);
+  border-color: var(--hg-line);
+}
+.hg-pill[data-variant='ghost'] .hg-pill-glyph {
+  background: var(--hg-fg);
+  color: var(--hg-bg);
+  border-inline-end-color: var(--hg-line);
+}
+.hg-pill[data-variant='ghost']:hover {
+  border-color: var(--hg-fg);
+  background: var(--hg-fg);
+  color: var(--hg-bg);
+}
+
+/* ═══ Masthead ════════════════════════════════════════════════════════════ */
+
+.hg-mast {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  block-size: var(--hg-nav-h);
+  /* Occupies no flow space: the masthead sits OVER the first band rather than
+   * pushing it down, which is what lets the mark blend against the hero and
+   * flip exposure on scroll. Every page's first band pads for it. */
+  margin-block-end: calc(-1 * var(--hg-nav-h));
+  padding-inline: var(--hg-gutter);
+  color: var(--hg-fg);
+  /* No fill and no rule: the masthead sits ON the band beneath it and takes
+   * that band's exposure, which is why the mark flips from white to black as
+   * you scroll past the hero without a single line of script. */
+  background: transparent;
+  mix-blend-mode: difference;
+}
+/* `difference` against a near-black or near-white band resolves to the
+ * opposite, so one masthead serves both exposures. It has to be forced to a
+ * white ink for the blend to land. */
+.hg-mast, .hg-mast a { color: var(--color-primitive-white, #fff); }
+
+.hg-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  border-radius: var(--radius-xs);
+}
+.hg-mark svg { display: block; }
+.hg-mark-word {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.hg-burger {
+  display: grid;
+  gap: 5px;
+  inline-size: 44px;
+  block-size: 44px;
+  align-content: center;
+  justify-items: end;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+}
+.hg-burger > span {
+  display: block;
+  inline-size: 26px;
+  block-size: 1.5px;
+  background: currentColor;
+  transition-property: transform, opacity;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+.hg-burger[aria-expanded='true'] > span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hg-burger[aria-expanded='true'] > span:nth-child(2) { opacity: 0; }
+.hg-burger[aria-expanded='true'] > span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ═══ Menu overlay ════════════════════════════════════════════════════════ */
+
+.hg-menu {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  grid-template-rows: var(--hg-nav-h) 1fr auto;
+  background: var(--hg-bg);
+  color: var(--hg-fg);
+}
+.hg-menu-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(4px, 1vw, 10px);
+  padding-inline: var(--hg-gutter);
+  margin: 0;
+  list-style: none;
+}
+.hg-menu-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 18px;
+  padding-block: 6px;
+  font-family: var(--font-display);
+  font-size: clamp(38px, 7vw, 92px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--hg-fg-3);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: start;
+  transition-property: color;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+.hg-menu-link:hover,
+.hg-menu-link[aria-current='page'] { color: var(--hg-fg); }
+.hg-menu-idx {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--hg-fg-3);
+}
+.hg-menu-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  justify-content: space-between;
+  padding: var(--hg-gutter);
+  border-block-start: var(--hg-rule) solid var(--hg-line);
+}
+
+/* ═══ Plates — the imagery layer ══════════════════════════════════════════
+ * The site has no photography and does not fake any. Where the reference sheet
+ * runs a photograph, this runs a PLATE: a generated monochrome field —
+ * halftone dot matrix, contour lines, scan grid — drawn from the exposure's own
+ * aliases. It reads as instrumentation rather than stock, which is the honest
+ * register for a company whose product is a picture of the ground. */
+
+/* One rung above the ink ground, so a plate on a dark band still reads as an
+ * OBJECT sitting on the page rather than as a texture printed into it. */
+.hg-plate-el {
+  position: relative;
+  overflow: hidden;
+  background: var(--hg-plate);
+  color: var(--hg-fg);
+}
+.hg-plate-el > svg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+/* Vignette so a headline set over a plate keeps its contrast at every size.
+ * A scrim, never a flat fill — the same rule the map overlay grammar holds. */
+.hg-plate-el[data-scrim='true']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--color-primitive-mono-950) 82%, transparent),
+    color-mix(in oklab, var(--color-primitive-mono-950) 14%, transparent) 55%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* ═══ Row list — the measured table ═══════════════════════════════════════
+ * Four columns: mark · index · title + mono description · chevron. Every value
+ * that is a FACT is mono; the title is the only claim in the row. */
+
+.hg-rowlist {
+  border-block-start: var(--hg-rule) solid var(--hg-line);
+}
+.hg-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr auto;
+  align-items: start;
+  gap: var(--spacing-6);
+  padding: clamp(24px, 3vw, 40px) var(--hg-gutter);
+  border-block-end: var(--hg-rule) solid var(--hg-line);
+  text-decoration: none;
+  color: inherit;
+  background: none;
+  border-inline: 0;
+  border-block-start: 0;
+  inline-size: 100%;
+  text-align: start;
+  cursor: pointer;
+  transition-property: background-color;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+.hg-row:hover { background: var(--hg-line-2); }
+.hg-row-title {
+  font-size: clamp(17px, 1.6vw, 22px);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+}
+.hg-row-chev {
+  align-self: center;
+  color: var(--hg-fg-3);
+  transition-property: transform, color;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+.hg-row:hover .hg-row-chev {
+  color: var(--hg-fg);
+  transform: translateX(4px);
+}
+@media (max-width: 900px) {
+  .hg-row {
+    grid-template-columns: 1fr auto;
+    gap: var(--spacing-3);
+  }
+  .hg-row-mark { grid-column: 1 / -1; }
+}
+
+/* ═══ Cards ═══════════════════════════════════════════════════════════════ */
+
+.hg-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--hg-gutter);
+  padding-inline: var(--hg-gutter);
+}
+/* Filled, so the band's rule field passes between the cards instead of through
+ * them. Two rule systems crossing each other is noise; one behind the other is
+ * depth. */
+.hg-card {
+  padding: clamp(20px, 2.4vw, 32px);
+  border: var(--hg-rule) solid var(--hg-line);
+  background: var(--hg-bg);
+  min-inline-size: 0;
+}
+.hg-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-block-end: 18px;
+}
+.hg-card-glyph {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border: var(--hg-rule) solid var(--hg-line);
+  border-radius: var(--radius-xs);
+  color: var(--hg-fg);
+}
+.hg-card-title {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  margin: 0;
+  min-inline-size: 0;
+}
+.hg-card-value {
+  margin-inline-start: auto;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--hg-fg-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.hg-card-viz {
+  margin-block: 24px 20px;
+  color: var(--hg-fg);
+}
+.hg-card-foot {
+  display: flex;
+  gap: var(--spacing-6);
+  padding-block-start: 16px;
+  border-block-start: var(--hg-rule) solid var(--hg-line);
+}
+
+/* ═══ Tile grid — capabilities, values, benefits ══════════════════════════ */
+
+.hg-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0;
+  border-block-start: var(--hg-rule) solid var(--hg-line);
+}
+.hg-tile {
+  padding: clamp(24px, 2.6vw, 40px);
+  border-inline-start: var(--hg-rule) solid var(--hg-line);
+  border-block-end: var(--hg-rule) solid var(--hg-line);
+  min-inline-size: 0;
+}
+.hg-tile:first-child { border-inline-start: 0; }
+.hg-tile-idx {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--hg-fg-3);
+  display: block;
+  margin-block-end: clamp(28px, 4vw, 56px);
+}
+.hg-tile-title {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+}
+
+/* ═══ Split — heading left, content right ═════════════════════════════════ */
+
+.hg-split {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: clamp(24px, 4vw, 72px);
+  align-items: start;
+  padding-inline: var(--hg-gutter);
+  width: min(100%, 1440px);
+  margin-inline: auto;
+}
+@media (max-width: 900px) {
+  .hg-split { grid-template-columns: 1fr; }
+}
+
+/* ═══ Marquee band — the full-bleed image strip ═══════════════════════════ */
+
+.hg-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(260px, 1fr);
+  gap: var(--hg-gutter);
+  padding-inline: var(--hg-gutter);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+  scroll-snap-type: inline mandatory;
+}
+.hg-strip::-webkit-scrollbar { display: none; }
+.hg-strip > * {
+  scroll-snap-align: start;
+  aspect-ratio: 4 / 3;
+}
+
+/* ═══ Article cards ═══════════════════════════════════════════════════════ */
+
+.hg-news {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-block-start: var(--hg-rule) solid var(--hg-line);
+}
+@media (max-width: 900px) {
+  .hg-news { grid-template-columns: 1fr; }
+}
+.hg-news-lead {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(20px, 2.4vw, 36px);
+  border-inline-end: var(--hg-rule) solid var(--hg-line);
+  text-decoration: none;
+  color: inherit;
+}
+.hg-news-side { display: flex; flex-direction: column; }
+.hg-news-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: clamp(16px, 2vw, 28px);
+  align-items: start;
+  padding: clamp(20px, 2.4vw, 36px);
+  border-block-end: var(--hg-rule) solid var(--hg-line);
+  text-decoration: none;
+  color: inherit;
+  transition-property: background-color;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+.hg-news-item:hover,
+.hg-news-lead:hover { background: var(--hg-line-2); }
+.hg-news-title {
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  text-wrap: pretty;
+  margin: 0;
+}
+.hg-news-lead-title {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  padding: clamp(20px, 2.4vw, 32px);
+  font-size: clamp(20px, 2vw, 30px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-primitive-mono-50);
+  text-wrap: balance;
+  margin: 0;
+}
+
+/* ═══ Accordion ═══════════════════════════════════════════════════════════ */
+
+.hg-acc { border-block-start: var(--hg-rule) solid var(--hg-line); }
+.hg-acc-item { border-block-end: var(--hg-rule) solid var(--hg-line); }
+.hg-acc-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  inline-size: 100%;
+  padding: 22px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  text-align: start;
+  font-size: clamp(16px, 1.4vw, 19px);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.hg-acc-mark {
+  margin-inline-start: auto;
+  flex: none;
+  color: var(--hg-fg-3);
+  transition-property: transform, color;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+.hg-acc-trigger[aria-expanded='true'] .hg-acc-mark {
+  transform: rotate(45deg);
+  color: var(--hg-fg);
+}
+.hg-acc-panel { padding-block-end: 24px; }
+
+/* ═══ Footer ══════════════════════════════════════════════════════════════ */
+
+.hg-foot-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: var(--spacing-6);
+  padding: clamp(40px, 5vw, 72px) var(--hg-gutter);
+  border-block-start: var(--hg-rule) solid var(--hg-line);
+}
+@media (max-width: 900px) {
+  .hg-foot-cols { grid-template-columns: 1fr 1fr; }
+}
+.hg-foot-h {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hg-fg-3);
+  margin: 0 0 18px;
+}
+.hg-foot-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+.hg-foot-link {
+  font-size: 14.5px;
+  color: var(--hg-fg-2);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: start;
+  transition-property: color;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-out);
+}
+.hg-foot-link:hover { color: var(--hg-fg); }
+
+/* The oversized wordmark. Clipped by the viewport on purpose — a word that
+ * runs past the edge reads as a stamp on the page rather than a logo in a box,
+ * and it is the last thing the sheet says. */
+.hg-wordmark {
+  display: block;
+  inline-size: 100%;
+  padding-inline: var(--hg-gutter);
+  font-family: var(--font-display);
+  font-size: clamp(64px, 21.5vw, 320px);
+  font-weight: 700;
+  line-height: 0.78;
+  letter-spacing: -0.055em;
+  color: var(--hg-fg);
+  white-space: nowrap;
+  overflow: hidden;
+  margin: 0;
+  padding-block-start: clamp(20px, 3vw, 48px);
+}
+.hg-colophon {
+  padding: 22px var(--hg-gutter) clamp(28px, 3vw, 44px);
+  text-align: center;
+}
+
+/* ═══ Touch ═══════════════════════════════════════════════════════════════
+ * Every control on the sheet, in one rule. `manipulation` drops the 300ms
+ * double-tap-zoom wait, which is felt most on the tiles and rows — they animate
+ * on press, so the delay reads as the page being slow rather than as the
+ * browser waiting. The tap highlight is set deliberately rather than left to
+ * whatever blue the platform picks, because this sheet spends no chroma. */
+
+.hg-root :is(a, button, [role='tab'], input) {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ═══ Focus ═══════════════════════════════════════════════════════════════ */
+
+.hg-root :is(a, button):focus-visible {
+  outline: 2px solid var(--hg-fg);
+  outline-offset: 3px;
+  border-radius: var(--radius-xs);
+}
+
+/* ═══ Motion ══════════════════════════════════════════════════════════════
+ * State change only. The one scroll-linked effect is the statement reveal,
+ * which is a READING aid — it marks how far you have read — and it collapses
+ * to plain ink under reduced motion. */
+
+.hg-statement-word {
+  color: var(--hg-fg-3);
+  transition-property: color;
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-out);
+}
+.hg-statement-word[data-lit='true'] { color: var(--hg-fg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hg-statement-word { color: var(--hg-fg); }
+  .hg-burger > span,
+  .hg-row-chev,
+  .hg-acc-mark { transition: none; }
+}
+
+/* ═══ Layer tabs (Product) ════════════════════════════════════════════════
+ * The DS `Tabs` primitive wearing this sheet's grammar. The recipe's default
+ * is a lozenge on a filled track, which is right for a dense product panel and
+ * wrong for an editorial band — so the treatment here is a rule on the baseline
+ * plus weight, the same marker the identity bar uses. Position survives with no
+ * colour at all. */
+
+.hg-tabslist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  block-size: auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-block-end: var(--hg-rule) solid var(--hg-line);
+  border-radius: 0;
+}
+
+.hg-tab {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  block-size: auto;
+  padding: 16px 22px 16px 0;
+  margin-inline-end: 22px;
+  background: none;
+  border-radius: 0;
+  font-size: clamp(16px, 1.4vw, 19px);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--hg-fg-3);
+  box-shadow: none;
+  transition-property: color, box-shadow;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+.hg-tab:hover { color: var(--hg-fg-2); }
+.hg-tab[data-state='active'] {
+  color: var(--hg-fg);
+  background: none;
+  box-shadow: inset 0 -2px 0 0 var(--hg-fg);
+}
+
+.hg-layer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 64px);
+  margin: 0;
+  padding-block: clamp(32px, 4vw, 56px);
+}
+@media (max-width: 900px) {
+  .hg-layer { grid-template-columns: minmax(0, 1fr); }
+}
+
+.hg-specs {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-block-start: var(--hg-rule) solid var(--hg-line);
+}
+.hg-spec {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4);
+  padding-block: 14px;
+  border-block-end: var(--hg-rule) solid var(--hg-line);
+}

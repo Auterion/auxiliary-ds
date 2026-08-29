@@ -75,6 +75,8 @@ Blocks are reserved by subject so IDs stay legible as the log grows:
 | [AD-D-012](AD-D-012-grid-and-columns.md) | Adopt a 4px spatial base with no fixed column system | proposed | 2026-08-03 |
 | [AD-D-013](AD-D-013-visual-direction.md) | Direction: operational truth, expressed with precision | proposed | 2026-08-03 |
 | [AD-D-014](AD-D-014-reserved-status-ladder.md) | The five-level status ladder is reserved and regulated | ratified | 2026-08-03 |
+| [AD-D-015](AD-D-015-anchor-auterion-blue-on-the-shipped-blue.md) | Anchor `auterion-blue` on the blue the products already ship | proposed | 2026-08-28 |
+| [AD-D-016](AD-D-016-nemyx-enters-the-brand-hierarchy.md) | Nemyx enters the brand hierarchy as a product under Auterion | proposed | 2026-08-28 |
 | [AD-D-020](AD-D-020-theme-and-register-axes.md) | Two orthogonal axes: theme for colour, register for the rest | ratified | 2026-08-03 |
 | [AD-D-021](AD-D-021-token-naming.md) | Emit tier-stripped, role-based custom-property names | ratified | 2026-08-03 |
 | [AD-D-022](AD-D-022-figma-loop-policy.md) | Figma mirrors code; reads are report-only | ratified | 2026-07-29 |
@@ -86,6 +88,7 @@ Blocks are reserved by subject so IDs stay legible as the log grows:
 | [AD-D-035](AD-D-035-pre-1.0-clean-breaks.md) | Pre-1.0: clean breaks, never deprecation shims | ratified | 2026-05-26 |
 | [AD-D-036](AD-D-036-air-gap-first.md) | No runtime network dependency, ever | ratified | 2026-08-03 |
 | [AD-D-037](AD-D-037-brand-surfaces-use-tokens.md) | Brand surfaces reference token vars, not literals | ratified | 2026-06-07 |
+| [AD-D-038](AD-D-038-ecosystem-shell-is-its-own-package.md) | The ecosystem shell ships as `@auxiliary/shell`, its own package | proposed | 2026-08-28 |
 
 ## Retroactive entries
 

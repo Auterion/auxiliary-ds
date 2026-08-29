@@ -5527,6 +5527,452 @@
       }
     ]
   },
+  "identityBar": {
+    "api": {},
+    "defaults": {},
+    "slots": [
+      "root",
+      "mark",
+      "word",
+      "slash",
+      "surface",
+      "apps",
+      "dots",
+      "dot",
+      "tabs",
+      "tab",
+      "grow",
+      "right",
+      "org",
+      "account"
+    ],
+    "common": {
+      "root": {
+        "properties": {
+          "align-items": {
+            "value": "center"
+          },
+          "background-color": {
+            "figma": "Theme/card"
+          },
+          "border-color": {
+            "figma": "Theme/border"
+          },
+          "color": {
+            "figma": "Theme/card-foreground"
+          },
+          "display": {
+            "value": "flex"
+          },
+          "height": {
+            "refs": [
+              {
+                "var": "--component-identity-bar-height",
+                "figma": "Component/identity-bar/height"
+              },
+              {
+                "var": "--target-floor",
+                "figma": "Global/target/floor"
+              },
+              {
+                "var": "--component-identity-bar-height-offset",
+                "figma": "Component/identity-bar/height-offset"
+              }
+            ],
+            "value": "calc(max(var(--component-identity-bar-height), var(--target-floor)) + var(--component-identity-bar-height-offset))"
+          },
+          "padding-inline": {
+            "figma": "Component/identity-bar/padding-x"
+          }
+        }
+      },
+      "mark": {
+        "properties": {
+          "color": {
+            "figma": "Theme/brand"
+          },
+          "height": {
+            "figma": "Component/identity-bar/mark/icon-size"
+          },
+          "width": {
+            "figma": "Component/identity-bar/mark/icon-size"
+          }
+        },
+        "states": {
+          "[&>*]": {
+            "display": {
+              "value": "block"
+            }
+          }
+        }
+      },
+      "word": {
+        "properties": {
+          "color": {
+            "figma": "Theme/foreground"
+          },
+          "font-size": {
+            "figma": "Global/text/xs"
+          },
+          "font-weight": {
+            "figma": "Global/font-weight/medium"
+          },
+          "margin-inline-end": {
+            "refs": [
+              {
+                "var": "--component-identity-bar-mark-gap",
+                "figma": "Component/identity-bar/mark/gap"
+              }
+            ],
+            "value": "calc(var(--component-identity-bar-mark-gap) - 0.3em)"
+          },
+          "margin-inline-start": {
+            "figma": "Component/identity-bar/mark/gap"
+          },
+          "text-transform": {
+            "value": "uppercase"
+          },
+          "white-space": {
+            "value": "nowrap"
+          }
+        }
+      },
+      "slash": {
+        "properties": {
+          "font-size": {
+            "figma": "Global/text/xs"
+          }
+        }
+      },
+      "surface": {
+        "properties": {
+          "color": {
+            "figma": "Theme/muted-foreground"
+          },
+          "font-size": {
+            "figma": "Global/text/xs"
+          },
+          "font-weight": {
+            "figma": "Global/font-weight/medium"
+          },
+          "margin-inline-end": {
+            "refs": [
+              {
+                "var": "--component-identity-bar-surface-gap",
+                "figma": "Component/identity-bar/surface/gap"
+              }
+            ],
+            "value": "calc(var(--component-identity-bar-surface-gap) - 0.24em)"
+          },
+          "margin-inline-start": {
+            "figma": "Component/identity-bar/mark/gap"
+          },
+          "text-transform": {
+            "value": "uppercase"
+          },
+          "white-space": {
+            "value": "nowrap"
+          }
+        }
+      },
+      "apps": {
+        "properties": {
+          "border-radius": {
+            "figma": "Component/identity-bar/apps/radius"
+          },
+          "color": {
+            "figma": "Theme/muted-foreground"
+          },
+          "display": {
+            "value": "grid"
+          },
+          "height": {
+            "refs": [
+              {
+                "var": "--component-identity-bar-apps-size",
+                "figma": "Component/identity-bar/apps/size"
+              },
+              {
+                "var": "--target-floor",
+                "figma": "Global/target/floor"
+              }
+            ],
+            "value": "max(var(--component-identity-bar-apps-size), var(--target-floor))"
+          },
+          "transition-duration": {
+            "figma": "Global/duration/fast"
+          },
+          "width": {
+            "refs": [
+              {
+                "var": "--component-identity-bar-apps-size",
+                "figma": "Component/identity-bar/apps/size"
+              },
+              {
+                "var": "--target-floor",
+                "figma": "Global/target/floor"
+              }
+            ],
+            "value": "max(var(--component-identity-bar-apps-size), var(--target-floor))"
+          }
+        },
+        "states": {
+          "focus-visible": {
+            "--tw-ring-color": {
+              "figma": "Theme/ring"
+            },
+            "--tw-ring-offset-color": {
+              "figma": "Theme/card"
+            }
+          },
+          "hover": {
+            "background-color": {
+              "figma": "Theme/accent"
+            },
+            "color": {
+              "figma": "Theme/foreground"
+            }
+          }
+        }
+      },
+      "dots": {
+        "properties": {
+          "display": {
+            "value": "grid"
+          },
+          "gap": {
+            "figma": "Component/identity-bar/apps/dot-gap"
+          }
+        }
+      },
+      "dot": {
+        "properties": {
+          "border-radius": {
+            "figma": "Global/radius/full"
+          },
+          "height": {
+            "figma": "Component/identity-bar/apps/dot"
+          },
+          "width": {
+            "figma": "Component/identity-bar/apps/dot"
+          }
+        }
+      },
+      "tabs": {
+        "properties": {
+          "align-items": {
+            "value": "stretch"
+          },
+          "display": {
+            "value": "flex"
+          },
+          "margin-inline-start": {
+            "figma": "Component/identity-bar/mark/gap"
+          },
+          "min-width": {
+            "figma": "Component/identity-bar/tabs/min-width"
+          }
+        },
+        "states": {
+          "[&::-webkit-scrollbar]": {
+            "display": {
+              "value": "none"
+            }
+          }
+        }
+      },
+      "tab": {
+        "properties": {
+          "align-items": {
+            "value": "center"
+          },
+          "color": {
+            "figma": "Theme/muted-foreground"
+          },
+          "display": {
+            "value": "inline-flex"
+          },
+          "font-size": {
+            "figma": "Global/text/xs"
+          },
+          "padding-inline": {
+            "figma": "Component/identity-bar/tab/padding-x"
+          },
+          "transition-duration": {
+            "figma": "Global/duration/fast"
+          },
+          "white-space": {
+            "value": "nowrap"
+          }
+        },
+        "states": {
+          "aria-[current=page]": {
+            "--tw-shadow": {
+              "refs": [
+                {
+                  "var": "--component-identity-bar-tab-marker",
+                  "figma": "Component/identity-bar/tab/marker"
+                },
+                {
+                  "var": "--brand",
+                  "figma": "Theme/brand"
+                }
+              ],
+              "value": "inset 0 var(--tw-shadow-color, calc(-1 * var(--component-identity-bar-tab-marker))) 0 0 var(--brand)"
+            },
+            "color": {
+              "figma": "Theme/foreground"
+            },
+            "font-weight": {
+              "figma": "Global/font-weight/semibold"
+            }
+          },
+          "focus-visible": {
+            "--tw-ring-color": {
+              "figma": "Theme/ring"
+            }
+          },
+          "hover": {
+            "color": {
+              "figma": "Theme/foreground"
+            }
+          }
+        }
+      },
+      "grow": {
+        "properties": {
+          "min-width": {
+            "figma": "Global/spacing/0"
+          }
+        }
+      },
+      "right": {
+        "properties": {
+          "align-items": {
+            "value": "center"
+          },
+          "display": {
+            "value": "flex"
+          },
+          "gap": {
+            "figma": "Component/identity-bar/right/gap"
+          }
+        }
+      },
+      "org": {
+        "properties": {
+          "align-items": {
+            "value": "center"
+          },
+          "border-color": {
+            "figma": "Theme/border"
+          },
+          "border-radius": {
+            "figma": "Component/identity-bar/org/radius"
+          },
+          "border-style": {
+            "value": "var(--tw-border-style)"
+          },
+          "border-width": {
+            "value": "1px"
+          },
+          "color": {
+            "figma": "Theme/foreground"
+          },
+          "display": {
+            "value": "inline-flex"
+          },
+          "font-family": {
+            "figma": "Global/font/mono"
+          },
+          "font-size": {
+            "figma": "Global/text/2xs"
+          },
+          "gap": {
+            "figma": "Component/identity-bar/org/gap"
+          },
+          "padding-block": {
+            "figma": "Component/identity-bar/org/padding-y"
+          },
+          "padding-inline": {
+            "figma": "Component/identity-bar/org/padding-x"
+          },
+          "text-transform": {
+            "value": "uppercase"
+          },
+          "white-space": {
+            "value": "nowrap"
+          }
+        }
+      },
+      "account": {
+        "properties": {
+          "border-radius": {
+            "figma": "Component/identity-bar/account/radius"
+          },
+          "color": {
+            "figma": "Theme/muted-foreground"
+          },
+          "display": {
+            "value": "grid"
+          },
+          "height": {
+            "refs": [
+              {
+                "var": "--component-identity-bar-account-size",
+                "figma": "Component/identity-bar/account/size"
+              },
+              {
+                "var": "--target-floor",
+                "figma": "Global/target/floor"
+              }
+            ],
+            "value": "max(var(--component-identity-bar-account-size), var(--target-floor))"
+          },
+          "transition-duration": {
+            "figma": "Global/duration/fast"
+          },
+          "width": {
+            "refs": [
+              {
+                "var": "--component-identity-bar-account-size",
+                "figma": "Component/identity-bar/account/size"
+              },
+              {
+                "var": "--target-floor",
+                "figma": "Global/target/floor"
+              }
+            ],
+            "value": "max(var(--component-identity-bar-account-size), var(--target-floor))"
+          }
+        },
+        "states": {
+          "focus-visible": {
+            "--tw-ring-color": {
+              "figma": "Theme/ring"
+            },
+            "--tw-ring-offset-color": {
+              "figma": "Theme/card"
+            }
+          },
+          "hover": {
+            "background-color": {
+              "figma": "Theme/accent"
+            },
+            "color": {
+              "figma": "Theme/foreground"
+            }
+          }
+        }
+      }
+    },
+    "matrix": [
+      {
+        "props": {},
+        "slots": {}
+      }
+    ]
+  },
   "input": {
     "api": {
       "size": [
@@ -5878,6 +6324,360 @@
           },
           "font-weight": {
             "figma": "Global/font-weight/medium"
+          }
+        }
+      }
+    },
+    "matrix": [
+      {
+        "props": {},
+        "slots": {}
+      }
+    ]
+  },
+  "launcher": {
+    "api": {},
+    "defaults": {},
+    "slots": [
+      "root",
+      "head",
+      "tiles",
+      "tile",
+      "tileTop",
+      "glyph",
+      "title",
+      "name",
+      "formal",
+      "blurb",
+      "chips",
+      "chip",
+      "chipLabel",
+      "foot"
+    ],
+    "common": {
+      "root": {
+        "properties": {
+          "padding-bottom": {
+            "figma": "Component/launcher/padding"
+          },
+          "padding-inline": {
+            "figma": "Component/launcher/padding"
+          },
+          "padding-top": {
+            "figma": "Component/launcher/padding-top"
+          }
+        },
+        "states": {
+          "@max-2xl": {
+            "padding": {
+              "figma": "Component/launcher/padding-compact"
+            }
+          }
+        }
+      },
+      "head": {
+        "properties": {
+          "align-items": {
+            "value": "flex-end"
+          },
+          "display": {
+            "value": "flex"
+          },
+          "flex-wrap": {
+            "value": "wrap"
+          },
+          "gap": {
+            "figma": "Component/launcher/head/gap"
+          },
+          "justify-content": {
+            "value": "space-between"
+          },
+          "margin-bottom": {
+            "figma": "Component/launcher/head/margin-bottom"
+          }
+        }
+      },
+      "tiles": {
+        "properties": {
+          "display": {
+            "value": "grid"
+          },
+          "gap": {
+            "figma": "Component/launcher/tiles/gap"
+          }
+        }
+      },
+      "tile": {
+        "properties": {
+          "align-items": {
+            "value": "stretch"
+          },
+          "background-color": {
+            "figma": "Theme/card"
+          },
+          "border-color": {
+            "figma": "Theme/border"
+          },
+          "border-radius": {
+            "figma": "Component/launcher/tile/radius"
+          },
+          "border-style": {
+            "value": "var(--tw-border-style)"
+          },
+          "border-width": {
+            "value": "1px"
+          },
+          "color": {
+            "figma": "Theme/card-foreground"
+          },
+          "display": {
+            "value": "flex"
+          },
+          "flex-direction": {
+            "value": "column"
+          },
+          "gap": {
+            "figma": "Component/launcher/tile/gap"
+          },
+          "padding": {
+            "figma": "Component/launcher/tile/padding"
+          },
+          "text-decoration-line": {
+            "value": "none"
+          },
+          "transition-duration": {
+            "figma": "Global/duration/base"
+          }
+        },
+        "states": {
+          "data-[proposed=true]": {
+            "border-style": {
+              "value": "dashed"
+            }
+          },
+          "focus-visible": {
+            "--tw-ring-color": {
+              "figma": "Theme/ring"
+            },
+            "--tw-ring-offset-color": {
+              "figma": "Theme/background"
+            }
+          },
+          "hover": {
+            "border-color": {
+              "figma": "Theme/muted-foreground"
+            }
+          }
+        }
+      },
+      "tileTop": {
+        "properties": {
+          "align-items": {
+            "value": "center"
+          },
+          "display": {
+            "value": "flex"
+          },
+          "gap": {
+            "figma": "Component/launcher/tile/gap"
+          }
+        }
+      },
+      "glyph": {
+        "properties": {
+          "background-color": {
+            "figma": "Theme/muted"
+          },
+          "border-color": {
+            "figma": "Theme/border"
+          },
+          "border-radius": {
+            "figma": "Component/launcher/glyph/radius"
+          },
+          "border-style": {
+            "value": "var(--tw-border-style)"
+          },
+          "border-width": {
+            "value": "1px"
+          },
+          "color": {
+            "figma": "Theme/foreground"
+          },
+          "display": {
+            "value": "grid"
+          },
+          "padding": {
+            "figma": "Component/launcher/glyph/padding"
+          }
+        },
+        "states": {
+          "[&>svg]": {
+            "display": {
+              "value": "block"
+            },
+            "height": {
+              "figma": "Component/launcher/glyph/icon-size"
+            },
+            "width": {
+              "figma": "Component/launcher/glyph/icon-size"
+            }
+          }
+        }
+      },
+      "title": {
+        "properties": {
+          "color": {
+            "figma": "Theme/foreground"
+          },
+          "font-family": {
+            "figma": "Global/font/display"
+          },
+          "font-size": {
+            "figma": "Global/text/2xl"
+          },
+          "font-weight": {
+            "figma": "Global/font-weight/semibold"
+          },
+          "letter-spacing": {
+            "figma": "Global/tracking/tight"
+          },
+          "line-height": {
+            "figma": "Global/leading/tight"
+          }
+        }
+      },
+      "name": {
+        "properties": {
+          "color": {
+            "figma": "Theme/foreground"
+          },
+          "font-family": {
+            "figma": "Global/font/display"
+          },
+          "font-size": {
+            "figma": "Global/text/xl"
+          },
+          "font-weight": {
+            "figma": "Global/font-weight/semibold"
+          },
+          "letter-spacing": {
+            "figma": "Global/tracking/tight"
+          },
+          "line-height": {
+            "figma": "Global/leading/tight"
+          }
+        }
+      },
+      "formal": {
+        "properties": {
+          "color": {
+            "figma": "Theme/muted-foreground"
+          },
+          "display": {
+            "value": "block"
+          },
+          "font-size": {
+            "figma": "Global/text/2xs"
+          },
+          "text-transform": {
+            "value": "uppercase"
+          }
+        }
+      },
+      "blurb": {
+        "properties": {
+          "color": {
+            "figma": "Theme/muted-foreground"
+          },
+          "font-size": {
+            "figma": "Global/text/sm"
+          },
+          "line-height": {
+            "figma": "Global/leading/normal"
+          }
+        }
+      },
+      "chips": {
+        "properties": {
+          "display": {
+            "value": "flex"
+          },
+          "flex-wrap": {
+            "value": "wrap"
+          },
+          "gap": {
+            "figma": "Component/launcher/chips/gap"
+          },
+          "padding-top": {
+            "figma": "Component/launcher/chips/padding-top"
+          }
+        }
+      },
+      "chip": {
+        "properties": {
+          "align-items": {
+            "value": "center"
+          },
+          "border-color": {
+            "figma": "Theme/border"
+          },
+          "border-radius": {
+            "figma": "Component/launcher/chip/radius"
+          },
+          "border-style": {
+            "value": "var(--tw-border-style)"
+          },
+          "border-width": {
+            "value": "1px"
+          },
+          "color": {
+            "figma": "Theme/muted-foreground"
+          },
+          "display": {
+            "value": "inline-flex"
+          },
+          "font-family": {
+            "figma": "Global/font/mono"
+          },
+          "font-size": {
+            "figma": "Global/text/2xs"
+          },
+          "gap": {
+            "figma": "Component/launcher/chip/gap"
+          },
+          "padding-block": {
+            "figma": "Component/launcher/chip/padding-y"
+          },
+          "padding-inline": {
+            "figma": "Component/launcher/chip/padding-x"
+          },
+          "text-transform": {
+            "value": "uppercase"
+          }
+        }
+      },
+      "foot": {
+        "properties": {
+          "align-items": {
+            "value": "center"
+          },
+          "color": {
+            "figma": "Theme/muted-foreground"
+          },
+          "display": {
+            "value": "flex"
+          },
+          "flex-wrap": {
+            "value": "wrap"
+          },
+          "font-size": {
+            "figma": "Global/text/xs"
+          },
+          "gap": {
+            "figma": "Component/launcher/foot/gap"
+          },
+          "margin-top": {
+            "figma": "Component/launcher/foot/margin-top"
           }
         }
       }

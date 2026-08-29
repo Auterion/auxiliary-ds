@@ -1,193 +1,30 @@
-/* "One Auterion" — the surface declaration table.
+/* The ecosystem demo's page-local layer.
  *
- * The proposal's whole claim is that the ecosystem layer is ONE component and
- * ONE table. This is the table. Every panel on the page reads from it: the
- * launcher tiles, the five identity bars, the spec ledger, and the object
- * resolver. Nothing on the page restates a surface's theme, register or
- * context level in markup — so a caption cannot go stale against the specimen
- * sitting above it, and adding a sixth surface is a row, not a redesign.
+ * The surface declaration table itself now lives in `@auxiliary/shell`
+ * (AD-D-038) — this page is a CONSUMER of it, not the place it is defined,
+ * which is the only way the specimen sheet proves anything about the shipped
+ * artifact rather than about a copy that happens to sit beside it. Everything
+ * re-exported below is the package's, verbatim.
  *
- * The values are the ones the proposal read out of the four product repos
- * (suite · vehicle-webapp-ui · trellys · auterion-qgroundcontrol), plus the
- * brand manifest's `themes` array per logo entry.
+ * What stays here is the OBJECT GRAMMAR: a contract this page argues for and
+ * that no product has agreed to yet. It is a proposal, so it lives with the
+ * proposal.
  */
+export {
+  SURFACES,
+  SURFACE_BY_ID,
+  THEMES,
+  REGISTERS,
+  type Surface,
+  type SurfaceId,
+  type ThemeKey,
+  type RegisterKey,
+} from '@auxiliary/shell';
 
-export type ThemeKey = 'light' | 'sunlight' | 'dark' | 'darknight';
-export type RegisterKey = 'expressive' | 'operational';
-export type SurfaceId =
-  | 'suite'
-  | 'control'
-  | 'sim'
-  | 'nemyx'
-  | 'device'
-  | 'insights'
-  | 'deploy'
-  | 'store'
-  | 'docs';
-
-export interface Surface {
-  id: SurfaceId;
-  /** What the bar prints after the slash. Natural case — CSS uppercases it. */
-  chrome: string;
-  /** The name the product keeps in the field and on its download page. */
-  formal: string;
-  /** What the surface is, and what you do there. One line, sentence case. */
-  blurb: string;
-  /** Context level — the L2 / L3 / L4 ladder the design system already draws. */
-  level: string;
-  /** The theme this surface lands in by default. */
-  theme: ThemeKey;
-  /** Every theme it must support — the brand manifest's `themes` for its logo. */
-  themes: ThemeKey[];
-  register: RegisterKey;
-  /** Surface-local navigation. The bar renders whatever it is handed. */
-  tabs: string[];
-  /** The stack it runs on today — why adoption is cheap here and dear there. */
-  stack: string;
-  /** Not a surface yet. The proposal's sixth tile. */
-  proposed?: boolean;
-}
-
-export const SURFACES: Surface[] = [
-  {
-    id: 'suite',
-    chrome: 'Suite',
-    formal: 'AuterionSuite',
-    blurb: 'Fleet, flights, assets and compliance across every vehicle you operate.',
-    level: 'L2 Conventional',
-    theme: 'light',
-    themes: ['light', 'dark'],
-    register: 'expressive',
-    tabs: ['Overview', 'Fleet', 'Operations', 'Store'],
-    stack: 'Vue 3.3 · Tailwind 2.2.7 · darkMode off',
-  },
-  {
-    id: 'control',
-    chrome: 'Control',
-    formal: 'Auterion Mission Control',
-    blurb: 'The ground control station. Map, multi-vehicle, payload, guarded actions.',
-    level: 'L3 Operational / L4 Mission-critical',
-    theme: 'dark',
-    themes: ['dark', 'darknight'],
-    register: 'operational',
-    tabs: ['Fly', 'Plan', 'Analyze'],
-    stack: 'C++20 · Qt 6 · QML',
-  },
-  {
-    id: 'sim',
-    chrome: 'Sim',
-    formal: 'Auterion Simulation',
-    blurb: 'Fly the plan against a simulated vehicle before the real one leaves the ground.',
-    level: 'L2 rehearsal of an L3 surface',
-    /* Simulation is the one surface that declares ANOTHER surface's axes on
-     * purpose. A rehearsal drawn in a light, roomy desk theme would train the
-     * operator on a screen they will never see again — so it takes Control's
-     * dark/operational pair, and the launcher tile says so before you click. */
-    theme: 'dark',
-    themes: ['dark', 'darknight'],
-    register: 'operational',
-    tabs: ['Scenario', 'Fly', 'Results'],
-    stack: 'proposed — not scanned',
-    proposed: true,
-  },
-  {
-    id: 'nemyx',
-    chrome: 'Nemyx',
-    formal: 'Nemyx',
-    blurb: 'Swarm command. Selection groups, formations, one screen, keyboard first.',
-    level: 'L4 Mission-critical',
-    theme: 'dark',
-    // The only surface that needs all three operational themes: it is the one
-    // designed for a tablet held outdoors. `sunlight` ships in the token set
-    // and has no consumer today — this is it.
-    themes: ['dark', 'darknight', 'sunlight'],
-    register: 'operational',
-    tabs: [],
-    stack: 'Vue 3.5 · Tailwind v4 · local c2-* tokens',
-  },
-  {
-    id: 'device',
-    chrome: 'Device',
-    formal: 'AuterionOS',
-    blurb: 'On-vehicle admin. System status, radios, apps, security and diagnostics.',
-    level: 'L2 device admin',
-    theme: 'light',
-    themes: ['light', 'dark'],
-    register: 'expressive',
-    tabs: ['Status', 'Network', 'Apps', 'Security'],
-    stack: 'Vue 3.2 · Tailwind 2.2.7 · darkMode off',
-  },
-  {
-    id: 'insights',
-    chrome: 'Insights',
-    formal: 'Auterion Insights',
-    blurb: 'What the fleet actually did. Utilisation, anomalies, plan against flown, exports.',
-    level: 'L2 Conventional',
-    theme: 'light',
-    themes: ['light', 'dark'],
-    register: 'expressive',
-    tabs: ['Fleet', 'Sorties', 'Anomalies', 'Reports'],
-    stack: 'proposed — not scanned',
-    proposed: true,
-  },
-  {
-    id: 'deploy',
-    chrome: 'Deploy',
-    formal: 'Auterion Deploy',
-    blurb: 'Software to the fleet in rings, with a staged rollout you can stop halfway.',
-    level: 'L2 Conventional',
-    theme: 'light',
-    themes: ['light', 'dark'],
-    register: 'expressive',
-    tabs: ['Releases', 'Rollouts', 'Devices'],
-    stack: 'proposed — not scanned',
-    proposed: true,
-  },
-  {
-    id: 'store',
-    chrome: 'Store',
-    formal: 'Auterion Store',
-    blurb: 'Apps, licences, Mission Control builds, AuterionOS releases, developer tools.',
-    level: 'L2 Conventional',
-    theme: 'light',
-    themes: ['light', 'dark'],
-    register: 'expressive',
-    tabs: ['Apps', 'Licences', 'Builds'],
-    stack: 'Vue 3.3 · Tailwind 2.2.7',
-  },
-  {
-    id: 'docs',
-    chrome: 'Docs',
-    formal: 'Auterion Docs',
-    blurb: 'The manual, at equal weight in the grid — the tile a new operator opens first.',
-    level: 'L1 Reference',
-    theme: 'light',
-    themes: ['light', 'dark'],
-    register: 'expressive',
-    tabs: [],
-    stack: 'proposed — the slot the wiki takes',
-    proposed: true,
-  },
-];
-
-export const SURFACE_BY_ID = Object.fromEntries(
-  SURFACES.map((s) => [s.id, s]),
-) as Record<SurfaceId, Surface>;
+import { type SurfaceId } from '@auxiliary/shell';
 
 /** The three surfaces the page draws in situ — the proposal's own three. */
 export const IN_SITU: SurfaceId[] = ['suite', 'control', 'nemyx'];
-
-export const THEMES: { key: ThemeKey; label: string }[] = [
-  { key: 'light', label: 'Light' },
-  { key: 'sunlight', label: 'Sunlight' },
-  { key: 'dark', label: 'Dark' },
-  { key: 'darknight', label: 'Darknight' },
-];
-
-export const REGISTERS: { key: RegisterKey; label: string }[] = [
-  { key: 'expressive', label: 'Expressive' },
-  { key: 'operational', label: 'Operational' },
-];
 
 /* ── The object grammar ───────────────────────────────────────────────────
  *

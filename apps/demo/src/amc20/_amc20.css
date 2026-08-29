@@ -1,0 +1,330 @@
+/* AMC20 — the two asks, on the desktop that actually ships
+ *
+ * FlyView answers the same two items on the AMC27 tablet, where there is no
+ * legacy chrome to disturb and no right mouse button to argue over. This file
+ * is the harder and more useful half: the SAME two answers, dropped into a
+ * faithful reproduction of the AMC desktop screenshot the thread is about, so
+ * the change can be judged as a diff rather than as a vision.
+ *
+ * ── The one deliberate split, stated up front ──────────────────────────────
+ *
+ * The UNTOUCHED chrome is drawn in AMC's own current palette — the teal vehicle
+ * cell, the cyan telemetry, the black rail discs, the OSM basemap. Those are
+ * raw values on purpose: they are CONTENT being shown, not styling being
+ * invented, and redrawing the incumbent in design-system tokens would quietly
+ * improve the thing the proposal is supposed to be measured against. (Same
+ * exemption `strike/_strike.css` takes, for the same reason.)
+ *
+ * Everything the proposal TOUCHES — the arm plate and the command dial —
+ * resolves through design-system tokens, and reuses the components FlyView
+ * already defines rather than restating them. That is why the changed parts
+ * re-theme and the untouched parts do not: the split is the argument.
+ *
+ * Namespaced `a20-`; the changed parts carry `fv-` because they are literally
+ * the same components. Demo layer — no token, recipe or component change.
+ */
+
+.a20 {
+  /* The window. 16:10, the aspect the screenshot is at. */
+  --a20-w: 1400px;
+  --a20-h: 875px;
+
+  /* The incumbent's own chrome. Raw, and deliberately so — see the header. */
+  --a20-bar: #1b1c1e;
+  --a20-bar-line: #303236;
+  --a20-ink: #f2f3f4;
+  --a20-ink-2: #a8adb3;
+  --a20-teal: #0f8a76;
+  --a20-cyan: #3ed0e0;
+  --a20-badge: #e0392f;
+  --a20-disc: #141517;
+  --a20-disc-line: #34363a;
+  --a20-pill: #0a0b0c;
+  --a20-panel: rgb(18 19 21 / 0.9);
+
+  /* The basemap. An OSM carto reproduction; every value here is imagery. */
+  --a20-map: #f2efe9;
+  --a20-park: #cfe3bb;
+  --a20-water: #a9cbe8;
+  --a20-motorway: #c8a6de;
+  --a20-secondary: #f7dc84;
+  --a20-minor: #ffffff;
+  --a20-map-ink: #6d7075;
+
+  --a20-dur: var(--duration-fast);
+  --a20-ease: var(--ease-out);
+}
+
+/* ═══ Stage ════════════════════════════════════════════════════════════════ */
+
+.a20-stage {
+  position: relative;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  padding: 84px 32px 104px;
+  background: radial-gradient(90% 70% at 50% -10%, var(--card) 0%, var(--background) 60%);
+  color: var(--foreground);
+}
+
+.a20-caption { position: absolute; left: 32px; top: 26px; user-select: none; }
+.a20-controls {
+  position: absolute;
+  right: 32px;
+  top: 22px;
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ═══ The window ═══════════════════════════════════════════════════════════ */
+
+.a20-window {
+  position: relative;
+  width: var(--a20-w);
+  max-width: 100%;
+  /* off-ladder: an OS window corner — desktop-environment chrome, not a UI radius. */
+  border-radius: 11px;
+  overflow: hidden;
+  border: 1px solid #cfd1d4;
+  background: #f6f6f6;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.28);
+  user-select: none;
+}
+.a20-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 38px;
+  background: #f6f6f6;
+  border-bottom: 1px solid #e2e3e5;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: #3b3d40;
+}
+.a20-titlebar-buttons {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  gap: 16px;
+  color: #6c6e71;
+}
+
+.a20-screen {
+  position: relative;
+  height: var(--a20-h);
+  background: var(--a20-map);
+  overflow: hidden;
+}
+
+/* ═══ Top bar ══════════════════════════════════════════════════════════════ */
+
+.a20-topbar {
+  position: relative;
+  /* off-ladder: measured off the incumbent screenshot, which is what this row
+     is reproducing; it is not a control on the system's height ladder. */
+  z-index: 1;
+  display: flex;
+  align-items: stretch;
+  height: 56px;
+  background: var(--a20-bar);
+  color: var(--a20-ink);
+}
+.a20-mark {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  border-right: 1px solid var(--a20-bar-line);
+}
+.a20-vehicle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-inline: 14px;
+  background: var(--a20-teal);
+  min-width: 152px;
+}
+.a20-badge {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border-radius: var(--radius-full);
+  background: var(--a20-badge);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+}
+.a20-drop {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding-inline: 16px;
+  background: transparent;
+  color: var(--a20-ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  cursor: pointer;
+}
+.a20-drop:hover { background: rgb(255 255 255 / 0.06); }
+.a20-chip {
+  display: inline-grid;
+  place-items: center;
+  padding: 3px 6px;
+  border: 1px solid var(--a20-ink-2);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--a20-ink);
+}
+.a20-cyan { color: var(--a20-cyan); }
+.a20-pct {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--a20-cyan);
+}
+
+/* ═══ The rail ═════════════════════════════════════════════════════════════
+ * Five discs with detached black label pills. The disc and its pill are two
+ * objects that mean one thing, which is the first thing FlyView's dial fixed
+ * on the tablet — kept here exactly as it ships, because this is the BEFORE.
+ */
+
+.a20-rail {
+  position: absolute;
+  left: 18px;
+  top: 76px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.a20-rail-group { display: flex; flex-direction: column; gap: 10px; }
+.a20-rail-row { display: flex; align-items: center; gap: 8px; }
+.a20-disc {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--a20-disc-line);
+  background: var(--a20-disc);
+  color: var(--a20-ink);
+  cursor: pointer;
+  transition: background-color var(--a20-dur) var(--a20-ease);
+}
+.a20-disc:hover { background: #202124; }
+.a20-tag {
+  padding: 5px 9px;
+  border-radius: var(--radius-xs);
+  background: var(--a20-pill);
+  color: var(--a20-ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  white-space: nowrap;
+}
+/* The pair the thread named: an instant command directly above a silent
+ * estimator reset, same size, same colour, nothing between them. Marked in the
+ * BEFORE so the diff has something to point at. */
+.a20-hazard-pair {
+  outline: 2px dashed var(--warning-emphasis);
+  outline-offset: 5px;
+  border-radius: var(--radius-md);
+}
+
+/* ═══ Panels ═══════════════════════════════════════════════════════════════ */
+
+.a20-panel {
+  background: var(--a20-panel);
+  border-radius: var(--radius-sm);
+  color: var(--a20-ink);
+  backdrop-filter: blur(8px);
+}
+.a20-meas {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--a20-cyan);
+}
+.a20-key {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--a20-ink);
+}
+.a20-unit-2 {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--a20-ink-2);
+}
+
+.a20-video {
+  position: absolute;
+  left: 84px;
+  bottom: 18px;
+  width: 300px;
+  height: 168px;
+  border-radius: var(--radius-sm);
+  background: #17181a;
+  border: 1px solid #303236;
+  display: grid;
+  place-items: center;
+  color: var(--a20-ink-2);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+/* ═══ Type ═════════════════════════════════════════════════════════════════ */
+
+.a20-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+.a20-name {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+}
+
+/* ═══ Annotation ═══════════════════════════════════════════════════════════ */
+
+.a20-note {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  transform: translate(-50%, -50%);
+  border-radius: var(--radius-full);
+  background: var(--foreground);
+  color: var(--background);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  /* off-ladder: above the window's own local stack, still inside the stage. */
+  z-index: 60;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a20-disc,
+  .a20-drop { transition: none; }
+}

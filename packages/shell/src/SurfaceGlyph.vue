@@ -17,7 +17,11 @@
  */
 import type { SurfaceId } from './surfaces';
 
-withDefaults(defineProps<{ surface: SurfaceId; size?: number }>(), { size: 24 });
+/* `size` is optional and unset by default: the launcher sizes the glyph from
+ * `--component-launcher-glyph-icon-size` in CSS, so the plate and the glyph
+ * cannot drift apart. Pass a number only when rendering outside a slot that
+ * already states the size. */
+withDefaults(defineProps<{ surface: SurfaceId; size?: number }>(), { size: undefined });
 </script>
 
 <template>
@@ -48,14 +52,21 @@ withDefaults(defineProps<{ surface: SurfaceId; size?: number }>(), { size: 24 })
       <path d="M12 2.5V6M12 18v3.5M2.5 12H6M18 12h3.5" />
     </g>
 
-    <!-- Simulation — a vehicle over ground that is not there. The arrow is the
-         same silhouette the swarm stage draws for an aircraft; the dashed rule
-         under it is the simulated world. Two large strokes rather than the two
-         small overlapping arrows this started as: a dash pattern needs length
-         before it reads as a dash, and at 22px those had turned to grit. -->
+    <!-- Simulation — a vehicle inside a world that is not there.
+         The arrow is the same silhouette the swarm stage draws for an aircraft;
+         the DASHED RING is the simulated world containing it.
+         It deliberately rhymes with Control's solid ring, because Simulation
+         deliberately declares Control's theme and register — the rehearsal
+         should look like the thing it rehearses, and the dash is the whole
+         difference. Solid ring + crosshair reads Control; dashed ring + vehicle
+         reads Sim; neither can be mistaken for the other as a black shape.
+         What this replaced: a solid triangle over a dashed rule, which at 24px
+         read as the letter A — directly beside the Auterion mark, which is an
+         angular A. A glyph that reads as a letter in a set of diagrams is the
+         one glyph in the set doing a different job. -->
     <g v-else-if="surface === 'sim'">
-      <path d="M12 2.75 17.75 16.25 12 13.15 6.25 16.25Z" />
-      <path d="M3.5 20.25h17" stroke-dasharray="3 2.6" />
+      <circle cx="12" cy="12" r="9" stroke-dasharray="2.9 2.7" />
+      <path d="M12 6.5 16 16.1 12 13.9 8 16.1Z" />
     </g>
 
     <!-- Nemyx — a graph. Several agents addressed as one. -->

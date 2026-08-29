@@ -1,0 +1,105 @@
+{
+  "component": {
+    "launcher": {
+      "$description": "The ecosystem launcher — the chooser an operator lands on, and the only screen that shows the whole ecosystem at once (AD-D-038). Structure only: the tiles carry no product hue, because identity here is a drawn glyph and a name. A colour per product would mint accent hues with no ramp, no contrast gate and no token behind them, beside a status ladder that already owns five meanings — and it would fail twice over in the operational themes.",
+      "padding": {
+        "$type": "dimension",
+        "$value": "{global.spacing.5}"
+      },
+      "padding-top": {
+        "$type": "dimension",
+        "$value": "{global.spacing.6}"
+      },
+      "padding-compact": {
+        "$type": "dimension",
+        "$value": "{global.spacing.4}",
+        "$description": "Padding once the launcher is in a panel rather than on a page. Container-queried, not viewport-queried: it has to hold up in a side panel at desktop width."
+      },
+      "head": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        },
+        "margin-bottom": {
+          "$type": "dimension",
+          "$value": "{global.spacing.5}"
+        }
+      },
+      "tiles": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        }
+      },
+      "tile": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.3}"
+        },
+        "padding": {
+          "$type": "dimension",
+          "$value": "{global.spacing.4}"
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.lg}"
+        }
+      },
+      "glyph": {
+        "icon-size": {
+          "$type": "dimension",
+          "$value": "{global.spacing.6}"
+        },
+        "padding": {
+          "$type": "dimension",
+          "$value": "{global.spacing.2}",
+          "$description": "The plate's extent is icon + 2x this (24 + 16 = 40px) rather than a stated square, so the plate cannot drift out of step with the glyph it holds — and so no token here names a `-size` the touch floor would raise to 44px around a decorative plate. The hit area is the whole tile."
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.xs}",
+          "$description": "Steps DOWN from the tile's radius: a shape inset by a full padding step cannot carry the parent's curve without looking swollen."
+        }
+      },
+      "chips": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1_5}"
+        },
+        "padding-top": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1}"
+        }
+      },
+      "chip": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1_5}"
+        },
+        "padding-x": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1_5}"
+        },
+        "padding-y": {
+          "$type": "dimension",
+          "$value": "{global.spacing.0_5}",
+          "$description": "The chip is sized by its padding and line-height rather than by a height token. It is a static readout, not a control — a height token would be raised to the 44px touch floor around a word."
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{global.radius.sm}"
+        }
+      },
+      "foot": {
+        "gap": {
+          "$type": "dimension",
+          "$value": "{global.spacing.1_5}"
+        },
+        "margin-top": {
+          "$type": "dimension",
+          "$value": "{global.spacing.5}"
+        }
+      }
+    }
+  }
+}

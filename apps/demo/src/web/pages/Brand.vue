@@ -79,7 +79,7 @@ const logoFiles = [
 
 const tokenFacts = [
   { label: 'CSS token', value: 'var(--brand)' },
-  { label: 'OKLCH', value: 'oklch(0.482 0.235 264)' },
+  { label: 'OKLCH', value: 'oklch(0.520 0.192 259.3)' },
   { label: 'Primitive', value: 'auterion-blue.700' },
   { label: 'Usage', value: 'CTA · Mark · Panel fill · Accent' },
 ] as const;
